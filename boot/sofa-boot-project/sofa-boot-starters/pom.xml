@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>sofa-boot-parent</artifactId>
+        <groupId>com.alipay.sofa</groupId>
+        <version>${revision}</version>
+        <relativePath>../sofa-boot-parent</relativePath>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>sofa-boot-starters</artifactId>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>sofa-boot-starter</module>
+        <module>actuator-sofa-boot-starter</module>
+        <module>runtime-sofa-boot-starter</module>
+        <module>isle-sofa-boot-starter</module>
+        <module>rpc-sofa-boot-starter</module>
+        <module>tracer-sofa-boot-starter</module>
+        <module>ark-sofa-boot-starter</module>
+        <module>test-sofa-boot-starter</module>
+    </modules>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                        </manifest>
+                        <manifestFile>src/main/resources/META-INF/MANIFEST.MF</manifestFile>
+                    </archive>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
