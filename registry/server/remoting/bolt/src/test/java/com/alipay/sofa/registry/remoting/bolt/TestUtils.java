@@ -19,34 +19,34 @@ package com.alipay.sofa.registry.remoting.bolt;
 import org.junit.Assert;
 
 public class TestUtils {
-  public static void assertException(Class<? extends Throwable> eclazz, Runnable runnable) {
-    try {
-      runnable.run();
-      Assert.fail();
-    } catch (Throwable exception) {
-      Assert.assertEquals(exception.getClass(), eclazz);
+    public static void assertException(Class<? extends Throwable> eclazz, Runnable runnable) {
+        try {
+            runnable.run();
+            Assert.fail();
+        } catch (Throwable exception) {
+            Assert.assertEquals(exception.getClass(), eclazz);
+        }
     }
-  }
 
-  public static void assertRunException(Class<? extends Throwable> eclazz, RunError runnable) {
-    try {
-      runnable.run();
-      Assert.fail();
-    } catch (Throwable exception) {
-      Assert.assertEquals(exception.getClass(), eclazz);
+    public static void assertRunException(Class<? extends Throwable> eclazz, RunError runnable) {
+        try {
+            runnable.run();
+            Assert.fail();
+        } catch (Throwable exception) {
+            Assert.assertEquals(exception.getClass(), eclazz);
+        }
     }
-  }
 
-  public static void assertRunExceptionCause(Class<? extends Throwable> eclazz, RunError runnable) {
-    try {
-      runnable.run();
-      Assert.fail();
-    } catch (Throwable exception) {
-      Assert.assertEquals(exception.getCause().getClass(), eclazz);
+    public static void assertRunExceptionCause(Class<? extends Throwable> eclazz, RunError runnable) {
+        try {
+            runnable.run();
+            Assert.fail();
+        } catch (Throwable exception) {
+            Assert.assertEquals(exception.getCause().getClass(), eclazz);
+        }
     }
-  }
 
-  public interface RunError {
-    void run() throws Exception;
-  }
+    public interface RunError {
+        void run() throws Exception;
+    }
 }

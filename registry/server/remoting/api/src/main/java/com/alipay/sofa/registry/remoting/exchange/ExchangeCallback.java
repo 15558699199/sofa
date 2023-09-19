@@ -19,9 +19,9 @@ package com.alipay.sofa.registry.remoting.exchange;
 import com.alipay.sofa.registry.remoting.Channel;
 
 public interface ExchangeCallback<T> {
-  // callback channel maybe is null
-  void onCallback(Channel channel, T message);
+    // callback channel maybe is null
+    void onCallback(Channel channel, T message);
 
-  // callback channel maybe is null
-  void onException(Channel channel, Throwable exception);
+    // callback channel maybe is null
+    void onException(Channel channel, Throwable exception);
 }

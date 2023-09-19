@@ -22,31 +22,31 @@ import org.junit.Test;
 import org.mockito.Mockito;
 
 public class InvokeCallbackHandlerTest {
-  @Test
-  public void test() {
-    Channel channel = Mockito.mock(Channel.class);
-    CallbackHandler callbackHandler = Mockito.mock(CallbackHandler.class);
-    InvokeCallbackHandler handler = new InvokeCallbackHandler(channel, callbackHandler);
+    @Test
+    public void test() {
+        Channel channel = Mockito.mock(Channel.class);
+        CallbackHandler callbackHandler = Mockito.mock(CallbackHandler.class);
+        InvokeCallbackHandler handler = new InvokeCallbackHandler(channel, callbackHandler);
 
-    handler.onResponse(null);
-    Mockito.verify(callbackHandler, Mockito.times(1))
-        .onCallback(Mockito.anyObject(), Mockito.anyObject());
-    Mockito.verify(callbackHandler, Mockito.times(0))
-        .onException(Mockito.anyObject(), Mockito.anyObject());
-    Mockito.verify(callbackHandler, Mockito.times(0)).getExecutor();
+        handler.onResponse(null);
+        Mockito.verify(callbackHandler, Mockito.times(1))
+                .onCallback(Mockito.anyObject(), Mockito.anyObject());
+        Mockito.verify(callbackHandler, Mockito.times(0))
+                .onException(Mockito.anyObject(), Mockito.anyObject());
+        Mockito.verify(callbackHandler, Mockito.times(0)).getExecutor();
 
-    handler.onException(null);
-    Mockito.verify(callbackHandler, Mockito.times(1))
-        .onCallback(Mockito.anyObject(), Mockito.anyObject());
-    Mockito.verify(callbackHandler, Mockito.times(1))
-        .onException(Mockito.anyObject(), Mockito.anyObject());
-    Mockito.verify(callbackHandler, Mockito.times(0)).getExecutor();
+        handler.onException(null);
+        Mockito.verify(callbackHandler, Mockito.times(1))
+                .onCallback(Mockito.anyObject(), Mockito.anyObject());
+        Mockito.verify(callbackHandler, Mockito.times(1))
+                .onException(Mockito.anyObject(), Mockito.anyObject());
+        Mockito.verify(callbackHandler, Mockito.times(0)).getExecutor();
 
-    handler.getExecutor();
-    Mockito.verify(callbackHandler, Mockito.times(1))
-        .onCallback(Mockito.anyObject(), Mockito.anyObject());
-    Mockito.verify(callbackHandler, Mockito.times(1))
-        .onException(Mockito.anyObject(), Mockito.anyObject());
-    Mockito.verify(callbackHandler, Mockito.times(1)).getExecutor();
-  }
+        handler.getExecutor();
+        Mockito.verify(callbackHandler, Mockito.times(1))
+                .onCallback(Mockito.anyObject(), Mockito.anyObject());
+        Mockito.verify(callbackHandler, Mockito.times(1))
+                .onException(Mockito.anyObject(), Mockito.anyObject());
+        Mockito.verify(callbackHandler, Mockito.times(1)).getExecutor();
+    }
 }

@@ -28,19 +28,19 @@ import org.eclipse.jetty.server.HttpConnectionFactory;
  */
 public class HttpConnectionCustomFactory extends HttpConnectionFactory {
 
-  public HttpConnectionCustomFactory() {
-    super(new HttpConfiguration());
-  }
+    public HttpConnectionCustomFactory() {
+        super(new HttpConfiguration());
+    }
 
-  @Override
-  public Connection newConnection(Connector connector, EndPoint endPoint) {
-    HttpConnectionCustom conn =
-        new HttpConnectionCustom(
-            getHttpConfiguration(),
-            connector,
-            endPoint,
-            getHttpCompliance(),
-            isRecordHttpComplianceViolations());
-    return configure(conn, connector, endPoint);
-  }
+    @Override
+    public Connection newConnection(Connector connector, EndPoint endPoint) {
+        HttpConnectionCustom conn =
+                new HttpConnectionCustom(
+                        getHttpConfiguration(),
+                        connector,
+                        endPoint,
+                        getHttpCompliance(),
+                        isRecordHttpComplianceViolations());
+        return configure(conn, connector, endPoint);
+    }
 }

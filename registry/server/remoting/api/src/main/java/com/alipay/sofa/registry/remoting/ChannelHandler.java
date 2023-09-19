@@ -24,92 +24,96 @@ import java.util.concurrent.Executor;
  */
 public interface ChannelHandler<T> {
 
-  /** The enum Handler type. */
-  enum HandlerType {
-    LISTENER,
-    PROCESSER
-  }
+    /**
+     * on channel connected.
+     *
+     * @param channel
+     * @throws RemotingException
+     */
+    void connected(Channel channel) throws RemotingException;
 
-  /** The enum Invoke type. */
-  enum InvokeType {
-    SYNC,
-    ASYNC
-  }
+    /**
+     * on channel disconnected.
+     *
+     * @param channel channel.
+     * @throws RemotingException
+     */
+    void disconnected(Channel channel) throws RemotingException;
 
-  /**
-   * on channel connected.
-   *
-   * @param channel
-   * @throws RemotingException
-   */
-  void connected(Channel channel) throws RemotingException;
+    /**
+     * on message received.
+     *
+     * @param channel channel.
+     * @param message message.
+     * @throws RemotingException
+     */
+    void received(Channel channel, T message) throws RemotingException;
 
-  /**
-   * on channel disconnected.
-   *
-   * @param channel channel.
-   * @throws RemotingException
-   */
-  void disconnected(Channel channel) throws RemotingException;
+    /**
+     * on message reply.
+     *
+     * @param channel
+     * @param message
+     * @return
+     * @throws RemotingException
+     */
+    Object reply(Channel channel, T message) throws RemotingException;
 
-  /**
-   * on message received.
-   *
-   * @param channel channel.
-   * @param message message.
-   * @throws RemotingException
-   */
-  void received(Channel channel, T message) throws RemotingException;
+    /**
+     * on exception caught.
+     *
+     * @param channel   channel.
+     * @param message   message.
+     * @param exception exception.
+     * @throws RemotingException
+     */
+    void caught(Channel channel, T message, Throwable exception) throws RemotingException;
 
-  /**
-   * on message reply.
-   *
-   * @param channel
-   * @param message
-   * @return
-   * @throws RemotingException
-   */
-  Object reply(Channel channel, T message) throws RemotingException;
+    /**
+     * check handlerType
+     *
+     * @return
+     */
+    HandlerType getType();
 
-  /**
-   * on exception caught.
-   *
-   * @param channel channel.
-   * @param message message.
-   * @param exception exception.
-   * @throws RemotingException
-   */
-  void caught(Channel channel, T message, Throwable exception) throws RemotingException;
+    /**
+     * return processor request class name
+     *
+     * @return
+     */
+    Class interest();
 
-  /**
-   * check handlerType
-   *
-   * @return
-   */
-  HandlerType getType();
+    /**
+     * Select Sync process by reply or Async process by received
+     *
+     * @return
+     */
+    default InvokeType getInvokeType() {
+        return InvokeType.SYNC;
+    }
 
-  /**
-   * return processor request class name
-   *
-   * @return
-   */
-  Class interest();
+    /**
+     * specify executor for processor handler
+     *
+     * @return
+     */
+    default Executor getExecutor() {
+        return null;
+    }
 
-  /**
-   * Select Sync process by reply or Async process by received
-   *
-   * @return
-   */
-  default InvokeType getInvokeType() {
-    return InvokeType.SYNC;
-  }
+    /**
+     * The enum Handler type.
+     */
+    enum HandlerType {
+        LISTENER,
+        PROCESSER
+    }
 
-  /**
-   * specify executor for processor handler
-   *
-   * @return
-   */
-  default Executor getExecutor() {
-    return null;
-  }
+    /**
+     * The enum Invoke type.
+     */
+    enum InvokeType {
+        SYNC,
+        ASYNC
+    }
 }

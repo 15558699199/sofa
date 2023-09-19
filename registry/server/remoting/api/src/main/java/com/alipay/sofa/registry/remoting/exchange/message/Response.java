@@ -22,16 +22,18 @@ package com.alipay.sofa.registry.remoting.exchange.message;
  */
 public interface Response<T> {
 
-  /** The enum for response status */
-  enum ResultStatus {
-    SUCCESSFUL,
-    FAILED
-  }
+    /**
+     * Get response result
+     *
+     * @return
+     */
+    T getResult();
 
-  /**
-   * Get response result
-   *
-   * @return
-   */
-  T getResult();
+    /**
+     * The enum for response status
+     */
+    enum ResultStatus {
+        SUCCESSFUL,
+        FAILED
+    }
 }

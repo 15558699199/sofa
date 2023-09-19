@@ -32,66 +32,68 @@ import com.alipay.sofa.registry.util.StringFormatter;
  */
 public class ConnectionEventAdapter implements ConnectionEventProcessor {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(ConnectionEventAdapter.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ConnectionEventAdapter.class);
 
-  private final ConnectionEventType connectionEventType;
+    private final ConnectionEventType connectionEventType;
 
-  private final ChannelHandler connectionEventHandler;
+    private final ChannelHandler connectionEventHandler;
 
-  /**
-   * Instantiates a new Connection event adapter.
-   *
-   * @param connectionEventType the connection event type
-   * @param connectionEventHandler the connection event handler
-   */
-  public ConnectionEventAdapter(
-      ConnectionEventType connectionEventType, ChannelHandler connectionEventHandler) {
-    this.connectionEventType = connectionEventType;
-    // the connect event handler maybe is null
-    this.connectionEventHandler = connectionEventHandler;
-  }
-
-  /** @see ConnectionEventProcessor#onEvent(String, Connection) */
-  @Override
-  public void onEvent(String remoteAddr, Connection conn) {
-    try {
-      switch (connectionEventType) {
-        case CONNECT:
-          if (connectionEventHandler != null) {
-            connectionEventHandler.connected(new BoltChannel(conn));
-          }
-          LOGGER.info("[connect]local={},remote={}", conn.getLocalPort(), remoteAddr);
-          break;
-
-        case CLOSE:
-          if (connectionEventHandler != null) {
-            connectionEventHandler.disconnected(new BoltChannel(conn));
-          }
-          LOGGER.info("[close]local={},remote={}", conn.getLocalPort(), remoteAddr);
-          break;
-
-        case EXCEPTION:
-          if (connectionEventHandler != null) {
-            connectionEventHandler.caught(new BoltChannel(conn), null, null);
-          }
-          LOGGER.error("[exception]local={},remote={}", conn.getLocalPort(), remoteAddr);
-          break;
-        case CONNECT_FAILED:
-          LOGGER.error("[connectFailed]local={},remote={}", conn.getLocalPort(), remoteAddr);
-          break;
-        default:
-          break;
-      }
-    } catch (Throwable e) {
-      String err =
-          StringFormatter.format(
-              "failed to process connection, type={}, local={}, remote={}, conn={}",
-              connectionEventType,
-              conn.getLocalPort(),
-              remoteAddr,
-              conn);
-      LOGGER.error(err, e);
-      throw new RuntimeException(err, e);
+    /**
+     * Instantiates a new Connection event adapter.
+     *
+     * @param connectionEventType    the connection event type
+     * @param connectionEventHandler the connection event handler
+     */
+    public ConnectionEventAdapter(
+            ConnectionEventType connectionEventType, ChannelHandler connectionEventHandler) {
+        this.connectionEventType = connectionEventType;
+        // the connect event handler maybe is null
+        this.connectionEventHandler = connectionEventHandler;
     }
-  }
+
+    /**
+     * @see ConnectionEventProcessor#onEvent(String, Connection)
+     */
+    @Override
+    public void onEvent(String remoteAddr, Connection conn) {
+        try {
+            switch (connectionEventType) {
+                case CONNECT:
+                    if (connectionEventHandler != null) {
+                        connectionEventHandler.connected(new BoltChannel(conn));
+                    }
+                    LOGGER.info("[connect]local={},remote={}", conn.getLocalPort(), remoteAddr);
+                    break;
+
+                case CLOSE:
+                    if (connectionEventHandler != null) {
+                        connectionEventHandler.disconnected(new BoltChannel(conn));
+                    }
+                    LOGGER.info("[close]local={},remote={}", conn.getLocalPort(), remoteAddr);
+                    break;
+
+                case EXCEPTION:
+                    if (connectionEventHandler != null) {
+                        connectionEventHandler.caught(new BoltChannel(conn), null, null);
+                    }
+                    LOGGER.error("[exception]local={},remote={}", conn.getLocalPort(), remoteAddr);
+                    break;
+                case CONNECT_FAILED:
+                    LOGGER.error("[connectFailed]local={},remote={}", conn.getLocalPort(), remoteAddr);
+                    break;
+                default:
+                    break;
+            }
+        } catch (Throwable e) {
+            String err =
+                    StringFormatter.format(
+                            "failed to process connection, type={}, local={}, remote={}, conn={}",
+                            connectionEventType,
+                            conn.getLocalPort(),
+                            remoteAddr,
+                            conn);
+            LOGGER.error(err, e);
+            throw new RuntimeException(err, e);
+        }
+    }
 }

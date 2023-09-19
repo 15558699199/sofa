@@ -29,18 +29,18 @@ import org.eclipse.jetty.server.HttpConnection;
  */
 public class HttpConnectionCustom extends HttpConnection {
 
-  public HttpConnectionCustom(
-      HttpConfiguration config,
-      Connector connector,
-      EndPoint endPoint,
-      HttpCompliance compliance,
-      boolean recordComplianceViolations) {
-    super(config, connector, endPoint, compliance, recordComplianceViolations);
-  }
+    public HttpConnectionCustom(
+            HttpConfiguration config,
+            Connector connector,
+            EndPoint endPoint,
+            HttpCompliance compliance,
+            boolean recordComplianceViolations) {
+        super(config, connector, endPoint, compliance, recordComplianceViolations);
+    }
 
-  @Override
-  protected HttpChannelOverHttp newHttpChannel() {
-    return new HttpChannelOverHttpCustom(
-        this, getConnector(), getHttpConfiguration(), getEndPoint(), this);
-  }
+    @Override
+    protected HttpChannelOverHttp newHttpChannel() {
+        return new HttpChannelOverHttpCustom(
+                this, getConnector(), getHttpConfiguration(), getEndPoint(), this);
+    }
 }

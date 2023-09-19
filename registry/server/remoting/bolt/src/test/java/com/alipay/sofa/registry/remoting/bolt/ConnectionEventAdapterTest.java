@@ -23,45 +23,45 @@ import org.junit.Test;
 import org.mockito.Mockito;
 
 public class ConnectionEventAdapterTest {
-  @Test
-  public void test() throws Exception {
-    ChannelHandler handler = Mockito.mock(ChannelHandler.class);
-    Connection conn = Mockito.mock(Connection.class);
-    ConnectionEventAdapter adapter =
-        new ConnectionEventAdapter(ConnectionEventType.CONNECT, handler);
-    adapter.onEvent("test", conn);
-    Mockito.verify(handler, Mockito.times(1)).connected(Mockito.anyObject());
-    Mockito.verify(handler, Mockito.times(0)).disconnected(Mockito.anyObject());
-    Mockito.verify(handler, Mockito.times(0))
-        .caught(Mockito.anyObject(), Mockito.anyObject(), Mockito.anyObject());
+    @Test
+    public void test() throws Exception {
+        ChannelHandler handler = Mockito.mock(ChannelHandler.class);
+        Connection conn = Mockito.mock(Connection.class);
+        ConnectionEventAdapter adapter =
+                new ConnectionEventAdapter(ConnectionEventType.CONNECT, handler);
+        adapter.onEvent("test", conn);
+        Mockito.verify(handler, Mockito.times(1)).connected(Mockito.anyObject());
+        Mockito.verify(handler, Mockito.times(0)).disconnected(Mockito.anyObject());
+        Mockito.verify(handler, Mockito.times(0))
+                .caught(Mockito.anyObject(), Mockito.anyObject(), Mockito.anyObject());
 
-    handler = Mockito.mock(ChannelHandler.class);
-    adapter = new ConnectionEventAdapter(ConnectionEventType.CONNECT_FAILED, handler);
-    adapter.onEvent("test", conn);
-    Mockito.verify(handler, Mockito.times(0)).connected(Mockito.anyObject());
-    Mockito.verify(handler, Mockito.times(0)).disconnected(Mockito.anyObject());
-    Mockito.verify(handler, Mockito.times(0))
-        .caught(Mockito.anyObject(), Mockito.anyObject(), Mockito.anyObject());
+        handler = Mockito.mock(ChannelHandler.class);
+        adapter = new ConnectionEventAdapter(ConnectionEventType.CONNECT_FAILED, handler);
+        adapter.onEvent("test", conn);
+        Mockito.verify(handler, Mockito.times(0)).connected(Mockito.anyObject());
+        Mockito.verify(handler, Mockito.times(0)).disconnected(Mockito.anyObject());
+        Mockito.verify(handler, Mockito.times(0))
+                .caught(Mockito.anyObject(), Mockito.anyObject(), Mockito.anyObject());
 
-    handler = Mockito.mock(ChannelHandler.class);
-    adapter = new ConnectionEventAdapter(ConnectionEventType.CLOSE, handler);
-    adapter.onEvent("test", conn);
-    Mockito.verify(handler, Mockito.times(0)).connected(Mockito.anyObject());
-    Mockito.verify(handler, Mockito.times(1)).disconnected(Mockito.anyObject());
-    Mockito.verify(handler, Mockito.times(0))
-        .caught(Mockito.anyObject(), Mockito.anyObject(), Mockito.anyObject());
+        handler = Mockito.mock(ChannelHandler.class);
+        adapter = new ConnectionEventAdapter(ConnectionEventType.CLOSE, handler);
+        adapter.onEvent("test", conn);
+        Mockito.verify(handler, Mockito.times(0)).connected(Mockito.anyObject());
+        Mockito.verify(handler, Mockito.times(1)).disconnected(Mockito.anyObject());
+        Mockito.verify(handler, Mockito.times(0))
+                .caught(Mockito.anyObject(), Mockito.anyObject(), Mockito.anyObject());
 
-    handler = Mockito.mock(ChannelHandler.class);
-    adapter = new ConnectionEventAdapter(ConnectionEventType.EXCEPTION, handler);
-    adapter.onEvent("test", conn);
-    Mockito.verify(handler, Mockito.times(0)).connected(Mockito.anyObject());
-    Mockito.verify(handler, Mockito.times(0)).disconnected(Mockito.anyObject());
-    Mockito.verify(handler, Mockito.times(1))
-        .caught(Mockito.anyObject(), Mockito.anyObject(), Mockito.anyObject());
+        handler = Mockito.mock(ChannelHandler.class);
+        adapter = new ConnectionEventAdapter(ConnectionEventType.EXCEPTION, handler);
+        adapter.onEvent("test", conn);
+        Mockito.verify(handler, Mockito.times(0)).connected(Mockito.anyObject());
+        Mockito.verify(handler, Mockito.times(0)).disconnected(Mockito.anyObject());
+        Mockito.verify(handler, Mockito.times(1))
+                .caught(Mockito.anyObject(), Mockito.anyObject(), Mockito.anyObject());
 
-    ConnectionEventAdapter exceptionAdapter =
-        new ConnectionEventAdapter(ConnectionEventType.EXCEPTION, handler);
-    Mockito.when(conn.getLocalPort()).thenThrow(new RuntimeException());
-    TestUtils.assertException(RuntimeException.class, () -> exceptionAdapter.onEvent("test", conn));
-  }
+        ConnectionEventAdapter exceptionAdapter =
+                new ConnectionEventAdapter(ConnectionEventType.EXCEPTION, handler);
+        Mockito.when(conn.getLocalPort()).thenThrow(new RuntimeException());
+        TestUtils.assertException(RuntimeException.class, () -> exceptionAdapter.onEvent("test", conn));
+    }
 }

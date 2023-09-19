@@ -23,19 +23,19 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class ProtobufSerializerTest {
-  @Test
-  public void testException() {
-    ProtobufSerializer serializer = ProtobufSerializer.getInstance();
-    TestUtils.assertRunException(SerializationException.class, () -> serializer.serialize(null));
-    TestUtils.assertRunException(
-        SerializationException.class, () -> serializer.serialize(new Integer(10)));
-    TestUtils.assertRunException(
-        SerializationException.class, () -> serializer.deserialize(null, "classNotExist"));
-    TestUtils.assertRunException(
-        DeserializationException.class, () -> serializer.decode(null, Integer.class));
+    @Test
+    public void testException() {
+        ProtobufSerializer serializer = ProtobufSerializer.getInstance();
+        TestUtils.assertRunException(SerializationException.class, () -> serializer.serialize(null));
+        TestUtils.assertRunException(
+                SerializationException.class, () -> serializer.serialize(new Integer(10)));
+        TestUtils.assertRunException(
+                SerializationException.class, () -> serializer.deserialize(null, "classNotExist"));
+        TestUtils.assertRunException(
+                DeserializationException.class, () -> serializer.decode(null, Integer.class));
 
-    Assert.assertFalse(ProtobufSerializer.isProtoBufMessageLite(null));
-    Assert.assertFalse(ProtobufSerializer.isProtoBufMessageLite(new Integer(10)));
-    Assert.assertFalse(ProtobufSerializer.isProtoBufMessageLite("xx"));
-  }
+        Assert.assertFalse(ProtobufSerializer.isProtoBufMessageLite(null));
+        Assert.assertFalse(ProtobufSerializer.isProtoBufMessageLite(new Integer(10)));
+        Assert.assertFalse(ProtobufSerializer.isProtoBufMessageLite("xx"));
+    }
 }

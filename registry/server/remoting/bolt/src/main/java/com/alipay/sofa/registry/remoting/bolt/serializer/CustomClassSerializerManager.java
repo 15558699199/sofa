@@ -27,29 +27,31 @@ import java.util.concurrent.ConcurrentMap;
  */
 public final class CustomClassSerializerManager {
 
-  private static final ConcurrentMap<Class, Byte> serializerMap = new ConcurrentHashMap<>();
+    private static final ConcurrentMap<Class, Byte> serializerMap = new ConcurrentHashMap<>();
 
-  private CustomClassSerializerManager() {}
-  /**
-   * Register serializer.
-   *
-   * @param clazz the clazz
-   * @param serializer the serializer
-   */
-  public static void registerSerializer(Class clazz, Byte serializer) {
-    if (clazz == null || serializer == null) {
-      throw new IllegalArgumentException("class and serializer can not be null");
+    private CustomClassSerializerManager() {
     }
-    serializerMap.put(clazz, serializer);
-  }
 
-  /**
-   * Gets protocol.
-   *
-   * @param clazz the clazz
-   * @return the protocol
-   */
-  public static Byte getClassSerializer(Class clazz) {
-    return serializerMap.get(clazz);
-  }
+    /**
+     * Register serializer.
+     *
+     * @param clazz      the clazz
+     * @param serializer the serializer
+     */
+    public static void registerSerializer(Class clazz, Byte serializer) {
+        if (clazz == null || serializer == null) {
+            throw new IllegalArgumentException("class and serializer can not be null");
+        }
+        serializerMap.put(clazz, serializer);
+    }
+
+    /**
+     * Gets protocol.
+     *
+     * @param clazz the clazz
+     * @return the protocol
+     */
+    public static Byte getClassSerializer(Class clazz) {
+        return serializerMap.get(clazz);
+    }
 }

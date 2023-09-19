@@ -25,64 +25,64 @@ import com.alipay.sofa.registry.remoting.Server;
  * @version $Id: Exchanger.java, v 0.1 2017-11-20 21:25 shangyu.wh Exp $
  */
 public interface Exchange<T> {
-  String SESSION_SERVER_TYPE = "sessionServer";
-  String SESSION_SERVER_CONSOLE_TYPE = "sessionServerConsole";
-  String DATA_SERVER_TYPE = "dataServer";
-  String DATA_SERVER_NOTIFY_TYPE = "dataServerNotify";
-  String META_SERVER_TYPE = "metaServer";
-  String REMOTE_CLUSTER_META = "remoteMetaServer";
-  String REMOTE_DATA_SERVER_TYPE = "remoteDataServer";
+    String SESSION_SERVER_TYPE = "sessionServer";
+    String SESSION_SERVER_CONSOLE_TYPE = "sessionServerConsole";
+    String DATA_SERVER_TYPE = "dataServer";
+    String DATA_SERVER_NOTIFY_TYPE = "dataServerNotify";
+    String META_SERVER_TYPE = "metaServer";
+    String REMOTE_CLUSTER_META = "remoteMetaServer";
+    String REMOTE_DATA_SERVER_TYPE = "remoteDataServer";
 
-  /**
-   * connect same type server,one server ip one connection such as different server on data
-   * server,serverOne and serverTwo,different type server must match different channelHandlers, so
-   * we must connect by serverType,and get Client instance by serverType
-   *
-   * @param serverType
-   * @param serverUrl
-   * @param channelHandlers
-   * @return
-   */
-  Client connect(String serverType, URL serverUrl, T... channelHandlers);
+    /**
+     * connect same type server,one server ip one connection such as different server on data
+     * server,serverOne and serverTwo,different type server must match different channelHandlers, so
+     * we must connect by serverType,and get Client instance by serverType
+     *
+     * @param serverType
+     * @param serverUrl
+     * @param channelHandlers
+     * @return
+     */
+    Client connect(String serverType, URL serverUrl, T... channelHandlers);
 
-  /**
-   * connect same type server,one server ip one connection such as different server on data
-   * server,serverOne and serverTwo,different type server must match different channelHandlers, so
-   * we must connect by serverType,and get Client instance by serverType
-   *
-   * @param serverType
-   * @param connNum connection number per serverUrl
-   * @param serverUrl
-   * @param channelHandlers
-   * @return
-   */
-  Client connect(String serverType, int connNum, URL serverUrl, T... channelHandlers);
+    /**
+     * connect same type server,one server ip one connection such as different server on data
+     * server,serverOne and serverTwo,different type server must match different channelHandlers, so
+     * we must connect by serverType,and get Client instance by serverType
+     *
+     * @param serverType
+     * @param connNum         connection number per serverUrl
+     * @param serverUrl
+     * @param channelHandlers
+     * @return
+     */
+    Client connect(String serverType, int connNum, URL serverUrl, T... channelHandlers);
 
-  /**
-   * bind server by server port in url parameter,one port must by same server type
-   *
-   * @param url
-   * @param channelHandlers
-   * @return
-   */
-  Server open(URL url, T... channelHandlers);
+    /**
+     * bind server by server port in url parameter,one port must by same server type
+     *
+     * @param url
+     * @param channelHandlers
+     * @return
+     */
+    Server open(URL url, T... channelHandlers);
 
-  Server open(URL url, int lowWaterMark, int highWaterMark, T... channelHandlers);
+    Server open(URL url, int lowWaterMark, int highWaterMark, T... channelHandlers);
 
-  /**
-   * * get Client instance by serverType,very client instance has different channels match different
-   * server ip
-   *
-   * @param serverType
-   * @return
-   */
-  Client getClient(String serverType);
+    /**
+     * * get Client instance by serverType,very client instance has different channels match different
+     * server ip
+     *
+     * @param serverType
+     * @return
+     */
+    Client getClient(String serverType);
 
-  /**
-   * get server instance by port
-   *
-   * @param port
-   * @return
-   */
-  Server getServer(Integer port);
+    /**
+     * get server instance by port
+     *
+     * @param port
+     * @return
+     */
+    Server getServer(Integer port);
 }

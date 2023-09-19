@@ -26,12 +26,12 @@ import com.alipay.sofa.registry.remoting.exchange.message.Response;
  */
 public interface NodeExchanger {
 
-  /**
-   * @param request
-   * @return
-   * @throws RequestException
-   */
-  Response request(Request request) throws RequestException;
+    /**
+     * @param request
+     * @return
+     * @throws RequestException
+     */
+    Response request(Request request) throws RequestException;
 
-  Client connectServer();
+    Client connectServer();
 }

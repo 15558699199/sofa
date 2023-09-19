@@ -28,30 +28,30 @@ import com.alipay.sofa.registry.remoting.CallbackHandler;
  */
 public interface Request<T> {
 
-  /**
-   * Gets request body.
-   *
-   * @return the request body
-   */
-  T getRequestBody();
+    /**
+     * Gets request body.
+     *
+     * @return the request body
+     */
+    T getRequestBody();
 
-  /**
-   * Gets request url.
-   *
-   * @return the request url
-   */
-  URL getRequestUrl();
+    /**
+     * Gets request url.
+     *
+     * @return the request url
+     */
+    URL getRequestUrl();
 
-  /**
-   * Gets call back handler.
-   *
-   * @return the call back handler
-   */
-  default CallbackHandler getCallBackHandler() {
-    return null;
-  }
+    /**
+     * Gets call back handler.
+     *
+     * @return the call back handler
+     */
+    default CallbackHandler getCallBackHandler() {
+        return null;
+    }
 
-  default Integer getTimeout() {
-    return null;
-  }
+    default Integer getTimeout() {
+        return null;
+    }
 }

@@ -24,40 +24,40 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class BoltExchangeTest {
-  @Test
-  public void testException() {
-    BoltExchange exchange = new BoltExchange();
-    TestUtils.assertException(
-        IllegalArgumentException.class,
-        () -> exchange.connect("test", new URL("127.0.0.1", 8888), null));
+    @Test
+    public void testException() {
+        BoltExchange exchange = new BoltExchange();
+        TestUtils.assertException(
+                IllegalArgumentException.class,
+                () -> exchange.connect("test", new URL("127.0.0.1", 8888), null));
 
-    TestUtils.assertException(
-        IllegalArgumentException.class,
-        () -> exchange.open(new URL("127.0.0.1", 8888), 1024, 1024 * 2, null));
-  }
-
-  @Test
-  public void test() {
-    BoltExchange exchange = new BoltExchange();
-    Assert.assertNull(exchange.getServer(9999));
-    Server srv = null;
-    try {
-      srv = exchange.open(new URL("localhost", 9999), 1024, 1024 * 2, new ChannelHandler[0]);
-      Assert.assertEquals(exchange.getServer(9999), srv);
-    } finally {
-      if (srv != null) {
-        srv.close();
-      }
+        TestUtils.assertException(
+                IllegalArgumentException.class,
+                () -> exchange.open(new URL("127.0.0.1", 8888), 1024, 1024 * 2, null));
     }
 
-    Assert.assertNull(exchange.getServer(9998));
-    try {
-      srv = exchange.open(new URL("localhost", 9998), new ChannelHandler[0]);
-      Assert.assertEquals(exchange.getServer(9998), srv);
-    } finally {
-      if (srv != null) {
-        srv.close();
-      }
+    @Test
+    public void test() {
+        BoltExchange exchange = new BoltExchange();
+        Assert.assertNull(exchange.getServer(9999));
+        Server srv = null;
+        try {
+            srv = exchange.open(new URL("localhost", 9999), 1024, 1024 * 2, new ChannelHandler[0]);
+            Assert.assertEquals(exchange.getServer(9999), srv);
+        } finally {
+            if (srv != null) {
+                srv.close();
+            }
+        }
+
+        Assert.assertNull(exchange.getServer(9998));
+        try {
+            srv = exchange.open(new URL("localhost", 9998), new ChannelHandler[0]);
+            Assert.assertEquals(exchange.getServer(9998), srv);
+        } finally {
+            if (srv != null) {
+                srv.close();
+            }
+        }
     }
-  }
 }

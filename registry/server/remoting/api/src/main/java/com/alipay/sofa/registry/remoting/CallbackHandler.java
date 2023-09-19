@@ -24,26 +24,26 @@ import java.util.concurrent.Executor;
  */
 public interface CallbackHandler {
 
-  /**
-   * callback handler
-   *
-   * @param channel
-   * @param message
-   */
-  void onCallback(Channel channel, Object message);
+    /**
+     * callback handler
+     *
+     * @param channel
+     * @param message
+     */
+    void onCallback(Channel channel, Object message);
 
-  /**
-   * callback exception handler
-   *
-   * @param channel
-   * @param exception
-   */
-  void onException(Channel channel, Throwable exception);
+    /**
+     * callback exception handler
+     *
+     * @param channel
+     * @param exception
+     */
+    void onException(Channel channel, Throwable exception);
 
-  /**
-   * override executor
-   *
-   * @return
-   */
-  Executor getExecutor();
+    /**
+     * override executor
+     *
+     * @return
+     */
+    Executor getExecutor();
 }

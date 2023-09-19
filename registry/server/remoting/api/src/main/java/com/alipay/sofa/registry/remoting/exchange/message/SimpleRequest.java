@@ -20,32 +20,32 @@ import com.alipay.sofa.registry.common.model.store.URL;
 import com.alipay.sofa.registry.remoting.CallbackHandler;
 
 public class SimpleRequest<T> implements Request<T> {
-  private final T req;
-  private final URL url;
-  private final CallbackHandler callback;
+    private final T req;
+    private final URL url;
+    private final CallbackHandler callback;
 
-  public SimpleRequest(T req, URL url) {
-    this(req, url, null);
-  }
+    public SimpleRequest(T req, URL url) {
+        this(req, url, null);
+    }
 
-  public SimpleRequest(T req, URL url, CallbackHandler callback) {
-    this.req = req;
-    this.url = url;
-    this.callback = callback;
-  }
+    public SimpleRequest(T req, URL url, CallbackHandler callback) {
+        this.req = req;
+        this.url = url;
+        this.callback = callback;
+    }
 
-  @Override
-  public T getRequestBody() {
-    return req;
-  }
+    @Override
+    public T getRequestBody() {
+        return req;
+    }
 
-  @Override
-  public URL getRequestUrl() {
-    return url;
-  }
+    @Override
+    public URL getRequestUrl() {
+        return url;
+    }
 
-  @Override
-  public CallbackHandler getCallBackHandler() {
-    return callback;
-  }
+    @Override
+    public CallbackHandler getCallBackHandler() {
+        return callback;
+    }
 }

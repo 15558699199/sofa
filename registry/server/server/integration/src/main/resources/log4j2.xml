@@ -1272,8 +1272,8 @@
             </Policies>
             <DefaultRolloverStrategy max="30">
                 <Delete basePath="${SESSION_LOG_HOME}" maxDepth="2">
-                    <IfFileName glob="registry-dump.log.*" />
-                    <IfLastModified age="30d" />
+                    <IfFileName glob="registry-dump.log.*"/>
+                    <IfLastModified age="30d"/>
                 </Delete>
             </DefaultRolloverStrategy>
         </RollingRandomAccessFile>
@@ -1287,13 +1287,14 @@
             </Policies>
             <DefaultRolloverStrategy max="30">
                 <Delete basePath="${SESSION_LOG_HOME}" maxDepth="2">
-                    <IfFileName glob="registry-datum-syncer.log.*" />
-                    <IfLastModified age="30d" />
+                    <IfFileName glob="registry-datum-syncer.log.*"/>
+                    <IfLastModified age="30d"/>
                 </Delete>
             </DefaultRolloverStrategy>
         </RollingRandomAccessFile>
 
-        <RollingRandomAccessFile name="APP-DISCOVERY-DIGEST-APPENDER" fileName="${SESSION_LOG_HOME}/registry-app-discovery-digest.log"
+        <RollingRandomAccessFile name="APP-DISCOVERY-DIGEST-APPENDER"
+                                 fileName="${SESSION_LOG_HOME}/registry-app-discovery-digest.log"
                                  filePattern="${SESSION_LOG_HOME}/registry-app-discovery-digest.log.%d{yyyy-MM-dd}">
             <PatternLayout pattern="[%d{ISO8601}][%p][%t][%c{0}] - %m%n"/>
             <ThresholdFilter level="ERROR" onMatch="DENY" onMismatch="NEUTRAL"/>
@@ -1303,15 +1304,16 @@
             </Policies>
             <DefaultRolloverStrategy max="30">
                 <Delete basePath="${SESSION_LOG_HOME}" maxDepth="2">
-                    <IfFileName glob="registry-app-discovery-digest.log.*" />
-                    <IfLastModified age="30d" />
+                    <IfFileName glob="registry-app-discovery-digest.log.*"/>
+                    <IfLastModified age="30d"/>
                 </Delete>
             </DefaultRolloverStrategy>
         </RollingRandomAccessFile>
 
 
         <!-- multi cluster logger -->
-        <RollingRandomAccessFile name="MULTI-CLUSTER-SLOT-TABLE-APPENDER" fileName="${DATA_LOG_HOME}/registry-multi-slot-table.log"
+        <RollingRandomAccessFile name="MULTI-CLUSTER-SLOT-TABLE-APPENDER"
+                                 fileName="${DATA_LOG_HOME}/registry-multi-slot-table.log"
                                  filePattern="${DATA_LOG_HOME}/registry-multi-slot-table.log.%d{yyyy-MM-dd}">
             <PatternLayout pattern="[%d{ISO8601}][%p][%t][%c{0}] - %m%n"/>
             <ThresholdFilter level="ERROR" onMatch="DENY" onMismatch="NEUTRAL"/>
@@ -1321,8 +1323,8 @@
             </Policies>
             <DefaultRolloverStrategy max="30">
                 <Delete basePath="${DATA_LOG_HOME}" maxDepth="2">
-                    <IfFileName glob="registry-multi-slot-table.log.*" />
-                    <IfLastModified age="10d" />
+                    <IfFileName glob="registry-multi-slot-table.log.*"/>
+                    <IfLastModified age="10d"/>
                 </Delete>
             </DefaultRolloverStrategy>
         </RollingRandomAccessFile>
@@ -1337,13 +1339,14 @@
             </Policies>
             <DefaultRolloverStrategy max="30">
                 <Delete basePath="${DATA_LOG_HOME}" maxDepth="2">
-                    <IfFileName glob="registry-multi-sync.log.*" />
-                    <IfLastModified age="10d" />
+                    <IfFileName glob="registry-multi-sync.log.*"/>
+                    <IfLastModified age="10d"/>
                 </Delete>
             </DefaultRolloverStrategy>
         </RollingRandomAccessFile>
 
-        <RollingRandomAccessFile name="MULTI-CLUSTER-SYNC-DIGEST-APPENDER" fileName="${DATA_LOG_HOME}/registry-multi-sync-digest.log"
+        <RollingRandomAccessFile name="MULTI-CLUSTER-SYNC-DIGEST-APPENDER"
+                                 fileName="${DATA_LOG_HOME}/registry-multi-sync-digest.log"
                                  filePattern="${DATA_LOG_HOME}/registry-multi-sync-digest.log.%d{yyyy-MM-dd}">
             <PatternLayout pattern="[%d{ISO8601}][%p][%t][%c{0}] - %m%n"/>
             <ThresholdFilter level="ERROR" onMatch="DENY" onMismatch="NEUTRAL"/>
@@ -1353,8 +1356,8 @@
             </Policies>
             <DefaultRolloverStrategy max="30">
                 <Delete basePath="${DATA_LOG_HOME}" maxDepth="2">
-                    <IfFileName glob="registry-multi-sync-digest.log.*" />
-                    <IfLastModified age="10d" />
+                    <IfFileName glob="registry-multi-sync-digest.log.*"/>
+                    <IfLastModified age="10d"/>
                 </Delete>
             </DefaultRolloverStrategy>
         </RollingRandomAccessFile>
@@ -1369,8 +1372,8 @@
             </Policies>
             <DefaultRolloverStrategy max="30">
                 <Delete basePath="${DATA_LOG_HOME}" maxDepth="2">
-                    <IfFileName glob="registry-multi-srv.log.*" />
-                    <IfLastModified age="10d" />
+                    <IfFileName glob="registry-multi-srv.log.*"/>
+                    <IfLastModified age="10d"/>
                 </Delete>
             </DefaultRolloverStrategy>
         </RollingRandomAccessFile>
@@ -1385,8 +1388,8 @@
             </Policies>
             <DefaultRolloverStrategy max="30">
                 <Delete basePath="${DATA_LOG_HOME}" maxDepth="2">
-                    <IfFileName glob="registry-multi-put.log.*" />
-                    <IfLastModified age="30d" />
+                    <IfFileName glob="registry-multi-put.log.*"/>
+                    <IfLastModified age="30d"/>
                 </Delete>
             </DefaultRolloverStrategy>
         </RollingRandomAccessFile>

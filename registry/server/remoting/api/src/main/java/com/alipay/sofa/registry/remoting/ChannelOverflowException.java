@@ -18,7 +18,7 @@ package com.alipay.sofa.registry.remoting;
 
 public class ChannelOverflowException extends RuntimeException {
 
-  public ChannelOverflowException(String message, Throwable cause) {
-    super(message, cause);
-  }
+    public ChannelOverflowException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }
