@@ -1,9 +1,0 @@
-dontinline,*.*_all_jmhStub
-dontinline,*.*_avgt_jmhStub
-dontinline,*.*_sample_jmhStub
-dontinline,*.*_ss_jmhStub
-dontinline,*.*_thrpt_jmhStub
-inline,com/alipay/sofa/rpc/bench/CollectionDifferenceBenchMarkTest.clean
-inline,com/alipay/sofa/rpc/bench/CollectionDifferenceBenchMarkTest.prepareData
-inline,com/alipay/sofa/rpc/bench/CollectionDifferenceBenchMarkTest.testListDifference
-inline,com/alipay/sofa/rpc/bench/CollectionDifferenceBenchMarkTest.testSetDifference

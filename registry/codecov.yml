@@ -1,8 +1,14 @@
 ignore:
-  - "remoting/remoting-triple/build/generated/source/proto/main/java/triple/.*"
-coverage:
-  status:
-    project:
-      default:
-        threshold: 0.1%
-    patch: off
+  - '**/bootstrap/**'
+  - '**/inegration/**'
+  - '**/client/pb/**'
+  - '**/MetaApplication'
+  - '**/registry/jraft/**'
+  - '**/DataApplication'
+  - '**/SessionApplication'
+  - '**/RegistryApplication'
+
+comment:
+  behavior: default
+  layout: reach,diff,flags,files,footer
+  require_changes: false

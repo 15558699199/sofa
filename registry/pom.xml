@@ -1,238 +1,512 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
     <modelVersion>4.0.0</modelVersion>
-   
     <groupId>com.alipay.sofa</groupId>
-    <artifactId>sofa-rpc-parent</artifactId>
-    <version>${revision}</version>
+    <artifactId>registry-parent</artifactId>
+    <version>6.3.0</version>
+
     <packaging>pom</packaging>
-    <name>[SOFA] - RPC Framework</name>
-    <url>http://www.antfin.com</url>
-    <description>[SOFA] RPC Framework of Java.</description>
+
+    <name>${project.groupId}:${project.artifactId}</name>
+    <url>http://github.com/alipay/sofa-registry</url>
+    <description>A high-performance, high-extensibility, production-level Java Registry framework.</description>
+
+    <licenses>
+        <license>
+            <name>The Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
 
     <organization>
         <name>The Ant Financial</name>
         <url>http://www.antfin.com/</url>
     </organization>
 
-    <modules>
-        <!-- ALl-in-one -->
-        <module>all</module>
-        <!-- Project Management -->
-        <module>bom</module>
-        <!-- 0 : Core + API + SPI -->
-        <module>core</module>
-        <!-- 1 : Common Implements. -->
-        <module>core-impl</module>
-        <!-- 2 : swagger -->
-        <module>doc-swagger</module>
+    <developers>
+        <developer>
+            <name>Hui Wang</name>
+            <email>shangyu.wh@alibaba-inc.com</email>
+            <organization>Ant Financial</organization>
+        </developer>
+        <developer>
+            <name>KeZhu Wu</name>
+            <email>kezhu.wukz@antfin.com</email>
+            <organization>Ant Financial</organization>
+        </developer>
+        <developer>
+            <name>Jie Cao</name>
+            <email>caojie.cj@antfin.com</email>
+            <organization>Ant Financial</organization>
+        </developer>
+        <developer>
+            <name>LongChao Huang</name>
+            <email>jiangcun.hlc@antfin.com</email>
+            <organization>Ant Financial</organization>
+        </developer>
+    </developers>
 
-        <module>registry</module>
-        <module>bootstrap</module>
-        <module>codec</module>
-        <module>remoting</module>
-        <module>tracer</module>
-        <module>metrics</module>
-        <module>config</module>
-        <module>fault</module>
-        <module>log-common-tools</module>
-        <!-- Other Code -->
-        <module>example</module>
+    <scm>
+        <connection>scm:git:git://github.com/alipay/sofa-registry.git</connection>
+        <developerConnection>scm:git:ssh://github.com/alipay/sofa-registry.git</developerConnection>
+        <url>http://github.com/alipay/sofa-registry/tree/master</url>
+    </scm>
+
+    <modules>
+        <module>core</module>
+        <module>client</module>
+        <module>server</module>
         <module>test</module>
     </modules>
+    <properties>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <bolt.version>1.6.3</bolt.version>
+        <commons.lang.version>2.6</commons.lang.version>
+        <google.guava.version>18.0</google.guava.version>
+        <sofa.common.tools.version>1.0.12</sofa.common.tools.version>
+        <junit.version>4.12</junit.version>
+        <junit.jupiter.version>5.0.2</junit.jupiter.version>
+        <junit.vintage.version>${junit.version}.2</junit.vintage.version>
+        <junit.platform.version>1.0.2</junit.platform.version>
+        <sofa.hessian.version>3.3.12</sofa.hessian.version>
+        <netty.version>4.1.25.Final</netty.version>
+        <jersey.version>2.26</jersey.version>
+        <protobuf.version>3.17.3</protobuf.version>
+        <slf4j.version>1.7.21</slf4j.version>
+        <lookout.version>1.5.2</lookout.version>
+        <mockito.version>1.10.19</mockito.version>
+        <powermock.version>1.6.6</powermock.version>
+        <jraft.version>1.3.5</jraft.version>
+        <metrics.version>4.0.2</metrics.version>
+        <commons-io.version>2.4</commons-io.version>
+        <jetty.version>[9.4.17.v20190418,9.4.19.v20190610]</jetty.version>
+        <rocksdbjni.version>6.4.6</rocksdbjni.version>
+        <guava-retrying.version>2.0.0</guava-retrying.version>
+        <zstd-jni.version>1.3.6-1</zstd-jni.version>
+        <log4j2.version>2.17.0</log4j2.version>
+        <spring.boot.version>2.3.9.RELEASE</spring.boot.version>
+        <main.user.dir>${user.dir}</main.user.dir>
+        <argLine>-Dnetwork_interface_denylist=docker0</argLine>
+        <!-- for linke 添加isSkipUT, isSkipIT参数声明，防止编译时产生错误 -->
+        <isSkipUT>false</isSkipUT>
+        <isSkipIT>false</isSkipIT>
+    </properties>
 
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>com.alipay.sofa</groupId>
-                <artifactId>sofa-rpc-bom</artifactId>
-                <version>${revision}</version>
+                <groupId>org.slf4j</groupId>
+                <artifactId>jul-to-slf4j</artifactId>
+                <version>1.7.9</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-parent</artifactId>
+                <version>${spring.boot.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            <dependency>
+                <groupId>com.alipay.sofa</groupId>
+                <artifactId>registry-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alipay.sofa</groupId>
+                <artifactId>registry-client-all</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alipay.sofa</groupId>
+                <artifactId>registry-common-model</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alipay.sofa</groupId>
+                <artifactId>registry-common-util</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alipay.sofa</groupId>
+                <artifactId>registry-store-common</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alipay.sofa</groupId>
+                <artifactId>registry-store-jraft</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alipay.sofa</groupId>
+                <artifactId>registry-store-jdbc</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alipay.sofa</groupId>
+                <artifactId>registry-remoting-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alipay.sofa</groupId>
+                <artifactId>registry-remoting-http</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alipay.sofa</groupId>
+                <artifactId>registry-remoting-bolt</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alipay.sofa</groupId>
+                <artifactId>registry-server-meta</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alipay.sofa</groupId>
+                <artifactId>registry-server-session</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alipay.sofa</groupId>
+                <artifactId>registry-server-data</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alipay.sofa</groupId>
+                <artifactId>registry-server-integration</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alipay.sofa</groupId>
+                <artifactId>registry-server-shared</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alipay.sofa</groupId>
+                <artifactId>bolt</artifactId>
+                <version>${bolt.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>com.alipay.sofa.common</groupId>
+                        <artifactId>sofa-common-tools</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>com.alipay.sofa.common</groupId>
+                <artifactId>sofa-common-tools</artifactId>
+                <version>${sofa.common.tools.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${google.guava.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-lang</groupId>
+                <artifactId>commons-lang</artifactId>
+                <version>${commons.lang.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alipay.sofa</groupId>
+                <artifactId>hessian</artifactId>
+                <version>${sofa.hessian.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-all</artifactId>
+                <version>${netty.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.jersey.core</groupId>
+                <artifactId>jersey-server</artifactId>
+                <version>${jersey.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.jersey.core</groupId>
+                <artifactId>jersey-client</artifactId>
+                <version>${jersey.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.jersey.core</groupId>
+                <artifactId>jersey-common</artifactId>
+                <version>${jersey.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.jersey.containers</groupId>
+                <artifactId>jersey-container-netty-http</artifactId>
+                <version>${jersey.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.jersey.containers</groupId>
+                <artifactId>jersey-container-jdk-http</artifactId>
+                <version>${jersey.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.jersey.containers</groupId>
+                <artifactId>jersey-container-jetty-http</artifactId>
+                <version>${jersey.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.jersey.inject</groupId>
+                <artifactId>jersey-hk2</artifactId>
+                <version>${jersey.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.jersey.media</groupId>
+                <artifactId>jersey-media-json-jackson</artifactId>
+                <version>${jersey.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-server</artifactId>
+                <version>${jetty.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-http</artifactId>
+                <version>${jetty.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-util</artifactId>
+                <version>${jetty.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-io</artifactId>
+                <version>${jetty.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-continuation</artifactId>
+                <version>${jetty.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-core</artifactId>
+                <version>${log4j2.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-api</artifactId>
+                <version>${log4j2.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alipay.sofa.lookout</groupId>
+                <artifactId>lookout-api</artifactId>
+                <version>${lookout.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.protobuf</groupId>
+                <artifactId>protobuf-java</artifactId>
+                <version>${protobuf.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alipay.sofa</groupId>
+                <artifactId>jraft-core</artifactId>
+                <version>${jraft.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.logging.log4j</groupId>
+                        <artifactId>log4j-slf4j-impl</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>com.alipay.remoting</groupId>
+                        <artifactId>bolt</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>com.lmax</groupId>
+                        <artifactId>disruptor</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>${commons-io.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.lmax</groupId>
+                <artifactId>disruptor</artifactId>
+                <version>3.4.4</version>
+            </dependency>
+
+            <!-- metrics -->
+            <dependency>
+                <groupId>io.dropwizard.metrics</groupId>
+                <artifactId>metrics-core</artifactId>
+                <version>${metrics.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>commons-collections</groupId>
+                <artifactId>commons-collections</artifactId>
+                <version>3.2.2</version>
+            </dependency>
+            <dependency>
+                <groupId>io.prometheus</groupId>
+                <artifactId>simpleclient</artifactId>
+                <version>0.9.0</version>
+            </dependency>
+            <!-- Hotspot JVM metrics-->
+            <dependency>
+                <groupId>io.prometheus</groupId>
+                <artifactId>simpleclient_hotspot</artifactId>
+                <version>0.9.0</version>
+            </dependency>
+            <!-- Exposition HTTPServer-->
+            <dependency>
+                <groupId>io.prometheus</groupId>
+                <artifactId>simpleclient_httpserver</artifactId>
+                <version>0.9.0</version>
+            </dependency>
+            <dependency>
+                <groupId>io.prometheus</groupId>
+                <artifactId>simpleclient_dropwizard</artifactId>
+                <version>0.9.0</version>
+            </dependency>
+
+            <!-- connect db -->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-jdbc</artifactId>
+                <version>2.3.9.RELEASE</version>
+            </dependency>
+
+            <!-- db connection manager -->
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>druid</artifactId>
+                <version>1.2.5</version>
+            </dependency>
+
+            <!-- mybatis -->
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-validator</artifactId>
+                <version>5.3.6.Final</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mybatis</groupId>
+                <artifactId>mybatis</artifactId>
+                <version>3.5.9</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mybatis</groupId>
+                <artifactId>mybatis-spring</artifactId>
+                <version>2.0.6</version>
+            </dependency>
+
+            <!-- mysql -->
+            <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>5.1.47</version>
+            </dependency>
+
+            <!-- junit -->
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${junit.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-core</artifactId>
+                <version>${mockito.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.powermock</groupId>
+                <artifactId>powermock-module-junit4</artifactId>
+                <version>${powermock.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.powermock</groupId>
+                <artifactId>powermock-api-mockito</artifactId>
+                <version>${powermock.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.rocksdb</groupId>
+                <artifactId>rocksdbjni</artifactId>
+                <version>${rocksdbjni.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.rholder</groupId>
+                <artifactId>guava-retrying</artifactId>
+                <version>${guava-retrying.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.luben</groupId>
+                <artifactId>zstd-jni</artifactId>
+                <version>${zstd-jni.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
-
-    <dependencies>
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-core</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.openjdk.jmh</groupId>
-            <artifactId>jmh-core</artifactId>
-            <version>${jmh.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.openjdk.jmh</groupId>
-            <artifactId>jmh-generator-annprocess</artifactId>
-            <version>${jmh.version}</version>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
-
-    <properties>
-        <!-- Build args -->
-        <revision>5.11.0</revision>
-        <jmh.version>1.33</jmh.version>
-        <module.install.skip>true</module.install.skip>
-        <module.deploy.skip>true</module.deploy.skip>
-        <maven.javadoc.skip>true</maven.javadoc.skip>
-        <module.jacoco.skip>true</module.jacoco.skip>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
-        <project.build.sourceEncoding>utf-8</project.build.sourceEncoding>
-        <skipTests>false</skipTests>
-        <protoc.version>3.22.0</protoc.version>
-        <grpc.version>1.53.0</grpc.version>
-        <sofa.rpc.compiler.version>0.0.2</sofa.rpc.compiler.version>
-    </properties>
 
     <build>
         <pluginManagement>
             <plugins>
                 <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-jar-plugin</artifactId>
-                    <version>3.0.2</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.5.1</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-source-plugin</artifactId>
-                    <version>3.0.1</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-resources-plugin</artifactId>
-                    <version>2.5</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-install-plugin</artifactId>
-                    <version>2.5.2</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-deploy-plugin</artifactId>
-                    <version>2.8.2</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-surefire-plugin</artifactId>
-                    <version>2.8.1</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-shade-plugin</artifactId>
-                    <version>2.4.3</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-dependency-plugin</artifactId>
-                    <version>3.0.2</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-javadoc-plugin</artifactId>
-                    <version>2.10.4</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.jacoco</groupId>
-                    <artifactId>jacoco-maven-plugin</artifactId>
-                    <version>0.7.9</version>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                    <version>${spring.boot.version}</version>
                 </plugin>
             </plugins>
         </pluginManagement>
-        <extensions>
-            <extension>
-                <groupId>kr.motd.maven</groupId>
-                <artifactId>os-maven-plugin</artifactId>
-                <version>1.6.1</version>
-            </extension>
-        </extensions>
         <plugins>
             <plugin>
-                <groupId>org.xolstice.maven.plugins</groupId>
-                <artifactId>protobuf-maven-plugin</artifactId>
-                <version>0.5.1</version>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-pmd-plugin</artifactId>
+                <version>3.11.0</version>
                 <configuration>
-                    <protocArtifact>com.google.protobuf:protoc:${protoc.version}:exe:${os.detected.classifier}</protocArtifact>
-                    <pluginId>grpc-java</pluginId>
-                    <pluginArtifact>io.grpc:protoc-gen-grpc-java:${grpc.version}:exe:${os.detected.classifier}</pluginArtifact>
-                    <outputDirectory>build/generated/source/proto/main/java</outputDirectory>
-                    <clearOutputDirectory>false</clearOutputDirectory>
-                    <protocPlugins>
-                        <protocPlugin>
-                            <id>sofa-triple</id>
-                            <groupId>com.alipay.sofa</groupId>
-                            <artifactId>sofa-rpc-compiler</artifactId>
-                            <version>${sofa.rpc.compiler.version}</version>
-                            <mainClass>com.alipay.sofa.gen.triple.SofaTripleGenerator</mainClass>
-                        </protocPlugin>
-                    </protocPlugins>
+                    <sourceEncoding>${project.build.sourceEncoding}</sourceEncoding>
+                    <targetJdk>${maven.compiler.target}</targetJdk>
+                    <printFailingErrors>true</printFailingErrors>
+                    <rulesets>
+                        <ruleset>${main.user.dir}/ruleset.xml</ruleset>
+                    </rulesets>
+                    <excludes>
+                        <exclude>**/client/pb/*.*</exclude>
+                    </excludes>
+                    <failurePriority>2</failurePriority>
                 </configuration>
                 <executions>
                     <execution>
+                        <phase>verify</phase>
                         <goals>
-                            <goal>compile</goal>
-                            <goal>compile-custom</goal>
-                            <goal>test-compile</goal>
-                            <goal>test-compile-custom</goal>
+                            <goal>check</goal>
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <configuration>
-                    <archive>
-                        <addMavenDescriptor>false</addMavenDescriptor>
-                    </archive>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <configuration>
-                    <encoding>${project.build.sourceEncoding}</encoding>
-                    <detectOfflineLinks>true</detectOfflineLinks>
-                    <breakiterator>true</breakiterator>
-                    <author>false</author>
-                    <keywords>true</keywords>
-                    <skip>${maven.javadoc.skip}</skip>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>attach-javadocs</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>${maven.compiler.source}</source>
-                    <target>${maven.compiler.target}</target>
-                    <encoding>${project.build.sourceEncoding}</encoding>
-                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.alibaba.p3c</groupId>
+                        <artifactId>p3c-pmd</artifactId>
+                        <version>2.0.1</version>
+                    </dependency>
+                </dependencies>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
+                <version>3.0.1</version>
                 <executions>
                     <execution>
                         <id>attach-sources</id>
@@ -242,73 +516,81 @@
                     </execution>
                 </executions>
             </plugin>
-
             <plugin>
-                <groupId>com.mycila</groupId>
-                <artifactId>license-maven-plugin</artifactId>
-                <version>3.0</version>
+                <groupId>pl.project13.maven</groupId>
+                <artifactId>git-commit-id-plugin</artifactId>
+                <version>4.0.0</version>
                 <executions>
                     <execution>
-                        <phase>generate-sources</phase>
+                        <id>get-the-git-infos</id>
                         <goals>
-                            <goal>remove</goal>
-                            <goal>format</goal>
+                            <goal>revision</goal>
                         </goals>
+                        <phase>initialize</phase>
                     </execution>
                 </executions>
                 <configuration>
-                    <quiet>true</quiet>
-                    <header>${user.dir}/tools/codestyle/HEADER</header>
-                    <includes>
-                        <include>**/src/main/java/**</include>
-                        <include>**/src/test/java/**</include>
-                    </includes>
-                    <strictCheck>true</strictCheck>
-                    <mapping>
-                        <java>SLASHSTAR_STYLE</java>
-                    </mapping>
+                    <generateGitPropertiesFile>true</generateGitPropertiesFile>
+                    <generateGitPropertiesFilename>${project.build.outputDirectory}/sofaregistry.git.properties</generateGitPropertiesFilename>
+                    <includeOnlyProperties>
+                        <includeOnlyProperty>^git.build.(time|version)$</includeOnlyProperty>
+                        <includeOnlyProperty>^git.commit.id.(abbrev|full)$</includeOnlyProperty>
+                    </includeOnlyProperties>
+                    <commitIdGenerationMode>full</commitIdGenerationMode>
                 </configuration>
             </plugin>
-
             <plugin>
-                <groupId>com.googlecode.maven-java-formatter-plugin</groupId>
-                <artifactId>maven-java-formatter-plugin</artifactId>
-                <version>0.4</version>
+              <groupId>com.diffplug.spotless</groupId>
+              <artifactId>spotless-maven-plugin</artifactId>
+              <version>1.20.0</version>
                 <executions>
-                    <execution>
-                        <goals>
-                            <goal>format</goal>
-                        </goals>
-                    </execution>
+                  <execution>
+                    <goals>
+                      <goal>apply</goal>
+                    </goals>
+                    <phase>compile</phase>
+                  </execution>
                 </executions>
-                <configuration>
-                    <configFile>${user.dir}/tools/codestyle/formatter.xml</configFile>
-                    <encoding>UTF-8</encoding>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-install-plugin</artifactId>
-                <configuration>
-                    <skip>${module.install.skip}</skip>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-deploy-plugin</artifactId>
-                <configuration>
-                    <skip>${module.deploy.skip}</skip>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
+              <configuration>
+               <formats>
+                    <format>
+                      <!-- define the files to apply to -->
+                      <includes>
+                        <include>.xml</include>
+                        <include>.gitignore</include>
+                        <include>.properties</include>
+                      </includes>
+                      <trimTrailingWhitespace/>
+                      <endWithNewline/>
+                    </format>
+              </formats>
+                <java>
+                  <!-- include all java files in "java" folders under "src" -->
+                  <includes>
+                    <include>src/**/java/**/*.java</include>
+                  </includes>
+                  <removeUnusedImports />
+                  <googleJavaFormat>
+                    <version>1.7</version>
+                    <style>GOOGLE</style>
+                  </googleJavaFormat>
+                  <licenseHeader>
+                     <file>${user.dir}/tools/codestyle/HEADER</file>
+                  </licenseHeader>
+                </java>
+              </configuration>
             </plugin>
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.7.9</version>
                 <configuration>
-                    <skip>${module.jacoco.skip}</skip>
+                    <excludes>
+                        <exclude>**/bootstrap/**</exclude>
+                        <exclude>**/executor/**</exclude>
+                        <exclude>**/remoting/**</exclude>
+                        <exclude>**/resource/**</exclude>
+                    </excludes>
                 </configuration>
                 <executions>
                     <execution>
@@ -326,72 +608,183 @@
                     </execution>
                 </executions>
             </plugin>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-pmd-plugin</artifactId>
-                <version>3.13.0</version>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.22.2</version>
                 <configuration>
-                    <printFailingErrors>true</printFailingErrors>
-                    <linkXRef>false</linkXRef>
-                    <includeTests>false</includeTests>
-                    <rulesets>
-                        <ruleset>${user.dir}/tools/pmd-ruleset.xml</ruleset>
-                    </rulesets>
+                    <!-- 根据JDK版本配置，jdk8: -Xmx1024m -XX:MetaspaceSize=256m -XX:MaxMetaspaceSize=512m -->
+                    <argLine>@{argLine} -Xmx4096m -XX:PermSize=256m -XX:MaxPermSize=512m</argLine>
+                    <!--suppress UnresolvedMavenProperty, MavenModelInspection -->
+                    <skipTests>${isSkipUnitTest}</skipTests>
+                    <includes>
+                        <!-- 这里需要根据自己的需要指定要跑的单元测试 -->
+                        <include>**/*Test.java</include>
+                    </includes>
                     <excludes>
-                        <exclude>**/triple/*.java</exclude>
+                        <!-- 这里需要根据自己的需要指定要排除单元测试 -->
+<!--                        <exclude>com/alipay/**/*.java</exclude>-->
                     </excludes>
-                    <excludeRoots>
-                        <excludeRoot>${user.dir}/test</excludeRoot>
-                        <excludeRoot>${user.dir}/example</excludeRoot>
-                    </excludeRoots>
+                    <!-- 如无特殊需求，将forkMode设置为once -->
+                    <forkMode>once</forkMode>
+                    <testFailureIgnore>true</testFailureIgnore>
                 </configuration>
-                <executions>
-                    <execution>
-                        <id>check</id>
-                        <phase>validate</phase>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>
 
     <profiles>
         <profile>
-            <id>jdk8</id>
-            <activation>
-                <jdk>[1.8,)</jdk>
-            </activation>
-            <properties>
-                <maven.javadoc.failOnError>false</maven.javadoc.failOnError>
-                <maven.javadoc.quiet>true</maven.javadoc.quiet>
-            </properties>
+            <id>alipay-dev</id>
+            <repositories>
+                <repository>
+                    <id>maven-snapshot</id>
+                    <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+                    <releases>
+                        <enabled>false</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </repository>
+                <repository>
+                    <id>central_prod</id>
+                    <url>http://mvn.test.alipay.net/artifactory/content/groups/public/</url>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </repository>
+                <repository>
+                    <id>central</id>
+                    <url>http://mvn.dev.alipay.net/artifactory/content/groups/public/</url>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </repository>
+            </repositories>
+            <pluginRepositories>
+                <pluginRepository>
+                    <id>maven-snapshot</id>
+                    <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+                    <releases>
+                        <enabled>false</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </pluginRepository>
+                <pluginRepository>
+                    <id>central_prod</id>
+                    <url>http://mvn.test.alipay.net/artifactory/content/groups/public/</url>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </pluginRepository>
+                <pluginRepository>
+                    <id>central</id>
+                    <url>http://mvn.dev.alipay.net/artifactory/content/groups/public/</url>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </pluginRepository>
+            </pluginRepositories>
         </profile>
         <profile>
-            <id>ci-install</id>
-            <properties>
-                <skipTests>true</skipTests>
-                <maven.javadoc.skip>true</maven.javadoc.skip>
-                <module.jacoco.skip>true</module.jacoco.skip>
-            </properties>
+            <id>alipay-test</id>
+            <repositories>
+                <repository>
+                    <id>maven-snapshot</id>
+                    <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+                    <releases>
+                        <enabled>false</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </repository>
+                <repository>
+                    <id>central_prod</id>
+                    <url>http://mvn.test.alipay.net/artifactory/content/groups/public/</url>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </repository>
+            </repositories>
+            <pluginRepositories>
+                <pluginRepository>
+                    <id>maven-snapshot</id>
+                    <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+                    <releases>
+                        <enabled>false</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </pluginRepository>
+                <pluginRepository>
+                    <id>central_prod</id>
+                    <url>http://mvn.test.alipay.net/artifactory/content/groups/public/</url>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </pluginRepository>
+            </pluginRepositories>
         </profile>
-        <profile>
-            <id>ci-test</id>
-            <properties>
-                <dependency.test.skip>false</dependency.test.skip>
-                <maven.javadoc.skip>true</maven.javadoc.skip>
-                <module.jacoco.skip>false</module.jacoco.skip>
-            </properties>
-        </profile>
-        <profile>
-            <id>release</id>
-            <properties>
-                <maven.javadoc.quite>true</maven.javadoc.quite>
-                <maven.javadoc.skip>false</maven.javadoc.skip>
-            </properties>
-        </profile>
+
+            <profile>
+                <id>release</id>
+                <build>
+                    <plugins>
+                        <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-javadoc-plugin</artifactId>
+                            <version>2.9.1</version>
+                            <executions>
+                                <execution>
+                                    <id>attach-javadocs</id>
+                                    <goals>
+                                        <goal>jar</goal>
+                                    </goals>
+                                </execution>
+                            </executions>
+                        </plugin>
+                        <plugin>
+                            <groupId>org.sonatype.plugins</groupId>
+                            <artifactId>nexus-staging-maven-plugin</artifactId>
+                            <version>1.6.7</version>
+                            <extensions>true</extensions>
+                            <configuration>
+                                <serverId>ossrh</serverId>
+                                <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                                <autoReleaseAfterClose>false</autoReleaseAfterClose>
+                            </configuration>
+                        </plugin>
+                        <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-gpg-plugin</artifactId>
+                            <version>1.6</version>
+                            <executions>
+                                <execution>
+                                    <id>sign-artifacts</id>
+                                    <phase>verify</phase>
+                                    <goals>
+                                        <goal>sign</goal>
+                                    </goals>
+                                </execution>
+                            </executions>
+                        </plugin>
+                    </plugins>
+                </build>
+                <distributionManagement>
+                    <snapshotRepository>
+                        <id>ossrh</id>
+                        <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+                    </snapshotRepository>
+                    <repository>
+                        <id>ossrh</id>
+                        <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+                    </repository>
+                </distributionManagement>
+            </profile>
     </profiles>
 </project>

@@ -1,2 +1,0 @@
-local=com.alipay.sofa.rpc.registry.local.LocalRegistry
-domain=com.alipay.sofa.rpc.registry.local.DomainRegistry
