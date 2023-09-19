@@ -20,11 +20,13 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- *
- *
  * @author <a href="mailto:zhanggeng.zg@antfin.com">GengZhang</a>
  */
 public interface TestInterface {
+
+    static void doNothing() {
+
+    }
 
     public String sayHello(String s);
 
@@ -41,8 +43,4 @@ public interface TestInterface {
     public String throwbiz2() throws Throwable;
 
     public String throwRPC();
-
-    static void doNothing() {
-
-    }
 }

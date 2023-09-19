@@ -17,9 +17,6 @@
 package com.alipay.sofa.runtime.ext.component;
 
 import com.alipay.sofa.runtime.api.component.ComponentName;
-import com.alipay.sofa.service.api.component.Extensible;
-import com.alipay.sofa.service.api.component.Extension;
-import com.alipay.sofa.service.api.component.ExtensionPoint;
 import com.alipay.sofa.runtime.model.ComponentStatus;
 import com.alipay.sofa.runtime.model.ComponentType;
 import com.alipay.sofa.runtime.spi.component.ComponentInfo;
@@ -27,6 +24,9 @@ import com.alipay.sofa.runtime.spi.component.ComponentManager;
 import com.alipay.sofa.runtime.spi.component.Implementation;
 import com.alipay.sofa.runtime.spi.component.SofaRuntimeContext;
 import com.alipay.sofa.runtime.spi.health.HealthResult;
+import com.alipay.sofa.service.api.component.Extensible;
+import com.alipay.sofa.service.api.component.Extension;
+import com.alipay.sofa.service.api.component.ExtensionPoint;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -47,25 +47,25 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class ExtensionComponentTests {
 
-    private final ComponentName     extensionComponentName = new ComponentName(new ComponentType(
-                                                               "ext"), "ext");
+    private final ComponentName extensionComponentName = new ComponentName(new ComponentType(
+            "ext"), "ext");
 
     @Mock
-    private SofaRuntimeContext      sofaRuntimeContext;
+    private SofaRuntimeContext sofaRuntimeContext;
 
     @Mock
-    private ComponentManager        componentManager;
+    private ComponentManager componentManager;
 
     @Mock
-    private ExtensionInternal       extension;
+    private ExtensionInternal extension;
 
     @Mock
     private ExtensionPointComponent componentInfo;
 
     @Mock
-    private Implementation          implementation;
+    private Implementation implementation;
 
-    private ExtensionComponent      extensionComponent;
+    private ExtensionComponent extensionComponent;
 
     @BeforeEach
     public void setUp() {
@@ -76,7 +76,7 @@ public class ExtensionComponentTests {
     @Test
     void getTypeShouldReturnExtensionComponentType() {
         assertThat(extensionComponent.getType()).isEqualTo(
-            ExtensionComponent.EXTENSION_COMPONENT_TYPE);
+                ExtensionComponent.EXTENSION_COMPONENT_TYPE);
     }
 
     @Test
@@ -247,7 +247,7 @@ public class ExtensionComponentTests {
         HealthResult healthResult = extensionComponent.isHealthy();
         assertThat(healthResult.isHealthy()).isFalse();
         assertThat(healthResult.getHealthReport()).contains(
-            "Extension loadContributions error: fail");
+                "Extension loadContributions error: fail");
     }
 
     @Test
@@ -277,7 +277,7 @@ public class ExtensionComponentTests {
         HealthResult healthResult = extensionComponent.isHealthy();
         assertThat(healthResult.isHealthy()).isFalse();
         assertThat(healthResult.getHealthReport()).contains(
-            "Can not find corresponding ExtensionPoint");
+                "Can not find corresponding ExtensionPoint");
     }
 
     @Test
@@ -305,7 +305,7 @@ public class ExtensionComponentTests {
 
         public boolean throwException = false;
 
-        public boolean register       = false;
+        public boolean register = false;
 
         @Override
         public void registerExtension(Extension extension) throws Exception {

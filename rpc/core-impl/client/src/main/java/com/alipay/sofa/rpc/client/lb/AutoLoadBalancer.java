@@ -37,7 +37,7 @@ public class AutoLoadBalancer extends AbstractLoadBalancer {
     /***
      * see com.alipay.sofa.rpc.config.ConsumerConfig#loadBalancer
      */
-    protected static final String LOAD_BALANCER_KEY     = "loadBalancer";
+    protected static final String LOAD_BALANCER_KEY = "loadBalancer";
 
     protected static final String DEFAULT_LOAD_BALANCER = "random";
 
@@ -58,13 +58,13 @@ public class AutoLoadBalancer extends AbstractLoadBalancer {
         if (StringUtils.isNotBlank(dynamicAlias)) {
             String dynamicLoadBalancer = null;
             DynamicConfigManager dynamicConfigManager = DynamicConfigManagerFactory.getDynamicManager(
-                consumerConfig.getAppName(), dynamicAlias);
+                    consumerConfig.getAppName(), dynamicAlias);
             if (dynamicConfigManager != null) {
                 dynamicLoadBalancer = dynamicConfigManager.getConsumerServiceProperty(
-                    request.getTargetServiceUniqueName(), LOAD_BALANCER_KEY);
+                        request.getTargetServiceUniqueName(), LOAD_BALANCER_KEY);
                 if (DynamicHelper.isNotDefault(dynamicLoadBalancer) && StringUtils.isNotBlank(dynamicLoadBalancer)) {
                     LoadBalancer loadBalancer = LoadBalancerFactory.getLoadBalancer(consumerBootstrap,
-                        dynamicLoadBalancer);
+                            dynamicLoadBalancer);
                     return loadBalancer.select(request, providerInfos);
                 }
             }

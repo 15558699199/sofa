@@ -21,9 +21,10 @@ import com.alipay.sofa.registry.remoting.exchange.Exchange;
 import com.alipay.sofa.registry.server.data.bootstrap.DataServerConfig;
 import com.alipay.sofa.registry.server.shared.remoting.ClientSideExchanger;
 import com.google.common.annotations.VisibleForTesting;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.util.Collection;
 import java.util.Collections;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * @author xuanbei
@@ -31,35 +32,36 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class DataNodeExchanger extends ClientSideExchanger {
 
-  @Autowired private DataServerConfig dataServerConfig;
+    @Autowired
+    private DataServerConfig dataServerConfig;
 
-  public DataNodeExchanger() {
-    super(Exchange.DATA_SERVER_TYPE);
-  }
+    public DataNodeExchanger() {
+        super(Exchange.DATA_SERVER_TYPE);
+    }
 
-  @Override
-  public int getRpcTimeoutMillis() {
-    return dataServerConfig.getRpcTimeoutMillis();
-  }
+    @Override
+    public int getRpcTimeoutMillis() {
+        return dataServerConfig.getRpcTimeoutMillis();
+    }
 
-  @Override
-  public int getServerPort() {
-    // the Exchanger only for sync data
-    return dataServerConfig.getSyncDataPort();
-  }
+    @Override
+    public int getServerPort() {
+        // the Exchanger only for sync data
+        return dataServerConfig.getSyncDataPort();
+    }
 
-  @Override
-  public int getConnNum() {
-    return dataServerConfig.getSyncDataConnNum();
-  }
+    @Override
+    public int getConnNum() {
+        return dataServerConfig.getSyncDataConnNum();
+    }
 
-  @Override
-  protected Collection<ChannelHandler> getClientHandlers() {
-    return Collections.emptyList();
-  }
+    @Override
+    protected Collection<ChannelHandler> getClientHandlers() {
+        return Collections.emptyList();
+    }
 
-  @VisibleForTesting
-  void setDataServerConfig(DataServerConfig dataServerConfig) {
-    this.dataServerConfig = dataServerConfig;
-  }
+    @VisibleForTesting
+    void setDataServerConfig(DataServerConfig dataServerConfig) {
+        this.dataServerConfig = dataServerConfig;
+    }
 }

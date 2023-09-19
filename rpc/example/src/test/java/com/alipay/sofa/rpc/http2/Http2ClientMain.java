@@ -27,7 +27,6 @@ import com.alipay.sofa.rpc.protobuf.Group;
 import com.alipay.sofa.rpc.protobuf.ProtoService;
 
 /**
- *
  * @author <a href="mailto:zhanggeng.zg@antfin.com">GengZhang</a>
  */
 public class Http2ClientMain {
@@ -40,13 +39,13 @@ public class Http2ClientMain {
         ApplicationConfig application = new ApplicationConfig().setAppName("test-client");
 
         ConsumerConfig<ProtoService> consumerConfig = new ConsumerConfig<ProtoService>()
-            .setApplication(application)
-            .setInterfaceId(ProtoService.class.getName())
-            .setProtocol("h2c")
-            .setDirectUrl("h2c://127.0.0.1:12300")
-            .setSerialization("protobuf")
-            .setRegister(false)
-            .setTimeout(1000);
+                .setApplication(application)
+                .setInterfaceId(ProtoService.class.getName())
+                .setProtocol("h2c")
+                .setDirectUrl("h2c://127.0.0.1:12300")
+                .setSerialization("protobuf")
+                .setRegister(false)
+                .setTimeout(1000);
         ProtoService helloService = consumerConfig.refer();
 
         LOGGER.warn("started at pid {}", RpcRuntimeContext.PID);

@@ -24,55 +24,103 @@ import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Collections2;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
-import io.swagger.annotations.ResponseHeader;
+import io.swagger.annotations.*;
 import io.swagger.converter.ModelConverters;
-import io.swagger.models.HttpMethod;
-import io.swagger.models.Model;
-import io.swagger.models.Operation;
-import io.swagger.models.Response;
-import io.swagger.models.Scheme;
-import io.swagger.models.Swagger;
-import io.swagger.models.parameters.AbstractSerializableParameter;
-import io.swagger.models.parameters.BodyParameter;
-import io.swagger.models.parameters.FormParameter;
-import io.swagger.models.parameters.Parameter;
-import io.swagger.models.parameters.QueryParameter;
-import io.swagger.models.properties.ArrayProperty;
-import io.swagger.models.properties.MapProperty;
-import io.swagger.models.properties.Property;
-import io.swagger.models.properties.PropertyBuilder;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.util.BaseReaderUtils;
-import io.swagger.util.ParameterProcessor;
-import io.swagger.util.PathUtils;
-import io.swagger.util.PrimitiveType;
-import io.swagger.util.ReflectionUtils;
+import io.swagger.models.*;
+import io.swagger.models.parameters.*;
+import io.swagger.models.properties.*;
+import io.swagger.util.*;
 import org.apache.commons.lang3.StringUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.EnumMap;
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class RpcReaderExtension implements ReaderExtension {
 
+    private static final String SUCCESSFUL_OPERATION = "";
     private final LocalVariableTableParameterNameDiscoverer localVariableTableParameterNameDiscoverer = new LocalVariableTableParameterNameDiscoverer();
+
+    private static List<String> parseStringValues(String str) {
+        return parseAnnotationValues(str, new Function<String, String>() {
+            @Override
+            public String apply(String value) {
+                return value;
+            }
+        });
+    }
+
+    private static <T> List<T> parseAnnotationValues(String str, Function<String, T> processor) {
+        final List<T> result = new ArrayList<T>();
+        for (String item : Splitter.on(",").trimResults().omitEmptyStrings().split(str)) {
+            result.add(processor.apply(item));
+        }
+        return result;
+    }
+
+    private static List<Scheme> parseSchemes(String schemes) {
+        final List<Scheme> result = new ArrayList<Scheme>();
+        for (String item : StringUtils.trimToEmpty(schemes).split(",")) {
+            final Scheme scheme = Scheme.forValue(StringUtils.trimToNull(item));
+            if (scheme != null && !result.contains(scheme)) {
+                result.add(scheme);
+            }
+        }
+        return result;
+    }
+
+    private static boolean isValidResponse(Type type) {
+        final JavaType javaType = TypeFactory.defaultInstance().constructType(type);
+        return !ReflectionUtils.isVoid(javaType);
+    }
+
+    private static Map<String, Property> parseResponseHeaders(ReaderContext context,
+                                                              ResponseHeader[] headers) {
+        Map<String, Property> responseHeaders = null;
+        for (ResponseHeader header : headers) {
+            final String name = header.name();
+            if (StringUtils.isNotEmpty(name)) {
+                if (responseHeaders == null) {
+                    responseHeaders = new HashMap<String, Property>();
+                }
+                final Class<?> cls = header.response();
+                if (!ReflectionUtils.isVoid(cls)) {
+                    final Property property = ModelConverters.getInstance().readAsProperty(cls);
+                    if (property != null) {
+                        final Property responseProperty = ContainerWrapper.wrapContainer(
+                                header.responseContainer(), property, ContainerWrapper.ARRAY,
+                                ContainerWrapper.LIST, ContainerWrapper.SET);
+                        responseProperty.setDescription(header.description());
+                        responseHeaders.put(name, responseProperty);
+                        appendModels(context.getSwagger(), cls);
+                    }
+                }
+            }
+        }
+        return responseHeaders;
+    }
+
+    private static void appendModels(Swagger swagger, Type type) {
+        final Map<String, Model> models = ModelConverters.getInstance().readAll(type);
+        for (Map.Entry<String, Model> entry : models.entrySet()) {
+            swagger.model(entry.getKey(), entry.getValue());
+        }
+    }
+
+    private static Type getResponseType(Method method) {
+        final ApiOperation apiOperation = ReflectionUtils.getAnnotation(method, ApiOperation.class);
+        if (apiOperation != null && !ReflectionUtils.isVoid(apiOperation.response())) {
+            return apiOperation.response();
+        } else {
+            return method.getGenericReturnType();
+        }
+    }
+
+    private static String getResponseContainer(ApiOperation apiOperation) {
+        return apiOperation == null ? null
+                : StringUtils.defaultIfBlank(apiOperation.responseContainer(), null);
+    }
 
     @Override
     public int getPriority() {
@@ -109,23 +157,6 @@ public class RpcReaderExtension implements ReaderExtension {
 
     }
 
-    private static List<String> parseStringValues(String str) {
-        return parseAnnotationValues(str, new Function<String, String>() {
-            @Override
-            public String apply(String value) {
-                return value;
-            }
-        });
-    }
-
-    private static <T> List<T> parseAnnotationValues(String str, Function<String, T> processor) {
-        final List<T> result = new ArrayList<T>();
-        for (String item : Splitter.on(",").trimResults().omitEmptyStrings().split(str)) {
-            result.add(processor.apply(item));
-        }
-        return result;
-    }
-
     @Override
     public void applyProduces(ReaderContext context, Operation operation, Method method) {
         final List<String> produces = new ArrayList<String>();
@@ -153,16 +184,16 @@ public class RpcReaderExtension implements ReaderExtension {
     public String getHttpMethod(ReaderContext context, Method method) {
         final ApiOperation apiOperation = ReflectionUtils.getAnnotation(method, ApiOperation.class);
         return apiOperation == null || StringUtils.isEmpty(apiOperation.httpMethod())
-            ? HttpMethod.POST.name() : apiOperation.httpMethod();
+                ? HttpMethod.POST.name() : apiOperation.httpMethod();
     }
 
     @Override
     public String getPath(ReaderContext context, Method method) {
         final ApiOperation apiOperation = ReflectionUtils.getAnnotation(method, ApiOperation.class);
         String operationId = null == apiOperation ? ""
-            : StringUtils.isBlank(apiOperation.nickname()) ? null : apiOperation.nickname();
+                : StringUtils.isBlank(apiOperation.nickname()) ? null : apiOperation.nickname();
         return PathUtils.collectPath(context.getParentPath(), context.getInterfaceCls().getName(),
-            method.getName(), operationId);
+                method.getName(), operationId);
 
     }
 
@@ -171,6 +202,15 @@ public class RpcReaderExtension implements ReaderExtension {
         operation.operationId(method.getName());
 
     }
+
+    // @Override
+    // public void applyTags(ReaderContext context) {
+    // final Api apiAnnotation = context.getCls().getAnnotation(Api.class);
+    // if (apiAnnotation != null) {
+    // Tag tag = new
+    // Tag().name(context.getInterfaceCls().getSimpleName()).description(apiAnnotation.value());
+    // }
+    // }
 
     @Override
     public void applySummary(Operation operation, Method method) {
@@ -188,7 +228,7 @@ public class RpcReaderExtension implements ReaderExtension {
             operation.description(apiOperation.notes());
         }
         operation.description(operation.getDescription() == null ? outputMethod(method)
-            : (outputMethod(method) + operation.getDescription()));
+                : (outputMethod(method) + operation.getDescription()));
     }
 
     private String outputMethod(Method method) {
@@ -243,17 +283,6 @@ public class RpcReaderExtension implements ReaderExtension {
 
     }
 
-    private static List<Scheme> parseSchemes(String schemes) {
-        final List<Scheme> result = new ArrayList<Scheme>();
-        for (String item : StringUtils.trimToEmpty(schemes).split(",")) {
-            final Scheme scheme = Scheme.forValue(StringUtils.trimToNull(item));
-            if (scheme != null && !result.contains(scheme)) {
-                result.add(scheme);
-            }
-        }
-        return result;
-    }
-
     @Override
     public void setDeprecated(Operation operation, Method method) {
         operation.deprecated(ReflectionUtils.getAnnotation(method, Deprecated.class) != null);
@@ -265,15 +294,6 @@ public class RpcReaderExtension implements ReaderExtension {
                                           Method method) {
     }
 
-    // @Override
-    // public void applyTags(ReaderContext context) {
-    // final Api apiAnnotation = context.getCls().getAnnotation(Api.class);
-    // if (apiAnnotation != null) {
-    // Tag tag = new
-    // Tag().name(context.getInterfaceCls().getSimpleName()).description(apiAnnotation.value());
-    // }
-    // }
-
     @Override
     public void applyTags(ReaderContext context, Operation operation, Method method) {
         final List<String> tags = new ArrayList<String>();
@@ -281,12 +301,12 @@ public class RpcReaderExtension implements ReaderExtension {
         final Api apiAnnotation = context.getCls().getAnnotation(Api.class);
         if (apiAnnotation != null) {
             Collection<String> filter = Collections2.filter(Arrays.asList(apiAnnotation.tags()),
-                new Predicate<String>() {
-                    @Override
-                    public boolean apply(String input) {
-                        return StringUtils.isNotBlank(input);
-                    }
-                });
+                    new Predicate<String>() {
+                        @Override
+                        public boolean apply(String input) {
+                            return StringUtils.isNotBlank(input);
+                        }
+                    });
             if (filter.isEmpty()) {
                 tags.add(context.getInterfaceCls().getSimpleName());
             } else {
@@ -300,72 +320,18 @@ public class RpcReaderExtension implements ReaderExtension {
         final ApiOperation apiOperation = ReflectionUtils.getAnnotation(method, ApiOperation.class);
         if (apiOperation != null) {
             tags.addAll(Collections2.filter(Arrays.asList(apiOperation.tags()),
-                new Predicate<String>() {
-                    @Override
-                    public boolean apply(String input) {
-                        return StringUtils.isNotBlank(input);
-                    }
-                }));
+                    new Predicate<String>() {
+                        @Override
+                        public boolean apply(String input) {
+                            return StringUtils.isNotBlank(input);
+                        }
+                    }));
         }
 
         for (String tag : tags) {
             operation.tag(tag);
         }
 
-    }
-
-    private static final String SUCCESSFUL_OPERATION = "";
-
-    private static boolean isValidResponse(Type type) {
-        final JavaType javaType = TypeFactory.defaultInstance().constructType(type);
-        return !ReflectionUtils.isVoid(javaType);
-    }
-
-    private static Map<String, Property> parseResponseHeaders(ReaderContext context,
-                                                              ResponseHeader[] headers) {
-        Map<String, Property> responseHeaders = null;
-        for (ResponseHeader header : headers) {
-            final String name = header.name();
-            if (StringUtils.isNotEmpty(name)) {
-                if (responseHeaders == null) {
-                    responseHeaders = new HashMap<String, Property>();
-                }
-                final Class<?> cls = header.response();
-                if (!ReflectionUtils.isVoid(cls)) {
-                    final Property property = ModelConverters.getInstance().readAsProperty(cls);
-                    if (property != null) {
-                        final Property responseProperty = ContainerWrapper.wrapContainer(
-                            header.responseContainer(), property, ContainerWrapper.ARRAY,
-                            ContainerWrapper.LIST, ContainerWrapper.SET);
-                        responseProperty.setDescription(header.description());
-                        responseHeaders.put(name, responseProperty);
-                        appendModels(context.getSwagger(), cls);
-                    }
-                }
-            }
-        }
-        return responseHeaders;
-    }
-
-    private static void appendModels(Swagger swagger, Type type) {
-        final Map<String, Model> models = ModelConverters.getInstance().readAll(type);
-        for (Map.Entry<String, Model> entry : models.entrySet()) {
-            swagger.model(entry.getKey(), entry.getValue());
-        }
-    }
-
-    private static Type getResponseType(Method method) {
-        final ApiOperation apiOperation = ReflectionUtils.getAnnotation(method, ApiOperation.class);
-        if (apiOperation != null && !ReflectionUtils.isVoid(apiOperation.response())) {
-            return apiOperation.response();
-        } else {
-            return method.getGenericReturnType();
-        }
-    }
-
-    private static String getResponseContainer(ApiOperation apiOperation) {
-        return apiOperation == null ? null
-            : StringUtils.defaultIfBlank(apiOperation.responseContainer(), null);
     }
 
     @Override
@@ -384,27 +350,27 @@ public class RpcReaderExtension implements ReaderExtension {
             final Property property = ModelConverters.getInstance().readAsProperty(responseType);
             if (property != null) {
                 final Property responseProperty = ContainerWrapper
-                    .wrapContainer(getResponseContainer(apiOperation), property);
+                        .wrapContainer(getResponseContainer(apiOperation), property);
                 final int responseCode = apiOperation == null ? 200 : apiOperation.code();
                 final Map<String, Property> defaultResponseHeaders = apiOperation == null
-                    ? Collections.<String, Property> emptyMap()
-                    : parseResponseHeaders(context, apiOperation.responseHeaders());
+                        ? Collections.<String, Property>emptyMap()
+                        : parseResponseHeaders(context, apiOperation.responseHeaders());
                 final Response response = new Response().description(SUCCESSFUL_OPERATION)
-                    .schema(responseProperty).headers(defaultResponseHeaders);
+                        .schema(responseProperty).headers(defaultResponseHeaders);
                 result.put(responseCode, response);
                 appendModels(context.getSwagger(), responseType);
             }
         }
 
         final ApiResponses responseAnnotation = ReflectionUtils.getAnnotation(method,
-            ApiResponses.class);
+                ApiResponses.class);
         if (responseAnnotation != null) {
             for (ApiResponse apiResponse : responseAnnotation.value()) {
                 final Map<String, Property> responseHeaders = parseResponseHeaders(context,
-                    apiResponse.responseHeaders());
+                        apiResponse.responseHeaders());
 
                 final Response response = new Response().description(apiResponse.message())
-                    .headers(responseHeaders);
+                        .headers(responseHeaders);
 
                 if (StringUtils.isNotEmpty(apiResponse.reference())) {
                     response.schema(new RefProperty(apiResponse.reference()));
@@ -413,7 +379,7 @@ public class RpcReaderExtension implements ReaderExtension {
                     final Property property = ModelConverters.getInstance().readAsProperty(type);
                     if (property != null) {
                         response.schema(ContainerWrapper
-                            .wrapContainer(apiResponse.responseContainer(), property));
+                                .wrapContainer(apiResponse.responseContainer(), property));
                         appendModels(context.getSwagger(), type);
                     }
                 }
@@ -457,7 +423,7 @@ public class RpcReaderExtension implements ReaderExtension {
             }
         }
         final Parameter parameter = readParam(context.getSwagger(), type, cls,
-            null == apiParam ? null : (ApiParam) apiParam);
+                null == apiParam ? null : (ApiParam) apiParam);
         if (parameter != null) {
             parameter.setName(null == name ? parameter.getName() : name);
             operation.parameter(parameter);
@@ -468,8 +434,8 @@ public class RpcReaderExtension implements ReaderExtension {
         PrimitiveType fromType = PrimitiveType.fromType(type);
         final Parameter para = null == fromType ? new BodyParameter() : new QueryParameter();
         Parameter parameter = ParameterProcessor.applyAnnotations(swagger, para, type,
-            null == param ? new ArrayList<Annotation>()
-                : Collections.<Annotation> singletonList(param));
+                null == param ? new ArrayList<Annotation>()
+                        : Collections.<Annotation>singletonList(param));
         if (parameter instanceof AbstractSerializableParameter) {
             final AbstractSerializableParameter<?> p = (AbstractSerializableParameter<?>) parameter;
             if (p.getType() == null) {
@@ -482,7 +448,7 @@ public class RpcReaderExtension implements ReaderExtension {
             bp.setIn("body");
             Property property = ModelConverters.getInstance().readAsProperty(type);
             final Map<PropertyBuilder.PropertyId, Object> args = new EnumMap<PropertyBuilder.PropertyId, Object>(
-                PropertyBuilder.PropertyId.class);
+                    PropertyBuilder.PropertyId.class);
             bp.setSchema(PropertyBuilder.toModel(PropertyBuilder.merge(property, args)));
         }
         return parameter;
@@ -499,8 +465,8 @@ public class RpcReaderExtension implements ReaderExtension {
             Annotation[][] interfaceParamAnnotations = interfaceMethod.getParameterAnnotations();
             for (int i = 0; i < genericParameterTypes.length; i++) {
                 applyParametersV2(context, operation,
-                    null == parameterNames ? null : parameterNames[i], genericParameterTypes[i], parameterTypes[i],
-                    parameterAnnotations[i], interfaceParamAnnotations[i]);
+                        null == parameterNames ? null : parameterNames[i], genericParameterTypes[i], parameterTypes[i],
+                        parameterAnnotations[i], interfaceParamAnnotations[i]);
             }
         } catch (SecurityException e) {
             e.printStackTrace();
@@ -540,7 +506,7 @@ public class RpcReaderExtension implements ReaderExtension {
         final Parameter p = null == fromType ? new FormParameter() : new QueryParameter();
         final Type type = ReflectionUtils.typeFromString(param.dataType());
         return ParameterProcessor.applyAnnotations(swagger, p, type == null ? String.class : type,
-            Collections.<Annotation> singletonList(param));
+                Collections.<Annotation>singletonList(param));
     }
 
     @Override
@@ -548,7 +514,7 @@ public class RpcReaderExtension implements ReaderExtension {
         final ApiOperation apiOperation = method.getAnnotation(ApiOperation.class);
         if (apiOperation != null) {
             operation.getVendorExtensions()
-                .putAll(BaseReaderUtils.parseExtensions(apiOperation.extensions()));
+                    .putAll(BaseReaderUtils.parseExtensions(apiOperation.extensions()));
         }
 
     }
@@ -590,8 +556,8 @@ public class RpcReaderExtension implements ReaderExtension {
         public static Property wrapContainer(String container, Property property,
                                              ContainerWrapper... allowed) {
             final Set<ContainerWrapper> tmp = allowed.length > 0
-                ? EnumSet.copyOf(Arrays.asList(allowed))
-                : EnumSet.allOf(ContainerWrapper.class);
+                    ? EnumSet.copyOf(Arrays.asList(allowed))
+                    : EnumSet.allOf(ContainerWrapper.class);
             for (ContainerWrapper wrapper : tmp) {
                 final Property prop = wrapper.wrap(container, property);
                 if (prop != null) {

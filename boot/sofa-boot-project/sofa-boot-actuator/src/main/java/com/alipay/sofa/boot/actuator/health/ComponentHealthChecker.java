@@ -16,12 +16,12 @@
  */
 package com.alipay.sofa.boot.actuator.health;
 
-import org.springframework.util.StringUtils;
 import com.alipay.sofa.runtime.spi.component.ComponentInfo;
 import com.alipay.sofa.runtime.spi.component.SofaRuntimeContext;
 import com.alipay.sofa.runtime.spi.health.HealthResult;
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.Status;
+import org.springframework.util.StringUtils;
 
 /**
  * Implementation of {@link HealthChecker} used to check {@link ComponentInfo} health.
@@ -31,7 +31,7 @@ import org.springframework.boot.actuate.health.Status;
  */
 public class ComponentHealthChecker implements HealthChecker {
 
-    public static final String       COMPONENT_NAME = "components";
+    public static final String COMPONENT_NAME = "components";
 
     private final SofaRuntimeContext sofaRuntimeContext;
 
@@ -50,7 +50,7 @@ public class ComponentHealthChecker implements HealthChecker {
             if (!healthy.isHealthy()) {
                 allPassed = false;
                 builder.withDetail(healthy.getHealthName(),
-                    StringUtils.hasText(healthReport) ? healthReport : "failed");
+                        StringUtils.hasText(healthReport) ? healthReport : "failed");
             }
         }
 

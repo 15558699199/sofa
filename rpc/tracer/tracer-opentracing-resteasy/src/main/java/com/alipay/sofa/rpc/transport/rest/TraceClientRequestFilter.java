@@ -48,7 +48,7 @@ public class TraceClientRequestFilter implements ClientRequestFilter {
                 // 补充客户端request长度
                 RpcInternalContext context = RpcInternalContext.getContext();
                 context.setAttachment(RpcConstants.INTERNAL_KEY_REQ_SIZE,
-                    requestContext.getHeaderString(HttpHeaders.CONTENT_LENGTH));
+                        requestContext.getHeaderString(HttpHeaders.CONTENT_LENGTH));
 
             }
 

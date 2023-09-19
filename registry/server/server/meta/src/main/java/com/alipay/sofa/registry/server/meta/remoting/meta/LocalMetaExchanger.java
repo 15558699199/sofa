@@ -28,10 +28,11 @@ import com.alipay.sofa.registry.server.shared.constant.MetaLeaderLearnModeEnum;
 import com.alipay.sofa.registry.server.shared.meta.AbstractMetaLeaderExchanger;
 import com.alipay.sofa.registry.store.api.elector.AbstractLeaderElector;
 import com.alipay.sofa.registry.util.StringFormatter;
-import java.util.Collection;
-import java.util.Collections;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Collection;
+import java.util.Collections;
 
 /**
  * @author xiaojian.xj
@@ -39,69 +40,69 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class LocalMetaExchanger extends AbstractMetaLeaderExchanger {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(LocalMetaExchanger.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(LocalMetaExchanger.class);
+    @Autowired
+    private MetaServerConfig metaServerConfig;
+    @Autowired
+    private MetaLeaderService metaLeaderService;
 
-  public LocalMetaExchanger() {
+    public LocalMetaExchanger() {
 
-    super(Exchange.META_SERVER_TYPE, LOGGER);
-  }
-
-  @Autowired private MetaServerConfig metaServerConfig;
-
-  @Autowired private MetaLeaderService metaLeaderService;
-
-  @Override
-  protected MetaLeaderLearnModeEnum getMode() {
-    if (defaultCommonConfig.isJdbc()) {
-      return MetaLeaderLearnModeEnum.JDBC;
-    } else {
-      return MetaLeaderLearnModeEnum.LOADBALANCER;
+        super(Exchange.META_SERVER_TYPE, LOGGER);
     }
-  }
 
-  @Override
-  public LeaderInfo queryLeaderFromDb() {
-    try {
-      return retryer.call(
-          () -> {
-            AbstractLeaderElector.LeaderInfo hasNoLeader =
-                AbstractLeaderElector.LeaderInfo.HAS_NO_LEADER;
-            long leaderEpoch = metaLeaderService.getLeaderEpoch();
-            String leader = metaLeaderService.getLeader();
-            if (leaderEpoch == hasNoLeader.getEpoch()
-                || StringUtils.equals(leader, hasNoLeader.getLeader())) {
-              return null;
-            }
-            return new LeaderInfo(leaderEpoch, leader);
-          });
-    } catch (Throwable e) {
-      throw new MetaLeaderQueryException(
-          StringFormatter.format("query meta leader error from db failed"), e);
+    @Override
+    protected MetaLeaderLearnModeEnum getMode() {
+        if (defaultCommonConfig.isJdbc()) {
+            return MetaLeaderLearnModeEnum.JDBC;
+        } else {
+            return MetaLeaderLearnModeEnum.LOADBALANCER;
+        }
     }
-  }
 
-  @Override
-  protected Collection<String> getMetaServerDomains(String dataCenter) {
-    return Collections.emptyList();
-  }
+    @Override
+    public LeaderInfo queryLeaderFromDb() {
+        try {
+            return retryer.call(
+                    () -> {
+                        AbstractLeaderElector.LeaderInfo hasNoLeader =
+                                AbstractLeaderElector.LeaderInfo.HAS_NO_LEADER;
+                        long leaderEpoch = metaLeaderService.getLeaderEpoch();
+                        String leader = metaLeaderService.getLeader();
+                        if (leaderEpoch == hasNoLeader.getEpoch()
+                                || StringUtils.equals(leader, hasNoLeader.getLeader())) {
+                            return null;
+                        }
+                        return new LeaderInfo(leaderEpoch, leader);
+                    });
+        } catch (Throwable e) {
+            throw new MetaLeaderQueryException(
+                    StringFormatter.format("query meta leader error from db failed"), e);
+        }
+    }
 
-  @Override
-  public int getRpcTimeoutMillis() {
-    return metaServerConfig.getMetaNodeExchangeTimeoutMillis();
-  }
+    @Override
+    protected Collection<String> getMetaServerDomains(String dataCenter) {
+        return Collections.emptyList();
+    }
 
-  @Override
-  public int getServerPort() {
-    return metaServerConfig.getMetaServerPort();
-  }
+    @Override
+    public int getRpcTimeoutMillis() {
+        return metaServerConfig.getMetaNodeExchangeTimeoutMillis();
+    }
 
-  @Override
-  public int getConnNum() {
-    return 3;
-  }
+    @Override
+    public int getServerPort() {
+        return metaServerConfig.getMetaServerPort();
+    }
 
-  @Override
-  protected Collection<ChannelHandler> getClientHandlers() {
-    return Collections.emptyList();
-  }
+    @Override
+    public int getConnNum() {
+        return 3;
+    }
+
+    @Override
+    protected Collection<ChannelHandler> getClientHandlers() {
+        return Collections.emptyList();
+    }
 }

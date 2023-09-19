@@ -22,7 +22,7 @@ package com.alipay.sofa.rpc.triple;
  */
 public class Request {
     String flag;
-    int    age;
+    int age;
 
     public int getAge() {
         return age;

@@ -37,14 +37,14 @@ import java.lang.reflect.InvocationTargetException;
  */
 public class SofaHystrixCommand extends HystrixCommand<SofaResponse> implements SofaHystrixInvokable {
 
-    private static final Logger      LOGGER = LoggerFactory.getLogger(SofaHystrixCommand.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SofaHystrixCommand.class);
 
     private final RpcInternalContext rpcInternalContext;
 
-    private final RpcInvokeContext   rpcInvokeContext;
+    private final RpcInvokeContext rpcInvokeContext;
 
-    private final FilterInvoker      invoker;
-    private final SofaRequest        request;
+    private final FilterInvoker invoker;
+    private final SofaRequest request;
 
     public SofaHystrixCommand(FilterInvoker invoker, SofaRequest request) {
         super(SofaHystrixConfig.loadSetterFactory((ConsumerConfig) invoker.getConfig()).createSetter(invoker, request));
@@ -58,7 +58,7 @@ public class SofaHystrixCommand extends HystrixCommand<SofaResponse> implements 
     public SofaResponse invoke() {
         if (isCircuitBreakerOpen() && LOGGER.isWarnEnabled(invoker.getConfig().getAppName())) {
             LOGGER.warnWithApp(invoker.getConfig().getAppName(), "Circuit Breaker is opened, method: {}#{}",
-                invoker.getConfig().getInterfaceId(), request.getMethodName());
+                    invoker.getConfig().getInterfaceId(), request.getMethodName());
         }
         return execute();
     }
@@ -98,7 +98,7 @@ public class SofaHystrixCommand extends HystrixCommand<SofaResponse> implements 
             throw new SofaRpcRuntimeException(LogCodes.getLog(LogCodes.ERROR_HYSTRIX_FALLBACK_FAIL), e);
         } catch (InvocationTargetException e) {
             throw new SofaRpcRuntimeException(LogCodes.getLog(LogCodes.ERROR_HYSTRIX_FALLBACK_FAIL),
-                e.getTargetException());
+                    e.getTargetException());
         }
     }
 

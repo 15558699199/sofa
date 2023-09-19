@@ -47,7 +47,7 @@ public class LookoutRequestFilter implements ContainerRequestFilter {
         try {
             SofaResourceMethodInvoker resourceMethodInvoker = (SofaResourceMethodInvoker)
                     ((PostMatchContainerRequestContext) requestContext)
-                        .getResourceMethod();
+                            .getResourceMethod();
 
             SofaResourceFactory factory = resourceMethodInvoker.getResource();
             String serviceName = factory.getServiceName();

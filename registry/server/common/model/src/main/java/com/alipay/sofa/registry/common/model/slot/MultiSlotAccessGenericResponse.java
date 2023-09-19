@@ -17,6 +17,7 @@
 package com.alipay.sofa.registry.common.model.slot;
 
 import com.alipay.sofa.registry.common.model.GenericResponse;
+
 import java.util.Map;
 
 /**
@@ -25,26 +26,26 @@ import java.util.Map;
  */
 public class MultiSlotAccessGenericResponse<T> extends GenericResponse<T> {
 
-  private final Map<String, SlotAccess> slotAccessMap;
+    private final Map<String, SlotAccess> slotAccessMap;
 
-  public MultiSlotAccessGenericResponse(
-      boolean success, String message, T data, Map<String, SlotAccess> slotAccessMap) {
-    this.slotAccessMap = slotAccessMap;
-    this.setData(data);
-    this.setSuccess(success);
-    this.setMessage(message);
-  }
+    public MultiSlotAccessGenericResponse(
+            boolean success, String message, T data, Map<String, SlotAccess> slotAccessMap) {
+        this.slotAccessMap = slotAccessMap;
+        this.setData(data);
+        this.setSuccess(success);
+        this.setMessage(message);
+    }
 
-  /**
-   * Getter method for property <tt>slotAccessMap</tt>.
-   *
-   * @return property value of slotAccessMap
-   */
-  public Map<String, SlotAccess> getSlotAccessMap() {
-    return slotAccessMap;
-  }
+    public static <T> MultiSlotAccessGenericResponse<T> failedResponse(String msg) {
+        return new MultiSlotAccessGenericResponse(false, msg, null, null);
+    }
 
-  public static <T> MultiSlotAccessGenericResponse<T> failedResponse(String msg) {
-    return new MultiSlotAccessGenericResponse(false, msg, null, null);
-  }
+    /**
+     * Getter method for property <tt>slotAccessMap</tt>.
+     *
+     * @return property value of slotAccessMap
+     */
+    public Map<String, SlotAccess> getSlotAccessMap() {
+        return slotAccessMap;
+    }
 }

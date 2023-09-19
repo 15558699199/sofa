@@ -25,8 +25,6 @@ import com.alipay.sofa.registry.server.meta.lease.LeaseFilter;
 import com.alipay.sofa.registry.server.meta.lease.filter.DefaultForbiddenServerManager;
 import com.alipay.sofa.registry.server.meta.lease.filter.RegistryForbiddenServerManager;
 import com.alipay.sofa.registry.server.meta.provide.data.NodeOperatingService;
-import java.util.List;
-import java.util.concurrent.TimeoutException;
 import org.assertj.core.util.Lists;
 import org.junit.Assert;
 import org.junit.Before;
@@ -37,73 +35,78 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.util.List;
+import java.util.concurrent.TimeoutException;
+
 @RunWith(MockitoJUnitRunner.class)
 public class AbstractEvictableFilterableLeaseManagerTest extends AbstractMetaServerTestBase {
 
-  private AbstractEvictableFilterableLeaseManager leaseManager;
+    private AbstractEvictableFilterableLeaseManager leaseManager;
 
-  @InjectMocks
-  private RegistryForbiddenServerManager registryForbiddenServerManager =
-      new DefaultForbiddenServerManager();
+    @InjectMocks
+    private RegistryForbiddenServerManager registryForbiddenServerManager =
+            new DefaultForbiddenServerManager();
 
-  @Spy private InMemoryProvideDataRepo provideDataService;
+    @Spy
+    private InMemoryProvideDataRepo provideDataService;
 
-  @Spy private InMemoryNodeOperatingService nodeOperatingService;
+    @Spy
+    private InMemoryNodeOperatingService nodeOperatingService;
 
-  @Before
-  public void beforeAbstractEvictableFilterableLeaseManagerTest()
-      throws TimeoutException, InterruptedException {
-    leaseManager =
-        new AbstractEvictableFilterableLeaseManager() {
-          @Override
-          protected int getEvictBetweenMilli() {
-            return 10;
-          }
+    @Before
+    public void beforeAbstractEvictableFilterableLeaseManagerTest()
+            throws TimeoutException, InterruptedException {
+        leaseManager =
+                new AbstractEvictableFilterableLeaseManager() {
+                    @Override
+                    protected int getEvictBetweenMilli() {
+                        return 10;
+                    }
 
-          @Override
-          protected int getIntervalMilli() {
-            return 1000;
-          }
-        };
-    MockitoAnnotations.initMocks(RegistryForbiddenServerManager.class);
-    MockitoAnnotations.initMocks(NodeOperatingService.class);
-    nodeOperatingService.setProvideDataService(provideDataService);
-    leaseManager.metaLeaderService = metaLeaderService;
-    leaseManager.setLeaseFilters(Lists.newArrayList(registryForbiddenServerManager));
-    makeMetaLeader();
-  }
-
-  @Test
-  public void testGetLeaseMeta() {
-    int nodeNum = 100;
-    for (int i = 0; i < nodeNum; i++) {
-      leaseManager.renew(new SimpleNode(randomIp()), 100);
+                    @Override
+                    protected int getIntervalMilli() {
+                        return 1000;
+                    }
+                };
+        MockitoAnnotations.initMocks(RegistryForbiddenServerManager.class);
+        MockitoAnnotations.initMocks(NodeOperatingService.class);
+        nodeOperatingService.setProvideDataService(provideDataService);
+        leaseManager.metaLeaderService = metaLeaderService;
+        leaseManager.setLeaseFilters(Lists.newArrayList(registryForbiddenServerManager));
+        makeMetaLeader();
     }
-    SimpleNode node = new SimpleNode(randomIp());
-    leaseManager.renew(node, 100);
-    Assert.assertEquals(nodeNum + 1, leaseManager.getLeaseMeta().getClusterMembers().size());
-    registryForbiddenServerManager.addToBlacklist(
-        new RegistryForbiddenServerRequest(
-            DataOperation.ADD, NodeType.DATA, node.getNodeUrl().getIpAddress(), "testCell"));
-    Assert.assertEquals(nodeNum, leaseManager.getLeaseMeta().getClusterMembers().size());
-  }
 
-  @Test
-  public void testFilterOut() {
-    int nodeNum = 100;
-    for (int i = 1; i < nodeNum; i++) {
-      leaseManager.renew(new SimpleNode("10.0.0." + i), 100);
+    @Test
+    public void testGetLeaseMeta() {
+        int nodeNum = 100;
+        for (int i = 0; i < nodeNum; i++) {
+            leaseManager.renew(new SimpleNode(randomIp()), 100);
+        }
+        SimpleNode node = new SimpleNode(randomIp());
+        leaseManager.renew(node, 100);
+        Assert.assertEquals(nodeNum + 1, leaseManager.getLeaseMeta().getClusterMembers().size());
+        registryForbiddenServerManager.addToBlacklist(
+                new RegistryForbiddenServerRequest(
+                        DataOperation.ADD, NodeType.DATA, node.getNodeUrl().getIpAddress(), "testCell"));
+        Assert.assertEquals(nodeNum, leaseManager.getLeaseMeta().getClusterMembers().size());
     }
-    leaseManager.renew(new SimpleNode("127.0.0.1"), 100);
-    List<Lease> leases =
-        leaseManager.filterOut(
-            Lists.newArrayList(leaseManager.localRepo.values()),
-            new LeaseFilter<SimpleNode>() {
-              @Override
-              public boolean allowSelect(Lease<SimpleNode> lease) {
-                return !lease.getRenewal().getNodeUrl().getIpAddress().startsWith("10.0.0");
-              }
-            });
-    Assert.assertEquals(1, leases.size());
-  }
+
+    @Test
+    public void testFilterOut() {
+        int nodeNum = 100;
+        for (int i = 1; i < nodeNum; i++) {
+            leaseManager.renew(new SimpleNode("10.0.0." + i), 100);
+        }
+        leaseManager.renew(new SimpleNode("127.0.0.1"), 100);
+        List<Lease> leases =
+                leaseManager.filterOut(
+                        Lists.newArrayList(leaseManager.localRepo.values()),
+                        new LeaseFilter<SimpleNode>() {
+                            @Override
+                            public boolean allowSelect(Lease<SimpleNode> lease) {
+                                return !lease.getRenewal().getNodeUrl().getIpAddress().startsWith("10.0.0");
+                            }
+                        });
+        Assert.assertEquals(1, leases.size());
+    }
 }

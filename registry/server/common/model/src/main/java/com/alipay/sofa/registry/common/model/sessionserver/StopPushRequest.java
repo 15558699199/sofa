@@ -24,18 +24,18 @@ import java.io.Serializable;
  */
 public class StopPushRequest implements Serializable {
 
-  private final boolean stop;
+    private final boolean stop;
 
-  public StopPushRequest(boolean stop) {
-    this.stop = stop;
-  }
+    public StopPushRequest(boolean stop) {
+        this.stop = stop;
+    }
 
-  public boolean isStop() {
-    return stop;
-  }
+    public boolean isStop() {
+        return stop;
+    }
 
-  @Override
-  public String toString() {
-    return "StopPushRequest{" + "stop=" + stop + '}';
-  }
+    @Override
+    public String toString() {
+        return "StopPushRequest{" + "stop=" + stop + '}';
+    }
 }

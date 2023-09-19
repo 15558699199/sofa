@@ -18,6 +18,7 @@ package com.alipay.sofa.registry.server.data.multi.cluster.slot;
 
 import com.alipay.sofa.registry.common.model.multi.cluster.RemoteSlotTableStatus;
 import com.alipay.sofa.registry.server.data.slot.SlotAccessor;
+
 import java.util.Map;
 import java.util.Set;
 
@@ -27,19 +28,19 @@ import java.util.Set;
  */
 public interface MultiClusterSlotManager extends SlotAccessor {
 
-  /**
-   * get remote cluster slotTable epoch
-   *
-   * @return map
-   */
-  public Map<String, Long> getSlotTableEpoch();
+    /**
+     * get remote cluster slotTable epoch
+     *
+     * @return map
+     */
+    public Map<String, Long> getSlotTableEpoch();
 
-  /**
-   * update remote slot table
-   *
-   * @param remoteSlotTableStatus remoteSlotTableStatus
-   */
-  void updateSlotTable(Map<String, RemoteSlotTableStatus> remoteSlotTableStatus);
+    /**
+     * update remote slot table
+     *
+     * @param remoteSlotTableStatus remoteSlotTableStatus
+     */
+    void updateSlotTable(Map<String, RemoteSlotTableStatus> remoteSlotTableStatus);
 
-  void dataChangeNotify(String dataCenter, Set<String> dataInfoIds);
+    void dataChangeNotify(String dataCenter, Set<String> dataInfoIds);
 }

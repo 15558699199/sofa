@@ -26,32 +26,32 @@ import com.alipay.sofa.registry.cache.Sizer;
  */
 public class Value implements Sizer {
 
-  private final Sizer payload;
+    private final Sizer payload;
 
-  /**
-   * constructor
-   *
-   * @param payload payload
-   */
-  public Value(Sizer payload) {
-    this.payload = payload;
-  }
-
-  /**
-   * Getter method for property <tt>payload</tt>.
-   *
-   * @return property value of payload
-   */
-  public Sizer getPayload() {
-    return payload;
-  }
-
-  @Override
-  public int size() {
-    if (payload == null) {
-      // default size for java header
-      return 20;
+    /**
+     * constructor
+     *
+     * @param payload payload
+     */
+    public Value(Sizer payload) {
+        this.payload = payload;
     }
-    return payload.size();
-  }
+
+    /**
+     * Getter method for property <tt>payload</tt>.
+     *
+     * @return property value of payload
+     */
+    public Sizer getPayload() {
+        return payload;
+    }
+
+    @Override
+    public int size() {
+        if (payload == null) {
+            // default size for java header
+            return 20;
+        }
+        return payload.size();
+    }
 }

@@ -17,6 +17,7 @@
 package com.alipay.sofa.registry.common.model.sessionserver;
 
 import com.alipay.sofa.registry.common.model.ConnectId;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -28,40 +29,41 @@ import java.util.List;
  */
 public class CancelAddressRequest implements Serializable {
 
-  private static final long serialVersionUID = -4398310292728124256L;
+    private static final long serialVersionUID = -4398310292728124256L;
 
-  private List<ConnectId> connectIds;
+    private List<ConnectId> connectIds;
 
-  // the bean used in http facade, need no-arg construct
-  public CancelAddressRequest() {}
+    // the bean used in http facade, need no-arg construct
+    public CancelAddressRequest() {
+    }
 
-  /**
-   * Constructor.
-   *
-   * @param connectIds the connect ids
-   */
-  public CancelAddressRequest(List<ConnectId> connectIds) {
-    this.connectIds = connectIds;
-  }
+    /**
+     * Constructor.
+     *
+     * @param connectIds the connect ids
+     */
+    public CancelAddressRequest(List<ConnectId> connectIds) {
+        this.connectIds = connectIds;
+    }
 
-  /**
-   * Getter method for property <tt>connectIds</tt>.
-   *
-   * @return property value of connectIds
-   */
-  public List<ConnectId> getConnectIds() {
-    return connectIds;
-  }
+    /**
+     * Getter method for property <tt>connectIds</tt>.
+     *
+     * @return property value of connectIds
+     */
+    public List<ConnectId> getConnectIds() {
+        return connectIds;
+    }
 
-  public void setConnectIds(List<ConnectId> connectIds) {
-    this.connectIds = connectIds;
-  }
+    public void setConnectIds(List<ConnectId> connectIds) {
+        this.connectIds = connectIds;
+    }
 
-  @Override
-  public String toString() {
-    final StringBuilder sb = new StringBuilder("CancelAddressRequest{");
-    sb.append("connectIds=").append(connectIds);
-    sb.append('}');
-    return sb.toString();
-  }
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("CancelAddressRequest{");
+        sb.append("connectIds=").append(connectIds);
+        sb.append('}');
+        return sb.toString();
+    }
 }

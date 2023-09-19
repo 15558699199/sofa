@@ -18,17 +18,24 @@ package com.alipay.sofa.registry;
 
 /**
  * @author chen.zhu
- *     <p>Nov 13, 2020
+ * <p>Nov 13, 2020
  */
+
 import com.alipay.sofa.registry.common.model.slot.Crc32CSlotFunctionTest;
 import com.alipay.sofa.registry.server.meta.cluster.node.NodeModifiedTest;
 import com.alipay.sofa.registry.server.meta.cluster.node.TestAbstractNodeEventTest;
 import com.alipay.sofa.registry.server.meta.lease.LeaseTest;
 import com.alipay.sofa.registry.server.meta.lease.data.DefaultDataServerManagerTest;
 import com.alipay.sofa.registry.server.meta.lease.filter.DefaultRegistryForbiddenServerManagerTest;
-import com.alipay.sofa.registry.server.meta.lease.impl.*;
+import com.alipay.sofa.registry.server.meta.lease.impl.AbstractEvictableFilterableLeaseManagerTest;
+import com.alipay.sofa.registry.server.meta.lease.impl.LeaderAwareLeaseManagerTest;
+import com.alipay.sofa.registry.server.meta.lease.impl.SimpleLeaseManagerTest;
+import com.alipay.sofa.registry.server.meta.lease.impl.TestAbstractEvictableLeaseManagerTest;
 import com.alipay.sofa.registry.server.meta.lease.session.DefaultSessionServerManagerTest;
-import com.alipay.sofa.registry.server.meta.metaserver.impl.*;
+import com.alipay.sofa.registry.server.meta.metaserver.impl.DefaultCurrentDcMetaServerTest;
+import com.alipay.sofa.registry.server.meta.metaserver.impl.DefaultMetaLeaderElectorTest;
+import com.alipay.sofa.registry.server.meta.metaserver.impl.DefaultMetaServerManagerTest;
+import com.alipay.sofa.registry.server.meta.metaserver.impl.LocalMetaServerTest;
 import com.alipay.sofa.registry.server.meta.monitor.DefaultSlotTableMonitorTest;
 import com.alipay.sofa.registry.server.meta.monitor.data.DataServerStatsTest;
 import com.alipay.sofa.registry.server.meta.monitor.impl.DefaultSlotStatsTest;
@@ -55,50 +62,51 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-  Crc32CSlotFunctionTest.class,
-  DefaultCurrentDcMetaServerTest.class,
-  DefaultSessionServerManagerTest.class,
-  DefaultDataServerManagerTest.class,
-  LeaseTest.class,
-  HeartbeatRequestHandlerTest.class,
-  DefaultMetaServerManagerTest.class,
-  DefaultDataServerServiceTest.class,
-  LocalMetaServerTest.class,
-  DefaultSessionServerServiceTest.class,
-  DefaultProvideDataNotifierTest.class,
-  SimpleSlotManagerTest.class,
-  NodeModifiedTest.class,
-  BalanceTaskTest.class,
-  TestAbstractNodeEventTest.class,
-  DefaultSlotManagerTest.class,
-  DefaultSlotTableMonitorTest.class,
-  DiskSlotTableRecorderTest.class,
-  SlotTableResourceTest.class,
-  SlotMigrationIntegrationTest.class,
-  SlotTableBuilderTest.class,
-  SlotBuilderTest.class,
-  NodeComparatorTest.class,
-  MigrateSlotGroupTest.class,
-  ScheduledSlotArrangerTest.class,
-  LeaderOnlyBalancerTest.class,
-  DefaultRegistryForbiddenServerManagerTest.class,
-  TestAbstractEvictableLeaseManagerTest.class,
-  SimpleLeaseManagerTest.class,
-  LeaderAwareLeaseManagerTest.class,
-  AbstractEvictableFilterableLeaseManagerTest.class,
-  DefaultMetaLeaderElectorTest.class,
-  DataServerStatsTest.class,
-  DataServerStatsTest.class,
-  DefaultSlotStatsTest.class,
-  DefaultSlotTableStatsTest.class,
-  LeaderAwareFilterTest.class,
-  ProvideDataResourceTest.class,
-  StopPushDataResourceTest.class,
-  MetaDigestResourceTest.class,
-  HealthResourceTest.class,
-  MetaLeaderResourceTest.class,
-  BlacklistDataResourceTest.class,
-  RegistryCoreOpsResourceTest.class,
-  SlotSyncResourceTest.class
+        Crc32CSlotFunctionTest.class,
+        DefaultCurrentDcMetaServerTest.class,
+        DefaultSessionServerManagerTest.class,
+        DefaultDataServerManagerTest.class,
+        LeaseTest.class,
+        HeartbeatRequestHandlerTest.class,
+        DefaultMetaServerManagerTest.class,
+        DefaultDataServerServiceTest.class,
+        LocalMetaServerTest.class,
+        DefaultSessionServerServiceTest.class,
+        DefaultProvideDataNotifierTest.class,
+        SimpleSlotManagerTest.class,
+        NodeModifiedTest.class,
+        BalanceTaskTest.class,
+        TestAbstractNodeEventTest.class,
+        DefaultSlotManagerTest.class,
+        DefaultSlotTableMonitorTest.class,
+        DiskSlotTableRecorderTest.class,
+        SlotTableResourceTest.class,
+        SlotMigrationIntegrationTest.class,
+        SlotTableBuilderTest.class,
+        SlotBuilderTest.class,
+        NodeComparatorTest.class,
+        MigrateSlotGroupTest.class,
+        ScheduledSlotArrangerTest.class,
+        LeaderOnlyBalancerTest.class,
+        DefaultRegistryForbiddenServerManagerTest.class,
+        TestAbstractEvictableLeaseManagerTest.class,
+        SimpleLeaseManagerTest.class,
+        LeaderAwareLeaseManagerTest.class,
+        AbstractEvictableFilterableLeaseManagerTest.class,
+        DefaultMetaLeaderElectorTest.class,
+        DataServerStatsTest.class,
+        DataServerStatsTest.class,
+        DefaultSlotStatsTest.class,
+        DefaultSlotTableStatsTest.class,
+        LeaderAwareFilterTest.class,
+        ProvideDataResourceTest.class,
+        StopPushDataResourceTest.class,
+        MetaDigestResourceTest.class,
+        HealthResourceTest.class,
+        MetaLeaderResourceTest.class,
+        BlacklistDataResourceTest.class,
+        RegistryCoreOpsResourceTest.class,
+        SlotSyncResourceTest.class
 })
-public class AllTests {}
+public class AllTests {
+}

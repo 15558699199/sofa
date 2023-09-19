@@ -16,12 +16,6 @@
  */
 package com.alipay.sofa.registry.test.resource.meta;
 
-import static com.alipay.sofa.registry.client.constants.ValueConstants.DEFAULT_GROUP;
-import static com.alipay.sofa.registry.common.model.constants.ValueConstants.DEFAULT_INSTANCE_ID;
-import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import com.alipay.sofa.registry.client.api.model.RegistryType;
 import com.alipay.sofa.registry.client.api.registration.PublisherRegistration;
 import com.alipay.sofa.registry.client.api.registration.SubscriberRegistration;
@@ -35,14 +29,21 @@ import com.alipay.sofa.registry.server.session.filter.blacklist.BlacklistConstan
 import com.alipay.sofa.registry.test.BaseIntegrationTest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Maps;
-import java.util.*;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.core.GenericType;
-import javax.ws.rs.core.MediaType;
 import org.junit.AfterClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.GenericType;
+import javax.ws.rs.core.MediaType;
+import java.util.*;
+
+import static com.alipay.sofa.registry.client.constants.ValueConstants.DEFAULT_GROUP;
+import static com.alipay.sofa.registry.common.model.constants.ValueConstants.DEFAULT_INSTANCE_ID;
+import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author shangyu.wh
@@ -51,194 +52,198 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 public class BlacklistTest extends BaseIntegrationTest {
 
-  @Test
-  public void testBlacklistUpdate() throws Exception {
+    @AfterClass
+    public static void afterClass() {
+        registryClient1.unregister("test-dataId-blacklist", DEFAULT_GROUP, RegistryType.SUBSCRIBER);
+        registryClient1.unregister("test-dataId-blacklist", DEFAULT_GROUP, RegistryType.PUBLISHER);
+        registryClient1.unregister("test-dataId-blacklist2", DEFAULT_GROUP, RegistryType.SUBSCRIBER);
+        registryClient1.unregister("test-dataId-blacklist2", DEFAULT_GROUP, RegistryType.PUBLISHER);
+    }
 
-    Map<String, Map<String, Set<String>>> map = new HashMap<>();
-    Set<String> set1 = new HashSet<>();
-    Set<String> set2 = new HashSet<>();
-    set1.add("193.165.0.1");
-    set1.add("193.165.0.2");
-    set2.add("193.165.0.3");
-    set2.add("193.165.0.4");
+    @Test
+    public void testBlacklistUpdate() throws Exception {
 
-    Map<String, Set<String>> map1 = Maps.newHashMap();
-    map1.put(BlacklistConstants.IP_FULL, set1);
+        Map<String, Map<String, Set<String>>> map = new HashMap<>();
+        Set<String> set1 = new HashSet<>();
+        Set<String> set2 = new HashSet<>();
+        set1.add("193.165.0.1");
+        set1.add("193.165.0.2");
+        set2.add("193.165.0.3");
+        set2.add("193.165.0.4");
 
-    Map<String, Set<String>> map2 = Maps.newHashMap();
-    map2.put(BlacklistConstants.IP_FULL, set2);
+        Map<String, Set<String>> map1 = Maps.newHashMap();
+        map1.put(BlacklistConstants.IP_FULL, set1);
 
-    map.put(BlacklistConstants.FORBIDDEN_PUB, map1);
-    map.put(BlacklistConstants.FORBIDDEN_SUB_BY_PREFIX, map2);
+        Map<String, Set<String>> map2 = Maps.newHashMap();
+        map2.put(BlacklistConstants.IP_FULL, set2);
 
-    ObjectMapper mapper = new ObjectMapper();
+        map.put(BlacklistConstants.FORBIDDEN_PUB, map1);
+        map.put(BlacklistConstants.FORBIDDEN_SUB_BY_PREFIX, map2);
 
-    Result response =
-        getMetaChannel()
-            .getWebTarget()
-            .path("blacklist/update")
-            .request()
-            .post(
-                Entity.entity(mapper.writeValueAsString(map), MediaType.APPLICATION_JSON),
-                Result.class);
+        ObjectMapper mapper = new ObjectMapper();
 
-    assertTrue(response.isSuccess());
-  }
+        Result response =
+                getMetaChannel()
+                        .getWebTarget()
+                        .path("blacklist/update")
+                        .request()
+                        .post(
+                                Entity.entity(mapper.writeValueAsString(map), MediaType.APPLICATION_JSON),
+                                Result.class);
 
-  @Test
-  public void testBlacklistUpdatePub() throws Exception {
+        assertTrue(response.isSuccess());
+    }
 
-    Map<String, Map<String, Set<String>>> map = new HashMap<>();
-    Set<String> set1 = new HashSet<>();
-    Set<String> set2 = new HashSet<>();
-    String local = NetUtil.getLocalAddress().getHostAddress();
-    set1.add(local);
-    set2.add(local);
+    @Test
+    public void testBlacklistUpdatePub() throws Exception {
 
-    Map<String, Set<String>> map1 = Maps.newHashMap();
-    map1.put(BlacklistConstants.IP_FULL, set1);
+        Map<String, Map<String, Set<String>>> map = new HashMap<>();
+        Set<String> set1 = new HashSet<>();
+        Set<String> set2 = new HashSet<>();
+        String local = NetUtil.getLocalAddress().getHostAddress();
+        set1.add(local);
+        set2.add(local);
 
-    // Map<String, Set<String>> map2 = Maps.newHashMap();
-    // map2.put(BlacklistConstants.IP_FULL, set2);
+        Map<String, Set<String>> map1 = Maps.newHashMap();
+        map1.put(BlacklistConstants.IP_FULL, set1);
 
-    map.put(BlacklistConstants.FORBIDDEN_PUB, map1);
+        // Map<String, Set<String>> map2 = Maps.newHashMap();
+        // map2.put(BlacklistConstants.IP_FULL, set2);
 
-    ObjectMapper mapper = new ObjectMapper();
+        map.put(BlacklistConstants.FORBIDDEN_PUB, map1);
 
-    Result response =
-        getMetaChannel()
-            .getWebTarget()
-            .path("blacklist/update")
-            .request()
-            .post(
-                Entity.entity(mapper.writeValueAsString(map), MediaType.APPLICATION_JSON),
-                Result.class);
+        ObjectMapper mapper = new ObjectMapper();
 
-    assertTrue(response.isSuccess());
+        Result response =
+                getMetaChannel()
+                        .getWebTarget()
+                        .path("blacklist/update")
+                        .request()
+                        .post(
+                                Entity.entity(mapper.writeValueAsString(map), MediaType.APPLICATION_JSON),
+                                Result.class);
 
-    // wait for new list meta dispatch to session
-    Thread.sleep(5000L);
+        assertTrue(response.isSuccess());
 
-    String dataId = "test-dataId-blacklist-" + System.currentTimeMillis();
-    String value = "test blacklist";
+        // wait for new list meta dispatch to session
+        Thread.sleep(5000L);
 
-    PublisherRegistration registration = new PublisherRegistration(dataId);
-    registryClient1.register(registration, value);
-    Thread.sleep(2000L);
+        String dataId = "test-dataId-blacklist-" + System.currentTimeMillis();
+        String value = "test blacklist";
 
-    MySubscriberDataObserver observer = new MySubscriberDataObserver();
-    SubscriberRegistration subReg = new SubscriberRegistration(dataId, observer);
-    subReg.setScopeEnum(ScopeEnum.dataCenter);
+        PublisherRegistration registration = new PublisherRegistration(dataId);
+        registryClient1.register(registration, value);
+        Thread.sleep(2000L);
 
-    registryClient1.register(subReg);
+        MySubscriberDataObserver observer = new MySubscriberDataObserver();
+        SubscriberRegistration subReg = new SubscriberRegistration(dataId, observer);
+        subReg.setScopeEnum(ScopeEnum.dataCenter);
 
-    Thread.sleep(3000L);
-    assertEquals(dataId, observer.dataId);
-    assertEquals(LOCAL_REGION, observer.userData.getLocalZone());
+        registryClient1.register(subReg);
 
-    Map<String, List<Publisher>> publisherMap =
-        sessionChannel
-            .getWebTarget()
-            .path("digest/pub/data/query")
-            .queryParam(
-                "dataInfoId", DataInfo.toDataInfoId(dataId, DEFAULT_INSTANCE_ID, DEFAULT_GROUP))
-            .request(APPLICATION_JSON)
-            .get(new GenericType<Map<String, List<Publisher>>>() {});
-    assertEquals(0, publisherMap.size());
+        Thread.sleep(3000L);
+        assertEquals(dataId, observer.dataId);
+        assertEquals(LOCAL_REGION, observer.userData.getLocalZone());
 
-    Map<String, List<Subscriber>> subscriberMap =
-        sessionChannel
-            .getWebTarget()
-            .path("digest/sub/data/query")
-            .queryParam(
-                "dataInfoId", DataInfo.toDataInfoId(dataId, DEFAULT_INSTANCE_ID, DEFAULT_GROUP))
-            .request(APPLICATION_JSON)
-            .get(new GenericType<Map<String, List<Subscriber>>>() {});
-    assertEquals(1, subscriberMap.size());
-    assertEquals(1, subscriberMap.get("SUB").size());
-    assertEquals(dataId, subscriberMap.get("SUB").get(0).getDataId());
-  }
+        Map<String, List<Publisher>> publisherMap =
+                sessionChannel
+                        .getWebTarget()
+                        .path("digest/pub/data/query")
+                        .queryParam(
+                                "dataInfoId", DataInfo.toDataInfoId(dataId, DEFAULT_INSTANCE_ID, DEFAULT_GROUP))
+                        .request(APPLICATION_JSON)
+                        .get(new GenericType<Map<String, List<Publisher>>>() {
+                        });
+        assertEquals(0, publisherMap.size());
 
-  @Test
-  public void testBlacklistUpdateSub() throws Exception {
+        Map<String, List<Subscriber>> subscriberMap =
+                sessionChannel
+                        .getWebTarget()
+                        .path("digest/sub/data/query")
+                        .queryParam(
+                                "dataInfoId", DataInfo.toDataInfoId(dataId, DEFAULT_INSTANCE_ID, DEFAULT_GROUP))
+                        .request(APPLICATION_JSON)
+                        .get(new GenericType<Map<String, List<Subscriber>>>() {
+                        });
+        assertEquals(1, subscriberMap.size());
+        assertEquals(1, subscriberMap.get("SUB").size());
+        assertEquals(dataId, subscriberMap.get("SUB").get(0).getDataId());
+    }
 
-    Map<String, Map<String, Set<String>>> map = new HashMap<>();
-    Set<String> set1 = new HashSet<>();
-    Set<String> set2 = new HashSet<>();
-    String local = NetUtil.getLocalAddress().getHostAddress();
-    set1.add(local);
-    set2.add(local);
+    @Test
+    public void testBlacklistUpdateSub() throws Exception {
 
-    Map<String, Set<String>> map1 = Maps.newHashMap();
-    map1.put(BlacklistConstants.IP_FULL, set1);
+        Map<String, Map<String, Set<String>>> map = new HashMap<>();
+        Set<String> set1 = new HashSet<>();
+        Set<String> set2 = new HashSet<>();
+        String local = NetUtil.getLocalAddress().getHostAddress();
+        set1.add(local);
+        set2.add(local);
 
-    Map<String, Set<String>> map2 = Maps.newHashMap();
-    map2.put(BlacklistConstants.IP_FULL, set2);
+        Map<String, Set<String>> map1 = Maps.newHashMap();
+        map1.put(BlacklistConstants.IP_FULL, set1);
 
-    map.put(BlacklistConstants.FORBIDDEN_SUB_BY_PREFIX, map2);
+        Map<String, Set<String>> map2 = Maps.newHashMap();
+        map2.put(BlacklistConstants.IP_FULL, set2);
 
-    ObjectMapper mapper = new ObjectMapper();
-    Result response =
-        getMetaChannel()
-            .getWebTarget()
-            .path("blacklist/update")
-            .request()
-            .post(
-                Entity.entity(mapper.writeValueAsString(map), MediaType.APPLICATION_JSON),
-                Result.class);
+        map.put(BlacklistConstants.FORBIDDEN_SUB_BY_PREFIX, map2);
 
-    assertTrue(response.isSuccess());
+        ObjectMapper mapper = new ObjectMapper();
+        Result response =
+                getMetaChannel()
+                        .getWebTarget()
+                        .path("blacklist/update")
+                        .request()
+                        .post(
+                                Entity.entity(mapper.writeValueAsString(map), MediaType.APPLICATION_JSON),
+                                Result.class);
 
-    // wait for new list meta dispatch to session
-    Thread.sleep(3000L);
+        assertTrue(response.isSuccess());
 
-    String dataId = "test-dataId-blacklist2-" + System.currentTimeMillis();
-    String value = "test blacklist2";
+        // wait for new list meta dispatch to session
+        Thread.sleep(3000L);
 
-    PublisherRegistration registration = new PublisherRegistration(dataId);
-    registryClient1.register(registration, value);
-    Thread.sleep(2000L);
-    MySubscriberDataObserver observer = new MySubscriberDataObserver();
-    SubscriberRegistration subReg = new SubscriberRegistration(dataId, observer);
-    subReg.setScopeEnum(ScopeEnum.dataCenter);
+        String dataId = "test-dataId-blacklist2-" + System.currentTimeMillis();
+        String value = "test blacklist2";
 
-    registryClient1.register(subReg);
+        PublisherRegistration registration = new PublisherRegistration(dataId);
+        registryClient1.register(registration, value);
+        Thread.sleep(2000L);
+        MySubscriberDataObserver observer = new MySubscriberDataObserver();
+        SubscriberRegistration subReg = new SubscriberRegistration(dataId, observer);
+        subReg.setScopeEnum(ScopeEnum.dataCenter);
 
-    Thread.sleep(3000L);
-    assertEquals(dataId, observer.dataId);
-    assertEquals(LOCAL_REGION, observer.userData.getLocalZone());
+        registryClient1.register(subReg);
 
-    Map<String, List<Publisher>> publisherMap =
-        sessionChannel
-            .getWebTarget()
-            .path("digest/pub/data/query")
-            .queryParam(
-                "dataInfoId", DataInfo.toDataInfoId(dataId, DEFAULT_INSTANCE_ID, DEFAULT_GROUP))
-            .request(APPLICATION_JSON)
-            .get(new GenericType<Map<String, List<Publisher>>>() {});
-    assertEquals(1, publisherMap.size());
-    assertEquals(1, publisherMap.get("PUB").size());
-    assertEquals(dataId, publisherMap.get("PUB").get(0).getDataId());
-    assertEquals(
-        value, bytes2Object(publisherMap.get("PUB").get(0).getDataList().get(0).getBytes()));
+        Thread.sleep(3000L);
+        assertEquals(dataId, observer.dataId);
+        assertEquals(LOCAL_REGION, observer.userData.getLocalZone());
 
-    Map<String, List<Subscriber>> subscriberMap =
-        sessionChannel
-            .getWebTarget()
-            .path("digest/sub/data/query")
-            .queryParam(
-                "dataInfoId", DataInfo.toDataInfoId(dataId, DEFAULT_INSTANCE_ID, DEFAULT_GROUP))
-            .request(APPLICATION_JSON)
-            .get(new GenericType<Map<String, List<Subscriber>>>() {});
-    // default setting, black list not forbit the sub
-    assertEquals(1, subscriberMap.size());
-  }
+        Map<String, List<Publisher>> publisherMap =
+                sessionChannel
+                        .getWebTarget()
+                        .path("digest/pub/data/query")
+                        .queryParam(
+                                "dataInfoId", DataInfo.toDataInfoId(dataId, DEFAULT_INSTANCE_ID, DEFAULT_GROUP))
+                        .request(APPLICATION_JSON)
+                        .get(new GenericType<Map<String, List<Publisher>>>() {
+                        });
+        assertEquals(1, publisherMap.size());
+        assertEquals(1, publisherMap.get("PUB").size());
+        assertEquals(dataId, publisherMap.get("PUB").get(0).getDataId());
+        assertEquals(
+                value, bytes2Object(publisherMap.get("PUB").get(0).getDataList().get(0).getBytes()));
 
-  @AfterClass
-  public static void afterClass() {
-    registryClient1.unregister("test-dataId-blacklist", DEFAULT_GROUP, RegistryType.SUBSCRIBER);
-    registryClient1.unregister("test-dataId-blacklist", DEFAULT_GROUP, RegistryType.PUBLISHER);
-    registryClient1.unregister("test-dataId-blacklist2", DEFAULT_GROUP, RegistryType.SUBSCRIBER);
-    registryClient1.unregister("test-dataId-blacklist2", DEFAULT_GROUP, RegistryType.PUBLISHER);
-  }
+        Map<String, List<Subscriber>> subscriberMap =
+                sessionChannel
+                        .getWebTarget()
+                        .path("digest/sub/data/query")
+                        .queryParam(
+                                "dataInfoId", DataInfo.toDataInfoId(dataId, DEFAULT_INSTANCE_ID, DEFAULT_GROUP))
+                        .request(APPLICATION_JSON)
+                        .get(new GenericType<Map<String, List<Subscriber>>>() {
+                        });
+        // default setting, black list not forbit the sub
+        assertEquals(1, subscriberMap.size());
+    }
 }

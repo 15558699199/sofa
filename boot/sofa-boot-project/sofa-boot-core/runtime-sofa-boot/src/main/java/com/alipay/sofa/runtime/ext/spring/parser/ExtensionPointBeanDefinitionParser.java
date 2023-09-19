@@ -40,16 +40,12 @@ import java.util.Set;
  */
 public class ExtensionPointBeanDefinitionParser extends AbstractExtBeanDefinitionParser {
 
-    private static final Logger                             LOGGER       = SofaBootLoggerFactory
-                                                                             .getLogger(ExtensionPointBeanDefinitionParser.class);
-
-    public static final String                              CLASS        = "class";
-
-    public static final String                              OBJECT       = "object";
-
-    public static final String                              CONTRIBUTION = "contribution";
-
-    private static final ExtensionPointBeanDefinitionParser INSTANCE     = new ExtensionPointBeanDefinitionParser();
+    public static final String CLASS = "class";
+    public static final String OBJECT = "object";
+    public static final String CONTRIBUTION = "contribution";
+    private static final Logger LOGGER = SofaBootLoggerFactory
+            .getLogger(ExtensionPointBeanDefinitionParser.class);
+    private static final ExtensionPointBeanDefinitionParser INSTANCE = new ExtensionPointBeanDefinitionParser();
 
     public ExtensionPointBeanDefinitionParser() {
     }
@@ -89,8 +85,8 @@ public class ExtensionPointBeanDefinitionParser extends AbstractExtBeanDefinitio
                                     contributions.add(attribute.getValue());
                                 } else {
                                     builder1.addPropertyValue(
-                                        Conventions.attributeNameToPropertyName(name),
-                                        attribute.getValue());
+                                            Conventions.attributeNameToPropertyName(name),
+                                            attribute.getValue());
                                 }
                             });
                 } else {
@@ -98,7 +94,7 @@ public class ExtensionPointBeanDefinitionParser extends AbstractExtBeanDefinitio
                         LOGGER.error("nested bean definition/reference cannot be used when attribute 'ref' is specified");
                     }
                     target = parserContext.getDelegate().parsePropertySubElement(subElement,
-                        builder.getBeanDefinition());
+                            builder.getBeanDefinition());
                 }
             }
         }
@@ -106,7 +102,7 @@ public class ExtensionPointBeanDefinitionParser extends AbstractExtBeanDefinitio
         // do we have a bean reference ?
         if (target instanceof RuntimeBeanReference) {
             builder.addPropertyValue("targetBeanName",
-                ((RuntimeBeanReference) target).getBeanName());
+                    ((RuntimeBeanReference) target).getBeanName());
         }
         // or a nested bean? -- not supported yet
         else {

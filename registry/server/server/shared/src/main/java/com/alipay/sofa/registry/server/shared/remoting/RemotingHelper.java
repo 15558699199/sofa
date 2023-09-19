@@ -21,6 +21,7 @@ import com.alipay.sofa.registry.common.model.store.URL;
 import com.alipay.sofa.registry.remoting.Channel;
 import com.alipay.sofa.registry.remoting.bolt.BoltChannel;
 import com.alipay.sofa.registry.remoting.bolt.serializer.ProtobufSerializer;
+
 import java.net.InetSocketAddress;
 
 /**
@@ -28,45 +29,46 @@ import java.net.InetSocketAddress;
  * @version v 0.1 2020-12-14 11:39 yuzhi.lyz Exp $
  */
 public final class RemotingHelper {
-  private static final Byte PB = ProtobufSerializer.PROTOCOL_PROTOBUF;
+    private static final Byte PB = ProtobufSerializer.PROTOCOL_PROTOBUF;
 
-  private RemotingHelper() {}
-
-  public static InetSocketAddress getChannelRemoteAddress(Channel channel) {
-    return channel == null ? null : channel.getRemoteAddress();
-  }
-
-  public static String getRemoteHostAddress(Channel channel) {
-    return channel == null ? null : channel.getRemoteAddress().getAddress().getHostAddress();
-  }
-
-  public static String getAddressString(URL url) {
-    return url == null ? null : url.buildAddressString();
-  }
-
-  public static void markProtobuf(Channel channel) {
-    if (channel instanceof BoltChannel) {
-      ((BoltChannel) channel).markProtobuf();
+    private RemotingHelper() {
     }
-  }
 
-  public static boolean isMarkProtobuf(Channel channel) {
-    if (channel instanceof BoltChannel) {
-      return ((BoltChannel) channel).isMarkProtobuf();
+    public static InetSocketAddress getChannelRemoteAddress(Channel channel) {
+        return channel == null ? null : channel.getRemoteAddress();
     }
-    return false;
-  }
 
-  public static void setPbSerializer(Channel channel) {
-    if (channel instanceof BoltChannel) {
-      BoltChannel boltChannel = (BoltChannel) channel;
-
-      Object clientCustomCodec = boltChannel.getConnAttribute(InvokeContext.BOLT_CUSTOM_SERIALIZER);
-
-      // set client custom codec for request command if not null
-      if (!PB.equals(clientCustomCodec)) {
-        boltChannel.setConnAttribute(InvokeContext.BOLT_CUSTOM_SERIALIZER, PB);
-      }
+    public static String getRemoteHostAddress(Channel channel) {
+        return channel == null ? null : channel.getRemoteAddress().getAddress().getHostAddress();
     }
-  }
+
+    public static String getAddressString(URL url) {
+        return url == null ? null : url.buildAddressString();
+    }
+
+    public static void markProtobuf(Channel channel) {
+        if (channel instanceof BoltChannel) {
+            ((BoltChannel) channel).markProtobuf();
+        }
+    }
+
+    public static boolean isMarkProtobuf(Channel channel) {
+        if (channel instanceof BoltChannel) {
+            return ((BoltChannel) channel).isMarkProtobuf();
+        }
+        return false;
+    }
+
+    public static void setPbSerializer(Channel channel) {
+        if (channel instanceof BoltChannel) {
+            BoltChannel boltChannel = (BoltChannel) channel;
+
+            Object clientCustomCodec = boltChannel.getConnAttribute(InvokeContext.BOLT_CUSTOM_SERIALIZER);
+
+            // set client custom codec for request command if not null
+            if (!PB.equals(clientCustomCodec)) {
+                boltChannel.setConnAttribute(InvokeContext.BOLT_CUSTOM_SERIALIZER, PB);
+            }
+        }
+    }
 }

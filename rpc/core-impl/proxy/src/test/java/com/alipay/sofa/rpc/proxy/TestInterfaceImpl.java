@@ -20,8 +20,6 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- *
- *
  * @author <a href="mailto:zhanggeng.zg@antfin.com">GengZhang</a>
  */
 public class TestInterfaceImpl implements TestInterface {
@@ -43,7 +41,7 @@ public class TestInterfaceImpl implements TestInterface {
 
     @Override
     public int[] sayNums(List list, HashMap map) {
-        return new int[] { 6, 7, 8 };
+        return new int[]{6, 7, 8};
     }
 
     @Override

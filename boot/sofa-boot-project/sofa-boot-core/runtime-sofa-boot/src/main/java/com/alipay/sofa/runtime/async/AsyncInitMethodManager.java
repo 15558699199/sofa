@@ -42,22 +42,22 @@ import java.util.function.Supplier;
  * @version AsyncInitMethodManager.java, v 0.1 2023年01月17日 11:55 AM huzijie Exp $
  */
 public class AsyncInitMethodManager implements PriorityOrdered,
-                                   ApplicationListener<ContextRefreshedEvent>,
-                                   ApplicationContextAware {
+        ApplicationListener<ContextRefreshedEvent>,
+        ApplicationContextAware {
 
-    public static final String                          ASYNC_INIT_METHOD_EXECUTOR_BEAN_NAME = "async-init-method-executor";
+    public static final String ASYNC_INIT_METHOD_EXECUTOR_BEAN_NAME = "async-init-method-executor";
 
-    public static final String                          ASYNC_INIT_METHOD_NAME               = "async-init-method-name";
+    public static final String ASYNC_INIT_METHOD_NAME = "async-init-method-name";
 
-    private final AtomicReference<ThreadPoolExecutor>   threadPoolExecutorRef                = new AtomicReference<>();
+    private final AtomicReference<ThreadPoolExecutor> threadPoolExecutorRef = new AtomicReference<>();
 
-    private final Map<BeanFactory, Map<String, String>> asyncInitBeanNameMap                 = new ConcurrentHashMap<>();
+    private final Map<BeanFactory, Map<String, String>> asyncInitBeanNameMap = new ConcurrentHashMap<>();
 
-    private final List<Future<?>>                       futures                              = new ArrayList<>();
+    private final List<Future<?>> futures = new ArrayList<>();
 
-    private ApplicationContext                          applicationContext;
+    private ApplicationContext applicationContext;
 
-    private boolean                                     startUpFinish                        = false;
+    private boolean startUpFinish = false;
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
@@ -90,7 +90,7 @@ public class AsyncInitMethodManager implements PriorityOrdered,
 
     private ThreadPoolExecutor createAsyncExecutor() {
         return (ThreadPoolExecutor) applicationContext.getBean(
-            ASYNC_INIT_METHOD_EXECUTOR_BEAN_NAME, Supplier.class).get();
+                ASYNC_INIT_METHOD_EXECUTOR_BEAN_NAME, Supplier.class).get();
     }
 
     void ensureAsyncTasksFinish() {

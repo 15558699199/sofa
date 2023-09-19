@@ -26,31 +26,31 @@ import java.util.Properties;
  */
 public interface ServerNode {
 
-  /**
-   * Gets host.
-   *
-   * @return the host
-   */
-  String getHost();
+    /**
+     * Gets host.
+     *
+     * @return the host
+     */
+    String getHost();
 
-  /**
-   * Gets port.
-   *
-   * @return the port
-   */
-  int getPort();
+    /**
+     * Gets port.
+     *
+     * @return the port
+     */
+    int getPort();
 
-  /**
-   * Gets properties.
-   *
-   * @return the properties
-   */
-  Properties getProperties();
+    /**
+     * Gets properties.
+     *
+     * @return the properties
+     */
+    Properties getProperties();
 
-  /**
-   * Gets url.
-   *
-   * @return the url
-   */
-  String getUrl();
+    /**
+     * Gets url.
+     *
+     * @return the url
+     */
+    String getUrl();
 }

@@ -24,9 +24,9 @@ import org.apache.commons.lang.StringUtils;
  */
 public final class AuthChecker {
 
-  private static final String AUTH_TOKEN = "6c62lk8dmQoE5B8X";
+    private static final String AUTH_TOKEN = "6c62lk8dmQoE5B8X";
 
-  public static boolean authCheck(String token) {
-    return StringUtils.equals(AUTH_TOKEN, token);
-  }
+    public static boolean authCheck(String token) {
+        return StringUtils.equals(AUTH_TOKEN, token);
+    }
 }

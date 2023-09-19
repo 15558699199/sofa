@@ -36,17 +36,17 @@ public abstract class AbstractInvocationStat implements InvocationStat {
     /**
      * 调用次数
      */
-    protected final AtomicLong              invokeCount    = new AtomicLong(0L);
+    protected final AtomicLong invokeCount = new AtomicLong(0L);
     /**
      * 异常次数
      */
-    protected final AtomicLong              exceptionCount = new AtomicLong(0L);
+    protected final AtomicLong exceptionCount = new AtomicLong(0L);
 
     /**
      * when useless in one window, this value increment 1. <br />
      * If this value is greater than threshold, this stat will be deleted.
      */
-    private final transient AtomicInteger   uselessCycle   = new AtomicInteger(0);
+    private final transient AtomicInteger uselessCycle = new AtomicInteger(0);
 
     /**
      * Instantiates a new Abstract dimension stat.
@@ -82,6 +82,15 @@ public abstract class AbstractInvocationStat implements InvocationStat {
         return invokeCount.get();
     }
 
+    /**
+     * Sets invoke count.
+     *
+     * @param count the count
+     */
+    protected void setInvokeCount(long count) {
+        invokeCount.set(count);
+    }
+
     @Override
     public double getExceptionRate() {
         long invokeCount = getInvokeCount();
@@ -91,15 +100,6 @@ public abstract class AbstractInvocationStat implements InvocationStat {
     @Override
     public long getExceptionCount() {
         return exceptionCount.get();
-    }
-
-    /**
-     * Sets invoke count.
-     *
-     * @param count the count
-     */
-    protected void setInvokeCount(long count) {
-        invokeCount.set(count);
     }
 
     /**

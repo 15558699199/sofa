@@ -18,32 +18,34 @@ package com.alipay.sofa.registry.task;
 
 import com.alipay.sofa.registry.TestUtils;
 import com.alipay.sofa.registry.log.LoggerFactory;
-import java.util.concurrent.RejectedExecutionException;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.concurrent.RejectedExecutionException;
+
 public class MetricsableThreadPoolExecutorTest {
 
-  @Test
-  public void test() {
-    MetricsableThreadPoolExecutor executor =
-        MetricsableThreadPoolExecutor.newExecutor("test" + System.currentTimeMillis(), 1, 1);
-    Assert.assertNotNull(executor.toString());
+    @Test
+    public void test() {
+        MetricsableThreadPoolExecutor executor =
+                MetricsableThreadPoolExecutor.newExecutor("test" + System.currentTimeMillis(), 1, 1);
+        Assert.assertNotNull(executor.toString());
 
-    final RejectedLogErrorHandler handler =
-        (RejectedLogErrorHandler) executor.getRejectedExecutionHandler();
-    TestUtils.assertException(
-        RejectedExecutionException.class,
-        () ->
-            handler.rejectedExecution(
-                () -> {
-                  throw new RuntimeException();
-                },
-                executor));
+        final RejectedLogErrorHandler handler =
+                (RejectedLogErrorHandler) executor.getRejectedExecutionHandler();
+        TestUtils.assertException(
+                RejectedExecutionException.class,
+                () ->
+                        handler.rejectedExecution(
+                                () -> {
+                                    throw new RuntimeException();
+                                },
+                                executor));
 
-    RejectedLogErrorHandler handlerNoException =
-        new RejectedLogErrorHandler(
-            LoggerFactory.getLogger(MetricsableThreadPoolExecutorTest.class), false);
-    handlerNoException.rejectedExecution(() -> {}, executor);
-  }
+        RejectedLogErrorHandler handlerNoException =
+                new RejectedLogErrorHandler(
+                        LoggerFactory.getLogger(MetricsableThreadPoolExecutorTest.class), false);
+        handlerNoException.rejectedExecution(() -> {
+        }, executor);
+    }
 }

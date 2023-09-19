@@ -23,17 +23,23 @@ import java.util.List;
  * @author <a href="mailto:zhanggeng.zg@antfin.com">GengZhang</a>
  */
 public class TestReflect {
-    private int           s;
-    private String        name;
-    private boolean       b;
-
-    /*--- not ok field -- */
-    public String         f1;
-    private String        f2;
-    private final String  f3 = "";
     private static String f4 = "";
-    private List          f5 = new ArrayList() {
-                             };
+    private final String f3 = "";
+    /*--- not ok field -- */
+    public String f1;
+    private int s;
+    private String name;
+    private boolean b;
+    private String f2;
+    private List f5 = new ArrayList() {
+    };
+
+    public static String get2() {
+        return null;
+    }
+
+    public static void set2(int s) {
+    }
 
     public int getS() {
         return s;
@@ -74,10 +80,6 @@ public class TestReflect {
     private void get1() {
     }
 
-    public static String get2() {
-        return null;
-    }
-
     public void get3() {
     }
 
@@ -97,9 +99,6 @@ public class TestReflect {
     }
 
     private void set1(int s) {
-    }
-
-    public static void set2(int s) {
     }
 
     public void set3(int s, int s2) {

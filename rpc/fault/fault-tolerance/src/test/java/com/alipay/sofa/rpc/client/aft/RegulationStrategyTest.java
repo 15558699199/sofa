@@ -22,7 +22,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- *
  * @author <a href="mailto:lw111072@antfin.com">liangen</a>
  */
 public class RegulationStrategyTest extends FaultBaseTest {
@@ -34,7 +33,7 @@ public class RegulationStrategyTest extends FaultBaseTest {
         config.setDegradeEffective(true);
         FaultToleranceConfigManager.putAppConfig(APP_NAME1, config);
         InvocationStatDimension invocationA = new InvocationStatDimension(ProviderHelper.toProviderInfo("ip"),
-            consumerConfig);
+                consumerConfig);
         MeasureResultDetail measureResultDetailA = new MeasureResultDetail(invocationA, MeasureState.ABNORMAL);
         Assert.assertTrue(regulationStrategy.isDegradeEffective(measureResultDetailA));
     }
@@ -52,30 +51,30 @@ public class RegulationStrategyTest extends FaultBaseTest {
         RegulationStrategy regulationStrategy = new ServiceHorizontalRegulationStrategy();
 
         InvocationStatDimension invocation1 = new InvocationStatDimension(ProviderHelper.toProviderInfo("ip1"),
-            consumerConfig);
+                consumerConfig);
         MeasureResultDetail measureResultDetail1 = new MeasureResultDetail(invocation1, MeasureState.ABNORMAL);
         Assert.assertFalse(regulationStrategy.isReachMaxDegradeIpCount(measureResultDetail1));
 
         InvocationStatDimension invocation2 = new InvocationStatDimension(ProviderHelper.toProviderInfo("ip2"),
-            consumerConfig);
+                consumerConfig);
         MeasureResultDetail measureResultDetail2 = new MeasureResultDetail(invocation2, MeasureState.ABNORMAL);
         Assert.assertFalse(regulationStrategy.isReachMaxDegradeIpCount(measureResultDetail2));
 
         /**同一应用，同一服务，不同ip数已达最大*/
         InvocationStatDimension invocation3 = new InvocationStatDimension(ProviderHelper.toProviderInfo("ip3"),
-            consumerConfig);
+                consumerConfig);
         MeasureResultDetail measureResultDetail3 = new MeasureResultDetail(invocation3, MeasureState.ABNORMAL);
         Assert.assertTrue(regulationStrategy.isReachMaxDegradeIpCount(measureResultDetail3));
 
         /**同一应用，不同服务，还可以增加*/
         InvocationStatDimension invocation4 = new InvocationStatDimension(ProviderHelper.toProviderInfo("ip1"),
-            consumerConfig);
+                consumerConfig);
         MeasureResultDetail measureResultDetail4 = new MeasureResultDetail(invocation4, MeasureState.ABNORMAL);
         Assert.assertFalse(regulationStrategy.isReachMaxDegradeIpCount(measureResultDetail4));
 
         /**同一应用，同一服务，相同ip，还可以增加*/
         InvocationStatDimension invocation6 = new InvocationStatDimension(ProviderHelper.toProviderInfo("ip1"),
-            consumerConfig);
+                consumerConfig);
         MeasureResultDetail measureResultDetail6 = new MeasureResultDetail(invocation6, MeasureState.HEALTH);
         Assert.assertFalse(regulationStrategy.isReachMaxDegradeIpCount(measureResultDetail6));
     }
@@ -86,31 +85,31 @@ public class RegulationStrategyTest extends FaultBaseTest {
 
         /**降级列表为空，不存在*/
         InvocationStatDimension invocation1 = new InvocationStatDimension(ProviderHelper.toProviderInfo("ip1"),
-            consumerConfig);
+                consumerConfig);
         MeasureResultDetail measureResultDetail1 = new MeasureResultDetail(invocation1, MeasureState.ABNORMAL);
         Assert.assertFalse(regulationStrategy.isExistInTheDegradeList(measureResultDetail1));
 
         /**加入到降级列表中*/
         InvocationStatDimension invocation2 = new InvocationStatDimension(ProviderHelper.toProviderInfo("ip1"),
-            consumerConfig);
+                consumerConfig);
         MeasureResultDetail measureResultDetail2 = new MeasureResultDetail(invocation2, MeasureState.ABNORMAL);
         Assert.assertFalse(regulationStrategy.isReachMaxDegradeIpCount(measureResultDetail2));
 
         /**相同应用，相同服务，相同ip，存在于降级列表中*/
         InvocationStatDimension invocation3 = new InvocationStatDimension(ProviderHelper.toProviderInfo("ip1"),
-            consumerConfig);
+                consumerConfig);
         MeasureResultDetail measureResultDetail3 = new MeasureResultDetail(invocation3, MeasureState.ABNORMAL);
         Assert.assertTrue(regulationStrategy.isExistInTheDegradeList(measureResultDetail3));
 
         /**相同应用，相同服务，不同ip，不存在于降级列表中*/
         InvocationStatDimension invocation4 = new InvocationStatDimension(ProviderHelper.toProviderInfo("ip2"),
-            consumerConfig);
+                consumerConfig);
         MeasureResultDetail measureResultDetail4 = new MeasureResultDetail(invocation4, MeasureState.ABNORMAL);
         Assert.assertFalse(regulationStrategy.isExistInTheDegradeList(measureResultDetail4));
 
         /**相同应用，不同服务，相同ip，存在于降级列表中*/
         InvocationStatDimension invocation5 = new InvocationStatDimension(ProviderHelper.toProviderInfo("ip1"),
-            consumerConfig2);
+                consumerConfig2);
         MeasureResultDetail measureResultDetail5 = new MeasureResultDetail(invocation5, MeasureState.ABNORMAL);
         Assert.assertFalse(regulationStrategy.isExistInTheDegradeList(measureResultDetail5));
     }
@@ -124,37 +123,37 @@ public class RegulationStrategyTest extends FaultBaseTest {
         FaultToleranceConfigManager.putAppConfig(APP_NAME1, configA);
 
         InvocationStatDimension invocation1 = new InvocationStatDimension(ProviderHelper.toProviderInfo("ip1"),
-            consumerConfig);
+                consumerConfig);
         MeasureResultDetail measureResultDetail1 = new MeasureResultDetail(invocation1, MeasureState.ABNORMAL);
         Assert.assertFalse(regulationStrategy.isReachMaxDegradeIpCount(measureResultDetail1));
 
         InvocationStatDimension invocation2 = new InvocationStatDimension(ProviderHelper.toProviderInfo("ip2"),
-            consumerConfig);
+                consumerConfig);
         MeasureResultDetail measureResultDetail2 = new MeasureResultDetail(invocation2, MeasureState.ABNORMAL);
         Assert.assertFalse(regulationStrategy.isReachMaxDegradeIpCount(measureResultDetail2));
 
         /**已达上限*/
         InvocationStatDimension invocation3 = new InvocationStatDimension(ProviderHelper.toProviderInfo("ip3"),
-            consumerConfig);
+                consumerConfig);
         MeasureResultDetail measureResultDetail3 = new MeasureResultDetail(invocation3, MeasureState.ABNORMAL);
         Assert.assertTrue(regulationStrategy.isReachMaxDegradeIpCount(measureResultDetail3));
 
         /**进行一次恢复*/
         InvocationStatDimension invocation4 = new InvocationStatDimension(ProviderHelper.toProviderInfo("ip1"),
-            consumerConfig);
+                consumerConfig);
         MeasureResultDetail measureResultDetail4 = new MeasureResultDetail(invocation4, MeasureState.ABNORMAL);
         measureResultDetail4.setRecoveredOriginWeight(true);
         regulationStrategy.removeFromDegradeList(measureResultDetail4);
 
         /**未达上限*/
         InvocationStatDimension invocation5 = new InvocationStatDimension(ProviderHelper.toProviderInfo("ip3"),
-            consumerConfig);
+                consumerConfig);
         MeasureResultDetail measureResultDetail5 = new MeasureResultDetail(invocation5, MeasureState.ABNORMAL);
         Assert.assertFalse(regulationStrategy.isReachMaxDegradeIpCount(measureResultDetail5));
 
         /**已达上限*/
         InvocationStatDimension invocation6 = new InvocationStatDimension(ProviderHelper.toProviderInfo("ip1"),
-            consumerConfig);
+                consumerConfig);
         MeasureResultDetail measureResultDetail6 = new MeasureResultDetail(invocation6, MeasureState.ABNORMAL);
         Assert.assertTrue(regulationStrategy.isReachMaxDegradeIpCount(measureResultDetail6));
     }

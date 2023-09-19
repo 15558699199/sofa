@@ -32,7 +32,9 @@ import com.alipay.sofa.rpc.log.LoggerFactory;
 @Extension("log")
 public class LogPrintDegradeStrategy implements DegradeStrategy {
 
-    /** Logger for this class */
+    /**
+     * Logger for this class
+     */
     private static final Logger LOGGER = LoggerFactory.getLogger(LogPrintDegradeStrategy.class);
 
     @Override
@@ -48,8 +50,8 @@ public class LogPrintDegradeStrategy implements DegradeStrategy {
             String ip = statDimension.getIp();
 
             LOGGER.infoWithApp(appName,
-                LogCodes.getLog(LogCodes.INFO_REGULATION_ABNORMAL, timeWindow, service, appName,
-                    windowCount, abnormalRate, averageAbnormalRate, ip));
+                    LogCodes.getLog(LogCodes.INFO_REGULATION_ABNORMAL, timeWindow, service, appName,
+                            windowCount, abnormalRate, averageAbnormalRate, ip));
         }
     }
 }

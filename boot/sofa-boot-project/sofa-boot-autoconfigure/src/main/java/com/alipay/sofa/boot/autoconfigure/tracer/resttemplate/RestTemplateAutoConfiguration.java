@@ -33,17 +33,17 @@ import org.springframework.web.client.RestTemplate;
  * @author huzijie
  **/
 @AutoConfiguration
-@ConditionalOnClass({ RestTemplateTracer.class, RestTemplateEnhance.class, RestTemplate.class })
+@ConditionalOnClass({RestTemplateTracer.class, RestTemplateEnhance.class, RestTemplate.class})
 @ConditionalOnProperty(name = "sofa.boot.tracer.resttemplate.enabled", havingValue = "true", matchIfMissing = true)
 public class RestTemplateAutoConfiguration {
 
     @Bean
-    public RestTemplateEnhance sofaTracerRestTemplateEnhance() {
-        return new RestTemplateEnhance();
+    public static RestTemplateBeanPostProcessor sofaTracerRestTemplateBeanPostProcessor(RestTemplateEnhance sofaTracerRestTemplateEnhance) {
+        return new RestTemplateBeanPostProcessor(sofaTracerRestTemplateEnhance);
     }
 
     @Bean
-    public static RestTemplateBeanPostProcessor sofaTracerRestTemplateBeanPostProcessor(RestTemplateEnhance sofaTracerRestTemplateEnhance) {
-        return new RestTemplateBeanPostProcessor(sofaTracerRestTemplateEnhance);
+    public RestTemplateEnhance sofaTracerRestTemplateEnhance() {
+        return new RestTemplateEnhance();
     }
 }

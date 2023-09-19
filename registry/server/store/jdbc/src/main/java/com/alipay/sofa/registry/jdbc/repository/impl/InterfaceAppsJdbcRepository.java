@@ -23,7 +23,6 @@ import com.alipay.sofa.registry.jdbc.constant.TableEnum;
 import com.alipay.sofa.registry.jdbc.domain.InterfaceAppsIndexDomain;
 import com.alipay.sofa.registry.jdbc.informer.BaseInformer;
 import com.alipay.sofa.registry.jdbc.mapper.InterfaceAppsIndexMapper;
-import com.alipay.sofa.registry.jdbc.repository.impl.AppRevisionJdbcRepository.Informer;
 import com.alipay.sofa.registry.log.Logger;
 import com.alipay.sofa.registry.log.LoggerFactory;
 import com.alipay.sofa.registry.store.api.config.DefaultCommonConfig;
@@ -34,10 +33,11 @@ import com.alipay.sofa.registry.util.ParaCheckUtil;
 import com.alipay.sofa.registry.util.StringFormatter;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Sets;
-import java.util.*;
-import java.util.Map.Entry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
+
+import java.util.*;
+import java.util.Map.Entry;
 
 /**
  * @author xiaojian.xj
@@ -45,226 +45,223 @@ import org.springframework.util.CollectionUtils;
  */
 public class InterfaceAppsJdbcRepository implements InterfaceAppsRepository, RecoverConfig {
 
-  private static final Logger LOG = LoggerFactory.getLogger("METADATA-EXCHANGE", "[InterfaceApps]");
+    private static final Logger LOG = LoggerFactory.getLogger("METADATA-EXCHANGE", "[InterfaceApps]");
+    final Informer informer;
+    private final CachedExecutor<Tuple<String, String>, Boolean> cachedExecutor =
+            new CachedExecutor<>(1000 * 10);
+    @Autowired
+    private InterfaceAppsIndexMapper interfaceAppsIndexMapper;
+    @Autowired
+    private DefaultCommonConfig defaultCommonConfig;
+    @Autowired
+    private DateNowRepository dateNowRepository;
+    private Set<String> dataCenters = Sets.newConcurrentHashSet();
 
-  @Autowired private InterfaceAppsIndexMapper interfaceAppsIndexMapper;
-
-  @Autowired private DefaultCommonConfig defaultCommonConfig;
-
-  @Autowired private DateNowRepository dateNowRepository;
-
-  private final CachedExecutor<Tuple<String, String>, Boolean> cachedExecutor =
-      new CachedExecutor<>(1000 * 10);
-
-  final Informer informer;
-
-  public InterfaceAppsJdbcRepository() {
-    informer = new Informer();
-  }
-
-  private Set<String> dataCenters = Sets.newConcurrentHashSet();
-
-  @Override
-  public InterfaceMapping getAppNames(String dataInfoId) {
-    InterfaceAppsIndexContainer index = informer.getContainer();
-    Map<String, InterfaceMapping> mappings = index.getAppMapping(dataInfoId);
-    if (CollectionUtils.isEmpty(mappings)) {
-      return new InterfaceMapping(-1);
+    public InterfaceAppsJdbcRepository() {
+        informer = new Informer();
     }
 
-    long maxVersion = -1L;
-    Set<String> apps = Sets.newHashSet();
-    for (InterfaceMapping value : mappings.values()) {
-      if (value.getNanosVersion() > maxVersion) {
-        maxVersion = value.getNanosVersion();
-      }
-      apps.addAll(value.getApps());
-    }
-    InterfaceMapping ret = new InterfaceMapping(maxVersion, apps);
+    @Override
+    public InterfaceMapping getAppNames(String dataInfoId) {
+        InterfaceAppsIndexContainer index = informer.getContainer();
+        Map<String, InterfaceMapping> mappings = index.getAppMapping(dataInfoId);
+        if (CollectionUtils.isEmpty(mappings)) {
+            return new InterfaceMapping(-1);
+        }
 
-    return ret;
-  }
-
-  @Override
-  public void register(String appName, Set<String> interfaceNames) {
-    String localDataCenter = defaultCommonConfig.getDefaultClusterId();
-    InterfaceAppsIndexContainer c = informer.getContainer();
-
-    for (String interfaceName : interfaceNames) {
-      if (c.containsName(localDataCenter, interfaceName, appName)) {
-        continue;
-      }
-      refreshEntryToStorage(new InterfaceAppsIndexDomain(localDataCenter, interfaceName, appName));
-    }
-  }
-
-  @Override
-  public void renew(String interfaceName, String appName) {
-    refreshEntryToStorage(
-        new InterfaceAppsIndexDomain(
-            defaultCommonConfig.getDefaultClusterId(), interfaceName, appName));
-  }
-
-  @Override
-  public void startSynced() {
-    ParaCheckUtil.checkNotEmpty(dataCenters, "dataCenters");
-
-    // after set datacenters
-    informer.setEnabled(true);
-    informer.start();
-  }
-
-  @Override
-  public void waitSynced() {
-    informer.waitSynced();
-  }
-
-  protected void refreshEntryToStorage(InterfaceAppsIndexDomain entry) {
-    try {
-      cachedExecutor.execute(
-          new Tuple<>(entry.getInterfaceName(), entry.getAppName()),
-          () -> {
-            if (interfaceAppsIndexMapper.update(entry) == 0) {
-              interfaceAppsIndexMapper.replace(entry);
+        long maxVersion = -1L;
+        Set<String> apps = Sets.newHashSet();
+        for (InterfaceMapping value : mappings.values()) {
+            if (value.getNanosVersion() > maxVersion) {
+                maxVersion = value.getNanosVersion();
             }
-            LOG.info(
-                "insert interface app mapping {}=>{} succeed,entry:{}",
-                entry.getInterfaceName(),
-                entry.getAppName(),
-                entry);
-            return true;
-          });
-    } catch (Exception e) {
-      LOG.error("refresh to db failed: ", e);
-      throw new RuntimeException(
-          StringFormatter.format("refresh to db failed: {}", e.getMessage()));
-    }
-  }
+            apps.addAll(value.getApps());
+        }
+        InterfaceMapping ret = new InterfaceMapping(maxVersion, apps);
 
-  @VisibleForTesting
-  void cleanCache() {
-    cachedExecutor.clean();
-  }
-
-  public long getDataVersion() {
-    return informer.getLastLoadId();
-  }
-
-  @Override
-  public Map<String, Map<String, InterfaceMapping>> allServiceMapping() {
-    return informer.getContainer().allServiceMapping();
-  }
-
-  @Override
-  public String tableName() {
-    return TableEnum.INTERFACE_APP_INDEX.getTableName();
-  }
-
-  @Override
-  public Set<String> dataCenters() {
-    return new HashSet<>(dataCenters);
-  }
-
-  @Override
-  public synchronized void setDataCenters(Set<String> dataCenters) {
-
-    if (!this.dataCenters.equals(dataCenters)) {
-      // wakeup list loop to rebuild container
-      LOG.info("dataCenters change from {} to {}", this.dataCenters, dataCenters);
-      this.dataCenters = dataCenters;
-      informer.listWakeup();
-    }
-  }
-
-  class Informer extends BaseInformer<InterfaceAppsIndexDomain, InterfaceAppsIndexContainer> {
-    private ConflictCallback conflictCallback;
-
-    public Informer() {
-      super("InterfaceAppsIndex", LOG);
+        return ret;
     }
 
     @Override
-    protected InterfaceAppsIndexContainer containerFactory() {
-      return new InterfaceAppsIndexContainer();
+    public void register(String appName, Set<String> interfaceNames) {
+        String localDataCenter = defaultCommonConfig.getDefaultClusterId();
+        InterfaceAppsIndexContainer c = informer.getContainer();
+
+        for (String interfaceName : interfaceNames) {
+            if (c.containsName(localDataCenter, interfaceName, appName)) {
+                continue;
+            }
+            refreshEntryToStorage(new InterfaceAppsIndexDomain(localDataCenter, interfaceName, appName));
+        }
     }
 
     @Override
-    protected List<InterfaceAppsIndexDomain> listFromStorage(long start, int limit) {
-      List<InterfaceAppsIndexDomain> res =
-          interfaceAppsIndexMapper.queryLargeThan(dataCenters, start, limit);
-      LOG.info(
-          "query apps by interface, dataCenters:{}, start:{}, limit:{}, res:{}",
-          dataCenters,
-          start,
-          limit,
-          res.size());
-      return res;
+    public void renew(String interfaceName, String appName) {
+        refreshEntryToStorage(
+                new InterfaceAppsIndexDomain(
+                        defaultCommonConfig.getDefaultClusterId(), interfaceName, appName));
     }
 
     @Override
-    protected Date getNow() {
-      return dateNowRepository.getNow();
+    public void startSynced() {
+        ParaCheckUtil.checkNotEmpty(dataCenters, "dataCenters");
+
+        // after set datacenters
+        informer.setEnabled(true);
+        informer.start();
+    }
+
+    @Override
+    public void waitSynced() {
+        informer.waitSynced();
+    }
+
+    protected void refreshEntryToStorage(InterfaceAppsIndexDomain entry) {
+        try {
+            cachedExecutor.execute(
+                    new Tuple<>(entry.getInterfaceName(), entry.getAppName()),
+                    () -> {
+                        if (interfaceAppsIndexMapper.update(entry) == 0) {
+                            interfaceAppsIndexMapper.replace(entry);
+                        }
+                        LOG.info(
+                                "insert interface app mapping {}=>{} succeed,entry:{}",
+                                entry.getInterfaceName(),
+                                entry.getAppName(),
+                                entry);
+                        return true;
+                    });
+        } catch (Exception e) {
+            LOG.error("refresh to db failed: ", e);
+            throw new RuntimeException(
+                    StringFormatter.format("refresh to db failed: {}", e.getMessage()));
+        }
     }
 
     @VisibleForTesting
-    public void setConflictCallback(ConflictCallback runnable) {
-      conflictCallback = runnable;
+    void cleanCache() {
+        cachedExecutor.clean();
+    }
+
+    public long getDataVersion() {
+        return informer.getLastLoadId();
     }
 
     @Override
-    protected void preList(InterfaceAppsIndexContainer newContainer) {
-      InterfaceAppsIndexContainer current = this.container;
-      for (String interfaceName : current.interfaces()) {
-        Map<String, InterfaceMapping> newMappings = newContainer.getAppMapping(interfaceName);
-        Map<String, InterfaceMapping> currentMappings = current.getAppMapping(interfaceName);
-        for (Entry<String, InterfaceMapping> entry : currentMappings.entrySet()) {
-          InterfaceMapping newMapping = newMappings.get(entry.getKey());
-          InterfaceMapping currentMapping = entry.getValue();
-          if (newMapping == null
-              || newMapping.getNanosVersion() < currentMapping.getNanosVersion()
-              || (newMapping.getNanosVersion() == currentMapping.getNanosVersion()
-                  && !newMapping.getApps().equals(currentMapping.getApps()))) {
-            if (conflictCallback != null) {
-              conflictCallback.callback(current, newContainer);
-            }
-            LOG.error(
-                "version conflict dataCenter: {}, current: {}, new: {}",
-                entry.getKey(),
-                currentMapping,
-                newMapping);
-          }
-        }
-      }
+    public Map<String, Map<String, InterfaceMapping>> allServiceMapping() {
+        return informer.getContainer().allServiceMapping();
     }
-  }
 
-  interface ConflictCallback {
-    void callback(InterfaceAppsIndexContainer current, InterfaceAppsIndexContainer newContainer);
-  }
+    @Override
+    public String tableName() {
+        return TableEnum.INTERFACE_APP_INDEX.getTableName();
+    }
 
-  /**
-   * Setter method for property <tt>interfaceAppsIndexMapper</tt>.
-   *
-   * @param interfaceAppsIndexMapper value to be assigned to property interfaceAppsIndexMapper
-   * @return InterfaceAppsJdbcRepository
-   */
-  @VisibleForTesting
-  public InterfaceAppsJdbcRepository setInterfaceAppsIndexMapper(
-      InterfaceAppsIndexMapper interfaceAppsIndexMapper) {
-    this.interfaceAppsIndexMapper = interfaceAppsIndexMapper;
-    return this;
-  }
+    @Override
+    public Set<String> dataCenters() {
+        return new HashSet<>(dataCenters);
+    }
 
-  /**
-   * Setter method for property <tt>defaultCommonConfig</tt>.
-   *
-   * @param defaultCommonConfig value to be assigned to property defaultCommonConfig
-   * @return InterfaceAppsJdbcRepository
-   */
-  @VisibleForTesting
-  public InterfaceAppsJdbcRepository setDefaultCommonConfig(
-      DefaultCommonConfig defaultCommonConfig) {
-    this.defaultCommonConfig = defaultCommonConfig;
-    return this;
-  }
+    @Override
+    public synchronized void setDataCenters(Set<String> dataCenters) {
+
+        if (!this.dataCenters.equals(dataCenters)) {
+            // wakeup list loop to rebuild container
+            LOG.info("dataCenters change from {} to {}", this.dataCenters, dataCenters);
+            this.dataCenters = dataCenters;
+            informer.listWakeup();
+        }
+    }
+
+    /**
+     * Setter method for property <tt>interfaceAppsIndexMapper</tt>.
+     *
+     * @param interfaceAppsIndexMapper value to be assigned to property interfaceAppsIndexMapper
+     * @return InterfaceAppsJdbcRepository
+     */
+    @VisibleForTesting
+    public InterfaceAppsJdbcRepository setInterfaceAppsIndexMapper(
+            InterfaceAppsIndexMapper interfaceAppsIndexMapper) {
+        this.interfaceAppsIndexMapper = interfaceAppsIndexMapper;
+        return this;
+    }
+
+    /**
+     * Setter method for property <tt>defaultCommonConfig</tt>.
+     *
+     * @param defaultCommonConfig value to be assigned to property defaultCommonConfig
+     * @return InterfaceAppsJdbcRepository
+     */
+    @VisibleForTesting
+    public InterfaceAppsJdbcRepository setDefaultCommonConfig(
+            DefaultCommonConfig defaultCommonConfig) {
+        this.defaultCommonConfig = defaultCommonConfig;
+        return this;
+    }
+
+    interface ConflictCallback {
+        void callback(InterfaceAppsIndexContainer current, InterfaceAppsIndexContainer newContainer);
+    }
+
+    class Informer extends BaseInformer<InterfaceAppsIndexDomain, InterfaceAppsIndexContainer> {
+        private ConflictCallback conflictCallback;
+
+        public Informer() {
+            super("InterfaceAppsIndex", LOG);
+        }
+
+        @Override
+        protected InterfaceAppsIndexContainer containerFactory() {
+            return new InterfaceAppsIndexContainer();
+        }
+
+        @Override
+        protected List<InterfaceAppsIndexDomain> listFromStorage(long start, int limit) {
+            List<InterfaceAppsIndexDomain> res =
+                    interfaceAppsIndexMapper.queryLargeThan(dataCenters, start, limit);
+            LOG.info(
+                    "query apps by interface, dataCenters:{}, start:{}, limit:{}, res:{}",
+                    dataCenters,
+                    start,
+                    limit,
+                    res.size());
+            return res;
+        }
+
+        @Override
+        protected Date getNow() {
+            return dateNowRepository.getNow();
+        }
+
+        @VisibleForTesting
+        public void setConflictCallback(ConflictCallback runnable) {
+            conflictCallback = runnable;
+        }
+
+        @Override
+        protected void preList(InterfaceAppsIndexContainer newContainer) {
+            InterfaceAppsIndexContainer current = this.container;
+            for (String interfaceName : current.interfaces()) {
+                Map<String, InterfaceMapping> newMappings = newContainer.getAppMapping(interfaceName);
+                Map<String, InterfaceMapping> currentMappings = current.getAppMapping(interfaceName);
+                for (Entry<String, InterfaceMapping> entry : currentMappings.entrySet()) {
+                    InterfaceMapping newMapping = newMappings.get(entry.getKey());
+                    InterfaceMapping currentMapping = entry.getValue();
+                    if (newMapping == null
+                            || newMapping.getNanosVersion() < currentMapping.getNanosVersion()
+                            || (newMapping.getNanosVersion() == currentMapping.getNanosVersion()
+                            && !newMapping.getApps().equals(currentMapping.getApps()))) {
+                        if (conflictCallback != null) {
+                            conflictCallback.callback(current, newContainer);
+                        }
+                        LOG.error(
+                                "version conflict dataCenter: {}, current: {}, new: {}",
+                                entry.getKey(),
+                                currentMapping,
+                                newMapping);
+                    }
+                }
+            }
+        }
+    }
 }

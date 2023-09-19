@@ -21,9 +21,10 @@ import com.alipay.sofa.registry.server.session.bootstrap.SessionServerConfig;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.Weigher;
-import java.util.concurrent.TimeUnit;
-import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.annotation.PostConstruct;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author xiaojian.xj
@@ -31,23 +32,24 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class SessionDatumCacheService extends SessionCacheService {
 
-  @Autowired SessionServerConfig sessionServerConfig;
+    @Autowired
+    SessionServerConfig sessionServerConfig;
 
-  @PostConstruct
-  public void init() {
-    this.readWriteCacheMap =
-        CacheBuilder.newBuilder()
-            .maximumWeight(sessionServerConfig.getCacheDatumMaxWeight())
-            .weigher((Weigher<Key, Value>) (key, value) -> key.size() + value.size())
-            .expireAfterWrite(sessionServerConfig.getCacheDatumExpireSecs(), TimeUnit.SECONDS)
-            .removalListener(new RemoveListener())
-            .build(
-                new CacheLoader<Key, Value>() {
-                  @Override
-                  public Value load(Key key) {
-                    return generatePayload(key);
-                  }
-                });
-    CacheCleaner.autoClean(readWriteCacheMap, 10);
-  }
+    @PostConstruct
+    public void init() {
+        this.readWriteCacheMap =
+                CacheBuilder.newBuilder()
+                        .maximumWeight(sessionServerConfig.getCacheDatumMaxWeight())
+                        .weigher((Weigher<Key, Value>) (key, value) -> key.size() + value.size())
+                        .expireAfterWrite(sessionServerConfig.getCacheDatumExpireSecs(), TimeUnit.SECONDS)
+                        .removalListener(new RemoveListener())
+                        .build(
+                                new CacheLoader<Key, Value>() {
+                                    @Override
+                                    public Value load(Key key) {
+                                        return generatePayload(key);
+                                    }
+                                });
+        CacheCleaner.autoClean(readWriteCacheMap, 10);
+    }
 }

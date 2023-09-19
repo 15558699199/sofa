@@ -37,45 +37,45 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 public class ProvideDataTest extends BaseIntegrationTest {
 
-  private ProvideDataRepository provideDataRepository;
+    private ProvideDataRepository provideDataRepository;
 
-  private ProvideDataService provideDataService;
+    private ProvideDataService provideDataService;
 
-  @Before
-  public void beforeProvideDataTest() {
-    MockitoAnnotations.initMocks(this);
+    @Before
+    public void beforeProvideDataTest() {
+        MockitoAnnotations.initMocks(this);
 
-    provideDataRepository =
-        metaApplicationContext.getBean("provideDataJdbcRepository", ProvideDataRepository.class);
+        provideDataRepository =
+                metaApplicationContext.getBean("provideDataJdbcRepository", ProvideDataRepository.class);
 
-    provideDataService =
-        metaApplicationContext.getBean("provideDataService", ProvideDataService.class);
-  }
+        provideDataService =
+                metaApplicationContext.getBean("provideDataService", ProvideDataService.class);
+    }
 
-  @Test
-  public void testProvideData() throws InterruptedException {
+    @Test
+    public void testProvideData() throws InterruptedException {
 
-    String key = "keyA" + System.currentTimeMillis();
-    String value = "valueA" + System.currentTimeMillis();
+        String key = "keyA" + System.currentTimeMillis();
+        String value = "valueA" + System.currentTimeMillis();
 
-    String dataInfoId = DataInfo.toDataInfoId(key, "DEFAULT", "DEFAULT");
-    PersistenceData data = PersistenceDataBuilder.createPersistenceData(dataInfoId, value);
-    boolean save = provideDataService.saveProvideData(data);
-    Assert.assertTrue(save);
-    Assert.assertEquals(
-        value, provideDataService.queryProvideData(dataInfoId).getEntity().getData());
+        String dataInfoId = DataInfo.toDataInfoId(key, "DEFAULT", "DEFAULT");
+        PersistenceData data = PersistenceDataBuilder.createPersistenceData(dataInfoId, value);
+        boolean save = provideDataService.saveProvideData(data);
+        Assert.assertTrue(save);
+        Assert.assertEquals(
+                value, provideDataService.queryProvideData(dataInfoId).getEntity().getData());
 
-    PersistenceData newData = new PersistenceData();
-    BeanUtils.copyProperties(data, newData);
-    long exceptVersion = newData.getVersion();
-    newData.setData("new valueA");
-    newData.setVersion(System.currentTimeMillis());
-    boolean put = provideDataRepository.put(newData, exceptVersion);
-    Assert.assertTrue(put);
+        PersistenceData newData = new PersistenceData();
+        BeanUtils.copyProperties(data, newData);
+        long exceptVersion = newData.getVersion();
+        newData.setData("new valueA");
+        newData.setVersion(System.currentTimeMillis());
+        boolean put = provideDataRepository.put(newData, exceptVersion);
+        Assert.assertTrue(put);
 
-    provideDataService.becomeLeader();
-    Thread.sleep(5000);
-    Assert.assertEquals(
-        newData.getData(), provideDataService.queryProvideData(dataInfoId).getEntity().getData());
-  }
+        provideDataService.becomeLeader();
+        Thread.sleep(5000);
+        Assert.assertEquals(
+                newData.getData(), provideDataService.queryProvideData(dataInfoId).getEntity().getData());
+    }
 }

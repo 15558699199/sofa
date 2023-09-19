@@ -20,6 +20,7 @@ import com.alipay.sofa.registry.common.model.appmeta.InterfaceMapping;
 import com.alipay.sofa.registry.log.Logger;
 import com.alipay.sofa.registry.log.LoggerFactory;
 import com.alipay.sofa.registry.store.api.repository.InterfaceAppsRepository;
+
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -29,50 +30,56 @@ import java.util.concurrent.ConcurrentHashMap;
  * @version $Id: InterfaceAppsRaftRepository.java, v 0.1 2021年01月24日 19:44 xiaojian.xj Exp $
  */
 public class InterfaceAppsRaftRepository implements InterfaceAppsRepository {
-  protected static final Logger LOG = LoggerFactory.getLogger(InterfaceAppsRaftRepository.class);
+    protected static final Logger LOG = LoggerFactory.getLogger(InterfaceAppsRaftRepository.class);
 
-  /** map: interface, appNames */
-  protected final Map<String, InterfaceMapping> interfaceApps = new ConcurrentHashMap<>();
+    /**
+     * map: interface, appNames
+     */
+    protected final Map<String, InterfaceMapping> interfaceApps = new ConcurrentHashMap<>();
 
-  @Override
-  public InterfaceMapping getAppNames(String dataInfoId) {
-    final InterfaceMapping ret = interfaceApps.get(dataInfoId);
-    return ret;
-  }
-
-  @Override
-  public void register(String appName, Set<String> interfaceNames) {
-    for (String interfaceName : interfaceNames) {
-      InterfaceMapping interfaceMapping =
-          interfaceApps.computeIfAbsent(interfaceName, k -> new InterfaceMapping(-1));
-      interfaceMapping.getApps().add(appName);
+    @Override
+    public InterfaceMapping getAppNames(String dataInfoId) {
+        final InterfaceMapping ret = interfaceApps.get(dataInfoId);
+        return ret;
     }
-  }
 
-  @Override
-  public void renew(String interfaceName, String appName) {}
+    @Override
+    public void register(String appName, Set<String> interfaceNames) {
+        for (String interfaceName : interfaceNames) {
+            InterfaceMapping interfaceMapping =
+                    interfaceApps.computeIfAbsent(interfaceName, k -> new InterfaceMapping(-1));
+            interfaceMapping.getApps().add(appName);
+        }
+    }
 
-  @Override
-  public void startSynced() {}
+    @Override
+    public void renew(String interfaceName, String appName) {
+    }
 
-  @Override
-  public void waitSynced() {}
+    @Override
+    public void startSynced() {
+    }
 
-  @Override
-  public long getDataVersion() {
-    return 0;
-  }
+    @Override
+    public void waitSynced() {
+    }
 
-  @Override
-  public Map<String, Map<String, InterfaceMapping>> allServiceMapping() {
-    return null;
-  }
+    @Override
+    public long getDataVersion() {
+        return 0;
+    }
 
-  @Override
-  public Set<String> dataCenters() {
-    return null;
-  }
+    @Override
+    public Map<String, Map<String, InterfaceMapping>> allServiceMapping() {
+        return null;
+    }
 
-  @Override
-  public void setDataCenters(Set<String> dataCenters) {}
+    @Override
+    public Set<String> dataCenters() {
+        return null;
+    }
+
+    @Override
+    public void setDataCenters(Set<String> dataCenters) {
+    }
 }

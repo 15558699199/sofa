@@ -46,7 +46,7 @@ public class RpcAfterHealthCheckCallback implements ReadinessCheckCallback, Prio
             return builder.status(Status.UP).build();
         } else {
             return builder.status(Status.DOWN).withDetail("Reason", "Rpc service start fail")
-                .build();
+                    .build();
         }
     }
 

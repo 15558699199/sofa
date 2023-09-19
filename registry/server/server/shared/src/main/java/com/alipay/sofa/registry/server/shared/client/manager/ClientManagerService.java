@@ -20,6 +20,7 @@ import com.alipay.sofa.registry.common.model.metaserver.ClientManagerAddress;
 import com.alipay.sofa.registry.common.model.metaserver.ClientManagerAddress.AddressVersion;
 import com.alipay.sofa.registry.common.model.metaserver.ClientManagerResult;
 import com.alipay.sofa.registry.store.api.DBResponse;
+
 import java.util.Set;
 
 /**
@@ -28,37 +29,38 @@ import java.util.Set;
  */
 public interface ClientManagerService {
 
-  /**
-   * client open
-   *
-   * @param ipSet
-   * @return
-   */
-  ClientManagerResult clientOpen(Set<String> ipSet);
+    /**
+     * client open
+     *
+     * @param ipSet
+     * @return
+     */
+    ClientManagerResult clientOpen(Set<String> ipSet);
 
-  /**
-   * client off
-   *
-   * @param ipSet
-   * @return
-   */
-  ClientManagerResult clientOff(Set<String> ipSet);
+    /**
+     * client off
+     *
+     * @param ipSet
+     * @return
+     */
+    ClientManagerResult clientOff(Set<String> ipSet);
 
-  ClientManagerResult clientOffWithSub(Set<AddressVersion> address);
+    ClientManagerResult clientOffWithSub(Set<AddressVersion> address);
 
-  /**
-   * query client off ips
-   *
-   * @return
-   */
-  DBResponse<ClientManagerAddress> queryClientOffAddress();
-  /**
-   * reduce
-   *
-   * @param ipSet
-   * @return
-   */
-  ClientManagerResult reduce(Set<String> ipSet);
+    /**
+     * query client off ips
+     *
+     * @return
+     */
+    DBResponse<ClientManagerAddress> queryClientOffAddress();
 
-  void waitSynced();
+    /**
+     * reduce
+     *
+     * @param ipSet
+     * @return
+     */
+    ClientManagerResult reduce(Set<String> ipSet);
+
+    void waitSynced();
 }

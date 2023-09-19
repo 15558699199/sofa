@@ -26,20 +26,22 @@ import java.util.List;
  */
 public interface Worker {
 
-  /**
-   * Schedule.
-   *
-   * @param event the event
-   */
-  void schedule(TaskEvent event);
+    /**
+     * Schedule.
+     *
+     * @param event the event
+     */
+    void schedule(TaskEvent event);
 
-  /**
-   * Schedule.
-   *
-   * @param events the events
-   */
-  void schedule(List<TaskEvent> events);
+    /**
+     * Schedule.
+     *
+     * @param events the events
+     */
+    void schedule(List<TaskEvent> events);
 
-  /** Handle. */
-  void handle();
+    /**
+     * Handle.
+     */
+    void handle();
 }

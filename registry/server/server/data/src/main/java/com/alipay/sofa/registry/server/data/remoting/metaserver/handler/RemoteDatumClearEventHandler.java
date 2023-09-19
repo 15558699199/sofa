@@ -24,9 +24,10 @@ import com.alipay.sofa.registry.remoting.Channel;
 import com.alipay.sofa.registry.server.data.multi.cluster.storage.MultiClusterDatumService;
 import com.alipay.sofa.registry.server.shared.remoting.AbstractClientHandler;
 import com.alipay.sofa.registry.util.ParaCheckUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.util.concurrent.Executor;
 import java.util.concurrent.ThreadPoolExecutor;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * @author xiaojian.xj
@@ -34,57 +35,59 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class RemoteDatumClearEventHandler extends AbstractClientHandler<RemoteDatumClearEvent> {
 
-  @Autowired private ThreadPoolExecutor metaNodeExecutor;
+    @Autowired
+    private ThreadPoolExecutor metaNodeExecutor;
 
-  @Autowired private MultiClusterDatumService multiClusterDatumService;
+    @Autowired
+    private MultiClusterDatumService multiClusterDatumService;
 
-  /**
-   * return processor request class name
-   *
-   * @return Class
-   */
-  @Override
-  public Class interest() {
-    return RemoteDatumClearEvent.class;
-  }
-
-  @Override
-  protected NodeType getConnectNodeType() {
-    return NodeType.META;
-  }
-
-  @Override
-  public void checkParam(RemoteDatumClearEvent request) {
-    ParaCheckUtil.checkNotNull(request, "RemoteDatumClearEvent");
-    ParaCheckUtil.checkNotBlank(request.getRemoteDataCenter(), "RemoteDataCenter");
-    ParaCheckUtil.checkNotNull(request.getDatumType(), "DatumType");
-    if (request.getDatumType() == DatumType.GROUP) {
-      ParaCheckUtil.checkNotBlank(request.getGroup(), "Group");
-    } else {
-      ParaCheckUtil.checkNotBlank(request.getDataInfoId(), "DataInfoId");
+    /**
+     * return processor request class name
+     *
+     * @return Class
+     */
+    @Override
+    public Class interest() {
+        return RemoteDatumClearEvent.class;
     }
-  }
 
-  /**
-   * execute
-   *
-   * @param channel channel
-   * @param request request
-   * @return Object
-   */
-  @Override
-  public Object doHandle(Channel channel, RemoteDatumClearEvent request) {
-    multiClusterDatumService.clear(request);
-    return CommonResponse.buildSuccessResponse();
-  }
+    @Override
+    protected NodeType getConnectNodeType() {
+        return NodeType.META;
+    }
 
-  @Override
-  public CommonResponse buildFailedResponse(String msg) {
-    return CommonResponse.buildFailedResponse(msg);
-  }
+    @Override
+    public void checkParam(RemoteDatumClearEvent request) {
+        ParaCheckUtil.checkNotNull(request, "RemoteDatumClearEvent");
+        ParaCheckUtil.checkNotBlank(request.getRemoteDataCenter(), "RemoteDataCenter");
+        ParaCheckUtil.checkNotNull(request.getDatumType(), "DatumType");
+        if (request.getDatumType() == DatumType.GROUP) {
+            ParaCheckUtil.checkNotBlank(request.getGroup(), "Group");
+        } else {
+            ParaCheckUtil.checkNotBlank(request.getDataInfoId(), "DataInfoId");
+        }
+    }
 
-  @Override
-  public Executor getExecutor() {
-    return metaNodeExecutor;
-  }
+    /**
+     * execute
+     *
+     * @param channel channel
+     * @param request request
+     * @return Object
+     */
+    @Override
+    public Object doHandle(Channel channel, RemoteDatumClearEvent request) {
+        multiClusterDatumService.clear(request);
+        return CommonResponse.buildSuccessResponse();
+    }
+
+    @Override
+    public CommonResponse buildFailedResponse(String msg) {
+        return CommonResponse.buildFailedResponse(msg);
+    }
+
+    @Override
+    public Executor getExecutor() {
+        return metaNodeExecutor;
+    }
 }

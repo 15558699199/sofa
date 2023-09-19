@@ -21,10 +21,10 @@ package com.alipay.sofa.rpc.server.triple;
  */
 public class TripleContants {
 
-    public static final String SOFA_REQUEST_KEY         = "_SOFA_REQUEST";
+    public static final String SOFA_REQUEST_KEY = "_SOFA_REQUEST";
 
     public static final String SOFA_CONSUMER_CONFIG_KEY = "_SOFA_CONSUMER_CONFIG";
 
-    public static final String SOFA_UNIQUE_ID           = "_SOFA_UNIQUE_ID";
+    public static final String SOFA_UNIQUE_ID = "_SOFA_UNIQUE_ID";
 
 }

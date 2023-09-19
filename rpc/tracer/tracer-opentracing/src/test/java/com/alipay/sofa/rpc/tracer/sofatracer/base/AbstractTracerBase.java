@@ -42,7 +42,7 @@ import java.util.Map;
  */
 public abstract class AbstractTracerBase {
 
-    protected final static Logger LOGGER       = LoggerFactory.getLogger(AbstractTracerBase.class);
+    protected final static Logger LOGGER = LoggerFactory.getLogger(AbstractTracerBase.class);
 
     protected final static String logDirectory = TracerLogRootDaemon.LOG_FILE_DIR;
 
@@ -79,10 +79,10 @@ public abstract class AbstractTracerBase {
     protected void removeRpcDigestStatLogType() throws Exception {
 
         AsyncCommonDigestAppenderManager asyncDigestManager = SofaTracerDigestReporterAsyncManager
-            .getSofaTracerDigestReporterAsyncManager();
+                .getSofaTracerDigestReporterAsyncManager();
         //stat
         Map<Long, SofaTracerStatisticReporterManager> cycleTimesManager = SofaTracerStatisticReporterCycleTimesManager
-            .getCycleTimesManager();
+                .getCycleTimesManager();
         for (Map.Entry<Long, SofaTracerStatisticReporterManager> entry : cycleTimesManager.entrySet()) {
             SofaTracerStatisticReporterManager manager = entry.getValue();
             manager.getStatReporters().clear();

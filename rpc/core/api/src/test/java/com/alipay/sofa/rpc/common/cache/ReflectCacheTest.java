@@ -34,6 +34,18 @@ import java.net.URLClassLoader;
  */
 public class ReflectCacheTest {
 
+    @AfterClass
+    public static void testClear() {
+        ReflectCache.clearAll();
+        Assert.assertTrue(ReflectCache.CLASS_CACHE.size() == 0);
+        Assert.assertTrue(ReflectCache.TYPE_STR_CACHE.size() == 0);
+        Assert.assertTrue(ReflectCache.APPNAME_CLASSLOADER_MAP.size() == 0);
+        Assert.assertTrue(ReflectCache.SERVICE_CLASSLOADER_MAP.size() == 0);
+        Assert.assertTrue(ReflectCache.NOT_OVERLOAD_METHOD_CACHE.size() == 0);
+        Assert.assertTrue(ReflectCache.NOT_OVERLOAD_METHOD_SIGS_CACHE.size() == 0);
+        Assert.assertTrue(ReflectCache.OVERLOAD_METHOD_CACHE.size() == 0);
+    }
+
     @Test
     public void testAppClassLoader() {
         URLClassLoader cl1 = new URLClassLoader(new URL[0]);
@@ -56,7 +68,7 @@ public class ReflectCacheTest {
         Assert.assertEquals(cl1, ReflectCache.getServiceClassLoader("xxx"));
         Assert.assertEquals(cl2, ReflectCache.getServiceClassLoader("yyy"));
         Assert.assertEquals(ClassLoaderUtils.getCurrentClassLoader(),
-            ReflectCache.getServiceClassLoader("zzz"));
+                ReflectCache.getServiceClassLoader("zzz"));
 
         ReflectCache.SERVICE_CLASSLOADER_MAP.clear();
     }
@@ -93,9 +105,9 @@ public class ReflectCacheTest {
         Assert.assertNull(ReflectCache.getMethodSigsCache(key, "invoke"));
 
         ReflectCache.putMethodSigsCache(key, method.getName(),
-            ClassTypeUtils.getTypeStrs(method.getParameterTypes(), true));
-        Assert.assertArrayEquals(new String[] { SofaRequest.class.getCanonicalName() },
-            ReflectCache.getMethodSigsCache(key, "invoke"));
+                ClassTypeUtils.getTypeStrs(method.getParameterTypes(), true));
+        Assert.assertArrayEquals(new String[]{SofaRequest.class.getCanonicalName()},
+                ReflectCache.getMethodSigsCache(key, "invoke"));
 
         ReflectCache.invalidateMethodSigsCache(key);
         Assert.assertNull(ReflectCache.NOT_OVERLOAD_METHOD_CACHE.get(key));
@@ -107,31 +119,19 @@ public class ReflectCacheTest {
         final Method method1 = ReflectUtils.getMethod(TestInterface2.class, "invoke", SofaRequest.class);
         final Method method2 = ReflectUtils.getMethod(TestInterface2.class, "invoke", SofaRequest.class, String.class);
         Assert.assertNull(ReflectCache.getOverloadMethodCache(key, "invoke",
-            new String[] { SofaRequest.class.getCanonicalName(), String.class.getCanonicalName() }));
+                new String[]{SofaRequest.class.getCanonicalName(), String.class.getCanonicalName()}));
         Assert.assertNull(ReflectCache.getOverloadMethodCache(key, "invoke",
-            new String[] { SofaRequest.class.getCanonicalName() }));
+                new String[]{SofaRequest.class.getCanonicalName()}));
 
         ReflectCache.putOverloadMethodCache(key, method1);
         ReflectCache.putOverloadMethodCache(key, method2);
         Assert.assertEquals(method1, ReflectCache.getOverloadMethodCache(key, "invoke",
-            new String[] { SofaRequest.class.getCanonicalName() }));
+                new String[]{SofaRequest.class.getCanonicalName()}));
         Assert.assertEquals(method2, ReflectCache.getOverloadMethodCache(key, "invoke",
-            new String[] { SofaRequest.class.getCanonicalName(), String.class.getCanonicalName() }));
+                new String[]{SofaRequest.class.getCanonicalName(), String.class.getCanonicalName()}));
 
         ReflectCache.invalidateOverloadMethodCache(key);
         Assert.assertNull(ReflectCache.NOT_OVERLOAD_METHOD_CACHE.get(key));
-    }
-
-    @AfterClass
-    public static void testClear() {
-        ReflectCache.clearAll();
-        Assert.assertTrue(ReflectCache.CLASS_CACHE.size() == 0);
-        Assert.assertTrue(ReflectCache.TYPE_STR_CACHE.size() == 0);
-        Assert.assertTrue(ReflectCache.APPNAME_CLASSLOADER_MAP.size() == 0);
-        Assert.assertTrue(ReflectCache.SERVICE_CLASSLOADER_MAP.size() == 0);
-        Assert.assertTrue(ReflectCache.NOT_OVERLOAD_METHOD_CACHE.size() == 0);
-        Assert.assertTrue(ReflectCache.NOT_OVERLOAD_METHOD_SIGS_CACHE.size() == 0);
-        Assert.assertTrue(ReflectCache.OVERLOAD_METHOD_CACHE.size() == 0);
     }
 
     interface TestInterface {

@@ -20,6 +20,7 @@ import com.alipay.sofa.registry.common.model.client.pb.GetRevisionsRequest;
 import com.alipay.sofa.registry.common.model.client.pb.GetRevisionsResponse;
 import com.alipay.sofa.registry.remoting.Channel;
 import com.alipay.sofa.registry.util.ParaCheckUtil;
+
 import java.util.List;
 
 /**
@@ -27,23 +28,23 @@ import java.util.List;
  * @version $Id: GetRevisionPbHandler.java, v 0.1 2021年02月04日 21:55 xiaojian.xj Exp $
  */
 public class GetRevisionPbHandler
-    extends AbstractClientMetadataRequestHandler<GetRevisionsRequest> {
+        extends AbstractClientMetadataRequestHandler<GetRevisionsRequest> {
 
-  @Override
-  public void checkParam(GetRevisionsRequest request) {
-    ParaCheckUtil.checkNotNull(request, "request");
-    ParaCheckUtil.checkNotEmpty(request.getRevisionsList(), "request.revisions");
-  }
+    @Override
+    public void checkParam(GetRevisionsRequest request) {
+        ParaCheckUtil.checkNotNull(request, "request");
+        ParaCheckUtil.checkNotEmpty(request.getRevisionsList(), "request.revisions");
+    }
 
-  @Override
-  public Object doHandle(Channel channel, GetRevisionsRequest request) {
-    List<String> revisions = request.getRevisionsList();
-    GetRevisionsResponse response = appRevisionHandlerStrategy.queryRevision(revisions);
-    return response;
-  }
+    @Override
+    public Object doHandle(Channel channel, GetRevisionsRequest request) {
+        List<String> revisions = request.getRevisionsList();
+        GetRevisionsResponse response = appRevisionHandlerStrategy.queryRevision(revisions);
+        return response;
+    }
 
-  @Override
-  public Class interest() {
-    return GetRevisionsRequest.class;
-  }
+    @Override
+    public Class interest() {
+        return GetRevisionsRequest.class;
+    }
 }

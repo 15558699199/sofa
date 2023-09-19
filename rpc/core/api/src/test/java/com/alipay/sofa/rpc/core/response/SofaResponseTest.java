@@ -24,8 +24,6 @@ import java.util.Collections;
 import java.util.Map;
 
 /**
- *
- *
  * @author <a href="mailto:zhanggeng.zg@antfin.com">GengZhang</a>
  */
 public class SofaResponseTest {
@@ -57,7 +55,7 @@ public class SofaResponseTest {
         Assert.assertEquals("1233", response.getAppResponse());
 
         response.setSerializeType((byte) 11);
-        response.setData(new ByteArrayWrapperByteBuf(new byte[] { 1, 2, 3 }));
+        response.setData(new ByteArrayWrapperByteBuf(new byte[]{1, 2, 3}));
         Assert.assertTrue(response.getSerializeType() == 11);
         Assert.assertTrue(response.getData().array().length == 3);
 

@@ -46,29 +46,29 @@ public class NotFoundInvokerTest extends ActivelyDestroyTest {
     public void testAll() {
 
         ServerConfig serverConfig = new ServerConfig()
-            .setStopTimeout(0).setPort(22222)
-            .setQueues(100).setCoreThreads(10).setMaxThreads(10);
+                .setStopTimeout(0).setPort(22222)
+                .setQueues(100).setCoreThreads(10).setMaxThreads(10);
 
         // 发布一个服务，每个请求要执行1秒
         ProviderConfig<HelloService> providerConfig = new ProviderConfig<HelloService>()
-            .setInterfaceId(HelloService.class.getName())
-            .setRef(new HelloServiceImpl(1500))
-            .setServer(serverConfig)
-            .setRegister(false);
+                .setInterfaceId(HelloService.class.getName())
+                .setRef(new HelloServiceImpl(1500))
+                .setServer(serverConfig)
+                .setRegister(false);
         providerConfig.export();
 
         ConsumerConfig<HelloService> consumerConfig = new ConsumerConfig<HelloService>()
-            .setInterfaceId(HelloService.class.getName())
-            .setDirectUrl("bolt://127.0.0.1:22222")
-            .setTimeout(30000)
-            .setFilterRef(Collections.<Filter> singletonList(new Filter() {
-                @Override
-                public SofaResponse invoke(FilterInvoker invoker, SofaRequest request) throws SofaRpcException {
-                    request.setMethodName(request.getMethodName() + "_unknown"); // 造一个假方法
-                    return invoker.invoke(request);
-                }
-            }))
-            .setRegister(false);
+                .setInterfaceId(HelloService.class.getName())
+                .setDirectUrl("bolt://127.0.0.1:22222")
+                .setTimeout(30000)
+                .setFilterRef(Collections.<Filter>singletonList(new Filter() {
+                    @Override
+                    public SofaResponse invoke(FilterInvoker invoker, SofaRequest request) throws SofaRpcException {
+                        request.setMethodName(request.getMethodName() + "_unknown"); // 造一个假方法
+                        return invoker.invoke(request);
+                    }
+                }))
+                .setRegister(false);
 
         HelloService helloService = consumerConfig.refer();
         boolean ok = true;
@@ -79,17 +79,17 @@ public class NotFoundInvokerTest extends ActivelyDestroyTest {
                 Assert.assertEquals(((SofaRpcException) e).getErrorType(), RpcErrorType.SERVER_UNDECLARED_ERROR);
             } else if (e instanceof UndeclaredThrowableException) {
                 Assert.assertEquals(((SofaRpcException) e.getCause()).getErrorType(),
-                    RpcErrorType.SERVER_UNDECLARED_ERROR);
+                        RpcErrorType.SERVER_UNDECLARED_ERROR);
             }
             ok = false;
         }
         Assert.assertFalse(ok);
 
         ConsumerConfig<EchoService> consumerConfig2 = new ConsumerConfig<EchoService>()
-            .setInterfaceId(EchoService.class.getName())
-            .setDirectUrl("bolt://127.0.0.1:22222")
-            .setTimeout(30000)
-            .setRegister(false);
+                .setInterfaceId(EchoService.class.getName())
+                .setDirectUrl("bolt://127.0.0.1:22222")
+                .setTimeout(30000)
+                .setRegister(false);
 
         EchoService echoService = consumerConfig2.refer();
 
@@ -101,7 +101,7 @@ public class NotFoundInvokerTest extends ActivelyDestroyTest {
                 Assert.assertEquals(((SofaRpcException) e).getErrorType(), RpcErrorType.SERVER_UNDECLARED_ERROR);
             } else if (e instanceof UndeclaredThrowableException) {
                 Assert.assertEquals(((SofaRpcException) e.getCause()).getErrorType(),
-                    RpcErrorType.SERVER_UNDECLARED_ERROR);
+                        RpcErrorType.SERVER_UNDECLARED_ERROR);
             }
             ok = false;
         }

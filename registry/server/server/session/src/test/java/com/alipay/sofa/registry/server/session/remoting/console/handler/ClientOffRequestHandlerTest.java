@@ -16,8 +16,6 @@
  */
 package com.alipay.sofa.registry.server.session.remoting.console.handler;
 
-import static org.mockito.Mockito.mock;
-
 import com.alipay.sofa.registry.common.model.CommonResponse;
 import com.alipay.sofa.registry.common.model.Node;
 import com.alipay.sofa.registry.common.model.sessionserver.ClientOffRequest;
@@ -31,35 +29,37 @@ import org.assertj.core.util.Lists;
 import org.junit.Assert;
 import org.junit.Test;
 
+import static org.mockito.Mockito.mock;
+
 public class ClientOffRequestHandlerTest {
-  private SessionServerConfigBean serverConfigBean = TestUtils.newSessionConfig("testDc");
+    private SessionServerConfigBean serverConfigBean = TestUtils.newSessionConfig("testDc");
 
-  private ClientOffRequestHandler newHandler() {
-    ClientOffRequestHandler handler = new ClientOffRequestHandler();
-    handler.executorManager = new ExecutorManager(serverConfigBean);
-    Assert.assertNotNull(handler.getExecutor());
-    Assert.assertEquals(handler.interest(), ClientOffRequest.class);
-    Assert.assertEquals(handler.getConnectNodeType(), Node.NodeType.CONSOLE);
-    Assert.assertEquals(handler.getType(), ChannelHandler.HandlerType.PROCESSER);
-    Assert.assertEquals(handler.getInvokeType(), ChannelHandler.InvokeType.SYNC);
-    Assert.assertFalse(((CommonResponse) handler.buildFailedResponse("msg")).isSuccess());
-    return handler;
-  }
+    private static ClientOffRequest request() {
+        ClientOffRequest req = new ClientOffRequest(Lists.newArrayList("1", "2"));
+        Assert.assertTrue(req.toString(), req.toString().contains("1"));
+        return req;
+    }
 
-  @Test
-  public void testHandle() {
-    ClientOffRequestHandler handler = newHandler();
-    SessionServerConfigBean serverConfigBean = TestUtils.newSessionConfig("testDc");
-    handler.connectionsService = mock(ConnectionsService.class);
-    handler.sessionRegistry = mock(SessionRegistry.class);
-    handler.executorManager = new ExecutorManager(serverConfigBean);
-    CommonResponse obj = (CommonResponse) handler.doHandle(null, request());
-    Assert.assertTrue(obj.isSuccess());
-  }
+    private ClientOffRequestHandler newHandler() {
+        ClientOffRequestHandler handler = new ClientOffRequestHandler();
+        handler.executorManager = new ExecutorManager(serverConfigBean);
+        Assert.assertNotNull(handler.getExecutor());
+        Assert.assertEquals(handler.interest(), ClientOffRequest.class);
+        Assert.assertEquals(handler.getConnectNodeType(), Node.NodeType.CONSOLE);
+        Assert.assertEquals(handler.getType(), ChannelHandler.HandlerType.PROCESSER);
+        Assert.assertEquals(handler.getInvokeType(), ChannelHandler.InvokeType.SYNC);
+        Assert.assertFalse(((CommonResponse) handler.buildFailedResponse("msg")).isSuccess());
+        return handler;
+    }
 
-  private static ClientOffRequest request() {
-    ClientOffRequest req = new ClientOffRequest(Lists.newArrayList("1", "2"));
-    Assert.assertTrue(req.toString(), req.toString().contains("1"));
-    return req;
-  }
+    @Test
+    public void testHandle() {
+        ClientOffRequestHandler handler = newHandler();
+        SessionServerConfigBean serverConfigBean = TestUtils.newSessionConfig("testDc");
+        handler.connectionsService = mock(ConnectionsService.class);
+        handler.sessionRegistry = mock(SessionRegistry.class);
+        handler.executorManager = new ExecutorManager(serverConfigBean);
+        CommonResponse obj = (CommonResponse) handler.doHandle(null, request());
+        Assert.assertTrue(obj.isSuccess());
+    }
 }

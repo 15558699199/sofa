@@ -17,25 +17,42 @@
 package com.alipay.sofa.registry.common.model.client.pb;
 
 public interface ReceivedDataBodyPbOrBuilder
-    extends
-    // @@protoc_insertion_point(interface_extends:ReceivedDataBodyPb)
-    com.google.protobuf.MessageOrBuilder {
+        extends
+        // @@protoc_insertion_point(interface_extends:ReceivedDataBodyPb)
+        com.google.protobuf.MessageOrBuilder {
 
-  /** <code>map&lt;string, .DataBoxesPb&gt; data = 7;</code> */
-  int getDataCount();
-  /** <code>map&lt;string, .DataBoxesPb&gt; data = 7;</code> */
-  boolean containsData(java.lang.String key);
-  /** Use {@link #getDataMap()} instead. */
-  @java.lang.Deprecated
-  java.util.Map<java.lang.String, com.alipay.sofa.registry.common.model.client.pb.DataBoxesPb>
-      getData();
-  /** <code>map&lt;string, .DataBoxesPb&gt; data = 7;</code> */
-  java.util.Map<java.lang.String, com.alipay.sofa.registry.common.model.client.pb.DataBoxesPb>
-      getDataMap();
-  /** <code>map&lt;string, .DataBoxesPb&gt; data = 7;</code> */
-  com.alipay.sofa.registry.common.model.client.pb.DataBoxesPb getDataOrDefault(
-      java.lang.String key,
-      com.alipay.sofa.registry.common.model.client.pb.DataBoxesPb defaultValue);
-  /** <code>map&lt;string, .DataBoxesPb&gt; data = 7;</code> */
-  com.alipay.sofa.registry.common.model.client.pb.DataBoxesPb getDataOrThrow(java.lang.String key);
+    /**
+     * <code>map&lt;string, .DataBoxesPb&gt; data = 7;</code>
+     */
+    int getDataCount();
+
+    /**
+     * <code>map&lt;string, .DataBoxesPb&gt; data = 7;</code>
+     */
+    boolean containsData(java.lang.String key);
+
+    /**
+     * Use {@link #getDataMap()} instead.
+     */
+    @java.lang.Deprecated
+    java.util.Map<java.lang.String, com.alipay.sofa.registry.common.model.client.pb.DataBoxesPb>
+    getData();
+
+    /**
+     * <code>map&lt;string, .DataBoxesPb&gt; data = 7;</code>
+     */
+    java.util.Map<java.lang.String, com.alipay.sofa.registry.common.model.client.pb.DataBoxesPb>
+    getDataMap();
+
+    /**
+     * <code>map&lt;string, .DataBoxesPb&gt; data = 7;</code>
+     */
+    com.alipay.sofa.registry.common.model.client.pb.DataBoxesPb getDataOrDefault(
+            java.lang.String key,
+            com.alipay.sofa.registry.common.model.client.pb.DataBoxesPb defaultValue);
+
+    /**
+     * <code>map&lt;string, .DataBoxesPb&gt; data = 7;</code>
+     */
+    com.alipay.sofa.registry.common.model.client.pb.DataBoxesPb getDataOrThrow(java.lang.String key);
 }

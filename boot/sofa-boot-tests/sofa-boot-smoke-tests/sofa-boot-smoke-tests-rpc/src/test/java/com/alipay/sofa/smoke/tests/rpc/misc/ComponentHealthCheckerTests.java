@@ -37,7 +37,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author <a href="mailto:guaner.zzx@alipay.com">guaner.zzx</a>
  * Created on 2019/12/19
  */
-@SpringBootTest(classes = RpcSofaBootApplication.class, properties = { "timeout=10000" })
+@SpringBootTest(classes = RpcSofaBootApplication.class, properties = {"timeout=10000"})
 @Import(ComponentHealthCheckerTests.ComponentHealthCheckerTestConfiguration.class)
 public class ComponentHealthCheckerTests {
     @Autowired
@@ -46,7 +46,7 @@ public class ComponentHealthCheckerTests {
     @Test
     public void componentHealthCheckerTest() {
         ComponentHealthChecker componentHealthChecker = applicationContext
-            .getBean(ComponentHealthChecker.class);
+                .getBean(ComponentHealthChecker.class);
         Health health = componentHealthChecker.isHealthy();
         Map<String, Object> details = health.getDetails();
         for (String key : details.keySet()) {

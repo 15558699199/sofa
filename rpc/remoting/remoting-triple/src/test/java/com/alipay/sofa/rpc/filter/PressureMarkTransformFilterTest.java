@@ -45,8 +45,8 @@ import static com.alipay.sofa.rpc.server.triple.TripleHeadKeys.HEAD_KEY_TRAFFIC_
 public class PressureMarkTransformFilterTest {
 
     public static final EmptyInvoker invoker = new EmptyInvoker(null);
-    public static final SofaRequest  request = null;
-    public static final SofaTracer   tracer  = new SofaTracer.Builder("TEST").build();
+    public static final SofaRequest request = null;
+    public static final SofaTracer tracer = new SofaTracer.Builder("TEST").build();
 
     @Before
     public void before() {
@@ -116,14 +116,14 @@ public class PressureMarkTransformFilterTest {
 
     static class EmptyInvoker extends FilterInvoker {
 
-        public Map<String, String> getMetaHolder() {
-            return metaHolder;
-        }
-
         private Map<String, String> metaHolder;
 
         protected EmptyInvoker(AbstractInterfaceConfig config) {
             super(config);
+        }
+
+        public Map<String, String> getMetaHolder() {
+            return metaHolder;
         }
 
         @Override

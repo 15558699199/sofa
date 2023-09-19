@@ -16,8 +16,6 @@
  */
 package com.alipay.sofa.registry.server.meta.resource;
 
-import static org.mockito.Mockito.spy;
-
 import com.alipay.sofa.registry.common.model.GenericResponse;
 import com.alipay.sofa.registry.common.model.metaserver.ClientManagerAddress;
 import com.alipay.sofa.registry.server.meta.AbstractMetaServerTestBase;
@@ -26,54 +24,54 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.mockito.Mockito.spy;
+
 /**
  * @author xiaojian.xj
  * @version $Id: ClientManagerResourceTest.java, v 0.1 2021年05月29日 17:13 xiaojian.xj Exp $
  */
 public class ClientManagerResourceTest extends AbstractMetaServerTestBase {
 
-  private ClientManagerResource clientManagerResource;
+    private static final String CLIENT_OFF_STR = "1.1.1.1;2.2.2.2";
+    private static final String CLIENT_OPEN_STR = "2.2.2.2;3.3.3.3";
+    private static final String CLIENT_OFF_NEW_STR =
+            "[{\"address\":\"1.1.1.1\",\"pub\":true,\"sub\":false},{\"address\":\"2.2.2.2\",\"pub\":true,\"sub\":false}]";
+    private final ClientManagerService clientManagerService =
+            spy(new InMemoryClientManagerServiceRepo());
+    private ClientManagerResource clientManagerResource;
 
-  private final ClientManagerService clientManagerService =
-      spy(new InMemoryClientManagerServiceRepo());
+    @Before
+    public void beforeClientManagerResourceTest() {
+        clientManagerResource =
+                new ClientManagerResource().setClientManagerService(clientManagerService);
+    }
 
-  private static final String CLIENT_OFF_STR = "1.1.1.1;2.2.2.2";
-  private static final String CLIENT_OPEN_STR = "2.2.2.2;3.3.3.3";
-  private static final String CLIENT_OFF_NEW_STR =
-      "[{\"address\":\"1.1.1.1\",\"pub\":true,\"sub\":false},{\"address\":\"2.2.2.2\",\"pub\":true,\"sub\":false}]";
+    @Test
+    public void testClientManager() {
+        clientManagerResource.clientOff(CLIENT_OFF_STR);
 
-  @Before
-  public void beforeClientManagerResourceTest() {
-    clientManagerResource =
-        new ClientManagerResource().setClientManagerService(clientManagerService);
-  }
+        clientManagerResource.clientOpen(CLIENT_OPEN_STR);
 
-  @Test
-  public void testClientManager() {
-    clientManagerResource.clientOff(CLIENT_OFF_STR);
+        GenericResponse<ClientManagerAddress> query = clientManagerResource.query();
 
-    clientManagerResource.clientOpen(CLIENT_OPEN_STR);
+        Assert.assertTrue(query.isSuccess());
+        Assert.assertEquals(query.getData().getVersion(), 2L);
+        Assert.assertEquals(query.getData().getClientOffAddress().size(), 1);
+    }
 
-    GenericResponse<ClientManagerAddress> query = clientManagerResource.query();
+    @Test
+    public void testClientManagerNew() {
 
-    Assert.assertTrue(query.isSuccess());
-    Assert.assertEquals(query.getData().getVersion(), 2L);
-    Assert.assertEquals(query.getData().getClientOffAddress().size(), 1);
-  }
+        clientManagerResource.clientOffWithSub(CLIENT_OFF_NEW_STR);
 
-  @Test
-  public void testClientManagerNew() {
+        clientManagerResource.clientOff(CLIENT_OFF_STR);
 
-    clientManagerResource.clientOffWithSub(CLIENT_OFF_NEW_STR);
+        clientManagerResource.clientOpen(CLIENT_OPEN_STR);
 
-    clientManagerResource.clientOff(CLIENT_OFF_STR);
+        GenericResponse<ClientManagerAddress> query = clientManagerResource.query();
 
-    clientManagerResource.clientOpen(CLIENT_OPEN_STR);
-
-    GenericResponse<ClientManagerAddress> query = clientManagerResource.query();
-
-    Assert.assertTrue(query.isSuccess());
-    Assert.assertEquals(query.getData().getVersion(), 3L);
-    Assert.assertEquals(query.getData().getClientOffAddress().size(), 1);
-  }
+        Assert.assertTrue(query.isSuccess());
+        Assert.assertEquals(query.getData().getVersion(), 3L);
+        Assert.assertEquals(query.getData().getClientOffAddress().size(), 1);
+    }
 }

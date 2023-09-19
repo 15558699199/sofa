@@ -17,10 +17,11 @@
 package com.alipay.sofa.rpc.codec.sofahessian;
 
 /**
+ *
  */
 public class TestGenericBean {
     private String name;
-    private int    age;
+    private int age;
 
     public TestGenericBean() {
     }

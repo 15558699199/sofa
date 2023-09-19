@@ -16,8 +16,6 @@
  */
 package com.alipay.sofa.registry.server.session.providedata;
 
-import static org.mockito.Mockito.mock;
-
 import com.alipay.sofa.registry.common.model.CollectionSdks;
 import com.alipay.sofa.registry.common.model.ServerDataBox;
 import com.alipay.sofa.registry.common.model.constants.ValueConstants;
@@ -25,10 +23,13 @@ import com.alipay.sofa.registry.common.model.metaserver.ProvideData;
 import com.alipay.sofa.registry.common.model.sessionserver.GrayOpenPushSwitchRequest;
 import com.alipay.sofa.registry.server.session.bootstrap.SessionServerConfig;
 import com.alipay.sofa.registry.util.JsonUtils;
-import java.util.List;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.List;
+
+import static org.mockito.Mockito.mock;
 
 /**
  * @author xiaojian.xj
@@ -36,31 +37,31 @@ import org.junit.Test;
  */
 public class FetchGrayPushServiceTest extends FetchGrayPushSwitchService {
 
-  @Before
-  public void beforeFetchStopPushServiceTest() {
-    SessionServerConfig sessionServerConfig = mock(SessionServerConfig.class);
+    @Before
+    public void beforeFetchStopPushServiceTest() {
+        SessionServerConfig sessionServerConfig = mock(SessionServerConfig.class);
 
-    this.setSessionServerConfig(sessionServerConfig);
-  }
-
-  @Test
-  public void test() {
-    Assert.assertFalse(canPush());
-
-    GrayOpenPushSwitchRequest request = new GrayOpenPushSwitchRequest();
-    List<String> openIps = CollectionSdks.toIpList("1.1.1.1;2.2.2.2;3.3.3.3");
-    request.setIps(openIps);
-    Assert.assertTrue(
-        doProcess(
-            storage.get(),
-            new ProvideData(
-                new ServerDataBox(JsonUtils.writeValueAsString(request)),
-                ValueConstants.PUSH_SWITCH_GRAY_OPEN_DATA_ID,
-                1L)));
-
-    for (String openIp : getOpenIps()) {
-      Assert.assertTrue(openIps.contains(openIp));
+        this.setSessionServerConfig(sessionServerConfig);
     }
-    Assert.assertTrue(canPush());
-  }
+
+    @Test
+    public void test() {
+        Assert.assertFalse(canPush());
+
+        GrayOpenPushSwitchRequest request = new GrayOpenPushSwitchRequest();
+        List<String> openIps = CollectionSdks.toIpList("1.1.1.1;2.2.2.2;3.3.3.3");
+        request.setIps(openIps);
+        Assert.assertTrue(
+                doProcess(
+                        storage.get(),
+                        new ProvideData(
+                                new ServerDataBox(JsonUtils.writeValueAsString(request)),
+                                ValueConstants.PUSH_SWITCH_GRAY_OPEN_DATA_ID,
+                                1L)));
+
+        for (String openIp : getOpenIps()) {
+            Assert.assertTrue(openIps.contains(openIp));
+        }
+        Assert.assertTrue(canPush());
+    }
 }

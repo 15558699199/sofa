@@ -16,8 +16,6 @@
  */
 package com.alipay.sofa.registry.server.session.remoting.handler;
 
-import static org.mockito.Mockito.*;
-
 import com.alipay.sofa.registry.common.model.Node;
 import com.alipay.sofa.registry.common.model.TraceTimes;
 import com.alipay.sofa.registry.common.model.dataserver.DatumVersion;
@@ -28,69 +26,72 @@ import com.alipay.sofa.registry.server.session.bootstrap.ExecutorManager;
 import com.alipay.sofa.registry.server.session.bootstrap.SessionServerConfigBean;
 import com.alipay.sofa.registry.server.session.push.FirePushService;
 import com.alipay.sofa.registry.server.session.store.Interests;
-import java.util.HashMap;
-import java.util.Map;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.mockito.Mockito.*;
+
 public class DataChangeRequestHandlerTest {
 
-  @Test
-  public void testCheckParam() {
-    DataChangeRequestHandler handler = newHandler();
-    handler.checkParam(request());
-  }
+    private static DataChangeRequest request() {
+        Map<String, DatumVersion> dataInfoIds = new HashMap<>();
+        dataInfoIds.put("testId1", new DatumVersion(100));
+        dataInfoIds.put("testId2", new DatumVersion(200));
+        DataChangeRequest request = new DataChangeRequest("testDc", dataInfoIds, new TraceTimes());
+        Assert.assertTrue(request.toString(), request.toString().contains("testDc"));
+        return request;
+    }
 
-  private DataChangeRequestHandler newHandler() {
-    DataChangeRequestHandler handler = new DataChangeRequestHandler();
-    Assert.assertEquals(handler.interest(), DataChangeRequest.class);
-    Assert.assertEquals(handler.getConnectNodeType(), Node.NodeType.DATA);
-    Assert.assertEquals(handler.getType(), ChannelHandler.HandlerType.PROCESSER);
-    Assert.assertEquals(handler.getInvokeType(), ChannelHandler.InvokeType.SYNC);
-    return handler;
-  }
+    @Test
+    public void testCheckParam() {
+        DataChangeRequestHandler handler = newHandler();
+        handler.checkParam(request());
+    }
 
-  @Test
-  public void testHandle() {
-    DataChangeRequestHandler handler = newHandler();
-    SessionServerConfigBean serverConfigBean = TestUtils.newSessionConfig("testDc");
-    handler.sessionServerConfig = serverConfigBean;
-    handler.pushSwitchService = TestUtils.newPushSwitchService(serverConfigBean);
-    handler.executorManager = new ExecutorManager(serverConfigBean);
-    handler.firePushService = mock(FirePushService.class);
-    handler.sessionInterests = mock(Interests.class);
+    private DataChangeRequestHandler newHandler() {
+        DataChangeRequestHandler handler = new DataChangeRequestHandler();
+        Assert.assertEquals(handler.interest(), DataChangeRequest.class);
+        Assert.assertEquals(handler.getConnectNodeType(), Node.NodeType.DATA);
+        Assert.assertEquals(handler.getType(), ChannelHandler.HandlerType.PROCESSER);
+        Assert.assertEquals(handler.getInvokeType(), ChannelHandler.InvokeType.SYNC);
+        return handler;
+    }
 
-    handler
-        .pushSwitchService
-        .getFetchStopPushService()
-        .setStopPushSwitch(System.currentTimeMillis(), true);
-    // no npe, stopPush skip the handle
-    Object obj = handler.doHandle(null, null);
-    Assert.assertNull(obj);
+    @Test
+    public void testHandle() {
+        DataChangeRequestHandler handler = newHandler();
+        SessionServerConfigBean serverConfigBean = TestUtils.newSessionConfig("testDc");
+        handler.sessionServerConfig = serverConfigBean;
+        handler.pushSwitchService = TestUtils.newPushSwitchService(serverConfigBean);
+        handler.executorManager = new ExecutorManager(serverConfigBean);
+        handler.firePushService = mock(FirePushService.class);
+        handler.sessionInterests = mock(Interests.class);
 
-    handler
-        .pushSwitchService
-        .getFetchStopPushService()
-        .setStopPushSwitch(System.currentTimeMillis(), false);
-    when(handler.sessionInterests.checkInterestVersion(anyString(), anyString(), anyLong()))
-        .thenReturn(Interests.InterestVersionCheck.Obsolete);
-    obj = handler.doHandle(null, request());
-    Assert.assertNull(obj);
-    verify(handler.firePushService, times(0)).fireOnChange(anyString(), anyObject());
+        handler
+                .pushSwitchService
+                .getFetchStopPushService()
+                .setStopPushSwitch(System.currentTimeMillis(), true);
+        // no npe, stopPush skip the handle
+        Object obj = handler.doHandle(null, null);
+        Assert.assertNull(obj);
 
-    when(handler.sessionInterests.checkInterestVersion(anyString(), anyString(), anyLong()))
-        .thenReturn(Interests.InterestVersionCheck.Interested);
-    obj = handler.doHandle(null, request());
-    Assert.assertNull(obj);
-    verify(handler.firePushService, times(2)).fireOnChange(anyString(), anyObject());
-  }
+        handler
+                .pushSwitchService
+                .getFetchStopPushService()
+                .setStopPushSwitch(System.currentTimeMillis(), false);
+        when(handler.sessionInterests.checkInterestVersion(anyString(), anyString(), anyLong()))
+                .thenReturn(Interests.InterestVersionCheck.Obsolete);
+        obj = handler.doHandle(null, request());
+        Assert.assertNull(obj);
+        verify(handler.firePushService, times(0)).fireOnChange(anyString(), anyObject());
 
-  private static DataChangeRequest request() {
-    Map<String, DatumVersion> dataInfoIds = new HashMap<>();
-    dataInfoIds.put("testId1", new DatumVersion(100));
-    dataInfoIds.put("testId2", new DatumVersion(200));
-    DataChangeRequest request = new DataChangeRequest("testDc", dataInfoIds, new TraceTimes());
-    Assert.assertTrue(request.toString(), request.toString().contains("testDc"));
-    return request;
-  }
+        when(handler.sessionInterests.checkInterestVersion(anyString(), anyString(), anyLong()))
+                .thenReturn(Interests.InterestVersionCheck.Interested);
+        obj = handler.doHandle(null, request());
+        Assert.assertNull(obj);
+        verify(handler.firePushService, times(2)).fireOnChange(anyString(), anyObject());
+    }
 }

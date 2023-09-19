@@ -27,70 +27,70 @@ import com.alipay.sofa.registry.util.StringFormatter;
  */
 public final class Key implements Sizer {
 
-  private final String entityName;
-  private final String hashKey;
-  private final EntityType entityType;
+    private final String entityName;
+    private final String hashKey;
+    private final EntityType entityType;
 
-  /**
-   * construct func
-   *
-   * @param entityName entityName
-   * @param entityType entityType
-   */
-  public Key(String entityName, EntityType entityType) {
-    this.entityName = entityName;
-    this.entityType = entityType;
-    this.hashKey = this.entityName + this.entityType.getUniqueKey();
-  }
-
-  /**
-   * Getter method for property <tt>entityName</tt>.
-   *
-   * @return property value of entityName
-   */
-  public String getEntityName() {
-    return entityName;
-  }
-
-  /**
-   * Getter method for property <tt>hashKey</tt>.
-   *
-   * @return property value of hashKey
-   */
-  public String getHashKey() {
-    return hashKey;
-  }
-
-  /**
-   * Getter method for property <tt>entityType</tt>.
-   *
-   * @return property value of entityType
-   */
-  public EntityType getEntityType() {
-    return entityType;
-  }
-
-  @Override
-  public int hashCode() {
-    String hashKey = getHashKey();
-    return hashKey.hashCode();
-  }
-
-  @Override
-  public boolean equals(Object other) {
-    if (other instanceof Key) {
-      return getHashKey().equals(((Key) other).getHashKey());
-    } else {
-      return false;
+    /**
+     * construct func
+     *
+     * @param entityName entityName
+     * @param entityType entityType
+     */
+    public Key(String entityName, EntityType entityType) {
+        this.entityName = entityName;
+        this.entityType = entityType;
+        this.hashKey = this.entityName + this.entityType.getUniqueKey();
     }
-  }
 
-  @Override
-  public String toString() {
-    return StringFormatter.format("Key{{}, type={}}", entityName, entityType);
-  }
+    /**
+     * Getter method for property <tt>entityName</tt>.
+     *
+     * @return property value of entityName
+     */
+    public String getEntityName() {
+        return entityName;
+    }
 
-  public int size() {
-    return entityName.length() + hashKey.length();
-  }
+    /**
+     * Getter method for property <tt>hashKey</tt>.
+     *
+     * @return property value of hashKey
+     */
+    public String getHashKey() {
+        return hashKey;
+    }
+
+    /**
+     * Getter method for property <tt>entityType</tt>.
+     *
+     * @return property value of entityType
+     */
+    public EntityType getEntityType() {
+        return entityType;
+    }
+
+    @Override
+    public int hashCode() {
+        String hashKey = getHashKey();
+        return hashKey.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (other instanceof Key) {
+            return getHashKey().equals(((Key) other).getHashKey());
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public String toString() {
+        return StringFormatter.format("Key{{}, type={}}", entityName, entityType);
+    }
+
+    public int size() {
+        return entityName.length() + hashKey.length();
+    }
 }

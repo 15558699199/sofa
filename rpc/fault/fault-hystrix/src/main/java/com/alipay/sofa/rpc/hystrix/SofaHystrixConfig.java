@@ -30,11 +30,11 @@ public class SofaHystrixConfig {
 
     private static final Map<ConsumerConfig, FallbackFactory> FALLBACK_FACTORY_MAPPING = new ConcurrentHashMap<ConsumerConfig, FallbackFactory>();
 
-    private static final Map<ConsumerConfig, SetterFactory>   SETTER_FACTORY_MAPPING   = new ConcurrentHashMap<ConsumerConfig, SetterFactory>();
+    private static final Map<ConsumerConfig, SetterFactory> SETTER_FACTORY_MAPPING = new ConcurrentHashMap<ConsumerConfig, SetterFactory>();
 
-    private static FallbackFactory                            GLOBAL_FALLBACK_FACTORY  = new NoopFallbackFactory();
+    private static FallbackFactory GLOBAL_FALLBACK_FACTORY = new NoopFallbackFactory();
 
-    private static SetterFactory                              GLOBAL_SETTER_FACTORY    = new DefaultSetterFactory();
+    private static SetterFactory GLOBAL_SETTER_FACTORY = new DefaultSetterFactory();
 
     public static void registerFallback(ConsumerConfig consumerConfig, Object fallback) {
         FALLBACK_FACTORY_MAPPING.put(consumerConfig, new DefaultFallbackFactory<Object>(fallback));

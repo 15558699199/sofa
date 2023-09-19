@@ -21,15 +21,16 @@ import java.util.Collections;
 import java.util.List;
 
 public final class RevisionUtils {
-  private RevisionUtils() {}
-
-  public static String revisionsDigest(List<String> keys) {
-    Collections.sort(keys);
-    StringBuilder sb = new StringBuilder(keys.size() * 64);
-    for (String key : keys) {
-      sb.append(key);
+    private RevisionUtils() {
     }
-    return MessageDigests.toHexString(
-        MessageDigests.md5().digest(sb.toString().getBytes(StandardCharsets.UTF_8)));
-  }
+
+    public static String revisionsDigest(List<String> keys) {
+        Collections.sort(keys);
+        StringBuilder sb = new StringBuilder(keys.size() * 64);
+        for (String key : keys) {
+            sb.append(key);
+        }
+        return MessageDigests.toHexString(
+                MessageDigests.md5().digest(sb.toString().getBytes(StandardCharsets.UTF_8)));
+    }
 }

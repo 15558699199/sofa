@@ -31,13 +31,14 @@ import org.junit.BeforeClass;
 
 /**
  * The type Base nacos test.
+ *
  * @author <a href=mailto:jervyshi@gmail.com>JervyShi</a>
  */
 public abstract class BaseNacosTest {
 
     protected final static Logger LOGGER = LoggerFactory.getLogger(BaseNacosTest.class);
 
-    protected NacosProcess        nacosProcess;
+    protected NacosProcess nacosProcess;
 
     /**
      * Ad before class.
@@ -61,7 +62,7 @@ public abstract class BaseNacosTest {
     public void setup() {
         //see https://nacos.io/zh-cn/docs/2.0.0-compatibility.html
         nacosProcess = NacosStarterBuilder.nacosStarter().withServerPort(8848).withNacosVersion("2.2.3").build()
-            .start();
+                .start();
     }
 
     @After

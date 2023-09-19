@@ -25,7 +25,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * Reads the first {@link Http2Settings} object and notifies a {@link ChannelPromise}
- * 
+ *
  * @author <a href="mailto:zhanggeng.zg@antfin.com">GengZhang</a>
  * @since 5.4.0
  */
@@ -46,7 +46,7 @@ public class Http2SettingsHandler extends SimpleChannelInboundHandler<Http2Setti
      * handshake to complete.
      *
      * @param timeout Time to wait
-     * @param unit {@link TimeUnit} for {@code timeout}
+     * @param unit    {@link TimeUnit} for {@code timeout}
      * @throws Exception if timeout or other failure occurs
      */
     public void awaitSettings(long timeout, TimeUnit unit) throws Exception {

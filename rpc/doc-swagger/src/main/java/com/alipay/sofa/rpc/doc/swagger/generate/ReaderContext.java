@@ -27,15 +27,15 @@ import java.util.List;
  */
 public class ReaderContext {
 
-    private Swagger         swagger;
-    private Class<?>        refCls;
-    private Class<?>        interfaceCls;
-    private String          parentPath;
-    private String          parentHttpMethod;
-    private boolean         readHidden;
-    private List<String>    parentConsumes;
-    private List<String>    parentProduces;
-    private List<String>    parentTags;
+    private Swagger swagger;
+    private Class<?> refCls;
+    private Class<?> interfaceCls;
+    private String parentPath;
+    private String parentHttpMethod;
+    private boolean readHidden;
+    private List<String> parentConsumes;
+    private List<String> parentProduces;
+    private List<String> parentTags;
     private List<Parameter> parentParameters;
 
     public ReaderContext(Swagger swagger, Class<?> refCls, Class<?> interfaceCls, String parentPath,
@@ -74,12 +74,12 @@ public class ReaderContext {
         return interfaceCls;
     }
 
-    public Class<?> getCls() {
-        return refCls;
-    }
-
     public void setInterfaceCls(Class<?> interfaceCls) {
         this.interfaceCls = interfaceCls;
+    }
+
+    public Class<?> getCls() {
+        return refCls;
     }
 
     public String getParentPath() {

@@ -24,9 +24,10 @@ import com.alipay.sofa.registry.common.model.slot.func.SlotFunction;
 import com.alipay.sofa.registry.common.model.slot.func.SlotFunctionRegistry;
 import com.alipay.sofa.registry.server.data.bootstrap.DataServerConfig;
 import com.alipay.sofa.registry.server.data.multi.cluster.slot.MultiClusterSlotManager;
-import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
 
 /**
  * @author xiaojian.xj
@@ -34,48 +35,48 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class SlotAccessorDelegate implements SlotAccessor {
 
-  @Autowired private DataServerConfig dataServerConfig;
+    private final SlotFunction slotFunction = SlotFunctionRegistry.getFunc();
+    @Autowired
+    private DataServerConfig dataServerConfig;
+    @Autowired
+    private SlotManager slotManager;
+    @Autowired
+    private MultiClusterSlotManager multiClusterSlotManager;
 
-  @Autowired private SlotManager slotManager;
+    @Override
+    public int slotOf(String dataInfoId) {
+        return slotFunction.slotOf(dataInfoId);
+    }
 
-  @Autowired private MultiClusterSlotManager multiClusterSlotManager;
+    @Override
+    public Slot getSlot(String dataCenter, int slotId) {
+        return accessOf(dataCenter).getSlot(dataCenter, slotId);
+    }
 
-  private final SlotFunction slotFunction = SlotFunctionRegistry.getFunc();
+    @Override
+    public SlotAccess checkSlotAccess(
+            String dataCenter, int slotId, long srcSlotEpoch, long srcLeaderEpoch) {
+        return accessOf(dataCenter).checkSlotAccess(dataCenter, slotId, srcSlotEpoch, srcLeaderEpoch);
+    }
 
-  @Override
-  public int slotOf(String dataInfoId) {
-    return slotFunction.slotOf(dataInfoId);
-  }
+    @Override
+    public boolean isLeader(String dataCenter, int slotId) {
+        return accessOf(dataCenter).isLeader(dataCenter, slotId);
+    }
 
-  @Override
-  public Slot getSlot(String dataCenter, int slotId) {
-    return accessOf(dataCenter).getSlot(dataCenter, slotId);
-  }
+    @Override
+    public boolean isFollower(String dataCenter, int slotId) {
+        return accessOf(dataCenter).isFollower(dataCenter, slotId);
+    }
 
-  @Override
-  public SlotAccess checkSlotAccess(
-      String dataCenter, int slotId, long srcSlotEpoch, long srcLeaderEpoch) {
-    return accessOf(dataCenter).checkSlotAccess(dataCenter, slotId, srcSlotEpoch, srcLeaderEpoch);
-  }
+    @Override
+    public Tuple<Long, List<BaseSlotStatus>> getSlotTableEpochAndStatuses(String dataCenter) {
+        return accessOf(dataCenter).getSlotTableEpochAndStatuses(dataCenter);
+    }
 
-  @Override
-  public boolean isLeader(String dataCenter, int slotId) {
-    return accessOf(dataCenter).isLeader(dataCenter, slotId);
-  }
-
-  @Override
-  public boolean isFollower(String dataCenter, int slotId) {
-    return accessOf(dataCenter).isFollower(dataCenter, slotId);
-  }
-
-  @Override
-  public Tuple<Long, List<BaseSlotStatus>> getSlotTableEpochAndStatuses(String dataCenter) {
-    return accessOf(dataCenter).getSlotTableEpochAndStatuses(dataCenter);
-  }
-
-  private SlotAccessor accessOf(String dataCenter) {
-    return StringUtils.equalsIgnoreCase(dataServerConfig.getLocalDataCenter(), dataCenter)
-        ? slotManager
-        : multiClusterSlotManager;
-  }
+    private SlotAccessor accessOf(String dataCenter) {
+        return StringUtils.equalsIgnoreCase(dataServerConfig.getLocalDataCenter(), dataCenter)
+                ? slotManager
+                : multiClusterSlotManager;
+    }
 }

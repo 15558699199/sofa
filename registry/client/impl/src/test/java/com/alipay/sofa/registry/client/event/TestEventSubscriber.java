@@ -25,32 +25,32 @@ import com.alipay.sofa.registry.client.api.model.Event;
  */
 public class TestEventSubscriber implements EventSubscriber {
 
-  private boolean sync;
+    private boolean sync;
 
-  private String cache;
+    private String cache;
 
-  public TestEventSubscriber(boolean sync) {
-    this.sync = sync;
-  }
-
-  @Override
-  public boolean isSync() {
-    return sync;
-  }
-
-  @Override
-  public void onEvent(Event event) {
-    if (event instanceof TestEvent) {
-      cache = ((TestEvent) event).getData();
+    public TestEventSubscriber(boolean sync) {
+        this.sync = sync;
     }
-  }
 
-  /**
-   * Getter method for property <tt>cache</tt>.
-   *
-   * @return property value of cache
-   */
-  public String getCache() {
-    return cache;
-  }
+    @Override
+    public boolean isSync() {
+        return sync;
+    }
+
+    @Override
+    public void onEvent(Event event) {
+        if (event instanceof TestEvent) {
+            cache = ((TestEvent) event).getData();
+        }
+    }
+
+    /**
+     * Getter method for property <tt>cache</tt>.
+     *
+     * @return property value of cache
+     */
+    public String getCache() {
+        return cache;
+    }
 }

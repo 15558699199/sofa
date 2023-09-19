@@ -23,7 +23,6 @@ import com.alipay.sofa.rpc.config.ConsumerConfig;
 import com.alipay.sofa.rpc.ext.Extension;
 
 /**
- *
  * @author <a href="mailto:lw111072@antfin.com">liangen</a>
  */
 @Extension("rest")

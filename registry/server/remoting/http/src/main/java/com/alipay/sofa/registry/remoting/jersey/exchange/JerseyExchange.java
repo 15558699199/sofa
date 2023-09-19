@@ -24,10 +24,11 @@ import com.alipay.sofa.registry.remoting.Server;
 import com.alipay.sofa.registry.remoting.exchange.Exchange;
 import com.alipay.sofa.registry.remoting.jersey.JerseyClient;
 import com.alipay.sofa.registry.remoting.jersey.JerseyJettyServer;
+import org.glassfish.jersey.server.ResourceConfig;
+
+import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
 import java.util.concurrent.ConcurrentHashMap;
-import javax.ws.rs.core.UriBuilder;
-import org.glassfish.jersey.server.ResourceConfig;
 
 /**
  * @author shangyu.wh
@@ -35,82 +36,82 @@ import org.glassfish.jersey.server.ResourceConfig;
  */
 public class JerseyExchange implements Exchange<ResourceConfig> {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(JerseyExchange.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(JerseyExchange.class);
 
-  private ConcurrentHashMap<Integer, Server> serverMap = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<Integer, Server> serverMap = new ConcurrentHashMap<>();
 
-  private Client client;
+    private Client client;
 
-  @Override
-  public Client connect(String serverType, URL serverUrl, ResourceConfig... channelHandlers) {
-    JerseyClient jerseyClient = JerseyClient.getInstance();
-    setClient(jerseyClient);
-    return jerseyClient;
-  }
-
-  @Override
-  public Client connect(
-      String serverType, int connNum, URL serverUrl, ResourceConfig... channelHandlers) {
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
-  public Server open(URL url, ResourceConfig... resources) {
-
-    URI uri;
-    try {
-      uri = UriBuilder.fromUri("http://" + url.getIpAddress() + "/").port(url.getPort()).build();
-    } catch (Exception e) {
-      LOGGER.error("get server URI error!", e);
-      throw new RuntimeException("get server URI error!", e);
+    @Override
+    public Client connect(String serverType, URL serverUrl, ResourceConfig... channelHandlers) {
+        JerseyClient jerseyClient = JerseyClient.getInstance();
+        setClient(jerseyClient);
+        return jerseyClient;
     }
-    JerseyJettyServer jerseyServer = new JerseyJettyServer(resources[0], uri);
-    setServer(jerseyServer, url);
-    jerseyServer.startServer();
 
-    return jerseyServer;
-  }
+    @Override
+    public Client connect(
+            String serverType, int connNum, URL serverUrl, ResourceConfig... channelHandlers) {
+        throw new UnsupportedOperationException();
+    }
 
-  @Override
-  public Server open(
-      URL url, int lowWaterMark, int highWaterMark, ResourceConfig... channelHandlers) {
-    return open(url, channelHandlers);
-  }
+    @Override
+    public Server open(URL url, ResourceConfig... resources) {
 
-  @Override
-  public Client getClient(String serverType) {
-    if (null == client) {
-      synchronized (JerseyExchange.class) {
-        if (null == client) {
-          JerseyClient jerseyClient = JerseyClient.getInstance();
-          setClient(jerseyClient);
+        URI uri;
+        try {
+            uri = UriBuilder.fromUri("http://" + url.getIpAddress() + "/").port(url.getPort()).build();
+        } catch (Exception e) {
+            LOGGER.error("get server URI error!", e);
+            throw new RuntimeException("get server URI error!", e);
         }
-      }
+        JerseyJettyServer jerseyServer = new JerseyJettyServer(resources[0], uri);
+        setServer(jerseyServer, url);
+        jerseyServer.startServer();
+
+        return jerseyServer;
     }
-    return client;
-  }
 
-  /**
-   * Setter method for property <tt>client</tt>.
-   *
-   * @param client value to be assigned to property client
-   */
-  public void setClient(Client client) {
-    this.client = client;
-  }
+    @Override
+    public Server open(
+            URL url, int lowWaterMark, int highWaterMark, ResourceConfig... channelHandlers) {
+        return open(url, channelHandlers);
+    }
 
-  @Override
-  public Server getServer(Integer port) {
-    return serverMap.get(port);
-  }
+    @Override
+    public Client getClient(String serverType) {
+        if (null == client) {
+            synchronized (JerseyExchange.class) {
+                if (null == client) {
+                    JerseyClient jerseyClient = JerseyClient.getInstance();
+                    setClient(jerseyClient);
+                }
+            }
+        }
+        return client;
+    }
 
-  /**
-   * add server into serverMap
-   *
-   * @param server
-   * @param url
-   */
-  public void setServer(Server server, URL url) {
-    serverMap.putIfAbsent(url.getPort(), server);
-  }
+    /**
+     * Setter method for property <tt>client</tt>.
+     *
+     * @param client value to be assigned to property client
+     */
+    public void setClient(Client client) {
+        this.client = client;
+    }
+
+    @Override
+    public Server getServer(Integer port) {
+        return serverMap.get(port);
+    }
+
+    /**
+     * add server into serverMap
+     *
+     * @param server
+     * @param url
+     */
+    public void setServer(Server server, URL url) {
+        serverMap.putIfAbsent(url.getPort(), server);
+    }
 }

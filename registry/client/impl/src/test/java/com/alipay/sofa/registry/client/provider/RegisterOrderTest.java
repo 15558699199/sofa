@@ -16,13 +16,6 @@
  */
 package com.alipay.sofa.registry.client.provider;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import com.alipay.sofa.registry.client.api.Publisher;
 import com.alipay.sofa.registry.client.api.Subscriber;
 import com.alipay.sofa.registry.client.api.SubscriberDataObserver;
@@ -33,11 +26,14 @@ import com.alipay.sofa.registry.client.base.BaseTest;
 import com.alipay.sofa.registry.core.model.DataBox;
 import com.alipay.sofa.registry.core.model.PublisherRegister;
 import com.alipay.sofa.registry.core.model.SubscriberRegister;
-import java.util.List;
 import org.junit.After;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.List;
+
+import static org.junit.Assert.*;
 
 /**
  * To test all kinds of sequence of register action
@@ -47,172 +43,176 @@ import org.slf4j.LoggerFactory;
  */
 public class RegisterOrderTest extends BaseTest {
 
-  /** LOGGER */
-  private static final Logger LOGGER = LoggerFactory.getLogger(DefaultRegistryClientTest.class);
+    /**
+     * LOGGER
+     */
+    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultRegistryClientTest.class);
 
-  private String dataId = "com.alipay.sofa.registry.client.provider.RegisterOrderTest";
+    private String dataId = "com.alipay.sofa.registry.client.provider.RegisterOrderTest";
 
-  /** Teardown. */
-  @After
-  public void teardown() {
-    mockServer.stop();
-  }
-
-  @Test
-  public void publishFrequently() throws InterruptedException {
-
-    String dataPrefix = "publishFrequently";
-
-    Publisher publisher =
-        registryClient.register(new PublisherRegistration(dataId), dataPrefix + 0);
-
-    int republishCount = 100;
-    for (int i = 1; i <= republishCount; i++) {
-      publisher.republish(dataPrefix + i);
+    /**
+     * Teardown.
+     */
+    @After
+    public void teardown() {
+        mockServer.stop();
     }
 
-    Thread.sleep(2000L);
+    @Test
+    public void publishFrequently() throws InterruptedException {
 
-    DefaultPublisher defaultPublisher = (DefaultPublisher) publisher;
-    String registeId = defaultPublisher.getRegistId();
+        String dataPrefix = "publishFrequently";
 
-    // check client status
-    assertTrue(defaultPublisher.isRegistered());
-    assertTrue(defaultPublisher.isEnabled());
-    assertEquals(republishCount + 1, defaultPublisher.getPubVersion().intValue());
+        Publisher publisher =
+                registryClient.register(new PublisherRegistration(dataId), dataPrefix + 0);
 
-    // check server status
-    List<DataBox> data = mockServer.queryPubliser(registeId).getDataList();
-    assertEquals(1, data.size());
-    assertEquals(dataPrefix + republishCount, data.get(0).getData());
-  }
+        int republishCount = 100;
+        for (int i = 1; i <= republishCount; i++) {
+            publisher.republish(dataPrefix + i);
+        }
 
-  @Test
-  public void unregisterAndRepublish() throws InterruptedException {
+        Thread.sleep(2000L);
 
-    String dataPrefix = "unregisterAndRepublish";
+        DefaultPublisher defaultPublisher = (DefaultPublisher) publisher;
+        String registeId = defaultPublisher.getRegistId();
 
-    // step 1
-    Publisher publisher =
-        registryClient.register(new PublisherRegistration(dataId), dataPrefix + 0);
-    // step 2
-    publisher.unregister();
+        // check client status
+        assertTrue(defaultPublisher.isRegistered());
+        assertTrue(defaultPublisher.isEnabled());
+        assertEquals(republishCount + 1, defaultPublisher.getPubVersion().intValue());
 
-    try {
-      // step 3
-      publisher.republish(dataPrefix + 1);
-      fail("No exception thrown.");
-    } catch (Exception ex) {
-      // Must throw a RuntimeException
-      assertTrue(ex instanceof IllegalStateException);
+        // check server status
+        List<DataBox> data = mockServer.queryPubliser(registeId).getDataList();
+        assertEquals(1, data.size());
+        assertEquals(dataPrefix + republishCount, data.get(0).getData());
     }
 
-    Thread.sleep(2000L);
+    @Test
+    public void unregisterAndRepublish() throws InterruptedException {
 
-    assertTrue(publisher.isRegistered());
-    assertFalse(publisher.isEnabled());
-  }
+        String dataPrefix = "unregisterAndRepublish";
 
-  @Test
-  public void publishAndUnregister() throws InterruptedException {
+        // step 1
+        Publisher publisher =
+                registryClient.register(new PublisherRegistration(dataId), dataPrefix + 0);
+        // step 2
+        publisher.unregister();
 
-    String data = "publishAndUnregister";
+        try {
+            // step 3
+            publisher.republish(dataPrefix + 1);
+            fail("No exception thrown.");
+        } catch (Exception ex) {
+            // Must throw a RuntimeException
+            assertTrue(ex instanceof IllegalStateException);
+        }
 
-    // step 1
-    Publisher publisher = registryClient.register(new PublisherRegistration(dataId), data);
+        Thread.sleep(2000L);
 
-    Thread.sleep(2000L);
-
-    String registId = publisher.getRegistId();
-    PublisherRegister publisherRegister = mockServer.queryPubliser(registId);
-
-    assertNotNull(publisherRegister);
-    assertEquals(data, publisherRegister.getDataList().get(0).getData());
-
-    // step 2
-    publisher.unregister();
-
-    Thread.sleep(2000L);
-
-    assertNull(mockServer.queryPubliser(registId));
-  }
-
-  @Test
-  public void publishAndRefused() throws InterruptedException {
-
-    String data = "publishAndRefused";
-
-    // step 1
-    Publisher publisher = registryClient.register(new PublisherRegistration(data), data);
-
-    Thread.sleep(2000L);
-
-    String registId = publisher.getRegistId();
-    PublisherRegister publisherRegister = mockServer.queryPubliser(registId);
-
-    assertNull(publisherRegister);
-
-    // step 2
-    try {
-      publisher.republish(data);
-    } catch (Exception e) {
-      assertTrue(e instanceof IllegalStateException);
-      assertEquals(
-          "Publisher is refused by server. Try to check your configuration.", e.getMessage());
+        assertTrue(publisher.isRegistered());
+        assertFalse(publisher.isEnabled());
     }
-  }
 
-  @Test
-  public void subscribeAndUnregister() throws InterruptedException {
+    @Test
+    public void publishAndUnregister() throws InterruptedException {
 
-    SubscriberDataObserver dataObserver =
-        new SubscriberDataObserver() {
-          @Override
-          public void handleData(String dataId, UserData data) {
-            LOGGER.info("handle data, dataId: {}, data: {}", dataId, data);
-          }
-        };
+        String data = "publishAndUnregister";
 
-    // step 1
-    Subscriber subscriber =
-        registryClient.register(new SubscriberRegistration(dataId, dataObserver));
+        // step 1
+        Publisher publisher = registryClient.register(new PublisherRegistration(dataId), data);
 
-    Thread.sleep(2000L);
+        Thread.sleep(2000L);
 
-    String registId = subscriber.getRegistId();
-    SubscriberRegister subscriberRegister = mockServer.querySubscriber(registId);
-    assertNotNull(subscriberRegister);
+        String registId = publisher.getRegistId();
+        PublisherRegister publisherRegister = mockServer.queryPubliser(registId);
 
-    // step 2
-    subscriber.unregister();
+        assertNotNull(publisherRegister);
+        assertEquals(data, publisherRegister.getDataList().get(0).getData());
 
-    Thread.sleep(2000L);
+        // step 2
+        publisher.unregister();
 
-    assertNull(mockServer.queryPubliser(registId));
-  }
+        Thread.sleep(2000L);
 
-  @Test
-  public void subscribeAndRefused() throws InterruptedException {
+        assertNull(mockServer.queryPubliser(registId));
+    }
 
-    SubscriberDataObserver dataObserver =
-        new SubscriberDataObserver() {
-          @Override
-          public void handleData(String dataId, UserData data) {
-            LOGGER.info("handle data, dataId: {}, data: {}", dataId, data);
-          }
-        };
+    @Test
+    public void publishAndRefused() throws InterruptedException {
 
-    // step 1
-    Subscriber subscriber =
-        registryClient.register(new SubscriberRegistration("subscribeAndRefused", dataObserver));
+        String data = "publishAndRefused";
 
-    Thread.sleep(2000L);
+        // step 1
+        Publisher publisher = registryClient.register(new PublisherRegistration(data), data);
 
-    String registId = subscriber.getRegistId();
-    SubscriberRegister subscriberRegister = mockServer.querySubscriber(registId);
-    assertNull(subscriberRegister);
+        Thread.sleep(2000L);
 
-    assertTrue(subscriber instanceof AbstractInternalRegister);
-    assertTrue(((AbstractInternalRegister) subscriber).isRefused());
-  }
+        String registId = publisher.getRegistId();
+        PublisherRegister publisherRegister = mockServer.queryPubliser(registId);
+
+        assertNull(publisherRegister);
+
+        // step 2
+        try {
+            publisher.republish(data);
+        } catch (Exception e) {
+            assertTrue(e instanceof IllegalStateException);
+            assertEquals(
+                    "Publisher is refused by server. Try to check your configuration.", e.getMessage());
+        }
+    }
+
+    @Test
+    public void subscribeAndUnregister() throws InterruptedException {
+
+        SubscriberDataObserver dataObserver =
+                new SubscriberDataObserver() {
+                    @Override
+                    public void handleData(String dataId, UserData data) {
+                        LOGGER.info("handle data, dataId: {}, data: {}", dataId, data);
+                    }
+                };
+
+        // step 1
+        Subscriber subscriber =
+                registryClient.register(new SubscriberRegistration(dataId, dataObserver));
+
+        Thread.sleep(2000L);
+
+        String registId = subscriber.getRegistId();
+        SubscriberRegister subscriberRegister = mockServer.querySubscriber(registId);
+        assertNotNull(subscriberRegister);
+
+        // step 2
+        subscriber.unregister();
+
+        Thread.sleep(2000L);
+
+        assertNull(mockServer.queryPubliser(registId));
+    }
+
+    @Test
+    public void subscribeAndRefused() throws InterruptedException {
+
+        SubscriberDataObserver dataObserver =
+                new SubscriberDataObserver() {
+                    @Override
+                    public void handleData(String dataId, UserData data) {
+                        LOGGER.info("handle data, dataId: {}, data: {}", dataId, data);
+                    }
+                };
+
+        // step 1
+        Subscriber subscriber =
+                registryClient.register(new SubscriberRegistration("subscribeAndRefused", dataObserver));
+
+        Thread.sleep(2000L);
+
+        String registId = subscriber.getRegistId();
+        SubscriberRegister subscriberRegister = mockServer.querySubscriber(registId);
+        assertNull(subscriberRegister);
+
+        assertTrue(subscriber instanceof AbstractInternalRegister);
+        assertTrue(((AbstractInternalRegister) subscriber).isRefused());
+    }
 }

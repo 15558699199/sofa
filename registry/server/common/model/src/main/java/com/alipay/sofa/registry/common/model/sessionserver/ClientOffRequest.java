@@ -17,23 +17,24 @@
 package com.alipay.sofa.registry.common.model.sessionserver;
 
 import com.google.common.collect.Lists;
+
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 
 public final class ClientOffRequest implements Serializable {
-  private final List<String> ips;
+    private final List<String> ips;
 
-  public ClientOffRequest(List<String> ips) {
-    this.ips = Collections.unmodifiableList(Lists.newArrayList(ips));
-  }
+    public ClientOffRequest(List<String> ips) {
+        this.ips = Collections.unmodifiableList(Lists.newArrayList(ips));
+    }
 
-  public List<String> getIps() {
-    return ips;
-  }
+    public List<String> getIps() {
+        return ips;
+    }
 
-  @Override
-  public String toString() {
-    return "ClientOffRequest{" + "ips=" + ips + '}';
-  }
+    @Override
+    public String toString() {
+        return "ClientOffRequest{" + "ips=" + ips + '}';
+    }
 }

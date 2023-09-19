@@ -35,7 +35,7 @@ public class ClientTransportConfigTest {
         ClientTransportConfig config = new ClientTransportConfig();
         config.setProviderInfo(ProviderHelper.toProviderInfo("127.0.0.1"));
         config.setContainer("xxx");
-        config.setChannelListeners(Collections.<ChannelListener> singletonList(new ChannelListener() {
+        config.setChannelListeners(Collections.<ChannelListener>singletonList(new ChannelListener() {
             @Override
             public void onConnected(AbstractChannel channel) {
 

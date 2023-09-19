@@ -22,20 +22,20 @@ package com.alipay.sofa.registry.server.session.cache;
  */
 public interface CacheService {
 
-  /**
-   * get cache by key
-   *
-   * @param key key
-   * @return Value
-   */
-  Value getValue(Key key) throws CacheAccessException;
+    /**
+     * get cache by key
+     *
+     * @param key key
+     * @return Value
+     */
+    Value getValue(Key key) throws CacheAccessException;
 
-  Value getValueIfPresent(Key key);
+    Value getValueIfPresent(Key key);
 
-  /**
-   * invalidate cache by key
-   *
-   * @param key key
-   */
-  void invalidate(Key key);
+    /**
+     * invalidate cache by key
+     *
+     * @param key key
+     */
+    void invalidate(Key key);
 }

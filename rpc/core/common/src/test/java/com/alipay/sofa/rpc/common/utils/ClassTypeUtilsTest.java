@@ -25,24 +25,17 @@ import java.net.URL;
 import java.net.URLClassLoader;
 
 /**
- *
- *
  * @author <a href="mailto:zhanggeng.zg@antfin.com">GengZhang</a>
  */
 public class ClassTypeUtilsTest {
 
     //  匿名类
     Object anonymous = new Comparable<String>() {
-                         @Override
-                         public int compareTo(String o) {
-                             return 0;
-                         }
-                     };
-
-    // 成员类
-    private class MemberClass {
-
-    }
+        @Override
+        public int compareTo(String o) {
+            return 0;
+        }
+    };
 
     @Test
     public void canonicalNameToJvmName() throws Exception {
@@ -72,11 +65,11 @@ public class ClassTypeUtilsTest {
 
         }
         Assert.assertEquals(anonymous.getClass(),
-            ClassTypeUtils.getClass("com.alipay.sofa.rpc.common.utils.ClassTypeUtilsTest$1"));
+                ClassTypeUtils.getClass("com.alipay.sofa.rpc.common.utils.ClassTypeUtilsTest$1"));
         Assert.assertEquals(LocalType.class,
-            ClassTypeUtils.getClass("com.alipay.sofa.rpc.common.utils.ClassTypeUtilsTest$1LocalType"));
+                ClassTypeUtils.getClass("com.alipay.sofa.rpc.common.utils.ClassTypeUtilsTest$1LocalType"));
         Assert.assertEquals(MemberClass.class,
-            ClassTypeUtils.getClass("com.alipay.sofa.rpc.common.utils.ClassTypeUtilsTest$MemberClass"));
+                ClassTypeUtils.getClass("com.alipay.sofa.rpc.common.utils.ClassTypeUtilsTest$MemberClass"));
         Assert.assertEquals(StaticClass.class, ClassTypeUtils.getClass("com.alipay.sofa.rpc.common.utils.StaticClass"));
 
         Assert.assertEquals(String[].class, ClassTypeUtils.getClass("java.lang.String[]"));
@@ -89,13 +82,13 @@ public class ClassTypeUtilsTest {
         Assert.assertEquals(long[].class, ClassTypeUtils.getClass("long[]"));
         Assert.assertEquals(short[].class, ClassTypeUtils.getClass("short[]"));
         Assert.assertEquals(Array.newInstance(anonymous.getClass(), 2, 3).getClass(),
-            ClassTypeUtils.getClass("com.alipay.sofa.rpc.common.utils.ClassTypeUtilsTest$1[][]"));
+                ClassTypeUtils.getClass("com.alipay.sofa.rpc.common.utils.ClassTypeUtilsTest$1[][]"));
         Assert.assertEquals(LocalType[][].class,
-            ClassTypeUtils.getClass("com.alipay.sofa.rpc.common.utils.ClassTypeUtilsTest$1LocalType[][]"));
+                ClassTypeUtils.getClass("com.alipay.sofa.rpc.common.utils.ClassTypeUtilsTest$1LocalType[][]"));
         Assert.assertEquals(MemberClass[].class,
-            ClassTypeUtils.getClass("com.alipay.sofa.rpc.common.utils.ClassTypeUtilsTest$MemberClass[]"));
+                ClassTypeUtils.getClass("com.alipay.sofa.rpc.common.utils.ClassTypeUtilsTest$MemberClass[]"));
         Assert.assertEquals(StaticClass[].class,
-            ClassTypeUtils.getClass("com.alipay.sofa.rpc.common.utils.StaticClass[]"));
+                ClassTypeUtils.getClass("com.alipay.sofa.rpc.common.utils.StaticClass[]"));
         Assert.assertEquals(int[][].class, ClassTypeUtils.getClass("int[][]"));
 
         Assert.assertEquals(String[].class, ClassTypeUtils.getClass(String[].class.getName()));
@@ -150,13 +143,13 @@ public class ClassTypeUtilsTest {
 
         }
         Assert.assertEquals(ClassTypeUtils.getTypeStr(anonymous.getClass()),
-            "com.alipay.sofa.rpc.common.utils.ClassTypeUtilsTest$1");
+                "com.alipay.sofa.rpc.common.utils.ClassTypeUtilsTest$1");
         Assert.assertEquals(ClassTypeUtils.getTypeStr(LocalType.class),
-            "com.alipay.sofa.rpc.common.utils.ClassTypeUtilsTest$2LocalType");
+                "com.alipay.sofa.rpc.common.utils.ClassTypeUtilsTest$2LocalType");
         Assert.assertEquals(ClassTypeUtils.getTypeStr(MemberClass.class),
-            "com.alipay.sofa.rpc.common.utils.ClassTypeUtilsTest$MemberClass");
+                "com.alipay.sofa.rpc.common.utils.ClassTypeUtilsTest$MemberClass");
         Assert.assertEquals(ClassTypeUtils.getTypeStr(StaticClass.class),
-            "com.alipay.sofa.rpc.common.utils.StaticClass");
+                "com.alipay.sofa.rpc.common.utils.StaticClass");
 
         Assert.assertEquals(ClassTypeUtils.getTypeStr(String[][][].class), "java.lang.String[][][]");
         Assert.assertEquals(ClassTypeUtils.getTypeStr(boolean[].class), "boolean[]");
@@ -168,20 +161,25 @@ public class ClassTypeUtilsTest {
         Assert.assertEquals(ClassTypeUtils.getTypeStr(long[].class), "long[]");
         Assert.assertEquals(ClassTypeUtils.getTypeStr(short[].class), "short[]");
         Assert.assertEquals(ClassTypeUtils.getTypeStr(Array.newInstance(anonymous.getClass(), 2, 3).getClass()),
-            "com.alipay.sofa.rpc.common.utils.ClassTypeUtilsTest$1[][]");
+                "com.alipay.sofa.rpc.common.utils.ClassTypeUtilsTest$1[][]");
         Assert.assertEquals(ClassTypeUtils.getTypeStr(LocalType[][].class),
-            "com.alipay.sofa.rpc.common.utils.ClassTypeUtilsTest$2LocalType[][]");
+                "com.alipay.sofa.rpc.common.utils.ClassTypeUtilsTest$2LocalType[][]");
         Assert.assertEquals(ClassTypeUtils.getTypeStr(MemberClass[].class),
-            "com.alipay.sofa.rpc.common.utils.ClassTypeUtilsTest$MemberClass[]");
+                "com.alipay.sofa.rpc.common.utils.ClassTypeUtilsTest$MemberClass[]");
         Assert.assertEquals(ClassTypeUtils.getTypeStr(StaticClass[].class),
-            "com.alipay.sofa.rpc.common.utils.StaticClass[]");
+                "com.alipay.sofa.rpc.common.utils.StaticClass[]");
 
-        Assert.assertArrayEquals(ClassTypeUtils.getTypeStrs(new Class[] { String[].class }),
-            new String[] { "java.lang.String[]" });
-        Assert.assertArrayEquals(ClassTypeUtils.getTypeStrs(new Class[] { String[].class }, false),
-            new String[] { "java.lang.String[]" });
-        Assert.assertArrayEquals(ClassTypeUtils.getTypeStrs(new Class[] { String[].class }, true),
-            new String[] { String[].class.getName() });
+        Assert.assertArrayEquals(ClassTypeUtils.getTypeStrs(new Class[]{String[].class}),
+                new String[]{"java.lang.String[]"});
+        Assert.assertArrayEquals(ClassTypeUtils.getTypeStrs(new Class[]{String[].class}, false),
+                new String[]{"java.lang.String[]"});
+        Assert.assertArrayEquals(ClassTypeUtils.getTypeStrs(new Class[]{String[].class}, true),
+                new String[]{String[].class.getName()});
+
+    }
+
+    // 成员类
+    private class MemberClass {
 
     }
 

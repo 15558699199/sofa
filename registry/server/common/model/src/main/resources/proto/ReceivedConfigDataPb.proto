@@ -6,11 +6,11 @@ option go_package = "pb";
 import "DataBoxPb.proto";
 
 message ReceivedConfigDataPb {
-    string dataId = 1;
-    string group = 2;
-    string instanceId = 3;
-    repeated string configuratorRegistIds = 4;
-    DataBoxPb dataBox = 5;
-    int64 version = 6;
+  string dataId = 1;
+  string group = 2;
+  string instanceId = 3;
+  repeated string configuratorRegistIds = 4;
+  DataBoxPb dataBox = 5;
+  int64 version = 6;
 }
 

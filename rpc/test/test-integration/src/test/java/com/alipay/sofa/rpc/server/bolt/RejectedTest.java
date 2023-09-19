@@ -32,8 +32,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- *
- *
  * @author <a href="mailto:zhanggeng.zg@antfin.com">GengZhang</a>
  */
 public class RejectedTest extends ActivelyDestroyTest {
@@ -42,22 +40,22 @@ public class RejectedTest extends ActivelyDestroyTest {
     public void testAll() {
 
         ServerConfig serverConfig = new ServerConfig()
-            .setStopTimeout(0).setPort(22222)
-            .setQueues(0).setCoreThreads(1).setMaxThreads(2);
+                .setStopTimeout(0).setPort(22222)
+                .setQueues(0).setCoreThreads(1).setMaxThreads(2);
 
         // 发布一个服务，每个请求要执行1秒
         ProviderConfig<HelloService> providerConfig = new ProviderConfig<HelloService>()
-            .setInterfaceId(HelloService.class.getName())
-            .setRef(new HelloServiceImpl(1000))
-            .setServer(serverConfig)
-            .setRegister(false);
+                .setInterfaceId(HelloService.class.getName())
+                .setRef(new HelloServiceImpl(1000))
+                .setServer(serverConfig)
+                .setRegister(false);
         providerConfig.export();
 
         ConsumerConfig<HelloService> consumerConfig = new ConsumerConfig<HelloService>()
-            .setInterfaceId(HelloService.class.getName())
-            .setTimeout(3000)
-            .setDirectUrl("bolt://127.0.0.1:22222")
-            .setRegister(false);
+                .setInterfaceId(HelloService.class.getName())
+                .setTimeout(3000)
+                .setDirectUrl("bolt://127.0.0.1:22222")
+                .setRegister(false);
 
         final HelloService helloService = consumerConfig.refer();
 

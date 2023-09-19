@@ -39,11 +39,7 @@ import org.junit.Test;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author <a href="mailto:zhanggeng.zg@antfin.com">GengZhang</a>
@@ -144,7 +140,7 @@ public class JacksonSerializerTest {
         Assert.assertEquals(newRequest.getTargetServiceUniqueName(), request.getTargetServiceUniqueName());
         Assert.assertEquals(newRequest.getTargetAppName(), request.getTargetAppName());
         Assert.assertEquals(newRequest.getRequestProp(RemotingConstants.RPC_TRACE_NAME),
-            request.getRequestProp(RemotingConstants.RPC_TRACE_NAME));
+                request.getRequestProp(RemotingConstants.RPC_TRACE_NAME));
 
     }
 
@@ -270,7 +266,7 @@ public class JacksonSerializerTest {
             DemoRequest req = new DemoRequest();
             req.setName("123");
             serializer
-                .decode(new ByteArrayWrapperByteBuf(mapper.writeValueAsBytes(req)), new SofaRequest(), errorHead1);
+                    .decode(new ByteArrayWrapperByteBuf(mapper.writeValueAsBytes(req)), new SofaRequest(), errorHead1);
         } catch (Exception e) {
             error = true;
         }
@@ -284,9 +280,9 @@ public class JacksonSerializerTest {
             ObjectMapper mapper = new ObjectMapper();
             DemoRequest req = new DemoRequest();
             req.setName("123");
-            serializer.decode(new ByteArrayWrapperByteBuf(mapper.writeValueAsBytes(new Object[] { req, "123" })),
-                new SofaRequest(),
-                errorHead2);
+            serializer.decode(new ByteArrayWrapperByteBuf(mapper.writeValueAsBytes(new Object[]{req, "123"})),
+                    new SofaRequest(),
+                    errorHead2);
         } catch (Exception e) {
             error = true;
         }
@@ -310,7 +306,7 @@ public class JacksonSerializerTest {
         Assert.assertEquals(newRequest.getTargetServiceUniqueName(), request.getTargetServiceUniqueName());
         Assert.assertEquals(newRequest.getTargetAppName(), request.getTargetAppName());
         Assert.assertEquals(newRequest.getRequestProp(RemotingConstants.RPC_TRACE_NAME),
-            request.getRequestProp(RemotingConstants.RPC_TRACE_NAME));
+                request.getRequestProp(RemotingConstants.RPC_TRACE_NAME));
 
     }
 
@@ -346,7 +342,7 @@ public class JacksonSerializerTest {
             DemoRequest req = new DemoRequest();
             req.setName("123");
             serializer
-                .decode(new ByteArrayWrapperByteBuf(mapper.writeValueAsBytes(req)), new SofaRequest(), errorHead1);
+                    .decode(new ByteArrayWrapperByteBuf(mapper.writeValueAsBytes(req)), new SofaRequest(), errorHead1);
         } catch (Exception e) {
             error = true;
         }
@@ -360,9 +356,9 @@ public class JacksonSerializerTest {
             ObjectMapper mapper = new ObjectMapper();
             DemoRequest req = new DemoRequest();
             req.setName("123");
-            serializer.decode(new ByteArrayWrapperByteBuf(mapper.writeValueAsBytes(new Object[] { req, "123" })),
-                new SofaRequest(),
-                errorHead2);
+            serializer.decode(new ByteArrayWrapperByteBuf(mapper.writeValueAsBytes(new Object[]{req, "123"})),
+                    new SofaRequest(),
+                    errorHead2);
         } catch (Exception e) {
             error = true;
         }
@@ -386,14 +382,14 @@ public class JacksonSerializerTest {
         Assert.assertEquals(newRequest.getTargetServiceUniqueName(), request.getTargetServiceUniqueName());
         Assert.assertEquals(newRequest.getTargetAppName(), request.getTargetAppName());
         Assert.assertEquals(newRequest.getRequestProp(RemotingConstants.RPC_TRACE_NAME),
-            request.getRequestProp(RemotingConstants.RPC_TRACE_NAME));
+                request.getRequestProp(RemotingConstants.RPC_TRACE_NAME));
 
     }
 
     private SofaRequest buildSayRequest() throws NoSuchMethodException {
         final DemoRequest demoRequest = new DemoRequest();
         demoRequest.setName("name");
-        return buildRequest("say", new Object[] { demoRequest }, DemoService.class);
+        return buildRequest("say", new Object[]{demoRequest}, DemoService.class);
     }
 
     private SofaRequest buildSay2Request() throws NoSuchMethodException {
@@ -403,7 +399,7 @@ public class JacksonSerializerTest {
         Map<String, String> ctx = new HashMap<String, String>();
         ctx.put("abc", "123");
 
-        return buildRequest("say2", new Object[] { demoRequest, ctx, 123 }, DemoService.class);
+        return buildRequest("say2", new Object[]{demoRequest, ctx, 123}, DemoService.class);
     }
 
     private SofaRequest buildSay3Request() throws NoSuchMethodException {
@@ -413,14 +409,14 @@ public class JacksonSerializerTest {
         List<DemoRequest> list = new ArrayList<DemoRequest>();
         list.add(demoRequest);
 
-        return buildRequest("say3", new Object[] { list }, DemoService.class);
+        return buildRequest("say3", new Object[]{list}, DemoService.class);
     }
 
     private SofaRequest buildGenericRequest() throws NoSuchMethodException {
         final MyReq myReq = new MyReq();
         myReq.setName("hello");
 
-        return buildRequest("hello", new Object[] { myReq }, GenericService.class);
+        return buildRequest("hello", new Object[]{myReq}, GenericService.class);
     }
 
     private SofaRequest buildRequest(String methodName, Object[] args, Class clazz) throws NoSuchMethodException {
@@ -528,7 +524,7 @@ public class JacksonSerializerTest {
     @Test
     public void testGenericSofaRequestSuccess() throws Exception {
         AbstractSerializer.registerGenericService(GenericService.class.getCanonicalName() + ":1.0",
-            GenericServiceImpl.class.getName());
+                GenericServiceImpl.class.getName());
 
         SofaRequest request = buildGenericRequest();
         AbstractByteBuf data = serializer.encode(request, null);

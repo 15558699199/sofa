@@ -26,42 +26,42 @@ import org.apache.ibatis.annotations.Param;
  */
 public interface DistributeLockMapper {
 
-  /**
-   * query by dataCenter and lockName
-   *
-   * @param dataCenter dataCenter
-   * @param lockName lockName
-   * @return DistributeLockInfo
-   */
-  public DistributeLockInfo queryDistLock(
-      @Param("dataCenter") String dataCenter, @Param("lockName") String lockName);
+    /**
+     * query by dataCenter and lockName
+     *
+     * @param dataCenter dataCenter
+     * @param lockName   lockName
+     * @return DistributeLockInfo
+     */
+    public DistributeLockInfo queryDistLock(
+            @Param("dataCenter") String dataCenter, @Param("lockName") String lockName);
 
-  /**
-   * compete lock, it will throw exception if lockName existed
-   *
-   * @param lock lock
-   * @throws Exception Exception
-   */
-  public void competeLockOnInsert(DistributeLockInfo lock) throws Exception;
+    /**
+     * compete lock, it will throw exception if lockName existed
+     *
+     * @param lock lock
+     * @throws Exception Exception
+     */
+    public void competeLockOnInsert(DistributeLockInfo lock) throws Exception;
 
-  /**
-   * compete lock with cas
-   *
-   * @param competeLock competeLock
-   */
-  public void competeLockOnUpdate(FollowCompeteLockDomain competeLock);
+    /**
+     * compete lock with cas
+     *
+     * @param competeLock competeLock
+     */
+    public void competeLockOnUpdate(FollowCompeteLockDomain competeLock);
 
-  /**
-   * renew lock last update time
-   *
-   * @param lock lock
-   */
-  public void ownerHeartbeat(DistributeLockInfo lock);
+    /**
+     * renew lock last update time
+     *
+     * @param lock lock
+     */
+    public void ownerHeartbeat(DistributeLockInfo lock);
 
-  /**
-   * force reset owner and duration
-   *
-   * @param lock lock
-   */
-  public void forceRefresh(DistributeLockInfo lock);
+    /**
+     * force reset owner and duration
+     *
+     * @param lock lock
+     */
+    public void forceRefresh(DistributeLockInfo lock);
 }

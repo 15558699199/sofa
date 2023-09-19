@@ -25,44 +25,45 @@ import com.alipay.sofa.registry.core.model.SyncConfigResponse;
  * @version $Id: SyncConfigResponseConvertor.java, v 0.1 2018年03月21日 2:06 PM bystander Exp $
  */
 public final class SyncConfigResponseConvertor {
-  private SyncConfigResponseConvertor() {}
-
-  public static SyncConfigResponse convert2Java(SyncConfigResponsePb syncConfigResponsePb) {
-
-    if (syncConfigResponsePb == null) {
-      return null;
+    private SyncConfigResponseConvertor() {
     }
 
-    SyncConfigResponse syncConfigResponse = new SyncConfigResponse();
+    public static SyncConfigResponse convert2Java(SyncConfigResponsePb syncConfigResponsePb) {
 
-    syncConfigResponse.setAvailableSegments(
-        ListStringConvertor.convert2Java(syncConfigResponsePb.getAvailableSegmentsList()));
+        if (syncConfigResponsePb == null) {
+            return null;
+        }
 
-    syncConfigResponse.setRetryInterval(syncConfigResponsePb.getRetryInterval());
-    syncConfigResponse.setMessage(syncConfigResponsePb.getResult().getMessage());
-    syncConfigResponse.setSuccess(syncConfigResponsePb.getResult().getSuccess());
+        SyncConfigResponse syncConfigResponse = new SyncConfigResponse();
 
-    return syncConfigResponse;
-  }
+        syncConfigResponse.setAvailableSegments(
+                ListStringConvertor.convert2Java(syncConfigResponsePb.getAvailableSegmentsList()));
 
-  public static SyncConfigResponsePb convert2Pb(SyncConfigResponse syncConfigResponseJava) {
+        syncConfigResponse.setRetryInterval(syncConfigResponsePb.getRetryInterval());
+        syncConfigResponse.setMessage(syncConfigResponsePb.getResult().getMessage());
+        syncConfigResponse.setSuccess(syncConfigResponsePb.getResult().getSuccess());
 
-    if (syncConfigResponseJava == null) {
-      return null;
+        return syncConfigResponse;
     }
 
-    SyncConfigResponsePb.Builder builder = SyncConfigResponsePb.newBuilder();
-    builder.setRetryInterval(syncConfigResponseJava.getRetryInterval());
-    builder.addAllAvailableSegments(syncConfigResponseJava.getAvailableSegments());
+    public static SyncConfigResponsePb convert2Pb(SyncConfigResponse syncConfigResponseJava) {
 
-    ResultPb.Builder resultPbBuilder = ResultPb.newBuilder();
-    if (syncConfigResponseJava.getMessage() != null) {
-      resultPbBuilder.setMessage(syncConfigResponseJava.getMessage());
+        if (syncConfigResponseJava == null) {
+            return null;
+        }
+
+        SyncConfigResponsePb.Builder builder = SyncConfigResponsePb.newBuilder();
+        builder.setRetryInterval(syncConfigResponseJava.getRetryInterval());
+        builder.addAllAvailableSegments(syncConfigResponseJava.getAvailableSegments());
+
+        ResultPb.Builder resultPbBuilder = ResultPb.newBuilder();
+        if (syncConfigResponseJava.getMessage() != null) {
+            resultPbBuilder.setMessage(syncConfigResponseJava.getMessage());
+        }
+        resultPbBuilder.setSuccess(syncConfigResponseJava.isSuccess());
+
+        builder.setResult(resultPbBuilder.build());
+
+        return builder.build();
     }
-    resultPbBuilder.setSuccess(syncConfigResponseJava.isSuccess());
-
-    builder.setResult(resultPbBuilder.build());
-
-    return builder.build();
-  }
 }

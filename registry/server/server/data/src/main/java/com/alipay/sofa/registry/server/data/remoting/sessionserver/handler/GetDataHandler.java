@@ -30,27 +30,27 @@ import com.alipay.sofa.registry.util.ParaCheckUtil;
  */
 public class GetDataHandler extends BaseGetDataHandler<GetDataRequest> {
 
-  @Override
-  public void checkParam(GetDataRequest request) {
-    ParaCheckUtil.checkNotBlank(request.getDataInfoId(), "GetDataRequest.dataInfoId");
-    ParaCheckUtil.checkNotBlank(request.getDataCenter(), "GetDataRequest.dataCenter");
-    checkSessionProcessId(request.getSessionProcessId());
-  }
+    @Override
+    public void checkParam(GetDataRequest request) {
+        ParaCheckUtil.checkNotBlank(request.getDataInfoId(), "GetDataRequest.dataInfoId");
+        ParaCheckUtil.checkNotBlank(request.getDataCenter(), "GetDataRequest.dataCenter");
+        checkSessionProcessId(request.getSessionProcessId());
+    }
 
-  @Override
-  public SlotAccessGenericResponse<SubDatum> doHandle(Channel channel, GetDataRequest request) {
-    processSessionProcessId(channel, request.getSessionProcessId());
+    @Override
+    public SlotAccessGenericResponse<SubDatum> doHandle(Channel channel, GetDataRequest request) {
+        processSessionProcessId(channel, request.getSessionProcessId());
 
-    return processSingleDataCenter(
-        request.getDataCenter(),
-        request.getDataInfoId(),
-        request.getSlotTableEpoch(),
-        request.getSlotLeaderEpoch(),
-        request.getAcceptEncodes());
-  }
+        return processSingleDataCenter(
+                request.getDataCenter(),
+                request.getDataInfoId(),
+                request.getSlotTableEpoch(),
+                request.getSlotLeaderEpoch(),
+                request.getAcceptEncodes());
+    }
 
-  @Override
-  public Class interest() {
-    return GetDataRequest.class;
-  }
+    @Override
+    public Class interest() {
+        return GetDataRequest.class;
+    }
 }

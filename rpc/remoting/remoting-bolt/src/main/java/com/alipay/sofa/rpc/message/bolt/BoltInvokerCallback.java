@@ -78,7 +78,7 @@ public class BoltInvokerCallback extends AbstractInvokeCallback {
 
             if (EventBus.isEnable(ClientAsyncReceiveEvent.class)) {
                 EventBus.post(new ClientAsyncReceiveEvent(consumerConfig, providerInfo,
-                    request, response, null));
+                        request, response, null));
             }
 
             pickupBaggage(response);
@@ -97,7 +97,7 @@ public class BoltInvokerCallback extends AbstractInvokeCallback {
             Object appResp = response.getAppResponse();
             if (response.isError()) { // rpc层异常
                 SofaRpcException sofaRpcException = new SofaRpcException(
-                    RpcErrorType.SERVER_UNDECLARED_ERROR, response.getErrorMsg());
+                        RpcErrorType.SERVER_UNDECLARED_ERROR, response.getErrorMsg());
                 callback.onSofaException(sofaRpcException, request.getMethodName(), request);
             } else if (appResp instanceof Throwable) { // 业务层异常
                 throwable = (Throwable) appResp;
@@ -124,7 +124,7 @@ public class BoltInvokerCallback extends AbstractInvokeCallback {
 
             if (EventBus.isEnable(ClientAsyncReceiveEvent.class)) {
                 EventBus.post(new ClientAsyncReceiveEvent(consumerConfig, providerInfo,
-                    request, null, e));
+                        request, null, e));
             }
 
             // do async filter after respond server
@@ -144,7 +144,7 @@ public class BoltInvokerCallback extends AbstractInvokeCallback {
                 sofaRpcException = new SofaTimeOutException(e);
             } else {
                 sofaRpcException = new SofaRpcException(
-                    RpcErrorType.SERVER_UNDECLARED_ERROR, e.getMessage(), e);
+                        RpcErrorType.SERVER_UNDECLARED_ERROR, e.getMessage(), e);
             }
             callback.onSofaException(sofaRpcException, request.getMethodName(), request);
         } finally {

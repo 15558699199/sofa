@@ -33,108 +33,111 @@ import com.alipay.sofa.registry.store.api.DBResponse;
 import com.alipay.sofa.registry.store.api.OperationStatus;
 import com.alipay.sofa.registry.util.JsonUtils;
 import com.google.common.collect.Sets;
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
 
 @Path("compress")
 @LeaderAwareRestController
 public class CompressResource {
-  private static final Logger DB_LOGGER =
-      LoggerFactory.getLogger(CompressResource.class, "[DBService]");
+    private static final Logger DB_LOGGER =
+            LoggerFactory.getLogger(CompressResource.class, "[DBService]");
 
-  @Autowired ProvideDataService provideDataService;
+    @Autowired
+    ProvideDataService provideDataService;
 
-  @Autowired DefaultProvideDataNotifier provideDataNotifier;
+    @Autowired
+    DefaultProvideDataNotifier provideDataNotifier;
 
-  @POST
-  @Path("push/switch")
-  @Consumes(MediaType.APPLICATION_JSON)
-  @Produces(MediaType.APPLICATION_JSON)
-  public Result setPushSwitch(CompressPushSwitch compressPushSwitch) {
-    PersistenceData persistenceData =
-        PersistenceDataBuilder.createPersistenceData(
-            ValueConstants.COMPRESS_PUSH_SWITCH_DATA_ID,
-            JsonUtils.writeValueAsString(compressPushSwitch));
-    Result result = new Result();
-    boolean ret;
-    try {
-      ret = provideDataService.saveProvideData(persistenceData);
-      DB_LOGGER.info("push compressed {} to DB result {}", compressPushSwitch, ret);
-    } catch (Throwable e) {
-      DB_LOGGER.error("push compressed {} to DB result error", compressPushSwitch, e);
-      result.setSuccess(false);
-      result.setMessage(e.getMessage());
-      return result;
+    @POST
+    @Path("push/switch")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Result setPushSwitch(CompressPushSwitch compressPushSwitch) {
+        PersistenceData persistenceData =
+                PersistenceDataBuilder.createPersistenceData(
+                        ValueConstants.COMPRESS_PUSH_SWITCH_DATA_ID,
+                        JsonUtils.writeValueAsString(compressPushSwitch));
+        Result result = new Result();
+        boolean ret;
+        try {
+            ret = provideDataService.saveProvideData(persistenceData);
+            DB_LOGGER.info("push compressed {} to DB result {}", compressPushSwitch, ret);
+        } catch (Throwable e) {
+            DB_LOGGER.error("push compressed {} to DB result error", compressPushSwitch, e);
+            result.setSuccess(false);
+            result.setMessage(e.getMessage());
+            return result;
+        }
+        if (ret) {
+            ProvideDataChangeEvent provideDataChangeEvent =
+                    new ProvideDataChangeEvent(
+                            ValueConstants.COMPRESS_PUSH_SWITCH_DATA_ID,
+                            persistenceData.getVersion(),
+                            Sets.newHashSet(Node.NodeType.SESSION));
+            provideDataNotifier.notifyProvideDataChange(provideDataChangeEvent);
+        }
+        result.setSuccess(ret);
+        return result;
     }
-    if (ret) {
-      ProvideDataChangeEvent provideDataChangeEvent =
-          new ProvideDataChangeEvent(
-              ValueConstants.COMPRESS_PUSH_SWITCH_DATA_ID,
-              persistenceData.getVersion(),
-              Sets.newHashSet(Node.NodeType.SESSION));
-      provideDataNotifier.notifyProvideDataChange(provideDataChangeEvent);
-    }
-    result.setSuccess(ret);
-    return result;
-  }
 
-  @GET
-  @Path("push/state")
-  @Produces(MediaType.APPLICATION_JSON)
-  public CompressPushSwitch getPushSwitch() {
-    DBResponse<PersistenceData> response =
-        provideDataService.queryProvideData(ValueConstants.COMPRESS_PUSH_SWITCH_DATA_ID);
-    if (response.getOperationStatus() == OperationStatus.NOTFOUND
-        || StringUtils.isBlank(response.getEntity().getData())) {
-      return CompressPushSwitch.defaultSwitch();
+    @GET
+    @Path("push/state")
+    @Produces(MediaType.APPLICATION_JSON)
+    public CompressPushSwitch getPushSwitch() {
+        DBResponse<PersistenceData> response =
+                provideDataService.queryProvideData(ValueConstants.COMPRESS_PUSH_SWITCH_DATA_ID);
+        if (response.getOperationStatus() == OperationStatus.NOTFOUND
+                || StringUtils.isBlank(response.getEntity().getData())) {
+            return CompressPushSwitch.defaultSwitch();
+        }
+        return JsonUtils.read(response.getEntity().getData(), CompressPushSwitch.class);
     }
-    return JsonUtils.read(response.getEntity().getData(), CompressPushSwitch.class);
-  }
 
-  @POST
-  @Path("datum/switch")
-  @Consumes(MediaType.APPLICATION_JSON)
-  @Produces(MediaType.APPLICATION_JSON)
-  public Result setDatumSwitch(CompressDatumSwitch compressDatumSwitch) {
-    PersistenceData persistenceData =
-        PersistenceDataBuilder.createPersistenceData(
-            ValueConstants.COMPRESS_DATUM_SWITCH_DATA_ID,
-            JsonUtils.writeValueAsString(compressDatumSwitch));
-    Result result = new Result();
-    boolean ret;
-    try {
-      ret = provideDataService.saveProvideData(persistenceData);
-      DB_LOGGER.info("datum compressed {} to DB result {}", compressDatumSwitch, ret);
-    } catch (Throwable e) {
-      DB_LOGGER.error("datum compressed {} to DB result error", compressDatumSwitch, e);
-      result.setSuccess(false);
-      result.setMessage(e.getMessage());
-      return result;
+    @POST
+    @Path("datum/switch")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Result setDatumSwitch(CompressDatumSwitch compressDatumSwitch) {
+        PersistenceData persistenceData =
+                PersistenceDataBuilder.createPersistenceData(
+                        ValueConstants.COMPRESS_DATUM_SWITCH_DATA_ID,
+                        JsonUtils.writeValueAsString(compressDatumSwitch));
+        Result result = new Result();
+        boolean ret;
+        try {
+            ret = provideDataService.saveProvideData(persistenceData);
+            DB_LOGGER.info("datum compressed {} to DB result {}", compressDatumSwitch, ret);
+        } catch (Throwable e) {
+            DB_LOGGER.error("datum compressed {} to DB result error", compressDatumSwitch, e);
+            result.setSuccess(false);
+            result.setMessage(e.getMessage());
+            return result;
+        }
+        if (ret) {
+            ProvideDataChangeEvent provideDataChangeEvent =
+                    new ProvideDataChangeEvent(
+                            ValueConstants.COMPRESS_DATUM_SWITCH_DATA_ID,
+                            persistenceData.getVersion(),
+                            Sets.newHashSet(Node.NodeType.DATA));
+            provideDataNotifier.notifyProvideDataChange(provideDataChangeEvent);
+        }
+        result.setSuccess(ret);
+        return result;
     }
-    if (ret) {
-      ProvideDataChangeEvent provideDataChangeEvent =
-          new ProvideDataChangeEvent(
-              ValueConstants.COMPRESS_DATUM_SWITCH_DATA_ID,
-              persistenceData.getVersion(),
-              Sets.newHashSet(Node.NodeType.DATA));
-      provideDataNotifier.notifyProvideDataChange(provideDataChangeEvent);
-    }
-    result.setSuccess(ret);
-    return result;
-  }
 
-  @GET
-  @Path("datum/state")
-  @Produces(MediaType.APPLICATION_JSON)
-  public CompressDatumSwitch getDatumSwitch() {
-    DBResponse<PersistenceData> response =
-        provideDataService.queryProvideData(ValueConstants.COMPRESS_DATUM_SWITCH_DATA_ID);
-    if (response.getOperationStatus() == OperationStatus.NOTFOUND
-        || StringUtils.isBlank(response.getEntity().getData())) {
-      return CompressDatumSwitch.defaultSwitch();
+    @GET
+    @Path("datum/state")
+    @Produces(MediaType.APPLICATION_JSON)
+    public CompressDatumSwitch getDatumSwitch() {
+        DBResponse<PersistenceData> response =
+                provideDataService.queryProvideData(ValueConstants.COMPRESS_DATUM_SWITCH_DATA_ID);
+        if (response.getOperationStatus() == OperationStatus.NOTFOUND
+                || StringUtils.isBlank(response.getEntity().getData())) {
+            return CompressDatumSwitch.defaultSwitch();
+        }
+        return JsonUtils.read(response.getEntity().getData(), CompressDatumSwitch.class);
     }
-    return JsonUtils.read(response.getEntity().getData(), CompressDatumSwitch.class);
-  }
 }

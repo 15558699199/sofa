@@ -18,11 +18,7 @@ package com.alipay.sofa.rpc.registry.nacos;
 
 import com.alipay.sofa.rpc.client.ProviderGroup;
 import com.alipay.sofa.rpc.client.ProviderInfo;
-import com.alipay.sofa.rpc.config.ApplicationConfig;
-import com.alipay.sofa.rpc.config.ConsumerConfig;
-import com.alipay.sofa.rpc.config.ProviderConfig;
-import com.alipay.sofa.rpc.config.RegistryConfig;
-import com.alipay.sofa.rpc.config.ServerConfig;
+import com.alipay.sofa.rpc.config.*;
 import com.alipay.sofa.rpc.listener.ProviderInfoListener;
 import com.alipay.sofa.rpc.registry.RegistryFactory;
 import com.alipay.sofa.rpc.registry.nacos.base.BaseNacosTest;
@@ -50,9 +46,9 @@ public class NacosRegistryTest extends BaseNacosTest {
 
     private static RegistryConfig registryConfig;
 
-    private NacosRegistry         registry;
+    private NacosRegistry registry;
 
-    private ServerConfig          serverConfig;
+    private ServerConfig serverConfig;
 
     /**
      * Sets up.
@@ -60,10 +56,10 @@ public class NacosRegistryTest extends BaseNacosTest {
     @Before
     public void setUp() {
         registryConfig = new RegistryConfig()
-            .setProtocol("nacos")
-            .setSubscribe(true)
-            .setAddress("127.0.0.1:" + nacosProcess.getServerPort())
-            .setRegister(true);
+                .setProtocol("nacos")
+                .setSubscribe(true)
+                .setAddress("127.0.0.1:" + nacosProcess.getServerPort())
+                .setRegister(true);
 
         registry = (NacosRegistry) RegistryFactory.getRegistry(registryConfig);
         registry.init();
@@ -242,29 +238,29 @@ public class NacosRegistryTest extends BaseNacosTest {
         String virtualHost = "127.7.7.7";
         int virtualPort = 8888;
         serverConfig = new ServerConfig()
-            .setProtocol("bolt")
-            .setHost("0.0.0.0")
-            .setPort(12200)
-            .setAdaptivePort(false) // Turn off adaptive port
-            .setVirtualHost(virtualHost)
-            .setVirtualPort(virtualPort);
+                .setProtocol("bolt")
+                .setHost("0.0.0.0")
+                .setPort(12200)
+                .setAdaptivePort(false) // Turn off adaptive port
+                .setVirtualHost(virtualHost)
+                .setVirtualPort(virtualPort);
 
         // Verify the influence of virtualHost and virtualPort on the parameters when creating rpcserver
         Method m_resolveServerConfig = ServerFactory.class.getDeclaredMethod("resolveServerConfig", ServerConfig.class);
         m_resolveServerConfig.setAccessible(true);
         m_resolveServerConfig.invoke(new ServerFactory(), serverConfig);
         Assert
-            .assertNotEquals("boundhost should not be equal to virtualHost", serverConfig.getBoundHost(), virtualHost);
+                .assertNotEquals("boundhost should not be equal to virtualHost", serverConfig.getBoundHost(), virtualHost);
         Assert.assertEquals("boundPort should be oriPort", serverConfig.getPort(), 12200);
 
         ProviderConfig<?> provider = new ProviderConfig();
         provider.setInterfaceId("com.alipay.xxx.NacosTestService2")
-            .setApplication(new ApplicationConfig().setAppName("test-server2"))
-            .setUniqueId("nacos-test2")
-            .setProxy("javassist")
-            .setRegister(true)
-            .setRegistry(registryConfig)
-            .setServer(serverConfig);
+                .setApplication(new ApplicationConfig().setAppName("test-server2"))
+                .setUniqueId("nacos-test2")
+                .setProxy("javassist")
+                .setRegister(true)
+                .setRegistry(registryConfig)
+                .setServer(serverConfig);
 
         // 注册
         registry.register(provider);
@@ -272,13 +268,13 @@ public class NacosRegistryTest extends BaseNacosTest {
 
         ConsumerConfig<?> consumer = new ConsumerConfig();
         consumer.setInterfaceId("com.alipay.xxx.NacosTestService2")
-            .setApplication(new ApplicationConfig().setAppName("test-consumer2"))
-            .setUniqueId("nacos-test2")
-            .setProxy("javassist")
-            .setSubscribe(true)
-            .setSerialization("java")
-            .setInvokeType("sync")
-            .setTimeout(4444);
+                .setApplication(new ApplicationConfig().setAppName("test-consumer2"))
+                .setUniqueId("nacos-test2")
+                .setProxy("javassist")
+                .setSubscribe(true)
+                .setSerialization("java")
+                .setInvokeType("sync")
+                .setTimeout(4444);
 
         // 订阅
         CountDownLatch latch = new CountDownLatch(1);
@@ -294,7 +290,7 @@ public class NacosRegistryTest extends BaseNacosTest {
         Map.Entry<String, ProviderInfo> psEntry = (Map.Entry) ps.entrySet().toArray()[0];
         ProviderInfo pri = psEntry.getValue();
         Assert.assertEquals("The provider's key should consist of virtualHost and virtualPort", psEntry.getKey(),
-            virtualHost + ":" + virtualPort);
+                virtualHost + ":" + virtualPort);
         Assert.assertEquals("The provider's host should be virtualHost", virtualHost, pri.getHost());
         Assert.assertEquals("The provider's port should be virtualPort", virtualPort, pri.getPort());
     }
@@ -306,7 +302,7 @@ public class NacosRegistryTest extends BaseNacosTest {
          */
         ConcurrentMap<String, ProviderInfo> ps = new ConcurrentHashMap<String, ProviderInfo>();
 
-        private CountDownLatch              countDownLatch;
+        private CountDownLatch countDownLatch;
 
         /**
          * Sets count down latch.

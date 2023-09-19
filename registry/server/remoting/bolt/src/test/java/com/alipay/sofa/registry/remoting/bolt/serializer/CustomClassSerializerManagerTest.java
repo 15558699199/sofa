@@ -21,17 +21,17 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class CustomClassSerializerManagerTest {
-  @Test
-  public void test() {
-    TestUtils.assertException(
-        IllegalArgumentException.class,
-        () -> CustomClassSerializerManager.registerSerializer(null, (byte) 1));
-    TestUtils.assertException(
-        IllegalArgumentException.class,
-        () -> CustomClassSerializerManager.registerSerializer(Integer.class, null));
-    CustomClassSerializerManager.registerSerializer(Integer.class, (byte) 1);
-    Assert.assertEquals(
-        CustomClassSerializerManager.getClassSerializer(Integer.class).byteValue(), 1);
-    Assert.assertNull(CustomClassSerializerManager.getClassSerializer(Long.class));
-  }
+    @Test
+    public void test() {
+        TestUtils.assertException(
+                IllegalArgumentException.class,
+                () -> CustomClassSerializerManager.registerSerializer(null, (byte) 1));
+        TestUtils.assertException(
+                IllegalArgumentException.class,
+                () -> CustomClassSerializerManager.registerSerializer(Integer.class, null));
+        CustomClassSerializerManager.registerSerializer(Integer.class, (byte) 1);
+        Assert.assertEquals(
+                CustomClassSerializerManager.getClassSerializer(Integer.class).byteValue(), 1);
+        Assert.assertNull(CustomClassSerializerManager.getClassSerializer(Long.class));
+    }
 }

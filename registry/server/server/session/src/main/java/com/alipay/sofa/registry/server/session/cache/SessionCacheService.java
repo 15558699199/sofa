@@ -19,75 +19,81 @@ package com.alipay.sofa.registry.server.session.cache;
 import com.alipay.sofa.registry.log.Logger;
 import com.alipay.sofa.registry.log.LoggerFactory;
 import com.alipay.sofa.registry.util.ParaCheckUtil;
-import com.google.common.cache.*;
-import java.util.Map;
+import com.google.common.cache.LoadingCache;
+import com.google.common.cache.RemovalCause;
+import com.google.common.cache.RemovalListener;
+import com.google.common.cache.RemovalNotification;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Map;
 
 /**
  * @author shangyu.wh
  * @version $Id: CacheService.java, v 0.1 2017-12-06 18:22 shangyu.wh Exp $
  */
 public abstract class SessionCacheService implements CacheService {
-  private static final Logger CACHE_LOGGER = LoggerFactory.getLogger("CACHE-GEN");
+    private static final Logger CACHE_LOGGER = LoggerFactory.getLogger("CACHE-GEN");
 
-  protected LoadingCache<Key, Value> readWriteCacheMap;
+    protected LoadingCache<Key, Value> readWriteCacheMap;
 
-  /** injectQ */
-  private Map<String, CacheGenerator> cacheGenerators;
+    /**
+     * injectQ
+     */
+    private Map<String, CacheGenerator> cacheGenerators;
 
-  static final class RemoveListener implements RemovalListener<Key, Value> {
+    protected Value generatePayload(Key key) {
+        ParaCheckUtil.checkNotNull(key, "generatePayload.key");
+        ParaCheckUtil.checkNotNull(key.getEntityType(), "generatePayload.key.entityType");
+
+        EntityType entityType = key.getEntityType();
+        CacheGenerator cacheGenerator = cacheGenerators.get(entityType.getClass().getName());
+        return cacheGenerator.generatePayload(key);
+    }
 
     @Override
-    public void onRemoval(RemovalNotification<Key, Value> notification) {
-      final RemovalCause cause = notification.getCause();
-      if (cause == RemovalCause.SIZE || cause == RemovalCause.COLLECTED) {
-        Key key = notification.getKey();
-        EntityType entityType = key.getEntityType();
-        if (entityType instanceof DatumKey) {
-          DatumKey datumKey = (DatumKey) entityType;
-          CACHE_LOGGER.info(
-              "remove,{},{},{}", datumKey.getDataInfoId(), datumKey.getDataCenters(), cause);
+    public Value getValue(final Key key) throws CacheAccessException {
+        try {
+            return readWriteCacheMap.get(key);
+        } catch (Throwable e) {
+            String msg = "Cannot get value for key is:" + key;
+            throw new CacheAccessException(msg, e);
         }
-      }
     }
-  }
 
-  protected Value generatePayload(Key key) {
-    ParaCheckUtil.checkNotNull(key, "generatePayload.key");
-    ParaCheckUtil.checkNotNull(key.getEntityType(), "generatePayload.key.entityType");
-
-    EntityType entityType = key.getEntityType();
-    CacheGenerator cacheGenerator = cacheGenerators.get(entityType.getClass().getName());
-    return cacheGenerator.generatePayload(key);
-  }
-
-  @Override
-  public Value getValue(final Key key) throws CacheAccessException {
-    try {
-      return readWriteCacheMap.get(key);
-    } catch (Throwable e) {
-      String msg = "Cannot get value for key is:" + key;
-      throw new CacheAccessException(msg, e);
+    @Override
+    public Value getValueIfPresent(Key key) {
+        return readWriteCacheMap.getIfPresent(key);
     }
-  }
 
-  @Override
-  public Value getValueIfPresent(Key key) {
-    return readWriteCacheMap.getIfPresent(key);
-  }
+    @Override
+    public void invalidate(Key key) {
+        readWriteCacheMap.invalidate(key);
+    }
 
-  @Override
-  public void invalidate(Key key) {
-    readWriteCacheMap.invalidate(key);
-  }
+    /**
+     * Setter method for property <tt>cacheGenerators</tt>.
+     *
+     * @param cacheGenerators value to be assigned to property cacheGenerators
+     */
+    @Autowired
+    public void setCacheGenerators(Map<String, CacheGenerator> cacheGenerators) {
+        this.cacheGenerators = cacheGenerators;
+    }
 
-  /**
-   * Setter method for property <tt>cacheGenerators</tt>.
-   *
-   * @param cacheGenerators value to be assigned to property cacheGenerators
-   */
-  @Autowired
-  public void setCacheGenerators(Map<String, CacheGenerator> cacheGenerators) {
-    this.cacheGenerators = cacheGenerators;
-  }
+    static final class RemoveListener implements RemovalListener<Key, Value> {
+
+        @Override
+        public void onRemoval(RemovalNotification<Key, Value> notification) {
+            final RemovalCause cause = notification.getCause();
+            if (cause == RemovalCause.SIZE || cause == RemovalCause.COLLECTED) {
+                Key key = notification.getKey();
+                EntityType entityType = key.getEntityType();
+                if (entityType instanceof DatumKey) {
+                    DatumKey datumKey = (DatumKey) entityType;
+                    CACHE_LOGGER.info(
+                            "remove,{},{},{}", datumKey.getDataInfoId(), datumKey.getDataCenters(), cause);
+                }
+            }
+        }
+    }
 }

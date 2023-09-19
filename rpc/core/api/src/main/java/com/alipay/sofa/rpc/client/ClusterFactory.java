@@ -42,12 +42,12 @@ public class ClusterFactory {
             ConsumerConfig consumerConfig = consumerBootstrap.getConsumerConfig();
             cluster = consumerConfig.getCluster();
             ExtensionClass<Cluster> ext = ExtensionLoaderFactory.getExtensionLoader(Cluster.class)
-                .getExtensionClass(cluster);
+                    .getExtensionClass(cluster);
             if (ext == null) {
                 throw new SofaRpcRuntimeException(LogCodes.getLog(LogCodes.ERROR_LOAD_CLUSTER, cluster));
             }
-            return ext.getExtInstance(new Class[] { ConsumerBootstrap.class },
-                new Object[] { consumerBootstrap });
+            return ext.getExtInstance(new Class[]{ConsumerBootstrap.class},
+                    new Object[]{consumerBootstrap});
         } catch (SofaRpcRuntimeException e) {
             throw e;
         } catch (Throwable e) {

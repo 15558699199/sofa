@@ -16,27 +16,28 @@
  */
 package com.alipay.sofa.registry.util;
 
-import java.sql.Timestamp;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class TimestampUtilTest {
-  @Test
-  public void test() {
-    long now = System.currentTimeMillis();
-    Timestamp ts = new Timestamp(now);
-    Assert.assertEquals(String.valueOf(now), TimestampUtil.getNanosLong(ts), now * 1000000);
-  }
+import java.sql.Timestamp;
 
-  @Test
-  public void testNanos() {
-    long now = System.currentTimeMillis();
-    long nanos = now / 1000 * 1000000000;
-    Timestamp ts = new Timestamp(now);
-    for (int i = 0; i <= 999999999; i++) {
-      ts.setNanos(i);
-      Assert.assertEquals(TimestampUtil.getNanosLong(ts), nanos + i);
+public class TimestampUtilTest {
+    @Test
+    public void test() {
+        long now = System.currentTimeMillis();
+        Timestamp ts = new Timestamp(now);
+        Assert.assertEquals(String.valueOf(now), TimestampUtil.getNanosLong(ts), now * 1000000);
     }
-    Assert.assertEquals(ts, TimestampUtil.fromNanosLong(TimestampUtil.getNanosLong(ts)));
-  }
+
+    @Test
+    public void testNanos() {
+        long now = System.currentTimeMillis();
+        long nanos = now / 1000 * 1000000000;
+        Timestamp ts = new Timestamp(now);
+        for (int i = 0; i <= 999999999; i++) {
+            ts.setNanos(i);
+            Assert.assertEquals(TimestampUtil.getNanosLong(ts), nanos + i);
+        }
+        Assert.assertEquals(ts, TimestampUtil.fromNanosLong(TimestampUtil.getNanosLong(ts)));
+    }
 }

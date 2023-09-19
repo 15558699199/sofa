@@ -20,9 +20,9 @@ import com.alipay.sofa.registry.exception.StartException;
 
 /**
  * @author chen.zhu
- *     <p>Nov 13, 2020
+ * <p>Nov 13, 2020
  */
 public interface Startable {
 
-  void start() throws StartException;
+    void start() throws StartException;
 }

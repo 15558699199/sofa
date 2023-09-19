@@ -33,96 +33,97 @@ import com.alipay.sofa.registry.server.meta.resource.filter.LeaderAwareRestContr
 import com.alipay.sofa.registry.util.JsonUtils;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Sets;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import org.springframework.beans.factory.annotation.Autowired;
 
 @Path("metaCenter")
 @LeaderAwareRestController
 public class MetaCenterResource {
 
-  private static final Logger DB_LOGGER =
-      LoggerFactory.getLogger(MetaCenterResource.class, "[DBService]");
+    private static final Logger DB_LOGGER =
+            LoggerFactory.getLogger(MetaCenterResource.class, "[DBService]");
+    @Autowired
+    ProvideDataService provideDataService;
+    @Autowired
+    DefaultProvideDataNotifier provideDataNotifier;
+    @Autowired
+    private InterfaceAppsIndexCleaner interfaceAppsIndexCleaner;
+    @Autowired
+    private AppRevisionCleaner appRevisionCleaner;
 
-  @Autowired private InterfaceAppsIndexCleaner interfaceAppsIndexCleaner;
-
-  @Autowired private AppRevisionCleaner appRevisionCleaner;
-
-  @Autowired ProvideDataService provideDataService;
-
-  @Autowired DefaultProvideDataNotifier provideDataNotifier;
-
-  @PUT
-  @Path("interfaceAppsIndex/renew")
-  @Produces(MediaType.APPLICATION_JSON)
-  public Result interfaceAppsIndexRenew() {
-    Result result = new Result();
-    interfaceAppsIndexCleaner.startRenew();
-    result.setSuccess(true);
-    return result;
-  }
-
-  @PUT
-  @Path("appRevisionCleaner/switch")
-  @Produces(MediaType.APPLICATION_JSON)
-  public Result appRevisionCleanerEnable(@FormParam("enabled") boolean enabled) {
-    Result result = new Result();
-    try {
-      appRevisionCleaner.setEnabled(enabled);
-      result.setSuccess(true);
-    } catch (Exception e) {
-      result.setSuccess(false);
-      result.setMessage(e.getMessage());
+    @PUT
+    @Path("interfaceAppsIndex/renew")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Result interfaceAppsIndexRenew() {
+        Result result = new Result();
+        interfaceAppsIndexCleaner.startRenew();
+        result.setSuccess(true);
+        return result;
     }
-    return result;
-  }
 
-  MetaCenterResource setInterfaceAppsIndexCleaner(InterfaceAppsIndexCleaner cleaner) {
-    interfaceAppsIndexCleaner = cleaner;
-    return this;
-  }
-
-  @PUT
-  @Path("appRevision/writeSwitch")
-  @Consumes(MediaType.APPLICATION_JSON)
-  @Produces(MediaType.APPLICATION_JSON)
-  public Result setAppRevisionWriteSwitch(AppRevisionDomainConvertor.EnableConfig enableConfig) {
-    PersistenceData persistenceData =
-        PersistenceDataBuilder.createPersistenceData(
-            ValueConstants.APP_REVISION_WRITE_SWITCH_DATA_ID,
-            JsonUtils.writeValueAsString(enableConfig));
-    Result result = new Result();
-    boolean ret;
-    try {
-      ret = provideDataService.saveProvideData(persistenceData);
-      DB_LOGGER.info("app revision write switch {} to DB result {}", enableConfig, ret);
-    } catch (Throwable e) {
-      DB_LOGGER.error("app revision write switch {} to DB result error", enableConfig, e);
-      result.setSuccess(false);
-      result.setMessage(e.getMessage());
-      return result;
+    @PUT
+    @Path("appRevisionCleaner/switch")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Result appRevisionCleanerEnable(@FormParam("enabled") boolean enabled) {
+        Result result = new Result();
+        try {
+            appRevisionCleaner.setEnabled(enabled);
+            result.setSuccess(true);
+        } catch (Exception e) {
+            result.setSuccess(false);
+            result.setMessage(e.getMessage());
+        }
+        return result;
     }
-    if (ret) {
-      ProvideDataChangeEvent provideDataChangeEvent =
-          new ProvideDataChangeEvent(
-              ValueConstants.APP_REVISION_WRITE_SWITCH_DATA_ID,
-              persistenceData.getVersion(),
-              Sets.newHashSet(Node.NodeType.SESSION));
-      provideDataNotifier.notifyProvideDataChange(provideDataChangeEvent);
+
+    MetaCenterResource setInterfaceAppsIndexCleaner(InterfaceAppsIndexCleaner cleaner) {
+        interfaceAppsIndexCleaner = cleaner;
+        return this;
     }
-    result.setSuccess(ret);
-    return result;
-  }
 
-  @VisibleForTesting
-  public MetaCenterResource setProvideDataNotifier(DefaultProvideDataNotifier provideDataNotifier) {
-    this.provideDataNotifier = provideDataNotifier;
-    return this;
-  }
+    @PUT
+    @Path("appRevision/writeSwitch")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Result setAppRevisionWriteSwitch(AppRevisionDomainConvertor.EnableConfig enableConfig) {
+        PersistenceData persistenceData =
+                PersistenceDataBuilder.createPersistenceData(
+                        ValueConstants.APP_REVISION_WRITE_SWITCH_DATA_ID,
+                        JsonUtils.writeValueAsString(enableConfig));
+        Result result = new Result();
+        boolean ret;
+        try {
+            ret = provideDataService.saveProvideData(persistenceData);
+            DB_LOGGER.info("app revision write switch {} to DB result {}", enableConfig, ret);
+        } catch (Throwable e) {
+            DB_LOGGER.error("app revision write switch {} to DB result error", enableConfig, e);
+            result.setSuccess(false);
+            result.setMessage(e.getMessage());
+            return result;
+        }
+        if (ret) {
+            ProvideDataChangeEvent provideDataChangeEvent =
+                    new ProvideDataChangeEvent(
+                            ValueConstants.APP_REVISION_WRITE_SWITCH_DATA_ID,
+                            persistenceData.getVersion(),
+                            Sets.newHashSet(Node.NodeType.SESSION));
+            provideDataNotifier.notifyProvideDataChange(provideDataChangeEvent);
+        }
+        result.setSuccess(ret);
+        return result;
+    }
 
-  @VisibleForTesting
-  public MetaCenterResource setProvideDataService(ProvideDataService provideDataService) {
-    this.provideDataService = provideDataService;
-    return this;
-  }
+    @VisibleForTesting
+    public MetaCenterResource setProvideDataNotifier(DefaultProvideDataNotifier provideDataNotifier) {
+        this.provideDataNotifier = provideDataNotifier;
+        return this;
+    }
+
+    @VisibleForTesting
+    public MetaCenterResource setProvideDataService(ProvideDataService provideDataService) {
+        this.provideDataService = provideDataService;
+        return this;
+    }
 }

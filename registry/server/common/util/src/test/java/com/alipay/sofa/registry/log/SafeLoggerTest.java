@@ -20,13 +20,13 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class SafeLoggerTest {
-  @Test
-  public void testSafeLogger() {
-    SafeLogger safeLogger = SafeLogger.getInstance();
-    safeLogger.handleExp(new OutOfMemoryError());
-    safeLogger.handleExp(new OutOfMemoryError());
-    safeLogger.handleExp(new RuntimeException());
-    Assert.assertEquals(2, safeLogger.oom_count);
-    Assert.assertEquals(1, safeLogger.unknown_count);
-  }
+    @Test
+    public void testSafeLogger() {
+        SafeLogger safeLogger = SafeLogger.getInstance();
+        safeLogger.handleExp(new OutOfMemoryError());
+        safeLogger.handleExp(new OutOfMemoryError());
+        safeLogger.handleExp(new RuntimeException());
+        Assert.assertEquals(2, safeLogger.oom_count);
+        Assert.assertEquals(1, safeLogger.unknown_count);
+    }
 }

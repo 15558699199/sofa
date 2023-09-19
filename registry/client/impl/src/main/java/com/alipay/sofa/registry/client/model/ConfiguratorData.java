@@ -17,6 +17,7 @@
 package com.alipay.sofa.registry.client.model;
 
 import com.alipay.sofa.registry.core.model.DataBox;
+
 import java.io.Serializable;
 
 /**
@@ -27,45 +28,45 @@ import java.io.Serializable;
  */
 public class ConfiguratorData implements Serializable {
 
-  private static final long serialVersionUID = 3667107975967019132L;
+    private static final long serialVersionUID = 3667107975967019132L;
 
-  private DataBox dataBox;
+    private DataBox dataBox;
 
-  private Long version;
+    private Long version;
 
-  /**
-   * Getter method for property <tt>dataBox</tt>.
-   *
-   * @return property value of dataBox
-   */
-  public DataBox getDataBox() {
-    return dataBox;
-  }
+    /**
+     * Getter method for property <tt>dataBox</tt>.
+     *
+     * @return property value of dataBox
+     */
+    public DataBox getDataBox() {
+        return dataBox;
+    }
 
-  /**
-   * Setter method for property <tt>dataBox</tt>.
-   *
-   * @param dataBox value to be assigned to property dataBox
-   */
-  public void setDataBox(DataBox dataBox) {
-    this.dataBox = dataBox;
-  }
+    /**
+     * Setter method for property <tt>dataBox</tt>.
+     *
+     * @param dataBox value to be assigned to property dataBox
+     */
+    public void setDataBox(DataBox dataBox) {
+        this.dataBox = dataBox;
+    }
 
-  /**
-   * Getter method for property <tt>version</tt>.
-   *
-   * @return property value of version
-   */
-  public Long getVersion() {
-    return version;
-  }
+    /**
+     * Getter method for property <tt>version</tt>.
+     *
+     * @return property value of version
+     */
+    public Long getVersion() {
+        return version;
+    }
 
-  /**
-   * Setter method for property <tt>version</tt>.
-   *
-   * @param version value to be assigned to property version
-   */
-  public void setVersion(Long version) {
-    this.version = version;
-  }
+    /**
+     * Setter method for property <tt>version</tt>.
+     *
+     * @param version value to be assigned to property version
+     */
+    public void setVersion(Long version) {
+        this.version = version;
+    }
 }

@@ -31,12 +31,13 @@ import com.alipay.sofa.registry.remoting.bolt.serializer.ProtobufSerializer;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
+import org.junit.Assert;
+import org.junit.Test;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.junit.Assert;
-import org.junit.Test;
 
 /**
  * @author bystander
@@ -44,95 +45,95 @@ import org.junit.Test;
  */
 public class BoltEncodeTest {
 
-  @Test
-  public void test() {
+    @Test
+    public void test() {
 
-    CustomSerializerManager.registerCustomSerializer(
-        PublisherRegisterPb.class.getName(), new ProtobufCustomSerializer());
+        CustomSerializerManager.registerCustomSerializer(
+                PublisherRegisterPb.class.getName(), new ProtobufCustomSerializer());
 
-    PublisherRegisterPb.Builder builder = PublisherRegisterPb.newBuilder();
+        PublisherRegisterPb.Builder builder = PublisherRegisterPb.newBuilder();
 
-    BaseRegisterPb.Builder baseRegisterBuilder = BaseRegisterPb.newBuilder();
+        BaseRegisterPb.Builder baseRegisterBuilder = BaseRegisterPb.newBuilder();
 
-    Map<String, String> attributes = new HashMap<String, String>();
-    attributes.put("a", "b");
-    baseRegisterBuilder
-        .setAppName("test")
-        .setClientId("clientId")
-        .setDataId("dataId")
-        .setDataInfoId("DataInfoId")
-        .setEventType("eventType")
-        .setGroup("group")
-        .setInstanceId("InstanceId")
-        .setIp("ip")
-        .setPort(1200)
-        .setProcessId("ProcessId")
-        .setRegistId("RegistId")
-        .setVersion(1)
-        .setTimestamp(1)
-        .putAllAttributes(attributes);
+        Map<String, String> attributes = new HashMap<String, String>();
+        attributes.put("a", "b");
+        baseRegisterBuilder
+                .setAppName("test")
+                .setClientId("clientId")
+                .setDataId("dataId")
+                .setDataInfoId("DataInfoId")
+                .setEventType("eventType")
+                .setGroup("group")
+                .setInstanceId("InstanceId")
+                .setIp("ip")
+                .setPort(1200)
+                .setProcessId("ProcessId")
+                .setRegistId("RegistId")
+                .setVersion(1)
+                .setTimestamp(1)
+                .putAllAttributes(attributes);
 
-    builder.setBaseRegister(baseRegisterBuilder.build());
-    List<DataBox> dataBoxJavas = new ArrayList<DataBox>();
-    final DataBox data = new DataBox();
-    data.setData("data");
-    dataBoxJavas.add(data);
-    builder.addAllDataList(DataBoxConvertor.convert2Pbs(dataBoxJavas));
+        builder.setBaseRegister(baseRegisterBuilder.build());
+        List<DataBox> dataBoxJavas = new ArrayList<DataBox>();
+        final DataBox data = new DataBox();
+        data.setData("data");
+        dataBoxJavas.add(data);
+        builder.addAllDataList(DataBoxConvertor.convert2Pbs(dataBoxJavas));
 
-    final PublisherRegisterPb publisherRegisterPb = builder.build();
-    RpcRequestCommand command = new RpcRequestCommand(publisherRegisterPb);
-    command.setSerializer(ProtobufSerializer.PROTOCOL_PROTOBUF);
-    command.setTimeout(-1);
-    command.setRequestClass(publisherRegisterPb.getClass().getName());
-    try {
-      command.serialize();
-    } catch (SerializationException e) {
-      e.printStackTrace();
+        final PublisherRegisterPb publisherRegisterPb = builder.build();
+        RpcRequestCommand command = new RpcRequestCommand(publisherRegisterPb);
+        command.setSerializer(ProtobufSerializer.PROTOCOL_PROTOBUF);
+        command.setTimeout(-1);
+        command.setRequestClass(publisherRegisterPb.getClass().getName());
+        try {
+            command.serialize();
+        } catch (SerializationException e) {
+            e.printStackTrace();
+        }
+
+        for (byte b : command.getContent()) {
+            System.out.print(String.format("%02x", b));
+        }
+        System.out.println();
+
+        RpcCommandEncoder protocolEncoder = new RpcCommandEncoder();
+        ByteBuf byteBuf = Unpooled.buffer();
+        try {
+            protocolEncoder.encode(null, command, byteBuf);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        StringBuilder sb = new StringBuilder(1024);
+        ByteBufUtil.appendPrettyHexDump(sb, byteBuf);
+
+        System.out.println(sb);
+
+        RpcCommandDecoder rpcCommandDecoder = new RpcCommandDecoder();
+
+        final ArrayList<Object> out = new ArrayList<>();
+        try {
+            rpcCommandDecoder.decode(null, byteBuf, out);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        RpcRequestCommand rpcRequestCommand = null;
+        for (Object o : out) {
+            rpcRequestCommand = (RpcRequestCommand) o;
+            try {
+                rpcRequestCommand.deserialize();
+            } catch (DeserializationException e) {
+                e.printStackTrace();
+            }
+        }
+        final PublisherRegisterPb requestObject =
+                (PublisherRegisterPb) rpcRequestCommand.getRequestObject();
+        System.out.println(requestObject);
+
+        Assert.assertEquals(requestObject.getBaseRegister().getAppName(), "test");
+
+        PublisherRegister publisherRegister = PublisherRegisterConvertor.convert2Java(requestObject);
+
+        System.out.println(publisherRegister);
     }
-
-    for (byte b : command.getContent()) {
-      System.out.print(String.format("%02x", b));
-    }
-    System.out.println();
-
-    RpcCommandEncoder protocolEncoder = new RpcCommandEncoder();
-    ByteBuf byteBuf = Unpooled.buffer();
-    try {
-      protocolEncoder.encode(null, command, byteBuf);
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-
-    StringBuilder sb = new StringBuilder(1024);
-    ByteBufUtil.appendPrettyHexDump(sb, byteBuf);
-
-    System.out.println(sb);
-
-    RpcCommandDecoder rpcCommandDecoder = new RpcCommandDecoder();
-
-    final ArrayList<Object> out = new ArrayList<>();
-    try {
-      rpcCommandDecoder.decode(null, byteBuf, out);
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-    RpcRequestCommand rpcRequestCommand = null;
-    for (Object o : out) {
-      rpcRequestCommand = (RpcRequestCommand) o;
-      try {
-        rpcRequestCommand.deserialize();
-      } catch (DeserializationException e) {
-        e.printStackTrace();
-      }
-    }
-    final PublisherRegisterPb requestObject =
-        (PublisherRegisterPb) rpcRequestCommand.getRequestObject();
-    System.out.println(requestObject);
-
-    Assert.assertEquals(requestObject.getBaseRegister().getAppName(), "test");
-
-    PublisherRegister publisherRegister = PublisherRegisterConvertor.convert2Java(requestObject);
-
-    System.out.println(publisherRegister);
-  }
 }

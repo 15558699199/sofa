@@ -30,8 +30,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
- *
- *
  * @author <a href=ailto:zhanggeng.zg@antfin.com>GengZhang</a>
  */
 public class ProtobufServiceClientMultipleMain {
@@ -45,12 +43,12 @@ public class ProtobufServiceClientMultipleMain {
 
         ApplicationConfig application = new ApplicationConfig().setAppName("test-client");
         ConsumerConfig<ProtoService> consumerConfig = new ConsumerConfig<ProtoService>()
-            .setInterfaceId(ProtoService.class.getName()) // 指定接口
-            .setProtocol("bolt") // 指定协议
-            .setApplication(application)
-            .setDirectUrl("bolt://127.0.0.1:12200") // 指定直连地址
-            .setSerialization("protobuf") // 指定序列化协议，默认为hessian
-            .setConnectTimeout(10 * 1000);
+                .setInterfaceId(ProtoService.class.getName()) // 指定接口
+                .setProtocol("bolt") // 指定协议
+                .setApplication(application)
+                .setDirectUrl("bolt://127.0.0.1:12200") // 指定直连地址
+                .setSerialization("protobuf") // 指定序列化协议，默认为hessian
+                .setConnectTimeout(10 * 1000);
 
         final ProtoService helloService = consumerConfig.refer();
 
@@ -59,7 +57,7 @@ public class ProtobufServiceClientMultipleMain {
         final int threads = 50;
         final AtomicLong cnt = new AtomicLong(0);
         final ThreadPoolExecutor service1 = new ThreadPoolExecutor(threads, threads, 0L, TimeUnit.MILLISECONDS,
-            new SynchronousQueue<Runnable>(), new NamedThreadFactory("client-"));// 无队列
+                new SynchronousQueue<Runnable>(), new NamedThreadFactory("client-"));// 无队列
         for (int i = 0; i < threads; i++) {
             service1.execute(new Runnable() {
                 @Override
@@ -67,7 +65,7 @@ public class ProtobufServiceClientMultipleMain {
                     while (true) {
                         try {
                             EchoRequest request = EchoRequest.newBuilder().setGroup(Group.A).setName("12345678")
-                                .build();
+                                    .build();
                             EchoResponse s = helloService.echoObj(request);
                             cnt.incrementAndGet();
                         } catch (Throwable e) {

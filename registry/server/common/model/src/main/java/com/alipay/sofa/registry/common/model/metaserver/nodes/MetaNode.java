@@ -24,40 +24,40 @@ import com.alipay.sofa.registry.common.model.store.URL;
  */
 public class MetaNode extends AbstractNode {
 
-  /**
-   * constructor
-   *
-   * @param nodeUrl nodeUrl
-   * @param dataCenter dataCenter
-   */
-  public MetaNode(URL nodeUrl, String dataCenter) {
-    super(dataCenter, nodeUrl, null);
-  }
+    /**
+     * constructor
+     *
+     * @param nodeUrl    nodeUrl
+     * @param dataCenter dataCenter
+     */
+    public MetaNode(URL nodeUrl, String dataCenter) {
+        super(dataCenter, nodeUrl, null);
+    }
 
-  @Override
-  public NodeType getNodeType() {
-    return NodeType.META;
-  }
+    @Override
+    public NodeType getNodeType() {
+        return NodeType.META;
+    }
 
-  /**
-   * Getter method for property <tt>dataCenter</tt>.
-   *
-   * @return property value of dataCenter
-   */
-  public String getDataCenter() {
-    return dataCenter;
-  }
+    /**
+     * Getter method for property <tt>dataCenter</tt>.
+     *
+     * @return property value of dataCenter
+     */
+    public String getDataCenter() {
+        return dataCenter;
+    }
 
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    MetaNode that = (MetaNode) o;
-    return super.equal(that);
-  }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MetaNode that = (MetaNode) o;
+        return super.equal(that);
+    }
 
-  @Override
-  public int hashCode() {
-    return super.hash();
-  }
+    @Override
+    public int hashCode() {
+        return super.hash();
+    }
 }

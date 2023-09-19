@@ -40,11 +40,11 @@ public class AddressHolderFactory {
         try {
             addressHolder = consumerBootstrap.getConsumerConfig().getAddressHolder();
             ExtensionClass<AddressHolder> ext = ExtensionLoaderFactory.getExtensionLoader(AddressHolder.class)
-                .getExtensionClass(addressHolder);
+                    .getExtensionClass(addressHolder);
             if (ext == null) {
                 throw new SofaRpcRuntimeException(LogCodes.getLog(LogCodes.ERROR_LOAD_ADDRESS_HOLDER, addressHolder));
             }
-            return ext.getExtInstance(new Class[] { ConsumerBootstrap.class }, new Object[] { consumerBootstrap });
+            return ext.getExtInstance(new Class[]{ConsumerBootstrap.class}, new Object[]{consumerBootstrap});
         } catch (SofaRpcRuntimeException e) {
             throw e;
         } catch (Throwable e) {

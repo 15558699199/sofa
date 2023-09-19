@@ -42,7 +42,7 @@ import java.util.List;
  * @since 2018/05/01
  */
 @AutoConfiguration(after = SofaTracerAutoConfiguration.class)
-@EnableConfigurationProperties({ OpenTracingSpringMvcProperties.class })
+@EnableConfigurationProperties({OpenTracingSpringMvcProperties.class})
 @ConditionalOnProperty(name = "sofa.boot.tracer.springmvc.enabled", havingValue = "true", matchIfMissing = true)
 public class OpenTracingSpringMvcAutoConfiguration {
 
@@ -71,7 +71,7 @@ public class OpenTracingSpringMvcAutoConfiguration {
 
     @Configuration(proxyBeanMethods = false)
     @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.REACTIVE)
-    @ConditionalOnClass({ WebFilter.class, WebfluxSofaTracerFilter.class })
+    @ConditionalOnClass({WebFilter.class, WebfluxSofaTracerFilter.class})
     static class WebfluxSofaTracerFilterConfiguration {
 
         @Bean

@@ -24,37 +24,42 @@ package com.alipay.sofa.registry.client.api.exception;
  */
 public class DuplicateException extends IllegalArgumentException {
 
-  /** UID */
-  private static final long serialVersionUID = 167969795120169890L;
+    /**
+     * UID
+     */
+    private static final long serialVersionUID = 167969795120169890L;
 
-  /** Instantiates a new Duplicate exception. */
-  public DuplicateException() {}
+    /**
+     * Instantiates a new Duplicate exception.
+     */
+    public DuplicateException() {
+    }
 
-  /**
-   * Instantiates a new Duplicate exception.
-   *
-   * @param s the s
-   */
-  public DuplicateException(String s) {
-    super(s);
-  }
+    /**
+     * Instantiates a new Duplicate exception.
+     *
+     * @param s the s
+     */
+    public DuplicateException(String s) {
+        super(s);
+    }
 
-  /**
-   * Instantiates a new Duplicate exception.
-   *
-   * @param message the message
-   * @param cause the cause
-   */
-  public DuplicateException(String message, Throwable cause) {
-    super(message, cause);
-  }
+    /**
+     * Instantiates a new Duplicate exception.
+     *
+     * @param message the message
+     * @param cause   the cause
+     */
+    public DuplicateException(String message, Throwable cause) {
+        super(message, cause);
+    }
 
-  /**
-   * Instantiates a new Duplicate exception.
-   *
-   * @param cause the cause
-   */
-  public DuplicateException(Throwable cause) {
-    super(cause);
-  }
+    /**
+     * Instantiates a new Duplicate exception.
+     *
+     * @param cause the cause
+     */
+    public DuplicateException(Throwable cause) {
+        super(cause);
+    }
 }

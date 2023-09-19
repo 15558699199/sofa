@@ -17,6 +17,7 @@
 package com.alipay.sofa.registry.common.model.multi.cluster;
 
 import com.google.common.base.Objects;
+
 import java.io.Serializable;
 import java.util.Set;
 
@@ -25,54 +26,54 @@ import java.util.Set;
  * @version : DataCenterMetadata.java, v 0.1 2022年07月21日 11:54 xiaojian.xj Exp $
  */
 public class DataCenterMetadata implements Serializable {
-  private static final long serialVersionUID = 5438256870784168278L;
+    private static final long serialVersionUID = 5438256870784168278L;
 
-  private final String dataCenter;
+    private final String dataCenter;
 
-  private final Set<String> zones;
+    private final Set<String> zones;
 
-  public DataCenterMetadata(String dataCenter, Set<String> zones) {
-    this.dataCenter = dataCenter;
-    this.zones = zones;
-  }
-
-  /**
-   * Getter method for property <tt>dataCenter</tt>.
-   *
-   * @return property value of dataCenter
-   */
-  public String getDataCenter() {
-    return dataCenter;
-  }
-
-  /**
-   * Getter method for property <tt>zones</tt>.
-   *
-   * @return property value of zones
-   */
-  public Set<String> getZones() {
-    return zones;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
+    public DataCenterMetadata(String dataCenter, Set<String> zones) {
+        this.dataCenter = dataCenter;
+        this.zones = zones;
     }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
+
+    /**
+     * Getter method for property <tt>dataCenter</tt>.
+     *
+     * @return property value of dataCenter
+     */
+    public String getDataCenter() {
+        return dataCenter;
     }
-    DataCenterMetadata that = (DataCenterMetadata) o;
-    return Objects.equal(dataCenter, that.dataCenter) && Objects.equal(zones, that.zones);
-  }
 
-  @Override
-  public int hashCode() {
-    return Objects.hashCode(dataCenter, zones);
-  }
+    /**
+     * Getter method for property <tt>zones</tt>.
+     *
+     * @return property value of zones
+     */
+    public Set<String> getZones() {
+        return zones;
+    }
 
-  @Override
-  public String toString() {
-    return "DataCenterMetadata{" + "dataCenter='" + dataCenter + '\'' + ", zones=" + zones + '}';
-  }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        DataCenterMetadata that = (DataCenterMetadata) o;
+        return Objects.equal(dataCenter, that.dataCenter) && Objects.equal(zones, that.zones);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(dataCenter, zones);
+    }
+
+    @Override
+    public String toString() {
+        return "DataCenterMetadata{" + "dataCenter='" + dataCenter + '\'' + ", zones=" + zones + '}';
+    }
 }

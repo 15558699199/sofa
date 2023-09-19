@@ -24,6 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 组合式的 UserData from UserData and ConfigData
+ *
  * @author bystander
  * @version $Id: ComposeUserData.java, v 0.1 2018年06月09日 11:42 AM bystander Exp $
  */
@@ -33,7 +34,7 @@ public class ComposeUserData {
     private Map<String, List<ProviderInfo>> zoneData = new ConcurrentHashMap<String, List<ProviderInfo>>(512);
 
     //当前 zone
-    private String                          localZone;
+    private String localZone;
 
     public Map<String, List<ProviderInfo>> getZoneData() {
         return zoneData;

@@ -24,13 +24,13 @@ import org.junit.Test;
  * @version : AtomicMapTest.java, v 0.1 2022年08月03日 17:50 xiaojian.xj Exp $
  */
 public class AtomicMapTest {
-  @Test
-  public void test() {
-    AtomicMap<String, String> map = new AtomicMap();
-    map.put("a", "1");
-    map.put("b", "2");
+    @Test
+    public void test() {
+        AtomicMap<String, String> map = new AtomicMap();
+        map.put("a", "1");
+        map.put("b", "2");
 
-    Assert.assertEquals(2, map.getAndReset().size());
-    Assert.assertEquals(0, map.getAndReset().size());
-  }
+        Assert.assertEquals(2, map.getAndReset().size());
+        Assert.assertEquals(0, map.getAndReset().size());
+    }
 }

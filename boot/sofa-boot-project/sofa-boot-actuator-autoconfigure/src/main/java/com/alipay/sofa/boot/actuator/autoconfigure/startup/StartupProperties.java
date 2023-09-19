@@ -35,7 +35,7 @@ public class StartupProperties {
     /**
      * Startup report buffer size.
      */
-    private int  bufferSize    = 4096;
+    private int bufferSize = 4096;
 
     public long getCostThreshold() {
         return costThreshold;

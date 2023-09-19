@@ -26,15 +26,16 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class MetaServerExchanger extends ServerSideExchanger {
 
-  @Autowired private MetaServerConfig metaServerConfig;
+    @Autowired
+    private MetaServerConfig metaServerConfig;
 
-  @Override
-  public int getRpcTimeoutMillis() {
-    return metaServerConfig.getMetaNodeExchangeTimeoutMillis();
-  }
+    @Override
+    public int getRpcTimeoutMillis() {
+        return metaServerConfig.getMetaNodeExchangeTimeoutMillis();
+    }
 
-  @Override
-  public int getServerPort() {
-    return metaServerConfig.getMetaServerPort();
-  }
+    @Override
+    public int getServerPort() {
+        return metaServerConfig.getMetaServerPort();
+    }
 }

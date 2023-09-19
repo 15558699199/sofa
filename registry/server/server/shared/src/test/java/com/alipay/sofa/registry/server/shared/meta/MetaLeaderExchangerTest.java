@@ -16,9 +16,6 @@
  */
 package com.alipay.sofa.registry.server.shared.meta;
 
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.when;
-
 import com.alipay.sofa.registry.common.model.GenericResponse;
 import com.alipay.sofa.registry.common.model.elector.DistributeLockInfo;
 import com.alipay.sofa.registry.common.model.elector.LeaderInfo;
@@ -29,10 +26,6 @@ import com.alipay.sofa.registry.server.shared.TestUtils.MockBaseMetaLeaderExchan
 import com.alipay.sofa.registry.server.shared.constant.MetaLeaderLearnModeEnum;
 import com.alipay.sofa.registry.store.api.elector.DistributeLockRepository;
 import com.google.common.collect.Maps;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import javax.ws.rs.core.Response;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,6 +34,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import javax.ws.rs.core.Response;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.when;
+
 /**
  * @author xiaojian.xj
  * @version : MetaLeaderExchangerTest.java, v 0.1 2023年02月03日 17:49 xiaojian.xj Exp $
@@ -48,106 +49,108 @@ import org.mockito.runners.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class MetaLeaderExchangerTest {
 
-  private static final Logger LOG = LoggerFactory.getLogger(MetaLeaderExchangerTest.class);
+    private static final Logger LOG = LoggerFactory.getLogger(MetaLeaderExchangerTest.class);
 
-  private String testDc = "testDc";
+    private String testDc = "testDc";
 
-  private DistributeLockInfo distributeLockInfo =
-      new DistributeLockInfo(testDc, "testLock", "196.168.1.2", 10 * 1000);
+    private DistributeLockInfo distributeLockInfo =
+            new DistributeLockInfo(testDc, "testLock", "196.168.1.2", 10 * 1000);
 
-  @InjectMocks private MockJdbcMetaLeaderExchanger mockJdbcMetaLeaderExchanger;
+    @InjectMocks
+    private MockJdbcMetaLeaderExchanger mockJdbcMetaLeaderExchanger;
 
-  private MockLbMetaLeaderExchanger mockLbMetaLeaderExchanger = new MockLbMetaLeaderExchanger();
+    private MockLbMetaLeaderExchanger mockLbMetaLeaderExchanger = new MockLbMetaLeaderExchanger();
 
-  @Mock private DistributeLockRepository distributeLockRepository;
+    @Mock
+    private DistributeLockRepository distributeLockRepository;
 
-  @Before
-  public void init() {
-    distributeLockInfo.setGmtModifiedUnixNanos(System.currentTimeMillis() * 1000 * 1000);
-    when(distributeLockRepository.queryDistLock(anyString())).thenReturn(distributeLockInfo);
-  }
-
-  @Test
-  public void testLearnMetaLeader() {
-    long timeMillis = System.currentTimeMillis();
-    LeaderInfo leaderInfo1 = new LeaderInfo(timeMillis, "196.168.1.1");
-    LeaderInfo leaderInfo2 = new LeaderInfo(timeMillis + 1, "196.168.1.2");
-    LeaderInfo leaderInfo3 = new LeaderInfo(timeMillis - 1, "196.168.1.3");
-
-    Assert.assertTrue(mockJdbcMetaLeaderExchanger.learn(testDc, leaderInfo1));
-    Assert.assertTrue(mockJdbcMetaLeaderExchanger.learn(testDc, leaderInfo2));
-    Assert.assertFalse(mockJdbcMetaLeaderExchanger.learn(testDc, leaderInfo3));
-
-    Assert.assertEquals(leaderInfo2, mockJdbcMetaLeaderExchanger.getLeader(testDc));
-    Assert.assertEquals(
-        Collections.singleton(leaderInfo2.getLeader()), mockJdbcMetaLeaderExchanger.getServerIps());
-  }
-
-  @Test
-  public void testResetLeaderFromJdbc() {
-    LeaderInfo leader = mockJdbcMetaLeaderExchanger.getLeader(testDc);
-    Assert.assertEquals(
-        new LeaderInfo(
-            distributeLockInfo.getGmtModifiedUnixMillis(), distributeLockInfo.getOwner()),
-        leader);
-  }
-
-  private GenericResponse createSuccessGenericResponse() {
-    GenericResponse genericResponse = new GenericResponse();
-    genericResponse.setSuccess(true);
-    HashMap<String, Object> data = Maps.newHashMap();
-    data.put("epoch", System.currentTimeMillis());
-    data.put("leader", "1.1.1.1");
-    genericResponse.setData(data);
-    return genericResponse;
-  }
-
-  private GenericResponse createFailGenericResponse() {
-    GenericResponse genericResponse = new GenericResponse();
-    genericResponse.setSuccess(false);
-    return genericResponse;
-  }
-
-  private GenericResponse createEmptyLeaderResponse() {
-    GenericResponse genericResponse = new GenericResponse();
-    genericResponse.setSuccess(true);
-    HashMap<String, Object> data = Maps.newHashMap();
-    data.put("epoch", System.currentTimeMillis());
-    genericResponse.setData(data);
-    return genericResponse;
-  }
-
-  @Test
-  public void testHandleRespFromLbFail() {
-
-    Response response = TestUtils.createFailResponse(500);
-    Assert.assertNull(mockLbMetaLeaderExchanger.handleResp(testDc, "1.1.1.1", response));
-  }
-
-  @Test
-  public void testHandleRespFromLb() {
-    Response response = TestUtils.createSuccessResponse(createFailGenericResponse());
-    Assert.assertNull(mockLbMetaLeaderExchanger.handleResp(testDc, "1.1.1.1", response));
-
-    response = TestUtils.createSuccessResponse(createEmptyLeaderResponse());
-    Assert.assertNull(mockLbMetaLeaderExchanger.handleResp(testDc, "1.1.1.1", response));
-
-    GenericResponse resp = createSuccessGenericResponse();
-    response = TestUtils.createSuccessResponse(resp);
-    LeaderInfo ret = mockLbMetaLeaderExchanger.handleResp(testDc, "1.1.1.1", response);
-    Assert.assertEquals(((Map<String, String>) resp.getData()).get("leader"), ret.getLeader());
-    Assert.assertEquals(((Map<String, String>) resp.getData()).get("epoch"), ret.getEpoch());
-  }
-
-  private class MockLbMetaLeaderExchanger extends MockBaseMetaLeaderExchanger {
-
-    public MockLbMetaLeaderExchanger() {
-      super("serverType", LOG);
+    @Before
+    public void init() {
+        distributeLockInfo.setGmtModifiedUnixNanos(System.currentTimeMillis() * 1000 * 1000);
+        when(distributeLockRepository.queryDistLock(anyString())).thenReturn(distributeLockInfo);
     }
 
-    @Override
-    protected MetaLeaderLearnModeEnum getMode() {
-      return MetaLeaderLearnModeEnum.LOADBALANCER;
+    @Test
+    public void testLearnMetaLeader() {
+        long timeMillis = System.currentTimeMillis();
+        LeaderInfo leaderInfo1 = new LeaderInfo(timeMillis, "196.168.1.1");
+        LeaderInfo leaderInfo2 = new LeaderInfo(timeMillis + 1, "196.168.1.2");
+        LeaderInfo leaderInfo3 = new LeaderInfo(timeMillis - 1, "196.168.1.3");
+
+        Assert.assertTrue(mockJdbcMetaLeaderExchanger.learn(testDc, leaderInfo1));
+        Assert.assertTrue(mockJdbcMetaLeaderExchanger.learn(testDc, leaderInfo2));
+        Assert.assertFalse(mockJdbcMetaLeaderExchanger.learn(testDc, leaderInfo3));
+
+        Assert.assertEquals(leaderInfo2, mockJdbcMetaLeaderExchanger.getLeader(testDc));
+        Assert.assertEquals(
+                Collections.singleton(leaderInfo2.getLeader()), mockJdbcMetaLeaderExchanger.getServerIps());
     }
-  }
+
+    @Test
+    public void testResetLeaderFromJdbc() {
+        LeaderInfo leader = mockJdbcMetaLeaderExchanger.getLeader(testDc);
+        Assert.assertEquals(
+                new LeaderInfo(
+                        distributeLockInfo.getGmtModifiedUnixMillis(), distributeLockInfo.getOwner()),
+                leader);
+    }
+
+    private GenericResponse createSuccessGenericResponse() {
+        GenericResponse genericResponse = new GenericResponse();
+        genericResponse.setSuccess(true);
+        HashMap<String, Object> data = Maps.newHashMap();
+        data.put("epoch", System.currentTimeMillis());
+        data.put("leader", "1.1.1.1");
+        genericResponse.setData(data);
+        return genericResponse;
+    }
+
+    private GenericResponse createFailGenericResponse() {
+        GenericResponse genericResponse = new GenericResponse();
+        genericResponse.setSuccess(false);
+        return genericResponse;
+    }
+
+    private GenericResponse createEmptyLeaderResponse() {
+        GenericResponse genericResponse = new GenericResponse();
+        genericResponse.setSuccess(true);
+        HashMap<String, Object> data = Maps.newHashMap();
+        data.put("epoch", System.currentTimeMillis());
+        genericResponse.setData(data);
+        return genericResponse;
+    }
+
+    @Test
+    public void testHandleRespFromLbFail() {
+
+        Response response = TestUtils.createFailResponse(500);
+        Assert.assertNull(mockLbMetaLeaderExchanger.handleResp(testDc, "1.1.1.1", response));
+    }
+
+    @Test
+    public void testHandleRespFromLb() {
+        Response response = TestUtils.createSuccessResponse(createFailGenericResponse());
+        Assert.assertNull(mockLbMetaLeaderExchanger.handleResp(testDc, "1.1.1.1", response));
+
+        response = TestUtils.createSuccessResponse(createEmptyLeaderResponse());
+        Assert.assertNull(mockLbMetaLeaderExchanger.handleResp(testDc, "1.1.1.1", response));
+
+        GenericResponse resp = createSuccessGenericResponse();
+        response = TestUtils.createSuccessResponse(resp);
+        LeaderInfo ret = mockLbMetaLeaderExchanger.handleResp(testDc, "1.1.1.1", response);
+        Assert.assertEquals(((Map<String, String>) resp.getData()).get("leader"), ret.getLeader());
+        Assert.assertEquals(((Map<String, String>) resp.getData()).get("epoch"), ret.getEpoch());
+    }
+
+    private class MockLbMetaLeaderExchanger extends MockBaseMetaLeaderExchanger {
+
+        public MockLbMetaLeaderExchanger() {
+            super("serverType", LOG);
+        }
+
+        @Override
+        protected MetaLeaderLearnModeEnum getMode() {
+            return MetaLeaderLearnModeEnum.LOADBALANCER;
+        }
+    }
 }

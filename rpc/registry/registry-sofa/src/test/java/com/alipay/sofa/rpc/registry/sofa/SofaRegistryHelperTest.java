@@ -101,27 +101,27 @@ public class SofaRegistryHelperTest {
     @Test
     public void convertProviderToUrls() throws Exception {
         ServerConfig serverConfig = new ServerConfig()
-            .setHost("0.0.0.0")
-            .setPort(22000)
-            .setProtocol("bolt");
+                .setHost("0.0.0.0")
+                .setPort(22000)
+                .setProtocol("bolt");
 
         ServerConfig serverConfig2 = new ServerConfig()
-            .setHost("127.0.0.1")
-            .setPort(12200)
-            .setProtocol("tr");
+                .setHost("127.0.0.1")
+                .setPort(12200)
+                .setProtocol("tr");
 
         ServerConfig serverConfig3 = new ServerConfig()
-            .setHost("192.1.1.1")
-            .setPort(8080)
-            .setProtocol("xfire");
+                .setHost("192.1.1.1")
+                .setPort(8080)
+                .setProtocol("xfire");
         ProviderConfig<?> providerConfig = new ProviderConfig();
         providerConfig
-            .setInterfaceId("com.alipay.sofa.rpc.test.TestService")
-            .setUniqueId("qqqq")
-            .setApplication(new ApplicationConfig().setAppName("xxxx"))
-            .setTimeout(4444)
-            .setWeight(250)
-            .setServer(Arrays.asList(serverConfig, serverConfig2));
+                .setInterfaceId("com.alipay.sofa.rpc.test.TestService")
+                .setUniqueId("qqqq")
+                .setApplication(new ApplicationConfig().setAppName("xxxx"))
+                .setTimeout(4444)
+                .setWeight(250)
+                .setServer(Arrays.asList(serverConfig, serverConfig2));
 
         MethodConfig methodConfig = new MethodConfig().setName("echo").setTimeout(3333);
         MethodConfig methodConfig2 = new MethodConfig().setName("xx").setTimeout(2222);

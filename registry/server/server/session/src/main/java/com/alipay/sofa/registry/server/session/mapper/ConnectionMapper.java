@@ -17,9 +17,10 @@
 package com.alipay.sofa.registry.server.session.mapper;
 
 import com.google.common.collect.Maps;
+import org.apache.commons.lang.StringUtils;
+
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import org.apache.commons.lang.StringUtils;
 
 /**
  * @author ruoshan
@@ -27,66 +28,68 @@ import org.apache.commons.lang.StringUtils;
  */
 public class ConnectionMapper {
 
-  /** <connectionIp:connectionPort, clientIp > * */
-  private final ConcurrentHashMap<String, String> connectionToClientIpMap =
-      new ConcurrentHashMap<>();
+    /**
+     * <connectionIp:connectionPort, clientIp > *
+     */
+    private final ConcurrentHashMap<String, String> connectionToClientIpMap =
+            new ConcurrentHashMap<>();
 
-  /**
-   * 添加连接到 clientIp 的映射
-   *
-   * @param connectId 连接 ip:port
-   * @param clientIp 客户端 ip
-   */
-  public void add(String connectId, String clientIp) {
-    if (StringUtils.isNotEmpty(clientIp)) {
-      connectionToClientIpMap.putIfAbsent(connectId, clientIp);
+    /**
+     * 添加连接到 clientIp 的映射
+     *
+     * @param connectId 连接 ip:port
+     * @param clientIp  客户端 ip
+     */
+    public void add(String connectId, String clientIp) {
+        if (StringUtils.isNotEmpty(clientIp)) {
+            connectionToClientIpMap.putIfAbsent(connectId, clientIp);
+        }
     }
-  }
 
-  /**
-   * 删除连接到 clientIp 的映射
-   *
-   * @param connectId 连接 ip:port
-   */
-  public void remove(String connectId) {
-    connectionToClientIpMap.remove(connectId);
-  }
+    /**
+     * 删除连接到 clientIp 的映射
+     *
+     * @param connectId 连接 ip:port
+     */
+    public void remove(String connectId) {
+        connectionToClientIpMap.remove(connectId);
+    }
 
-  /**
-   * 是否包含连接到 clientIp 的映射
-   *
-   * @param connectId connectId
-   * @return boolean
-   */
-  public boolean contains(String connectId) {
-    return connectionToClientIpMap.containsKey(connectId);
-  }
+    /**
+     * 是否包含连接到 clientIp 的映射
+     *
+     * @param connectId connectId
+     * @return boolean
+     */
+    public boolean contains(String connectId) {
+        return connectionToClientIpMap.containsKey(connectId);
+    }
 
-  /**
-   * 获取连接对应的 clientIp
-   *
-   * @param connectId 连接 ip:port
-   * @return clientIp
-   */
-  public String get(String connectId) {
-    return connectionToClientIpMap.get(connectId);
-  }
+    /**
+     * 获取连接对应的 clientIp
+     *
+     * @param connectId 连接 ip:port
+     * @return clientIp
+     */
+    public String get(String connectId) {
+        return connectionToClientIpMap.get(connectId);
+    }
 
-  /**
-   * 获取连接映射的 size
-   *
-   * @return 连接映射的 size
-   */
-  public int size() {
-    return connectionToClientIpMap.size();
-  }
+    /**
+     * 获取连接映射的 size
+     *
+     * @return 连接映射的 size
+     */
+    public int size() {
+        return connectionToClientIpMap.size();
+    }
 
-  /**
-   * 获取所有的连接映射
-   *
-   * @return 连接映射表
-   */
-  public Map<String, String> get() {
-    return Maps.newHashMap(connectionToClientIpMap);
-  }
+    /**
+     * 获取所有的连接映射
+     *
+     * @return 连接映射表
+     */
+    public Map<String, String> get() {
+        return Maps.newHashMap(connectionToClientIpMap);
+    }
 }

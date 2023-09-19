@@ -42,27 +42,27 @@ public class RestDirectUrlTest extends ActivelyDestroyTest {
 
         // 只有1个线程 执行
         ServerConfig serverConfig = new ServerConfig()
-            .setPort(12300)
-            .setProtocol(RpcConstants.PROTOCOL_TYPE_REST)
-            .setDaemon(true);
+                .setPort(12300)
+                .setProtocol(RpcConstants.PROTOCOL_TYPE_REST)
+                .setDaemon(true);
 
         // 发布一个服务，每个请求要执行1秒
         ProviderConfig<RestService> providerConfig = new ProviderConfig<RestService>()
-            .setInterfaceId(RestService.class.getName())
-            .setRef(new RestServiceImpl())
-            .setBootstrap("rest")
-            .setApplication(new ApplicationConfig().setAppName("serverApp"))
-            .setServer(serverConfig)
-            .setRegister(false);
+                .setInterfaceId(RestService.class.getName())
+                .setRef(new RestServiceImpl())
+                .setBootstrap("rest")
+                .setApplication(new ApplicationConfig().setAppName("serverApp"))
+                .setServer(serverConfig)
+                .setRegister(false);
         providerConfig.export();
 
         final ConsumerConfig<RestService> consumerConfig = new ConsumerConfig<RestService>()
-            .setInterfaceId(RestService.class.getName())
-            .setDirectUrl("rest://127.0.0.1:12300")
-            .setProtocol(RpcConstants.PROTOCOL_TYPE_REST)
-            .setBootstrap("rest")
-            .setApplication(new ApplicationConfig().setAppName("clientApp"))
-            .setReconnectPeriod(1000);
+                .setInterfaceId(RestService.class.getName())
+                .setDirectUrl("rest://127.0.0.1:12300")
+                .setProtocol(RpcConstants.PROTOCOL_TYPE_REST)
+                .setBootstrap("rest")
+                .setApplication(new ApplicationConfig().setAppName("clientApp"))
+                .setReconnectPeriod(1000);
 
         RestService restService = consumerConfig.refer();
 
@@ -82,7 +82,7 @@ public class RestDirectUrlTest extends ActivelyDestroyTest {
             @Override
             public Boolean call() throws Exception {
                 return CommonUtils.isEmpty(consumerConfig.getConsumerBootstrap()
-                    .getCluster().getConnectionHolder().getAvailableConnections());
+                        .getCluster().getConnectionHolder().getAvailableConnections());
             }
         }, true, 50, 40));
 
@@ -92,7 +92,7 @@ public class RestDirectUrlTest extends ActivelyDestroyTest {
             @Override
             public Boolean call() throws Exception {
                 return CommonUtils.isNotEmpty(consumerConfig.getConsumerBootstrap()
-                    .getCluster().getConnectionHolder().getAvailableConnections());
+                        .getCluster().getConnectionHolder().getAvailableConnections());
             }
         }, true, 50, 60));
 

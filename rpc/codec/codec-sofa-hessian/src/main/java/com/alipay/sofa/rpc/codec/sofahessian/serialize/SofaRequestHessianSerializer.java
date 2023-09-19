@@ -44,7 +44,7 @@ public class SofaRequestHessianSerializer extends AbstractCustomHessianSerialize
 
     @Override
     public void decodeObjectByTemplate(AbstractByteBuf data, Map<String, String> context, SofaRequest template)
-        throws SofaRpcException {
+            throws SofaRpcException {
         try {
             UnsafeByteArrayInputStream inputStream = new UnsafeByteArrayInputStream(data.array());
             Hessian2Input input = new Hessian2Input(inputStream);
@@ -117,7 +117,7 @@ public class SofaRequestHessianSerializer extends AbstractCustomHessianSerialize
 
             // 根据SerializeType信息决定序列化器
             boolean genericSerialize = context != null &&
-                isGenericRequest(context.get(RemotingConstants.HEAD_GENERIC_TYPE));
+                    isGenericRequest(context.get(RemotingConstants.HEAD_GENERIC_TYPE));
             if (genericSerialize) {
                 output.setSerializerFactory(genericSerializerFactory);
             } else {

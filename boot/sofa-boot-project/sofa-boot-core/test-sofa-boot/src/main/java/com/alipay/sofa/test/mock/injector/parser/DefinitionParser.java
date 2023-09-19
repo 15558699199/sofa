@@ -31,11 +31,7 @@ import org.springframework.util.Assert;
 import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Parser for processing the {@link MockBeanInjector} and {@link SpyBeanInjector} annotations for the testClass
@@ -45,7 +41,7 @@ import java.util.Set;
  */
 public class DefinitionParser {
 
-    private final Set<Definition>        definitions;
+    private final Set<Definition> definitions;
 
     private final Map<Definition, Field> definitionFields;
 
@@ -81,9 +77,9 @@ public class DefinitionParser {
                                              Class<?> testClass) {
         ResolvableType typesToMock = deduceType(field, testClass);
         MockDefinition mockDefinition = new MockDefinition(typesToMock, annotation.name(),
-            ResolvableType.forClass(annotation.value()), annotation.module(), annotation.field(),
-            annotation.extraInterfaces(), annotation.answer(), annotation.serializable(),
-            annotation.reset(), QualifierDefinition.forElement(field));
+                ResolvableType.forClass(annotation.value()), annotation.module(), annotation.field(),
+                annotation.extraInterfaces(), annotation.answer(), annotation.serializable(),
+                annotation.reset(), QualifierDefinition.forElement(field));
         registerDefinition(mockDefinition, field, "mock");
     }
 
@@ -97,15 +93,15 @@ public class DefinitionParser {
                                             Class<?> testClass) {
         ResolvableType typesToMock = deduceType(field, testClass);
         SpyDefinition spyDefinition = new SpyDefinition(typesToMock, annotation.name(),
-            ResolvableType.forClass(annotation.value()), annotation.module(), annotation.field(),
-            annotation.reset(), annotation.proxyTargetAware(),
-            QualifierDefinition.forElement(field));
+                ResolvableType.forClass(annotation.value()), annotation.module(), annotation.field(),
+                annotation.reset(), annotation.proxyTargetAware(),
+                QualifierDefinition.forElement(field));
         registerDefinition(spyDefinition, field, "spy");
     }
 
     private ResolvableType deduceType(Field field, Class<?> source) {
         return (field.getGenericType() instanceof java.lang.reflect.TypeVariable) ? ResolvableType
-            .forField(field, source) : ResolvableType.forField(field);
+                .forField(field, source) : ResolvableType.forField(field);
     }
 
     public Set<Definition> getDefinitions() {

@@ -18,38 +18,40 @@ package com.alipay.sofa.registry.server.data.change;
 
 import com.alipay.sofa.registry.common.model.TraceTimes;
 import com.google.common.collect.Sets;
+
 import java.util.Collection;
 import java.util.Set;
 
 public class DataChangeMerger {
-  private final Set<String> dataInfoIds = Sets.newConcurrentHashSet();
-  private volatile DataChangeType lastDataChangeType;
-  private long firstTs;
+    private final Set<String> dataInfoIds = Sets.newConcurrentHashSet();
+    private volatile DataChangeType lastDataChangeType;
+    private long firstTs;
 
-  public DataChangeMerger() {}
-
-  public void addChanges(Collection<String> dataInfoIds, DataChangeType dataChangeType) {
-    long now = System.currentTimeMillis();
-    this.dataInfoIds.addAll(dataInfoIds);
-    this.lastDataChangeType = dataChangeType;
-    if (firstTs == 0) {
-      firstTs = now;
+    public DataChangeMerger() {
     }
-  }
 
-  public void clear() {
-    this.dataInfoIds.clear();
-    this.firstTs = 0;
-  }
+    public void addChanges(Collection<String> dataInfoIds, DataChangeType dataChangeType) {
+        long now = System.currentTimeMillis();
+        this.dataInfoIds.addAll(dataInfoIds);
+        this.lastDataChangeType = dataChangeType;
+        if (firstTs == 0) {
+            firstTs = now;
+        }
+    }
 
-  public TraceTimes createTraceTime() {
-    TraceTimes times = new TraceTimes();
-    times.setDataChangeType(lastDataChangeType.ordinal());
-    times.setFirstDataChange(firstTs);
-    return times;
-  }
+    public void clear() {
+        this.dataInfoIds.clear();
+        this.firstTs = 0;
+    }
 
-  public Set<String> getDataInfoIds() {
-    return dataInfoIds;
-  }
+    public TraceTimes createTraceTime() {
+        TraceTimes times = new TraceTimes();
+        times.setDataChangeType(lastDataChangeType.ordinal());
+        times.setFirstDataChange(firstTs);
+        return times;
+    }
+
+    public Set<String> getDataInfoIds() {
+        return dataInfoIds;
+    }
 }

@@ -28,11 +28,11 @@ import org.springframework.context.annotation.Configuration;
 @EnableConfigurationProperties
 public class MultiClusterSessionConfiguration {
 
-  @Configuration
-  public static class SessionConfigConfiguration {
-    @Bean
-    public MultiClusterSessionServerConfig multiClusterSessionServerConfig() {
-      return new MultiClusterSessionServerConfigBean();
+    @Configuration
+    public static class SessionConfigConfiguration {
+        @Bean
+        public MultiClusterSessionServerConfig multiClusterSessionServerConfig() {
+            return new MultiClusterSessionServerConfigBean();
+        }
     }
-  }
 }

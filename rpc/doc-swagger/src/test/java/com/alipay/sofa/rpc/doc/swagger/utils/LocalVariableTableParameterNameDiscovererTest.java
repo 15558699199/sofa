@@ -29,14 +29,14 @@ import java.lang.reflect.Method;
  */
 public class LocalVariableTableParameterNameDiscovererTest {
 
-    private final static Logger                                    LOGGER     = LoggerFactory
-                                                                                  .getLogger(LocalVariableTableParameterNameDiscoverer.class);
+    private final static Logger LOGGER = LoggerFactory
+            .getLogger(LocalVariableTableParameterNameDiscoverer.class);
 
     private final static LocalVariableTableParameterNameDiscoverer DISCOVERER = new LocalVariableTableParameterNameDiscoverer();
 
-    private static Method                                          CLASS_NO_PARAM_METHOD;
-    private static Method                                          CLASS_ONE_PARAM_METHOD;
-    private static Method                                          CLASS_MULTI_PARAM_METHOD;
+    private static Method CLASS_NO_PARAM_METHOD;
+    private static Method CLASS_ONE_PARAM_METHOD;
+    private static Method CLASS_MULTI_PARAM_METHOD;
 
     static {
         try {

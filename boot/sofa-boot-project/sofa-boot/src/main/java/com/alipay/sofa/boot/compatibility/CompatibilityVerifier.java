@@ -26,6 +26,7 @@ public interface CompatibilityVerifier {
 
     /**
      * verify compatibility
+     *
      * @return verify result
      */
     VerificationResult verify();

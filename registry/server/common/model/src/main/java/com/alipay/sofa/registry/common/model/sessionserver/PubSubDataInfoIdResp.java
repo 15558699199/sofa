@@ -26,51 +26,52 @@ import java.util.Set;
  */
 public class PubSubDataInfoIdResp implements Serializable {
 
-  private Map<String, Set<String>> pubDataInfoIds;
+    private Map<String, Set<String>> pubDataInfoIds;
 
-  private Map<String, Set<String>> subDataInfoIds;
+    private Map<String, Set<String>> subDataInfoIds;
 
-  public PubSubDataInfoIdResp() {}
+    public PubSubDataInfoIdResp() {
+    }
 
-  public PubSubDataInfoIdResp(
-      Map<String, Set<String>> pubDataInfoIds, Map<String, Set<String>> subDataInfoIds) {
-    this.pubDataInfoIds = pubDataInfoIds;
-    this.subDataInfoIds = subDataInfoIds;
-  }
+    public PubSubDataInfoIdResp(
+            Map<String, Set<String>> pubDataInfoIds, Map<String, Set<String>> subDataInfoIds) {
+        this.pubDataInfoIds = pubDataInfoIds;
+        this.subDataInfoIds = subDataInfoIds;
+    }
 
-  /**
-   * Getter method for property <tt>pubDataInfoIds</tt>.
-   *
-   * @return property value of pubDataInfoIds
-   */
-  public Map<String, Set<String>> getPubDataInfoIds() {
-    return pubDataInfoIds;
-  }
+    /**
+     * Getter method for property <tt>pubDataInfoIds</tt>.
+     *
+     * @return property value of pubDataInfoIds
+     */
+    public Map<String, Set<String>> getPubDataInfoIds() {
+        return pubDataInfoIds;
+    }
 
-  /**
-   * Setter method for property <tt>pubDataInfoIds</tt>.
-   *
-   * @param pubDataInfoIds value to be assigned to property pubDataInfoIds
-   */
-  public void setPubDataInfoIds(Map<String, Set<String>> pubDataInfoIds) {
-    this.pubDataInfoIds = pubDataInfoIds;
-  }
+    /**
+     * Setter method for property <tt>pubDataInfoIds</tt>.
+     *
+     * @param pubDataInfoIds value to be assigned to property pubDataInfoIds
+     */
+    public void setPubDataInfoIds(Map<String, Set<String>> pubDataInfoIds) {
+        this.pubDataInfoIds = pubDataInfoIds;
+    }
 
-  /**
-   * Getter method for property <tt>subDataInfoIds</tt>.
-   *
-   * @return property value of subDataInfoIds
-   */
-  public Map<String, Set<String>> getSubDataInfoIds() {
-    return subDataInfoIds;
-  }
+    /**
+     * Getter method for property <tt>subDataInfoIds</tt>.
+     *
+     * @return property value of subDataInfoIds
+     */
+    public Map<String, Set<String>> getSubDataInfoIds() {
+        return subDataInfoIds;
+    }
 
-  /**
-   * Setter method for property <tt>subDataInfoIds</tt>.
-   *
-   * @param subDataInfoIds value to be assigned to property subDataInfoIds
-   */
-  public void setSubDataInfoIds(Map<String, Set<String>> subDataInfoIds) {
-    this.subDataInfoIds = subDataInfoIds;
-  }
+    /**
+     * Setter method for property <tt>subDataInfoIds</tt>.
+     *
+     * @param subDataInfoIds value to be assigned to property subDataInfoIds
+     */
+    public void setSubDataInfoIds(Map<String, Set<String>> subDataInfoIds) {
+        this.subDataInfoIds = subDataInfoIds;
+    }
 }

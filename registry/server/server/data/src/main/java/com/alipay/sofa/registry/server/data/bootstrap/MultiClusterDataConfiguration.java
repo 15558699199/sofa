@@ -27,12 +27,13 @@ import com.alipay.sofa.registry.server.data.multi.cluster.slot.MultiClusterSlotM
 import com.alipay.sofa.registry.server.data.multi.cluster.storage.MultiClusterDatumService;
 import com.alipay.sofa.registry.server.shared.remoting.AbstractClientHandler;
 import com.alipay.sofa.registry.server.shared.remoting.AbstractServerHandler;
-import java.util.ArrayList;
-import java.util.Collection;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * @author xiaojian.xj
@@ -42,77 +43,77 @@ import org.springframework.context.annotation.Configuration;
 @EnableConfigurationProperties
 public class MultiClusterDataConfiguration {
 
-  @Configuration
-  public static class RemoteDataConfigConfiguration {
-    @Bean
-    @ConditionalOnMissingBean
-    public MultiClusterDataServerConfigBean multiClusterDataServerConfig() {
-      return new MultiClusterDataServerConfigBean();
+    @Configuration
+    public static class RemoteDataConfigConfiguration {
+        @Bean
+        @ConditionalOnMissingBean
+        public MultiClusterDataServerConfigBean multiClusterDataServerConfig() {
+            return new MultiClusterDataServerConfigBean();
+        }
+
+        @Bean
+        public MultiClusterExecutorManager multiClusterExecutorManager(
+                MultiClusterDataServerConfig multiClusterDataServerConfig) {
+            return new MultiClusterExecutorManager(multiClusterDataServerConfig);
+        }
     }
 
-    @Bean
-    public MultiClusterExecutorManager multiClusterExecutorManager(
-        MultiClusterDataServerConfig multiClusterDataServerConfig) {
-      return new MultiClusterExecutorManager(multiClusterDataServerConfig);
-    }
-  }
+    @Configuration
+    public static class RemoteClusterExchangerConfiguration {
 
-  @Configuration
-  public static class RemoteClusterExchangerConfiguration {
+        @Bean
+        public RemoteDataNodeExchanger remoteDataNodeExchanger() {
+            return new RemoteDataNodeExchanger();
+        }
 
-    @Bean
-    public RemoteDataNodeExchanger remoteDataNodeExchanger() {
-      return new RemoteDataNodeExchanger();
-    }
+        @Bean(name = "remoteDataServerHandlers")
+        public Collection<AbstractServerHandler> remoteDataServerHandlers() {
+            Collection<AbstractServerHandler> list = new ArrayList<>();
+            list.add(multiClusterSlotDiffDigestRequestHandler());
+            list.add(multiClusterSlotDiffPublisherRequestHandler());
+            return list;
+        }
 
-    @Bean(name = "remoteDataServerHandlers")
-    public Collection<AbstractServerHandler> remoteDataServerHandlers() {
-      Collection<AbstractServerHandler> list = new ArrayList<>();
-      list.add(multiClusterSlotDiffDigestRequestHandler());
-      list.add(multiClusterSlotDiffPublisherRequestHandler());
-      return list;
-    }
+        @Bean(name = "remoteDataClientHandlers")
+        public Collection<AbstractClientHandler> remoteDataClientHandlers() {
+            Collection<AbstractClientHandler> list = new ArrayList<>();
+            list.add(remoteDataChangeNotifyHandler());
+            return list;
+        }
 
-    @Bean(name = "remoteDataClientHandlers")
-    public Collection<AbstractClientHandler> remoteDataClientHandlers() {
-      Collection<AbstractClientHandler> list = new ArrayList<>();
-      list.add(remoteDataChangeNotifyHandler());
-      return list;
-    }
+        @Bean
+        public AbstractServerHandler multiClusterSlotDiffDigestRequestHandler() {
+            return new MultiClusterSlotDiffDigestRequestHandler();
+        }
 
-    @Bean
-    public AbstractServerHandler multiClusterSlotDiffDigestRequestHandler() {
-      return new MultiClusterSlotDiffDigestRequestHandler();
-    }
+        @Bean
+        public AbstractServerHandler multiClusterSlotDiffPublisherRequestHandler() {
+            return new MultiClusterSlotDiffPublisherRequestHandler();
+        }
 
-    @Bean
-    public AbstractServerHandler multiClusterSlotDiffPublisherRequestHandler() {
-      return new MultiClusterSlotDiffPublisherRequestHandler();
-    }
-
-    @Bean
-    public AbstractClientHandler remoteDataChangeNotifyHandler() {
-      return new RemoteDataChangeNotifyHandler();
-    }
-  }
-
-  @Configuration
-  public static class RemoteDataStorageConfiguration {
-
-    @Bean
-    @ConditionalOnMissingBean
-    public MultiClusterSlotManager multiClusterSlotManager() {
-      return new MultiClusterSlotManagerImpl();
+        @Bean
+        public AbstractClientHandler remoteDataChangeNotifyHandler() {
+            return new RemoteDataChangeNotifyHandler();
+        }
     }
 
-    @Bean
-    public MultiSyncDataAcceptorManager multiSyncDataAcceptorManager() {
-      return new MultiSyncDataAcceptorManager();
-    }
+    @Configuration
+    public static class RemoteDataStorageConfiguration {
 
-    @Bean
-    public MultiClusterDatumService multiClusterDatumService() {
-      return new MultiClusterDatumService();
+        @Bean
+        @ConditionalOnMissingBean
+        public MultiClusterSlotManager multiClusterSlotManager() {
+            return new MultiClusterSlotManagerImpl();
+        }
+
+        @Bean
+        public MultiSyncDataAcceptorManager multiSyncDataAcceptorManager() {
+            return new MultiSyncDataAcceptorManager();
+        }
+
+        @Bean
+        public MultiClusterDatumService multiClusterDatumService() {
+            return new MultiClusterDatumService();
+        }
     }
-  }
 }

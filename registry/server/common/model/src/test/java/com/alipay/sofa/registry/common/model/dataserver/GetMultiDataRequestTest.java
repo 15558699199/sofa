@@ -26,11 +26,11 @@ import org.junit.Test;
  */
 public class GetMultiDataRequestTest {
 
-  @Test
-  public void test() {
-    GetMultiDataRequest request =
-        new GetMultiDataRequest(
-            null, 1, "testId", new String[] {"aaa"}, Maps.newHashMap(), Maps.newHashMap());
-    Assert.assertNull(request.getSessionProcessId());
-  }
+    @Test
+    public void test() {
+        GetMultiDataRequest request =
+                new GetMultiDataRequest(
+                        null, 1, "testId", new String[]{"aaa"}, Maps.newHashMap(), Maps.newHashMap());
+        Assert.assertNull(request.getSessionProcessId());
+    }
 }

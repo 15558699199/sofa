@@ -24,12 +24,13 @@ import com.alipay.sofa.registry.common.model.store.URL;
 import com.alipay.sofa.registry.remoting.exchange.message.SimpleRequest;
 import com.alipay.sofa.registry.test.BaseIntegrationTest;
 import com.google.common.collect.Sets;
-import java.util.Map;
-import java.util.Set;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author xiaojian.xj
@@ -37,39 +38,39 @@ import org.springframework.test.context.junit4.SpringRunner;
  */
 @RunWith(SpringRunner.class)
 public class QueryClientOffTest extends BaseIntegrationTest {
-  private final String localAddress = sessionChannel.getLocalAddress().getHostString();
-  private final String CLIENT_OFF_STR = "31.1.1.1;32.2.2.2";
-  private final Set<String> CLIENT_OFF_SET = Sets.newHashSet(CLIENT_OFF_STR.split(";"));
+    private final String localAddress = sessionChannel.getLocalAddress().getHostString();
+    private final String CLIENT_OFF_STR = "31.1.1.1;32.2.2.2";
+    private final Set<String> CLIENT_OFF_SET = Sets.newHashSet(CLIENT_OFF_STR.split(";"));
 
-  @Test
-  public void testQueryClientOff() throws InterruptedException {
-    /** client off */
-    CommonResponse response = clientManagerResource.clientOff(CLIENT_OFF_STR);
-    Assert.assertTrue(response.isSuccess());
-    Thread.sleep(3000);
-    /** query */
-    GenericResponse<Map<String, ClientManagerResp>> queryResp =
-        sessionClientManagerResource.queryClientOff();
-    Assert.assertTrue(queryResp.isSuccess());
-    ClientManagerResp clientManagerResp = queryResp.getData().get(localAddress);
-    Assert.assertTrue(clientManagerResp.isSuccess());
-    Assert.assertTrue(clientManagerResp.getIps().containsAll(CLIENT_OFF_SET));
+    @Test
+    public void testQueryClientOff() throws InterruptedException {
+        /** client off */
+        CommonResponse response = clientManagerResource.clientOff(CLIENT_OFF_STR);
+        Assert.assertTrue(response.isSuccess());
+        Thread.sleep(3000);
+        /** query */
+        GenericResponse<Map<String, ClientManagerResp>> queryResp =
+                sessionClientManagerResource.queryClientOff();
+        Assert.assertTrue(queryResp.isSuccess());
+        ClientManagerResp clientManagerResp = queryResp.getData().get(localAddress);
+        Assert.assertTrue(clientManagerResp.isSuccess());
+        Assert.assertTrue(clientManagerResp.getIps().containsAll(CLIENT_OFF_SET));
 
-    CommonResponse result =
-        (CommonResponse)
-            sessionConsoleExchanger
-                .request(
-                    new SimpleRequest(
-                        new ClientManagerQueryRequest(),
-                        new URL(localAddress, sessionServerConfig.getConsolePort())))
-                .getResult();
-    Assert.assertTrue(result.isSuccess());
-    GenericResponse resp = (GenericResponse) result;
-    ClientManagerResp data = (ClientManagerResp) resp.getData();
-    Assert.assertTrue(data.getIps().containsAll(CLIENT_OFF_SET));
+        CommonResponse result =
+                (CommonResponse)
+                        sessionConsoleExchanger
+                                .request(
+                                        new SimpleRequest(
+                                                new ClientManagerQueryRequest(),
+                                                new URL(localAddress, sessionServerConfig.getConsolePort())))
+                                .getResult();
+        Assert.assertTrue(result.isSuccess());
+        GenericResponse resp = (GenericResponse) result;
+        ClientManagerResp data = (ClientManagerResp) resp.getData();
+        Assert.assertTrue(data.getIps().containsAll(CLIENT_OFF_SET));
 
-    /** client open */
-    response = clientManagerResource.clientOpen(CLIENT_OFF_STR);
-    Assert.assertTrue(response.isSuccess());
-  }
+        /** client open */
+        response = clientManagerResource.clientOpen(CLIENT_OFF_STR);
+        Assert.assertTrue(response.isSuccess());
+    }
 }

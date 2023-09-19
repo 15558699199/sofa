@@ -22,6 +22,7 @@ import com.alipay.remoting.rpc.protocol.AsyncUserProcessor;
 import com.alipay.sofa.registry.log.Logger;
 import com.alipay.sofa.registry.log.LoggerFactory;
 import com.alipay.sofa.registry.remoting.ChannelHandler;
+
 import java.util.concurrent.Executor;
 
 /**
@@ -30,42 +31,42 @@ import java.util.concurrent.Executor;
  */
 public class AsyncUserProcessorAdapter extends AsyncUserProcessor {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(AsyncUserProcessorAdapter.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AsyncUserProcessorAdapter.class);
 
-  private final ChannelHandler userProcessorHandler;
+    private final ChannelHandler userProcessorHandler;
 
-  /**
-   * constructor
-   *
-   * @param userProcessorHandler
-   */
-  public AsyncUserProcessorAdapter(ChannelHandler userProcessorHandler) {
-    this.userProcessorHandler = userProcessorHandler;
-  }
-
-  @Override
-  public void handleRequest(BizContext bizCtx, AsyncContext asyncCtx, Object request) {
-    try {
-      BoltChannel boltChannel = new BoltChannel(bizCtx.getConnection());
-      boltChannel.setAsyncContext(asyncCtx);
-      userProcessorHandler.received(boltChannel, request);
-    } catch (Throwable e) {
-      LOGGER.error("Handle request error!", e);
-      throw new RuntimeException("Handle request error!", e);
-    }
-  }
-
-  @Override
-  public String interest() {
-    if (userProcessorHandler.interest() != null) {
-      return userProcessorHandler.interest().getName();
+    /**
+     * constructor
+     *
+     * @param userProcessorHandler
+     */
+    public AsyncUserProcessorAdapter(ChannelHandler userProcessorHandler) {
+        this.userProcessorHandler = userProcessorHandler;
     }
 
-    return null;
-  }
+    @Override
+    public void handleRequest(BizContext bizCtx, AsyncContext asyncCtx, Object request) {
+        try {
+            BoltChannel boltChannel = new BoltChannel(bizCtx.getConnection());
+            boltChannel.setAsyncContext(asyncCtx);
+            userProcessorHandler.received(boltChannel, request);
+        } catch (Throwable e) {
+            LOGGER.error("Handle request error!", e);
+            throw new RuntimeException("Handle request error!", e);
+        }
+    }
 
-  @Override
-  public Executor getExecutor() {
-    return userProcessorHandler.getExecutor();
-  }
+    @Override
+    public String interest() {
+        if (userProcessorHandler.interest() != null) {
+            return userProcessorHandler.interest().getName();
+        }
+
+        return null;
+    }
+
+    @Override
+    public Executor getExecutor() {
+        return userProcessorHandler.getExecutor();
+    }
 }

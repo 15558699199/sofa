@@ -37,7 +37,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 /**
- *
  * @author <a href="mailto:lw111072@antfin.com">liangen</a>
  */
 public class InvocationStatDimensionStatTest extends FaultBaseServiceTest {
@@ -54,7 +53,7 @@ public class InvocationStatDimensionStatTest extends FaultBaseServiceTest {
     @Test
     public void testInvocationStatFactory() {
         InvocationStatDimension invocation = new InvocationStatDimension(ProviderHelper.toProviderInfo("ip"),
-            consumerConfig);
+                consumerConfig);
         InvocationStat InvocationStat1Result = InvocationStatFactory.getInvocationStat(invocation);
         InvocationStat InvocationStat2Result = InvocationStatFactory.getInvocationStat(invocation);
 
@@ -65,7 +64,7 @@ public class InvocationStatDimensionStatTest extends FaultBaseServiceTest {
     public void testInvocationStatStatic() {
 
         InvocationStatDimension invocation = new InvocationStatDimension(ProviderHelper.toProviderInfo("ip"),
-            consumerConfig);
+                consumerConfig);
         InvocationStat invocationStat = new ServiceExceptionInvocationStat(invocation);
 
         /**test info static*/
@@ -271,7 +270,7 @@ public class InvocationStatDimensionStatTest extends FaultBaseServiceTest {
 
                     @Override
                     public String get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException,
-                        TimeoutException {
+                            TimeoutException {
                         return null;
                     }
                 });

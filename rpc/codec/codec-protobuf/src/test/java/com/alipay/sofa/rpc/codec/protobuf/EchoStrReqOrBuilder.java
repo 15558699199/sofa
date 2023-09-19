@@ -20,8 +20,8 @@
 package com.alipay.sofa.rpc.codec.protobuf;
 
 public interface EchoStrReqOrBuilder extends
-                                    // @@protoc_insertion_point(interface_extends:com.alipay.sofa.rpc.codec.protobuf.EchoStrReq)
-                                    com.google.protobuf.MessageOrBuilder {
+        // @@protoc_insertion_point(interface_extends:com.alipay.sofa.rpc.codec.protobuf.EchoStrReq)
+        com.google.protobuf.MessageOrBuilder {
 
     /**
      * <code>optional string s = 1;</code>

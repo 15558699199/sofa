@@ -23,28 +23,28 @@ import org.junit.Test;
 import org.mockito.Mockito;
 
 public class RegistryOpsResourceTest {
-  @Test
-  public void test() {
-    MetaServerService metaServerService = Mockito.mock(MetaServerService.class);
-    RegistryOpsResource resource = new RegistryOpsResource();
+    @Test
+    public void test() {
+        MetaServerService metaServerService = Mockito.mock(MetaServerService.class);
+        RegistryOpsResource resource = new RegistryOpsResource();
 
-    resource.metaServerService = metaServerService;
-    CommonResponse response = resource.kickOffMyself();
-    Assert.assertTrue(response.isSuccess());
-    Mockito.verify(metaServerService, Mockito.times(1)).addSelfToMetaBlacklist();
+        resource.metaServerService = metaServerService;
+        CommonResponse response = resource.kickOffMyself();
+        Assert.assertTrue(response.isSuccess());
+        Mockito.verify(metaServerService, Mockito.times(1)).addSelfToMetaBlacklist();
 
-    response = resource.putMyselfBack();
-    Assert.assertTrue(response.isSuccess());
-    Mockito.verify(metaServerService, Mockito.times(1)).removeSelfFromMetaBlacklist();
-  }
+        response = resource.putMyselfBack();
+        Assert.assertTrue(response.isSuccess());
+        Mockito.verify(metaServerService, Mockito.times(1)).removeSelfFromMetaBlacklist();
+    }
 
-  @Test
-  public void testException() {
-    RegistryOpsResource resource = new RegistryOpsResource();
-    // npe
-    CommonResponse response = resource.kickOffMyself();
-    Assert.assertFalse(response.isSuccess());
-    response = resource.putMyselfBack();
-    Assert.assertFalse(response.isSuccess());
-  }
+    @Test
+    public void testException() {
+        RegistryOpsResource resource = new RegistryOpsResource();
+        // npe
+        CommonResponse response = resource.kickOffMyself();
+        Assert.assertFalse(response.isSuccess());
+        response = resource.putMyselfBack();
+        Assert.assertFalse(response.isSuccess());
+    }
 }

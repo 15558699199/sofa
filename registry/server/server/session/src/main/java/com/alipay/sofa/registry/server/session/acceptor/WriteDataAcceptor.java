@@ -23,10 +23,10 @@ package com.alipay.sofa.registry.server.session.acceptor;
  */
 public interface WriteDataAcceptor {
 
-  /**
-   * accept all write data request
-   *
-   * @param request request
-   */
-  void accept(WriteDataRequest request);
+    /**
+     * accept all write data request
+     *
+     * @param request request
+     */
+    void accept(WriteDataRequest request);
 }

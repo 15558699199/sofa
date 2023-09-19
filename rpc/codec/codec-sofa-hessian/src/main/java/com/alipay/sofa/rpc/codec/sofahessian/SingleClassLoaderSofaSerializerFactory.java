@@ -20,12 +20,7 @@ import com.alipay.sofa.rpc.common.utils.StringUtils;
 import com.alipay.sofa.rpc.log.LogCodes;
 import com.alipay.sofa.rpc.log.Logger;
 import com.alipay.sofa.rpc.log.LoggerFactory;
-import com.caucho.hessian.io.ArrayDeserializer;
-import com.caucho.hessian.io.Deserializer;
-import com.caucho.hessian.io.HessianProtocolException;
-import com.caucho.hessian.io.JavaSerializer;
-import com.caucho.hessian.io.Serializer;
-import com.caucho.hessian.io.SerializerFactory;
+import com.caucho.hessian.io.*;
 
 import static com.alipay.hessian.generic.io.GenericDeserializer.ARRAY_PREFIX;
 import static com.alipay.sofa.rpc.codec.sofahessian.serialize.GenericCustomThrowableDeterminer.isGenericThrowException;
@@ -38,10 +33,10 @@ import static com.alipay.sofa.rpc.codec.sofahessian.serialize.GenericCustomThrow
 public class SingleClassLoaderSofaSerializerFactory extends SerializerFactory {
 
     /**
-     * logger for this class 
+     * logger for this class
      */
     private static final Logger LOGGER = LoggerFactory
-                                           .getLogger(SingleClassLoaderSofaSerializerFactory.class);
+            .getLogger(SingleClassLoaderSofaSerializerFactory.class);
 
     @Override
     protected Serializer getDefaultSerializer(Class cl) {
@@ -80,7 +75,7 @@ public class SingleClassLoaderSofaSerializerFactory extends SerializerFactory {
             } catch (Exception e) {
                 if (e instanceof ClassNotFoundException) {
                     LOGGER.errorWithApp(null, LogCodes.getLog(LogCodes.ERROR_DECODE_CLASS_NOT_FOUND,
-                        getClass().getName(), type, Thread.currentThread().getContextClassLoader()));
+                            getClass().getName(), type, Thread.currentThread().getContextClassLoader()));
                 } else {
                     LOGGER.errorWithApp(null, e.toString(), e);
                 }
@@ -119,7 +114,7 @@ public class SingleClassLoaderSofaSerializerFactory extends SerializerFactory {
             if (LOGGER.isDebugEnabled()) {
                 if (e instanceof ClassNotFoundException) {
                     LOGGER.debugWithApp(null, LogCodes.getLog(LogCodes.ERROR_DECODE_CLASS_NOT_FOUND,
-                        getClass().getName(), type, Thread.currentThread().getContextClassLoader()), e);
+                            getClass().getName(), type, Thread.currentThread().getContextClassLoader()), e);
                 } else {
                     LOGGER.debugWithApp(null, e.toString(), e);
                 }

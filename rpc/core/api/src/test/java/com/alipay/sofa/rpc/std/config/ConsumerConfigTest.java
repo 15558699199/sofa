@@ -19,13 +19,13 @@ package com.alipay.sofa.rpc.std.config;
 import com.alipay.sofa.rpc.api.GenericService;
 import com.alipay.sofa.rpc.common.RpcConstants;
 import com.alipay.sofa.rpc.config.ConsumerConfig;
-import static org.junit.Assert.*;
-
 import com.alipay.sofa.rpc.core.exception.SofaRpcRuntimeException;
 import com.alipay.sofa.rpc.std.sample.SampleService;
 import com.alipay.sofa.rpc.std.sample.SampleServiceImpl;
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 /**
  * @author zhaowang
@@ -34,6 +34,10 @@ import org.junit.Test;
 public class ConsumerConfigTest {
 
     private ConsumerConfig config;
+
+    public static String getServiceName() {
+        return "serviceName";
+    }
 
     @Before
     public void before() {
@@ -120,10 +124,6 @@ public class ConsumerConfigTest {
     }
 
     public interface InnerInterface {
-    }
-
-    public static String getServiceName() {
-        return "serviceName";
     }
 
 }

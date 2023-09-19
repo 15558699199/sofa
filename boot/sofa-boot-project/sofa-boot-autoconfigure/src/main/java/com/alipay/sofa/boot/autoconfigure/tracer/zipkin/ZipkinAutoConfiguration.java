@@ -36,8 +36,8 @@ import org.springframework.web.client.RestTemplate;
  */
 @AutoConfiguration
 @EnableConfigurationProperties(ZipkinProperties.class)
-@ConditionalOnClass({ zipkin2.Span.class, zipkin2.reporter.AsyncReporter.class, RestTemplate.class,
-                     ZipkinSofaTracerRestTemplateCustomizer.class })
+@ConditionalOnClass({zipkin2.Span.class, zipkin2.reporter.AsyncReporter.class, RestTemplate.class,
+        ZipkinSofaTracerRestTemplateCustomizer.class})
 @ConditionalOnProperty(name = "sofa.boot.tracer.zipkin.enabled", havingValue = "true", matchIfMissing = true)
 public class ZipkinAutoConfiguration {
 

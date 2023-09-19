@@ -61,8 +61,8 @@ public class ConsistentHashLoadBalancer extends AbstractLoadBalancer {
         int hashcode = providerInfos.hashCode(); // 判断是否同样的服务列表
         Selector selector = selectorCache.get(key);
         if (selector == null // 原来没有
-            ||
-            selector.getHashCode() != hashcode) { // 或者服务列表已经变化
+                ||
+                selector.getHashCode() != hashcode) { // 或者服务列表已经变化
             selector = new Selector(interfaceId, method, providerInfos, hashcode);
             selectorCache.put(key, selector);
         }
@@ -77,17 +77,17 @@ public class ConsistentHashLoadBalancer extends AbstractLoadBalancer {
         /**
          * The Hashcode.
          */
-        private final int                         hashcode;
+        private final int hashcode;
 
         /**
          * The Interface id.
          */
-        private final String                      interfaceId;
+        private final String interfaceId;
 
         /**
          * The Method name.
          */
-        private final String                      method;
+        private final String method;
 
         /**
          * 虚拟节点

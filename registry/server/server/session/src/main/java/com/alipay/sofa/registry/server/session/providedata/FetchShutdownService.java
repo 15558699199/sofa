@@ -29,123 +29,123 @@ import com.alipay.sofa.registry.server.shared.providedata.SystemDataStorage;
 import com.alipay.sofa.registry.store.api.meta.ProvideDataRepository;
 import com.alipay.sofa.registry.util.JsonUtils;
 import com.google.common.annotations.VisibleForTesting;
-import javax.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.annotation.Resource;
 
 /**
  * @author xiaojian.xj
  * @version : FetchShutdownService.java, v 0.1 2021年10月14日 17:11 xiaojian.xj Exp $
  */
 public class FetchShutdownService
-    extends AbstractFetchPersistenceSystemProperty<ShutdownStorage, ShutdownStorage> {
+        extends AbstractFetchPersistenceSystemProperty<ShutdownStorage, ShutdownStorage> {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(FetchShutdownService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(FetchShutdownService.class);
+    private static final ShutdownStorage INIT =
+            new ShutdownStorage(INIT_VERSION, ShutdownSwitch.defaultSwitch());
+    @Autowired
+    private SessionServerConfig sessionServerConfig;
+    @Resource
+    private FetchStopPushService fetchStopPushService;
+    @Autowired
+    private SessionServerBootstrap sessionServerBootstrap;
+    @Autowired
+    private ProvideDataRepository provideDataRepository;
 
-  @Autowired private SessionServerConfig sessionServerConfig;
-
-  @Resource private FetchStopPushService fetchStopPushService;
-
-  @Autowired private SessionServerBootstrap sessionServerBootstrap;
-
-  @Autowired private ProvideDataRepository provideDataRepository;
-
-  private static final ShutdownStorage INIT =
-      new ShutdownStorage(INIT_VERSION, ShutdownSwitch.defaultSwitch());
-
-  public FetchShutdownService() {
-    super(ValueConstants.SHUTDOWN_SWITCH_DATA_ID, INIT);
-  }
-
-  @Override
-  protected int getSystemPropertyIntervalMillis() {
-    return sessionServerConfig.getSystemPropertyIntervalMillis();
-  }
-
-  @Override
-  protected ShutdownStorage fetchFromPersistence() {
-    PersistenceData persistenceData =
-        provideDataRepository.get(ValueConstants.SHUTDOWN_SWITCH_DATA_ID);
-    if (persistenceData == null) {
-      return INIT;
+    public FetchShutdownService() {
+        super(ValueConstants.SHUTDOWN_SWITCH_DATA_ID, INIT);
     }
-    ShutdownSwitch shutdownSwitch = JsonUtils.read(persistenceData.getData(), ShutdownSwitch.class);
-    ShutdownStorage update = new ShutdownStorage(persistenceData.getVersion(), shutdownSwitch);
-    return update;
-  }
 
-  @Override
-  protected boolean doProcess(ShutdownStorage expect, ShutdownStorage update) {
-    try {
-      if (running2stop(expect.shutdownSwitch, update.shutdownSwitch)) {
-        if (!fetchStopPushService.isStopPushSwitch()) {
-          LOGGER.error("forbid stop server when pushSwitch is open.");
-          return false;
+    @Override
+    protected int getSystemPropertyIntervalMillis() {
+        return sessionServerConfig.getSystemPropertyIntervalMillis();
+    }
+
+    @Override
+    protected ShutdownStorage fetchFromPersistence() {
+        PersistenceData persistenceData =
+                provideDataRepository.get(ValueConstants.SHUTDOWN_SWITCH_DATA_ID);
+        if (persistenceData == null) {
+            return INIT;
         }
-        LOGGER.info(
-            "stop server when pushSwitch is close, prev={}, current={}",
-            expect.shutdownSwitch,
-            update.shutdownSwitch);
-        sessionServerBootstrap.destroy();
-      }
-      return true;
-    } catch (Throwable e) {
-      LOGGER.error("Fetch stop server switch error", e);
+        ShutdownSwitch shutdownSwitch = JsonUtils.read(persistenceData.getData(), ShutdownSwitch.class);
+        ShutdownStorage update = new ShutdownStorage(persistenceData.getVersion(), shutdownSwitch);
+        return update;
     }
-    return false;
-  }
 
-  private boolean running2stop(ShutdownSwitch current, ShutdownSwitch update) {
-    return !current.isShutdown() && update.isShutdown();
-  }
-
-  public boolean isShutdown() {
-    return storage.get().shutdownSwitch.isShutdown();
-  }
-
-  protected static class ShutdownStorage extends SystemDataStorage {
-
-    private ShutdownSwitch shutdownSwitch;
-
-    public ShutdownStorage(long version, ShutdownSwitch shutdownSwitch) {
-      super(version);
-      this.shutdownSwitch = shutdownSwitch;
+    @Override
+    protected boolean doProcess(ShutdownStorage expect, ShutdownStorage update) {
+        try {
+            if (running2stop(expect.shutdownSwitch, update.shutdownSwitch)) {
+                if (!fetchStopPushService.isStopPushSwitch()) {
+                    LOGGER.error("forbid stop server when pushSwitch is open.");
+                    return false;
+                }
+                LOGGER.info(
+                        "stop server when pushSwitch is close, prev={}, current={}",
+                        expect.shutdownSwitch,
+                        update.shutdownSwitch);
+                sessionServerBootstrap.destroy();
+            }
+            return true;
+        } catch (Throwable e) {
+            LOGGER.error("Fetch stop server switch error", e);
+        }
+        return false;
     }
-  }
 
-  /**
-   * Setter method for property <tt>sessionServerConfig</tt>.
-   *
-   * @param sessionServerConfig value to be assigned to property sessionServerConfig
-   * @return FetchShutdownService
-   */
-  @VisibleForTesting
-  public FetchShutdownService setSessionServerConfig(SessionServerConfig sessionServerConfig) {
-    this.sessionServerConfig = sessionServerConfig;
-    return this;
-  }
+    private boolean running2stop(ShutdownSwitch current, ShutdownSwitch update) {
+        return !current.isShutdown() && update.isShutdown();
+    }
 
-  /**
-   * Setter method for property <tt>sessionServerBootstrap</tt>.
-   *
-   * @param sessionServerBootstrap value to be assigned to property sessionServerBootstrap
-   * @return FetchShutdownService
-   */
-  @VisibleForTesting
-  public FetchShutdownService setSessionServerBootstrap(
-      SessionServerBootstrap sessionServerBootstrap) {
-    this.sessionServerBootstrap = sessionServerBootstrap;
-    return this;
-  }
+    public boolean isShutdown() {
+        return storage.get().shutdownSwitch.isShutdown();
+    }
 
-  /**
-   * Setter method for property <tt>fetchStopPushService</tt>.
-   *
-   * @param fetchStopPushService value to be assigned to property fetchStopPushService
-   * @return FetchShutdownService
-   */
-  @VisibleForTesting
-  public FetchShutdownService setFetchStopPushService(FetchStopPushService fetchStopPushService) {
-    this.fetchStopPushService = fetchStopPushService;
-    return this;
-  }
+    /**
+     * Setter method for property <tt>sessionServerConfig</tt>.
+     *
+     * @param sessionServerConfig value to be assigned to property sessionServerConfig
+     * @return FetchShutdownService
+     */
+    @VisibleForTesting
+    public FetchShutdownService setSessionServerConfig(SessionServerConfig sessionServerConfig) {
+        this.sessionServerConfig = sessionServerConfig;
+        return this;
+    }
+
+    /**
+     * Setter method for property <tt>sessionServerBootstrap</tt>.
+     *
+     * @param sessionServerBootstrap value to be assigned to property sessionServerBootstrap
+     * @return FetchShutdownService
+     */
+    @VisibleForTesting
+    public FetchShutdownService setSessionServerBootstrap(
+            SessionServerBootstrap sessionServerBootstrap) {
+        this.sessionServerBootstrap = sessionServerBootstrap;
+        return this;
+    }
+
+    /**
+     * Setter method for property <tt>fetchStopPushService</tt>.
+     *
+     * @param fetchStopPushService value to be assigned to property fetchStopPushService
+     * @return FetchShutdownService
+     */
+    @VisibleForTesting
+    public FetchShutdownService setFetchStopPushService(FetchStopPushService fetchStopPushService) {
+        this.fetchStopPushService = fetchStopPushService;
+        return this;
+    }
+
+    protected static class ShutdownStorage extends SystemDataStorage {
+
+        private ShutdownSwitch shutdownSwitch;
+
+        public ShutdownStorage(long version, ShutdownSwitch shutdownSwitch) {
+            super(version);
+            this.shutdownSwitch = shutdownSwitch;
+        }
+    }
 }

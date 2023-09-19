@@ -26,13 +26,7 @@ import com.alipay.sofa.rpc.transport.ClientTransportConfig;
 import com.alipay.sofa.rpc.transport.ClientTransportFactory;
 
 import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.FutureTask;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 import static com.alipay.sofa.rpc.common.RpcConfigs.getIntValue;
 import static com.alipay.sofa.rpc.common.RpcOptions.CONCUMER_CONNECT_ELASTIC_SIZE;
@@ -51,17 +45,17 @@ public class ElasticConnectionHolder extends AllConnectConnectionHolder {
     /**
      * slf4j Logger for this class
      */
-    private final static Logger LOGGER                = LoggerFactory.getLogger(ElasticConnectionHolder.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(ElasticConnectionHolder.class);
 
     /**
      * 弹性连接，初始化连接百分比数
      */
-    protected int               elasticConnectPercent = getIntValue(CONSUMER_CONNECT_ELASTIC_PERCENT);
+    protected int elasticConnectPercent = getIntValue(CONSUMER_CONNECT_ELASTIC_PERCENT);
 
     /**
      * 弹性连接，初始化连接数
      */
-    protected int               elasticConnectSize    = getIntValue(CONCUMER_CONNECT_ELASTIC_SIZE);
+    protected int elasticConnectSize = getIntValue(CONCUMER_CONNECT_ELASTIC_SIZE);
 
     /**
      * 构造函数
@@ -102,9 +96,9 @@ public class ElasticConnectionHolder extends AllConnectConnectionHolder {
             NamedThreadFactory namedThreadFactory = new NamedThreadFactory("CLI-CONN-" + interfaceId, true);
 
             ThreadPoolExecutor initPool = new ThreadPoolExecutor(threads, threads,
-                0L, TimeUnit.MILLISECONDS,
-                new LinkedBlockingQueue<Runnable>(minSynConnectSize),
-                namedThreadFactory);
+                    0L, TimeUnit.MILLISECONDS,
+                    new LinkedBlockingQueue<Runnable>(minSynConnectSize),
+                    namedThreadFactory);
 
             // 第一次同步建立连接的连接数
             int synInitConnectProviderSize = 0;
@@ -118,9 +112,9 @@ public class ElasticConnectionHolder extends AllConnectConnectionHolder {
 
             try {
                 int totalTimeout = ((synInitConnectProviderSize % threads == 0) ? (synInitConnectProviderSize / threads)
-                    : ((synInitConnectProviderSize /
-                    threads) + 1)) *
-                    connectTimeout + 500;
+                        : ((synInitConnectProviderSize /
+                        threads) + 1)) *
+                        connectTimeout + 500;
                 latch.await(totalTimeout, TimeUnit.MILLISECONDS); // 一直等到子线程都结束
             } catch (InterruptedException e) {
                 LOGGER.errorWithApp(appName, "Exception when add provider", e);
@@ -129,17 +123,17 @@ public class ElasticConnectionHolder extends AllConnectConnectionHolder {
             }
 
             final List<ProviderInfo> asynConnectProviderInfoList = providerInfoList.subList(synInitConnectProviderSize,
-                providerInfoList.size());
+                    providerInfoList.size());
 
             if (!asynConnectProviderInfoList.isEmpty()) {
                 if (LOGGER.isInfoEnabled(appName)) {
                     LOGGER.infoWithApp(appName, "asynConnectProviderInfoListSize:{}",
-                        asynConnectProviderInfoList.size());
+                            asynConnectProviderInfoList.size());
                 }
                 final ExecutorService executorService = new ThreadPoolExecutor(5, 5,
-                    0L, TimeUnit.MILLISECONDS,
-                    new LinkedBlockingQueue<Runnable>(asynConnectProviderInfoList.size()),
-                    namedThreadFactory);
+                        0L, TimeUnit.MILLISECONDS,
+                        new LinkedBlockingQueue<Runnable>(asynConnectProviderInfoList.size()),
+                        namedThreadFactory);
 
                 FutureTask<String> futureTask;
 

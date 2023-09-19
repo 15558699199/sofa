@@ -31,7 +31,6 @@ import com.alipay.sofa.rpc.test.HelloServiceImpl;
  * <p></p>
  * <p>
  *
- *
  * @author <a href=mailto:bner666@gmail.com>ZhangLibin</a>
  */
 public class PolarisBoltServerMain {
@@ -44,24 +43,24 @@ public class PolarisBoltServerMain {
     public static void main(String[] args) {
 
         RegistryConfig registryConfig = new RegistryConfig()
-            .setProtocol("polaris")
-            .setAddress("127.0.0.1:8091");
+                .setProtocol("polaris")
+                .setAddress("127.0.0.1:8091");
 
         ServerConfig serverConfig = new ServerConfig()
-            .setPort(22101)
-            .setDaemon(false);
+                .setPort(22101)
+                .setDaemon(false);
 
         ProviderConfig<HelloService> providerConfig = new ProviderConfig<HelloService>()
-            .setInterfaceId(HelloService.class.getName())
-            .setRef(new HelloServiceImpl("result from 22101"))
-            .setServer(serverConfig)
-            .setRegistry(registryConfig);
+                .setInterfaceId(HelloService.class.getName())
+                .setRef(new HelloServiceImpl("result from 22101"))
+                .setServer(serverConfig)
+                .setRegistry(registryConfig);
 
         ProviderConfig<EchoService> providerConfig2 = new ProviderConfig<EchoService>()
-            .setInterfaceId(EchoService.class.getName())
-            .setRef(new EchoServiceImpl())
-            .setServer(serverConfig)
-            .setRegistry(registryConfig);
+                .setInterfaceId(EchoService.class.getName())
+                .setRef(new EchoServiceImpl())
+                .setServer(serverConfig)
+                .setRegistry(registryConfig);
 
         providerConfig.export();
         providerConfig2.export();

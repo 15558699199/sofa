@@ -22,13 +22,14 @@ import com.alipay.sofa.registry.server.meta.provide.data.ProvideDataService;
 import com.alipay.sofa.registry.server.meta.resource.filter.LeaderAwareRestController;
 import com.alipay.sofa.registry.store.api.DBResponse;
 import com.google.common.annotations.VisibleForTesting;
-import java.util.HashMap;
-import java.util.Map;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author shangyu.wh
@@ -38,33 +39,34 @@ import org.springframework.beans.factory.annotation.Autowired;
 @LeaderAwareRestController
 public class SlotSyncResource {
 
-  @Autowired private ProvideDataService provideDataService;
+    @Autowired
+    private ProvideDataService provideDataService;
 
-  @GET
-  @Path("get")
-  @Produces(MediaType.APPLICATION_JSON)
-  public Map<String, Object> getSlotSync() throws Exception {
-    Map<String, Object> resultMap = new HashMap<>(2);
-    DBResponse<PersistenceData> syncSessionIntervalSec =
-        provideDataService.queryProvideData(ValueConstants.DATA_DATUM_SYNC_SESSION_INTERVAL_SEC);
-    DBResponse<PersistenceData> dataDatumExpire =
-        provideDataService.queryProvideData(ValueConstants.DATA_SESSION_LEASE_SEC);
-
-    resultMap.put("syncSessionIntervalSec", getEntityData(syncSessionIntervalSec));
-    resultMap.put("dataDatumExpire", getEntityData(dataDatumExpire));
-    return resultMap;
-  }
-
-  private static String getEntityData(DBResponse<PersistenceData> resp) {
-    if (resp != null && resp.getEntity() != null) {
-      return resp.getEntity().getData();
+    private static String getEntityData(DBResponse<PersistenceData> resp) {
+        if (resp != null && resp.getEntity() != null) {
+            return resp.getEntity().getData();
+        }
+        return "null";
     }
-    return "null";
-  }
 
-  @VisibleForTesting
-  protected SlotSyncResource setProvideDataService(ProvideDataService provideDataService) {
-    this.provideDataService = provideDataService;
-    return this;
-  }
+    @GET
+    @Path("get")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Map<String, Object> getSlotSync() throws Exception {
+        Map<String, Object> resultMap = new HashMap<>(2);
+        DBResponse<PersistenceData> syncSessionIntervalSec =
+                provideDataService.queryProvideData(ValueConstants.DATA_DATUM_SYNC_SESSION_INTERVAL_SEC);
+        DBResponse<PersistenceData> dataDatumExpire =
+                provideDataService.queryProvideData(ValueConstants.DATA_SESSION_LEASE_SEC);
+
+        resultMap.put("syncSessionIntervalSec", getEntityData(syncSessionIntervalSec));
+        resultMap.put("dataDatumExpire", getEntityData(dataDatumExpire));
+        return resultMap;
+    }
+
+    @VisibleForTesting
+    protected SlotSyncResource setProvideDataService(ProvideDataService provideDataService) {
+        this.provideDataService = provideDataService;
+        return this;
+    }
 }

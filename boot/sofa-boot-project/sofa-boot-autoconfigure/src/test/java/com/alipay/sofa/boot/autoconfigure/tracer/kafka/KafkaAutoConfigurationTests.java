@@ -36,8 +36,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class KafkaAutoConfigurationTests {
 
     private final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
-                                                             .withConfiguration(AutoConfigurations
-                                                                 .of(KafkaAutoConfiguration.class));
+            .withConfiguration(AutoConfigurations
+                    .of(KafkaAutoConfiguration.class));
 
     @Test
     public void registerKafkaBeans() {

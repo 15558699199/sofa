@@ -19,8 +19,6 @@ package com.sun.test;
 import java.io.Serializable;
 
 /**
- *
- *
  * @author <a href="mailto:zhanggeng.zg@antfin.com">GengZhang</a>
  */
 public class TestBean implements Serializable {

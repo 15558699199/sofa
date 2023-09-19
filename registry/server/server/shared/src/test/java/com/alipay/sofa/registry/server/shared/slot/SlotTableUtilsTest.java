@@ -19,21 +19,22 @@ package com.alipay.sofa.registry.server.shared.slot;
 import com.alipay.sofa.registry.common.model.slot.Slot;
 import com.alipay.sofa.registry.common.model.slot.SlotTable;
 import com.google.common.collect.Lists;
-import java.util.Collections;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class SlotTableUtilsTest {
-  @Test
-  public void test() {
-    SlotTable slotTable =
-        new SlotTable(10, Lists.newArrayList(new Slot(1, null, 0, Collections.emptyList())));
-    Assert.assertFalse(SlotTableUtils.checkNoLeaderEmpty(slotTable));
-    Assert.assertFalse(SlotTableUtils.isValidSlotTable(slotTable));
+import java.util.Collections;
 
-    slotTable =
-        new SlotTable(10, Lists.newArrayList(new Slot(1, "test", 0, Lists.newArrayList("test"))));
-    Assert.assertFalse(SlotTableUtils.checkNoDupLeaderAndFollowers(slotTable));
-    Assert.assertFalse(SlotTableUtils.isValidSlotTable(slotTable));
-  }
+public class SlotTableUtilsTest {
+    @Test
+    public void test() {
+        SlotTable slotTable =
+                new SlotTable(10, Lists.newArrayList(new Slot(1, null, 0, Collections.emptyList())));
+        Assert.assertFalse(SlotTableUtils.checkNoLeaderEmpty(slotTable));
+        Assert.assertFalse(SlotTableUtils.isValidSlotTable(slotTable));
+
+        slotTable =
+                new SlotTable(10, Lists.newArrayList(new Slot(1, "test", 0, Lists.newArrayList("test"))));
+        Assert.assertFalse(SlotTableUtils.checkNoDupLeaderAndFollowers(slotTable));
+        Assert.assertFalse(SlotTableUtils.isValidSlotTable(slotTable));
+    }
 }

@@ -25,8 +25,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- *
- *
  * @author <a href="mailto:zhanggeng.zg@antfin.com">GengZhang</a>
  */
 public class CodecUtilsTest {
@@ -37,11 +35,11 @@ public class CodecUtilsTest {
     public void intToBytes() {
         int i = 1000;
         byte[] bs = CodecUtils.intToBytes(i);
-        Assert.assertArrayEquals(bs, new byte[] { 0, 0, 3, -24 });
+        Assert.assertArrayEquals(bs, new byte[]{0, 0, 3, -24});
 
         i = 0;
         bs = CodecUtils.intToBytes(i);
-        Assert.assertArrayEquals(bs, new byte[] { 0, 0, 0, 0 });
+        Assert.assertArrayEquals(bs, new byte[]{0, 0, 0, 0});
 
         int s = 16777218; // =1*256*256*256+ 0*256*256 +  0*256 + 2
         bs = CodecUtils.intToBytes(s);
@@ -54,13 +52,13 @@ public class CodecUtilsTest {
     @Test
     public void bytesToInt() {
 
-        int i = CodecUtils.bytesToInt(new byte[] { 0, 0, 0, 0 });
+        int i = CodecUtils.bytesToInt(new byte[]{0, 0, 0, 0});
         Assert.assertEquals(0, i);
 
-        i = CodecUtils.bytesToInt(new byte[] { 0, 0, 3, -24 });
+        i = CodecUtils.bytesToInt(new byte[]{0, 0, 3, -24});
         Assert.assertEquals(1000, i);
 
-        int s = CodecUtils.bytesToInt(new byte[] { 1, 0, 0, 2 });
+        int s = CodecUtils.bytesToInt(new byte[]{1, 0, 0, 2});
         Assert.assertEquals(s, 16777218);
     }
 
@@ -68,11 +66,11 @@ public class CodecUtilsTest {
     public void short2bytes() {
         short i = 0;
         byte[] bs = CodecUtils.short2bytes(i);
-        Assert.assertArrayEquals(bs, new byte[] { 0, 0 });
+        Assert.assertArrayEquals(bs, new byte[]{0, 0});
 
         i = 1000;
         bs = CodecUtils.short2bytes(i);
-        Assert.assertArrayEquals(bs, new byte[] { 3, -24 });
+        Assert.assertArrayEquals(bs, new byte[]{3, -24});
 
         short s = 258; // =1*256+2
         bs = CodecUtils.short2bytes(s);
@@ -82,12 +80,12 @@ public class CodecUtilsTest {
 
     @Test
     public void copyOf() {
-        byte[] bs = new byte[] { 1, 2, 3, 5 };
+        byte[] bs = new byte[]{1, 2, 3, 5};
         byte[] cp = CodecUtils.copyOf(bs, 3);
-        Assert.assertArrayEquals(cp, new byte[] { 1, 2, 3 });
+        Assert.assertArrayEquals(cp, new byte[]{1, 2, 3});
 
         cp = CodecUtils.copyOf(bs, 5);
-        Assert.assertArrayEquals(cp, new byte[] { 1, 2, 3, 5, 0 });
+        Assert.assertArrayEquals(cp, new byte[]{1, 2, 3, 5, 0});
     }
 
     @Test
@@ -134,9 +132,9 @@ public class CodecUtilsTest {
 
     @Test
     public void startsWith() {
-        Assert.assertTrue(CodecUtils.startsWith(new byte[] { 1, 2, 3 }, new byte[] { 1, 2 }));
-        Assert.assertFalse(CodecUtils.startsWith(new byte[] { 2, 3 }, new byte[] { 1, 2 }));
-        Assert.assertFalse(CodecUtils.startsWith(new byte[] { 3 }, new byte[] { 1, 2 }));
+        Assert.assertTrue(CodecUtils.startsWith(new byte[]{1, 2, 3}, new byte[]{1, 2}));
+        Assert.assertFalse(CodecUtils.startsWith(new byte[]{2, 3}, new byte[]{1, 2}));
+        Assert.assertFalse(CodecUtils.startsWith(new byte[]{3}, new byte[]{1, 2}));
     }
 
     @Test
@@ -145,7 +143,7 @@ public class CodecUtilsTest {
         Assert.assertEquals(0, CodecUtils.booleansToByte(new boolean[0]));
 
         // 01010101
-        boolean[] bs = new boolean[] { false, true, false, true, false, true, false, true };
+        boolean[] bs = new boolean[]{false, true, false, true, false, true, false, true};
         byte b = CodecUtils.booleansToByte(bs);
         Assert.assertEquals(85, b);
 
@@ -207,7 +205,7 @@ public class CodecUtilsTest {
     public void flatCopyTo() {
         Map<String, Object> requestProps = new HashMap<String, Object>();
         requestProps.put("xx", "xxxxxxx");
-        requestProps.put("yyy", new String[] { "yyyy" }); // string数组无法传递
+        requestProps.put("yyy", new String[]{"yyyy"}); // string数组无法传递
         requestProps.put("zzzz", 333);
 
         Map<String, String> header = new HashMap<String, String>();
@@ -253,12 +251,12 @@ public class CodecUtilsTest {
 
         newContext = new HashMap<String, String>();
         CodecUtils.treeCopyTo(rpcReqBaggage + ".", header, newContext,
-            true);
+                true);
         newRequestProps.put(rpcReqBaggage, newContext);
 
         newContext = new HashMap<String, String>();
         CodecUtils.treeCopyTo(rpcRespBaggage + ".", header,
-            newContext, true);
+                newContext, true);
         newRequestProps.put(rpcRespBaggage, newContext);
 
         for (Map.Entry<String, Object> entry : newRequestProps.entrySet()) {

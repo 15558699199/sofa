@@ -41,24 +41,24 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
  * @author huzijie
  * @version ReadinessCheckCallbackProcessorTest.java, v 0.1 2023年01月05日 6:12 PM huzijie Exp $
  */
-@ExtendWith({ MockitoExtension.class, OutputCaptureExtension.class })
+@ExtendWith({MockitoExtension.class, OutputCaptureExtension.class})
 public class ReadinessCheckCallbackProcessorTest {
 
     static {
         LogOutPutUtils.openOutPutForLoggers(ReadinessCheckCallbackProcessor.class);
     }
 
-    private final ReadinessCheckCallback    successCheckCallBack   = new SuccessReadinessCheckCallback();
+    private final ReadinessCheckCallback successCheckCallBack = new SuccessReadinessCheckCallback();
 
-    private final ReadinessCheckCallback    failCheckCallBack      = new FailReadinessCheckCallback();
+    private final ReadinessCheckCallback failCheckCallBack = new FailReadinessCheckCallback();
 
-    private final ReadinessCheckCallback    exceptionCheckCallBack = new ExceptionReadinessCheckCallback();
+    private final ReadinessCheckCallback exceptionCheckCallBack = new ExceptionReadinessCheckCallback();
 
     @InjectMocks
     private ReadinessCheckCallbackProcessor readinessCheckCallbackProcessor;
 
     @Mock
-    private ApplicationContext              applicationContext;
+    private ApplicationContext applicationContext;
 
     @Test
     public void applicationContextNull() {
@@ -70,21 +70,21 @@ public class ReadinessCheckCallbackProcessorTest {
         Map<String, ReadinessCheckCallback> beanMap = new HashMap<>();
         beanMap.put("successCheckCallBack", successCheckCallBack);
         Mockito.doReturn(beanMap).when(applicationContext)
-            .getBeansOfType(ReadinessCheckCallback.class);
+                .getBeansOfType(ReadinessCheckCallback.class);
 
         readinessCheckCallbackProcessor.init();
 
         assertThat(capturedOutput.getOut()).contains(
-            "Found 1 ReadinessCheckCallback implementation: successCheckCallBack");
+                "Found 1 ReadinessCheckCallback implementation: successCheckCallBack");
         HashMap<String, Health> callbackDetails = new HashMap<>();
         boolean result = readinessCheckCallbackProcessor.readinessCheckCallback(callbackDetails);
 
         assertThat(capturedOutput.getOut())
-            .contains("Begin ReadinessCheckCallback readiness check");
+                .contains("Begin ReadinessCheckCallback readiness check");
         assertThat(capturedOutput.getOut()).contains(
-            "ReadinessCheckCallback [successCheckCallBack] check start");
+                "ReadinessCheckCallback [successCheckCallBack] check start");
         assertThat(capturedOutput.getOut()).contains(
-            "ReadinessCheckCallback readiness check result: success");
+                "ReadinessCheckCallback readiness check result: success");
         assertThat(result).isTrue();
         assertThat(callbackDetails.size()).isEqualTo(1);
         Health health = callbackDetails.get("successCheckCallBack");
@@ -98,19 +98,19 @@ public class ReadinessCheckCallbackProcessorTest {
         beanMap.put("successCheckCallBack", successCheckCallBack);
         beanMap.put("failCheckCallBack", failCheckCallBack);
         Mockito.doReturn(beanMap).when(applicationContext)
-            .getBeansOfType(ReadinessCheckCallback.class);
+                .getBeansOfType(ReadinessCheckCallback.class);
 
         readinessCheckCallbackProcessor.init();
         HashMap<String, Health> callbackDetails = new HashMap<>();
         boolean result = readinessCheckCallbackProcessor.readinessCheckCallback(callbackDetails);
 
         assertThat(capturedOutput.getOut())
-            .contains(
-                "SOFA-BOOT-01-24001: SOFABoot ReadinessCheckCallback[failCheckCallBack] check failed, the details is: {\"reason\":\"error\"}");
+                .contains(
+                        "SOFA-BOOT-01-24001: SOFABoot ReadinessCheckCallback[failCheckCallBack] check failed, the details is: {\"reason\":\"error\"}");
         assertThat(capturedOutput.getOut()).contains(
-            "successCheckCallBack is skipped due to the failure of failCheckCallBack");
+                "successCheckCallBack is skipped due to the failure of failCheckCallBack");
         assertThat(capturedOutput.getOut()).contains(
-            "SOFA-BOOT-01-24000: ReadinessCheckCallback readiness check result: failed");
+                "SOFA-BOOT-01-24000: ReadinessCheckCallback readiness check result: failed");
         assertThat(result).isFalse();
         assertThat(callbackDetails.size()).isEqualTo(2);
         Health health = callbackDetails.get("failCheckCallBack");
@@ -125,19 +125,19 @@ public class ReadinessCheckCallbackProcessorTest {
         beanMap.put("successCheckCallBack", successCheckCallBack);
         beanMap.put("exceptionCheckCallBack", exceptionCheckCallBack);
         Mockito.doReturn(beanMap).when(applicationContext)
-            .getBeansOfType(ReadinessCheckCallback.class);
+                .getBeansOfType(ReadinessCheckCallback.class);
 
         readinessCheckCallbackProcessor.init();
         HashMap<String, Health> callbackDetails = new HashMap<>();
         boolean result = readinessCheckCallbackProcessor.readinessCheckCallback(callbackDetails);
 
         assertThat(capturedOutput.getOut())
-            .contains(
-                "SOFA-BOOT-01-24002: Error occurred while doing ReadinessCheckCallback[exceptionCheckCallBack] check");
+                .contains(
+                        "SOFA-BOOT-01-24002: Error occurred while doing ReadinessCheckCallback[exceptionCheckCallBack] check");
         assertThat(capturedOutput.getOut()).contains(
-            "successCheckCallBack is skipped due to the failure of exceptionCheckCallBack");
+                "successCheckCallBack is skipped due to the failure of exceptionCheckCallBack");
         assertThat(capturedOutput.getOut()).contains(
-            "SOFA-BOOT-01-24000: ReadinessCheckCallback readiness check result: failed");
+                "SOFA-BOOT-01-24000: ReadinessCheckCallback readiness check result: failed");
         assertThat(result).isFalse();
         assertThat(callbackDetails.size()).isEqualTo(2);
         Health health = callbackDetails.get("exceptionCheckCallBack");

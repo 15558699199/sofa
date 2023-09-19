@@ -22,68 +22,38 @@ import com.alipay.sofa.rpc.config.ServerConfig;
 import com.alipay.sofa.rpc.context.RpcInternalContext;
 import com.alipay.sofa.rpc.core.request.SofaRequest;
 import com.alipay.sofa.rpc.core.response.SofaResponse;
-import com.alipay.sofa.rpc.event.ClientEndInvokeEvent;
-import com.alipay.sofa.rpc.event.ConsumerSubEvent;
-import com.alipay.sofa.rpc.event.Event;
-import com.alipay.sofa.rpc.event.EventBus;
-import com.alipay.sofa.rpc.event.ProviderPubEvent;
-import com.alipay.sofa.rpc.event.ServerSendEvent;
-import com.alipay.sofa.rpc.event.ServerStartedEvent;
-import com.alipay.sofa.rpc.event.ServerStoppedEvent;
-import com.alipay.sofa.rpc.event.Subscriber;
+import com.alipay.sofa.rpc.event.*;
 import io.prometheus.client.Collector;
 import io.prometheus.client.Counter;
 import io.prometheus.client.Gauge;
 import io.prometheus.client.Histogram;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class SofaRpcMetricsCollector extends Collector implements AutoCloseable {
 
     private static final String[] INVOKE_LABEL_NAMES = new String[]{"app", "service", "method", "protocol", "invoke_type", "caller_app"};
-
-    private String[] commonLabelNames;
-    private String[] commonLabelValues;
-
-    private PrometheusSubscriber subscriber;
-
-    private Histogram clientTotal;
-
-    private Histogram clientFail;
-
-    private Histogram serverTotal;
-
-    private Histogram serverFail;
-
-    private Histogram requestSize;
-
-    private Histogram responseSize;
-
-    private Counter providerCounter;
-
-    private Counter consumerCounter;
-
-    private Gauge threadPoolConfigCore;
-
-    private Gauge threadPoolConfigMax;
-
-    private Gauge threadPoolConfigQueue;
-
-    private Gauge threadPoolActive;
-
-    private Gauge threadPoolIdle;
-
-    private Gauge threadPoolQueue;
-
-
     private final AtomicReference<ServerConfig> serverConfigReference = new AtomicReference<>();
     private final AtomicReference<ThreadPoolExecutor> executorReference = new AtomicReference<>();
+    private String[] commonLabelNames;
+    private String[] commonLabelValues;
+    private PrometheusSubscriber subscriber;
+    private Histogram clientTotal;
+    private Histogram clientFail;
+    private Histogram serverTotal;
+    private Histogram serverFail;
+    private Histogram requestSize;
+    private Histogram responseSize;
+    private Counter providerCounter;
+    private Counter consumerCounter;
+    private Gauge threadPoolConfigCore;
+    private Gauge threadPoolConfigMax;
+    private Gauge threadPoolConfigQueue;
+    private Gauge threadPoolActive;
+    private Gauge threadPoolIdle;
+    private Gauge threadPoolQueue;
 
     public SofaRpcMetricsCollector() {
         this(Collections.emptyMap(), MetricsBuilder.defaultOf());
@@ -130,6 +100,26 @@ public class SofaRpcMetricsCollector extends Collector implements AutoCloseable 
         this.threadPoolQueue = metricsBuilder.buildThreadPoolQueue(commonLabelNames);
 
         registerSubscriber();
+    }
+
+    private static Long getLongAvoidNull(Object object) {
+        if (object == null) {
+            return null;
+        }
+
+        if (object instanceof Integer) {
+            return Long.parseLong(object.toString());
+        }
+
+        return (Long) object;
+    }
+
+    private static String getStringAvoidNull(Object object) {
+        if (object == null) {
+            return null;
+        }
+
+        return (String) object;
     }
 
     private void registerSubscriber() {
@@ -200,26 +190,70 @@ public class SofaRpcMetricsCollector extends Collector implements AutoCloseable 
         EventBus.unRegister(ConsumerSubEvent.class, subscriber);
     }
 
-    private static Long getLongAvoidNull(Object object) {
-        if (object == null) {
-            return null;
+    private static class InvokeMeta {
+
+        private final SofaRequest request;
+        private final SofaResponse response;
+        private final long elapsed;
+
+        private InvokeMeta(SofaRequest request, SofaResponse response, long elapsed) {
+            this.request = request;
+            this.response = response;
+            this.elapsed = elapsed;
         }
 
-        if (object instanceof Integer) {
-            return Long.parseLong(object.toString());
+        public String app() {
+            return Optional.ofNullable(request.getTargetAppName()).orElse("");
         }
 
-        return (Long) object;
+        public String callerApp() {
+            return Optional.ofNullable(getStringAvoidNull(
+                    request.getRequestProp(RemotingConstants.HEAD_APP_NAME))).orElse("");
+        }
+
+        public String service() {
+            return Optional.ofNullable(request.getTargetServiceUniqueName()).orElse("");
+        }
+
+        public String method() {
+            return Optional.ofNullable(request.getMethodName()).orElse("");
+        }
+
+        public String protocol() {
+            return Optional.ofNullable(getStringAvoidNull(
+                    request.getRequestProp(RemotingConstants.HEAD_PROTOCOL))).orElse("");
+        }
+
+        public String invokeType() {
+            return Optional.ofNullable(request.getInvokeType()).orElse("");
+        }
+
+        public long elapsed() {
+            return elapsed;
+        }
+
+        public boolean success() {
+            return response != null
+                    && !response.isError()
+                    && response.getErrorMsg() == null
+                    && (!(response.getAppResponse() instanceof Throwable));
+        }
+
+        public String[] labelValues(String[] commonLabelValues) {
+            String[] labelValues;
+            String[] invokeLabelValues = new String[]{app(), service(), method(), protocol(), invokeType(), callerApp()};
+            int clength = commonLabelValues.length;
+            if (clength == 0) {
+                labelValues = invokeLabelValues;
+            } else {
+                int ilength = invokeLabelValues.length;
+                labelValues = new String[clength + ilength];
+                System.arraycopy(commonLabelValues, 0, labelValues, 0, clength);
+                System.arraycopy(invokeLabelValues, 0, labelValues, clength, ilength);
+            }
+            return labelValues;
+        }
     }
-
-    private static String getStringAvoidNull(Object object) {
-        if (object == null) {
-            return null;
-        }
-
-        return (String) object;
-    }
-
 
     private class PrometheusSubscriber extends Subscriber {
 
@@ -296,71 +330,6 @@ public class SofaRpcMetricsCollector extends Collector implements AutoCloseable 
         private void onEvent(ConsumerSubEvent event) {
             consumerCounter.labels(commonLabelValues)
                     .inc();
-        }
-    }
-
-    private static class InvokeMeta {
-
-        private final SofaRequest request;
-        private final SofaResponse response;
-        private final long elapsed;
-
-        private InvokeMeta(SofaRequest request, SofaResponse response, long elapsed) {
-            this.request = request;
-            this.response = response;
-            this.elapsed = elapsed;
-        }
-
-        public String app() {
-            return Optional.ofNullable(request.getTargetAppName()).orElse("");
-        }
-
-        public String callerApp() {
-            return Optional.ofNullable(getStringAvoidNull(
-                    request.getRequestProp(RemotingConstants.HEAD_APP_NAME))).orElse("");
-        }
-
-        public String service() {
-            return Optional.ofNullable(request.getTargetServiceUniqueName()).orElse("");
-        }
-
-        public String method() {
-            return Optional.ofNullable(request.getMethodName()).orElse("");
-        }
-
-        public String protocol() {
-            return Optional.ofNullable(getStringAvoidNull(
-                    request.getRequestProp(RemotingConstants.HEAD_PROTOCOL))).orElse("");
-        }
-
-        public String invokeType() {
-            return Optional.ofNullable(request.getInvokeType()).orElse("");
-        }
-
-        public long elapsed() {
-            return elapsed;
-        }
-
-        public boolean success() {
-            return response != null
-                    && !response.isError()
-                    && response.getErrorMsg() == null
-                    && (!(response.getAppResponse() instanceof Throwable));
-        }
-
-        public String[] labelValues(String[] commonLabelValues) {
-            String[] labelValues;
-            String[] invokeLabelValues = new String[]{app(), service(), method(), protocol(), invokeType(), callerApp()};
-            int clength = commonLabelValues.length;
-            if (clength == 0) {
-                labelValues = invokeLabelValues;
-            } else {
-                int ilength = invokeLabelValues.length;
-                labelValues = new String[clength + ilength];
-                System.arraycopy(commonLabelValues, 0, labelValues, 0, clength);
-                System.arraycopy(invokeLabelValues, 0, labelValues, clength, ilength);
-            }
-            return labelValues;
         }
     }
 

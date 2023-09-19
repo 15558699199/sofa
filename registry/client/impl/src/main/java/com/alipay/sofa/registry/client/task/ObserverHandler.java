@@ -27,17 +27,17 @@ import com.alipay.sofa.registry.client.api.Subscriber;
  */
 public interface ObserverHandler {
 
-  /**
-   * Notify.
-   *
-   * @param subscriber the subscriber
-   */
-  void notify(Subscriber subscriber);
+    /**
+     * Notify.
+     *
+     * @param subscriber the subscriber
+     */
+    void notify(Subscriber subscriber);
 
-  /**
-   * Notify.
-   *
-   * @param configurator the configurator
-   */
-  void notify(Configurator configurator);
+    /**
+     * Notify.
+     *
+     * @param configurator the configurator
+     */
+    void notify(Configurator configurator);
 }

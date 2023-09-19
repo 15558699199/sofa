@@ -18,6 +18,7 @@ package com.alipay.sofa.registry.common.model.sessionserver;
 
 import com.alipay.sofa.registry.common.model.store.SubDatum;
 import com.alipay.sofa.registry.util.StringFormatter;
+
 import java.io.Serializable;
 
 /**
@@ -26,29 +27,29 @@ import java.io.Serializable;
  */
 public class DataPushRequest implements Serializable {
 
-  private final SubDatum datum;
+    private final SubDatum datum;
 
-  /**
-   * constructor
-   *
-   * @param datum datum
-   */
-  public DataPushRequest(SubDatum datum) {
-    this.datum = datum;
-  }
+    /**
+     * constructor
+     *
+     * @param datum datum
+     */
+    public DataPushRequest(SubDatum datum) {
+        this.datum = datum;
+    }
 
-  public SubDatum getDatum() {
-    return datum;
-  }
+    public SubDatum getDatum() {
+        return datum;
+    }
 
-  @Override
-  public String toString() {
-    return StringFormatter.format(
-        "DataPushRequest{{},{},ver={},num={},bytes={}}",
-        datum.getDataInfoId(),
-        datum.getDataCenter(),
-        datum.getVersion(),
-        datum.getPubNum(),
-        datum.getDataBoxBytes());
-  }
+    @Override
+    public String toString() {
+        return StringFormatter.format(
+                "DataPushRequest{{},{},ver={},num={},bytes={}}",
+                datum.getDataInfoId(),
+                datum.getDataCenter(),
+                datum.getVersion(),
+                datum.getPubNum(),
+                datum.getDataBoxBytes());
+    }
 }

@@ -26,100 +26,108 @@ import com.alipay.sofa.registry.store.api.repository.InterfaceAppsRepository;
 import com.alipay.sofa.registry.util.ConcurrentUtils;
 import com.alipay.sofa.registry.util.WakeUpLoopRunnable;
 import com.google.common.collect.Maps;
-import java.util.*;
-import java.util.concurrent.TimeUnit;
 import org.glassfish.jersey.internal.guava.Sets;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+
 public class InterfaceAppsIndexCleaner implements ApplicationListener<ContextRefreshedEvent> {
 
-  private static final Logger LOG = LoggerFactory.getLogger("METADATA-EXCHANGE", "[InterfaceApps]");
+    private static final Logger LOG = LoggerFactory.getLogger("METADATA-EXCHANGE", "[InterfaceApps]");
 
-  final Renewer renewer = new Renewer();
+    final Renewer renewer = new Renewer();
 
-  @Autowired AppRevisionRepository appRevisionRepository;
+    @Autowired
+    AppRevisionRepository appRevisionRepository;
 
-  @Autowired InterfaceAppsRepository interfaceAppsRepository;
+    @Autowired
+    InterfaceAppsRepository interfaceAppsRepository;
 
-  @Autowired MetaLeaderService metaLeaderService;
+    @Autowired
+    MetaLeaderService metaLeaderService;
 
-  @Autowired MetadataConfig metadataConfig;
+    @Autowired
+    MetadataConfig metadataConfig;
 
-  public InterfaceAppsIndexCleaner() {}
-
-  public InterfaceAppsIndexCleaner(MetaLeaderService metaLeaderService) {
-    this.metaLeaderService = metaLeaderService;
-  }
-
-  @Override
-  public void onApplicationEvent(ContextRefreshedEvent event) {
-    start();
-  }
-
-  public void start() {
-    ConcurrentUtils.createDaemonThread(
-            InterfaceAppsIndexCleaner.class.getSimpleName() + "-renewer", renewer)
-        .start();
-    LOG.info("InterfaceAppsIndexCleaner started");
-  }
-
-  protected AppRevision revisionConvert(AppRevision revision) {
-    return revision;
-  }
-
-  public void renew() {
-    if (!metaLeaderService.amILeader()) {
-      return;
+    public InterfaceAppsIndexCleaner() {
     }
-    try {
-      long start = 0;
-      int page = 100;
-      Map<String, Set<String>> mappings = Maps.newHashMap();
-      while (true) {
-        List<AppRevision> revisions = appRevisionRepository.listFromStorage(start, page);
-        for (AppRevision revision : revisions) {
-          start = Math.max(start, revision.getId());
-          if (revision.isDeleted()) {
-            continue;
-          }
 
-          String appName = revision.getAppName();
-          for (String interfaceName : revision.getInterfaceMap().keySet()) {
-            mappings.computeIfAbsent(appName, k -> Sets.newHashSet()).add(interfaceName);
-          }
-        }
-        if (revisions.size() < page) {
-          break;
-        }
-      }
-      for (Map.Entry<String, Set<String>> entry : mappings.entrySet()) {
-        String appName = entry.getKey();
-        for (String interfaceName : entry.getValue()) {
-          interfaceAppsRepository.renew(interfaceName, appName);
-          ConcurrentUtils.sleepUninterruptibly(10, TimeUnit.MILLISECONDS);
-        }
-      }
-      LOG.info("renew interface apps index succeed");
-    } catch (Throwable e) {
-      LOG.error("renew interface apps index failed:", e);
-    }
-  }
-
-  public void startRenew() {
-    renewer.wakeup();
-  }
-
-  final class Renewer extends WakeUpLoopRunnable {
-    @Override
-    public int getWaitingMillis() {
-      return (metadataConfig.getInterfaceAppsIndexRenewIntervalMinutes() * 60 * 1000);
+    public InterfaceAppsIndexCleaner(MetaLeaderService metaLeaderService) {
+        this.metaLeaderService = metaLeaderService;
     }
 
     @Override
-    public void runUnthrowable() {
-      renew();
+    public void onApplicationEvent(ContextRefreshedEvent event) {
+        start();
     }
-  }
+
+    public void start() {
+        ConcurrentUtils.createDaemonThread(
+                        InterfaceAppsIndexCleaner.class.getSimpleName() + "-renewer", renewer)
+                .start();
+        LOG.info("InterfaceAppsIndexCleaner started");
+    }
+
+    protected AppRevision revisionConvert(AppRevision revision) {
+        return revision;
+    }
+
+    public void renew() {
+        if (!metaLeaderService.amILeader()) {
+            return;
+        }
+        try {
+            long start = 0;
+            int page = 100;
+            Map<String, Set<String>> mappings = Maps.newHashMap();
+            while (true) {
+                List<AppRevision> revisions = appRevisionRepository.listFromStorage(start, page);
+                for (AppRevision revision : revisions) {
+                    start = Math.max(start, revision.getId());
+                    if (revision.isDeleted()) {
+                        continue;
+                    }
+
+                    String appName = revision.getAppName();
+                    for (String interfaceName : revision.getInterfaceMap().keySet()) {
+                        mappings.computeIfAbsent(appName, k -> Sets.newHashSet()).add(interfaceName);
+                    }
+                }
+                if (revisions.size() < page) {
+                    break;
+                }
+            }
+            for (Map.Entry<String, Set<String>> entry : mappings.entrySet()) {
+                String appName = entry.getKey();
+                for (String interfaceName : entry.getValue()) {
+                    interfaceAppsRepository.renew(interfaceName, appName);
+                    ConcurrentUtils.sleepUninterruptibly(10, TimeUnit.MILLISECONDS);
+                }
+            }
+            LOG.info("renew interface apps index succeed");
+        } catch (Throwable e) {
+            LOG.error("renew interface apps index failed:", e);
+        }
+    }
+
+    public void startRenew() {
+        renewer.wakeup();
+    }
+
+    final class Renewer extends WakeUpLoopRunnable {
+        @Override
+        public int getWaitingMillis() {
+            return (metadataConfig.getInterfaceAppsIndexRenewIntervalMinutes() * 60 * 1000);
+        }
+
+        @Override
+        public void runUnthrowable() {
+            renew();
+        }
+    }
 }

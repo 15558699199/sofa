@@ -43,20 +43,20 @@ public class NacosRegistryHelperTest {
     @Test
     public void convertProviderToInstances() {
         ServerConfig serverConfig = new ServerConfig()
-            .setProtocol("bolt")
-            .setHost("0.0.0.0")
-            .setPort(12200);
+                .setProtocol("bolt")
+                .setHost("0.0.0.0")
+                .setPort(12200);
 
         ProviderConfig<?> provider = new ProviderConfig();
         provider.setInterfaceId("com.alipay.xxx.TestService")
-            .setApplication(new ApplicationConfig().setAppName("test-server"))
-            .setUniqueId("nacos-test")
-            .setProxy("javassist")
-            .setRegister(true)
-            .setSerialization("hessian2")
-            .setServer(serverConfig)
-            .setWeight(222)
-            .setTimeout(3000);
+                .setApplication(new ApplicationConfig().setAppName("test-server"))
+                .setUniqueId("nacos-test")
+                .setProxy("javassist")
+                .setRegister(true)
+                .setSerialization("hessian2")
+                .setServer(serverConfig)
+                .setWeight(222)
+                .setTimeout(3000);
 
         List<Instance> instances = NacosRegistryHelper.convertProviderToInstances(provider);
         assertNotNull(instances);
@@ -70,9 +70,9 @@ public class NacosRegistryHelperTest {
         assertEquals(provider.getSerialization(), instance.getMetadata().get(RpcConstants.CONFIG_KEY_SERIALIZATION));
         assertEquals(provider.getUniqueId(), instance.getMetadata().get(RpcConstants.CONFIG_KEY_UNIQUEID));
         assertEquals(provider.getWeight(),
-            Integer.parseInt(instance.getMetadata().get(RpcConstants.CONFIG_KEY_WEIGHT)));
+                Integer.parseInt(instance.getMetadata().get(RpcConstants.CONFIG_KEY_WEIGHT)));
         assertEquals(provider.getTimeout(),
-            Integer.parseInt(instance.getMetadata().get(RpcConstants.CONFIG_KEY_TIMEOUT)));
+                Integer.parseInt(instance.getMetadata().get(RpcConstants.CONFIG_KEY_TIMEOUT)));
         assertEquals(provider.getSerialization(), instance.getMetadata().get(RpcConstants.CONFIG_KEY_SERIALIZATION));
         assertEquals(provider.getAppName(), instance.getMetadata().get(RpcConstants.CONFIG_KEY_APP_NAME));
         assertEquals("com.alipay.xxx.TestService:nacos-test:DEFAULT", instance.getServiceName());
@@ -87,7 +87,7 @@ public class NacosRegistryHelperTest {
         instance.setServiceName("com.alipay.xxx.TestService");
 
         List<ProviderInfo> providerInfos = NacosRegistryHelper
-            .convertInstancesToProviders(Lists.newArrayList(instance));
+                .convertInstancesToProviders(Lists.newArrayList(instance));
         assertNotNull(providerInfos);
         assertEquals(1, providerInfos.size());
 
@@ -110,20 +110,20 @@ public class NacosRegistryHelperTest {
     @Test
     public void buildServiceName() {
         ServerConfig serverConfig = new ServerConfig()
-            .setProtocol("bolt")
-            .setHost("0.0.0.0")
-            .setPort(12200);
+                .setProtocol("bolt")
+                .setHost("0.0.0.0")
+                .setPort(12200);
 
         ProviderConfig<?> provider = new ProviderConfig();
         provider.setInterfaceId("com.alipay.xxx.TestService")
-            .setApplication(new ApplicationConfig().setAppName("test-server"))
-            .setUniqueId("nacos-test")
-            .setProxy("javassist")
-            .setRegister(true)
-            .setSerialization("hessian2")
-            .setServer(serverConfig)
-            .setWeight(222)
-            .setTimeout(3000);
+                .setApplication(new ApplicationConfig().setAppName("test-server"))
+                .setUniqueId("nacos-test")
+                .setProxy("javassist")
+                .setRegister(true)
+                .setSerialization("hessian2")
+                .setServer(serverConfig)
+                .setWeight(222)
+                .setTimeout(3000);
         String serviceName = NacosRegistryHelper.buildServiceName(provider, RpcConstants.PROTOCOL_TYPE_BOLT);
         assertEquals(serviceName, "com.alipay.xxx.TestService:nacos-test:DEFAULT");
 

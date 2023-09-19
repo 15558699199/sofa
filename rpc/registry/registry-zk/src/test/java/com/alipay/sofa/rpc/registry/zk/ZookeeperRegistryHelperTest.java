@@ -45,11 +45,11 @@ public class ZookeeperRegistryHelperTest {
         long now = System.currentTimeMillis();
 
         ProviderInfo providerInfo = new ProviderInfo()
-            .setWeight(200)
-            .setStaticAttr(ProviderInfoAttrs.ATTR_WEIGHT, "200")
-            .setStaticAttr(ProviderInfoAttrs.ATTR_START_TIME, String.valueOf(now))
-            .setStaticAttr(ProviderInfoAttrs.ATTR_WARMUP_TIME, String.valueOf(200))
-            .setStaticAttr(ProviderInfoAttrs.ATTR_WARMUP_WEIGHT, String.valueOf(700));
+                .setWeight(200)
+                .setStaticAttr(ProviderInfoAttrs.ATTR_WEIGHT, "200")
+                .setStaticAttr(ProviderInfoAttrs.ATTR_START_TIME, String.valueOf(now))
+                .setStaticAttr(ProviderInfoAttrs.ATTR_WARMUP_TIME, String.valueOf(200))
+                .setStaticAttr(ProviderInfoAttrs.ATTR_WARMUP_WEIGHT, String.valueOf(700));
 
         ZookeeperRegistryHelper.processWarmUpWeight(providerInfo);
 
@@ -80,10 +80,10 @@ public class ZookeeperRegistryHelperTest {
         long now = System.currentTimeMillis();
 
         ProviderInfo providerInfo = new ProviderInfo()
-            .setWeight(300)
-            .setStaticAttr(ProviderInfoAttrs.ATTR_WEIGHT, "300")
-            .setStaticAttr(ProviderInfoAttrs.ATTR_START_TIME, String.valueOf(now))
-            .setStaticAttr(ProviderInfoAttrs.ATTR_WARMUP_WEIGHT, String.valueOf(800));
+                .setWeight(300)
+                .setStaticAttr(ProviderInfoAttrs.ATTR_WEIGHT, "300")
+                .setStaticAttr(ProviderInfoAttrs.ATTR_START_TIME, String.valueOf(now))
+                .setStaticAttr(ProviderInfoAttrs.ATTR_WARMUP_WEIGHT, String.valueOf(800));
 
         ZookeeperRegistryHelper.processWarmUpWeight(providerInfo);
 
@@ -103,10 +103,10 @@ public class ZookeeperRegistryHelperTest {
         long now = System.currentTimeMillis();
 
         ProviderInfo providerInfo = new ProviderInfo()
-            .setWeight(600)
-            .setStaticAttr(ProviderInfoAttrs.ATTR_WEIGHT, "600")
-            .setStaticAttr(ProviderInfoAttrs.ATTR_START_TIME, String.valueOf(now))
-            .setStaticAttr(ProviderInfoAttrs.ATTR_WARMUP_TIME, String.valueOf(30));
+                .setWeight(600)
+                .setStaticAttr(ProviderInfoAttrs.ATTR_WEIGHT, "600")
+                .setStaticAttr(ProviderInfoAttrs.ATTR_START_TIME, String.valueOf(now))
+                .setStaticAttr(ProviderInfoAttrs.ATTR_WARMUP_TIME, String.valueOf(30));
 
         ZookeeperRegistryHelper.processWarmUpWeight(providerInfo);
 

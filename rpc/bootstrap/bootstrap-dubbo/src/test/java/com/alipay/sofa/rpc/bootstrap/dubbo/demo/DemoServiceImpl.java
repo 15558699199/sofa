@@ -17,7 +17,6 @@
 package com.alipay.sofa.rpc.bootstrap.dubbo.demo;
 
 /**
- *
  * @author <a href=mailto:leizhiyuan@gmail.com>leizhiyuan</a>
  */
 public class DemoServiceImpl implements DemoService {

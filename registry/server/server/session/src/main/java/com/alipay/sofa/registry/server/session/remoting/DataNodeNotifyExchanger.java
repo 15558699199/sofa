@@ -24,10 +24,11 @@ import com.alipay.sofa.registry.remoting.exchange.message.Request;
 import com.alipay.sofa.registry.remoting.exchange.message.Response;
 import com.alipay.sofa.registry.server.session.bootstrap.SessionServerConfig;
 import com.alipay.sofa.registry.server.shared.remoting.ClientSideExchanger;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.annotation.Resource;
 import java.util.Collection;
 import java.util.Set;
-import javax.annotation.Resource;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * use for dataNode notify
@@ -35,49 +36,52 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @author yuzhi.lyz
  */
 public class DataNodeNotifyExchanger extends ClientSideExchanger {
-  @Autowired private SessionServerConfig sessionServerConfig;
+    @Autowired
+    private SessionServerConfig sessionServerConfig;
 
-  @Resource(name = "dataNotifyClientHandlers")
-  private Collection<ChannelHandler> dataNotifyClientHandlers;
+    @Resource(name = "dataNotifyClientHandlers")
+    private Collection<ChannelHandler> dataNotifyClientHandlers;
 
-  public DataNodeNotifyExchanger() {
-    super(Exchange.DATA_SERVER_NOTIFY_TYPE);
-  }
-
-  /** @see DataNodeNotifyExchanger#request(Request) */
-  @Override
-  public Response request(Request request) throws RequestException {
-    // dataNode notify unsupported request to data server
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
-  public Client connectServer() {
-    Set<String> ips = serverIps;
-    int count = tryConnectAllServer(ips);
-    if (count != ips.size()) {
-      throw new RuntimeException("failed to connect all dataServers: " + ips);
+    public DataNodeNotifyExchanger() {
+        super(Exchange.DATA_SERVER_NOTIFY_TYPE);
     }
-    return getClient();
-  }
 
-  @Override
-  protected Collection<ChannelHandler> getClientHandlers() {
-    return dataNotifyClientHandlers;
-  }
+    /**
+     * @see DataNodeNotifyExchanger#request(Request)
+     */
+    @Override
+    public Response request(Request request) throws RequestException {
+        // dataNode notify unsupported request to data server
+        throw new UnsupportedOperationException();
+    }
 
-  @Override
-  public int getRpcTimeoutMillis() {
-    return sessionServerConfig.getDataNodeExchangeTimeoutMillis();
-  }
+    @Override
+    public Client connectServer() {
+        Set<String> ips = serverIps;
+        int count = tryConnectAllServer(ips);
+        if (count != ips.size()) {
+            throw new RuntimeException("failed to connect all dataServers: " + ips);
+        }
+        return getClient();
+    }
 
-  @Override
-  public int getServerPort() {
-    return sessionServerConfig.getDataServerNotifyPort();
-  }
+    @Override
+    protected Collection<ChannelHandler> getClientHandlers() {
+        return dataNotifyClientHandlers;
+    }
 
-  @Override
-  public int getConnNum() {
-    return sessionServerConfig.getDataNotifyClientConnNum();
-  }
+    @Override
+    public int getRpcTimeoutMillis() {
+        return sessionServerConfig.getDataNodeExchangeTimeoutMillis();
+    }
+
+    @Override
+    public int getServerPort() {
+        return sessionServerConfig.getDataServerNotifyPort();
+    }
+
+    @Override
+    public int getConnNum() {
+        return sessionServerConfig.getDataNotifyClientConnNum();
+    }
 }

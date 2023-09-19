@@ -24,8 +24,8 @@ import java.util.List;
 import java.util.Set;
 
 /**
- *
  * 比较两个set的不同，列出差异部分：包括左侧独有，右侧独有，双方都有
+ *
  * @author xiaojian.xj
  * @version : SetDifference.java, v 0.1 2022年09月07日 15:39 xiaojian.xj Exp $
  */

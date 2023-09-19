@@ -36,7 +36,6 @@ import static org.mockito.Mockito.times;
 /**
  * Tests for {@link SofaTracerMethodInvocationProcessor}.
  *
- *
  * @author huzijie
  * @version SofaTracerMethodInvocationProcessorTests.java, v 0.1 2023年01月10日 8:29 PM huzijie Exp $
  */
@@ -50,7 +49,7 @@ public class SofaTracerMethodInvocationProcessorTests {
     public void noFlexibleTracer() throws Throwable {
         Tracer tracer = new MockTracer();
         SofaTracerMethodInvocationProcessor sofaTracerMethodInvocationProcessor = new SofaTracerMethodInvocationProcessor(
-            tracer);
+                tracer);
         sofaTracerMethodInvocationProcessor.process(methodInvocation, getTracerAnnotation());
         Mockito.verify(methodInvocation, never()).getArguments();
     }
@@ -58,12 +57,12 @@ public class SofaTracerMethodInvocationProcessorTests {
     @Test
     public void useFlexibleTracer() throws Throwable {
         Tracer tracer = new FlexibleTracer();
-        Mockito.when(methodInvocation.getArguments()).thenReturn(new Object[] {});
+        Mockito.when(methodInvocation.getArguments()).thenReturn(new Object[]{});
         Mockito.when(methodInvocation.proceed()).thenReturn(new Object());
         Mockito.when(methodInvocation.getMethod()).thenReturn(
-            ReflectionUtils.findMethod(A.class, "hello"));
+                ReflectionUtils.findMethod(A.class, "hello"));
         SofaTracerMethodInvocationProcessor sofaTracerMethodInvocationProcessor = new SofaTracerMethodInvocationProcessor(
-            tracer);
+                tracer);
         sofaTracerMethodInvocationProcessor.process(methodInvocation, getTracerAnnotation());
         Mockito.verify(methodInvocation, times(1)).getArguments();
     }
@@ -71,7 +70,7 @@ public class SofaTracerMethodInvocationProcessorTests {
     private com.alipay.sofa.tracer.plugin.flexible.annotations.Tracer getTracerAnnotation() {
         Method method = ReflectionUtils.findMethod(A.class, "hello");
         return AnnotationUtils.findAnnotation(method,
-            com.alipay.sofa.tracer.plugin.flexible.annotations.Tracer.class);
+                com.alipay.sofa.tracer.plugin.flexible.annotations.Tracer.class);
     }
 
     static class A {

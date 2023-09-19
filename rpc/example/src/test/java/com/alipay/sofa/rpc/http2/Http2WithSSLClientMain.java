@@ -27,10 +27,8 @@ import com.alipay.sofa.rpc.protobuf.EchoRequest;
 import com.alipay.sofa.rpc.protobuf.EchoResponse;
 import com.alipay.sofa.rpc.protobuf.Group;
 import com.alipay.sofa.rpc.protobuf.ProtoService;
-import com.alipay.sofa.rpc.transport.http.SslContextBuilder;
 
 /**
- *
  * @author <a href="mailto:466178395@qq.com">LiHao</a>
  */
 public class Http2WithSSLClientMain {
@@ -48,12 +46,12 @@ public class Http2WithSSLClientMain {
         ApplicationConfig application = new ApplicationConfig().setAppName("test-client");
 
         ConsumerConfig<ProtoService> consumerConfig = new ConsumerConfig<ProtoService>().setApplication(application)
-            .setInterfaceId(ProtoService.class.getName())
-            .setProtocol("h2")
-            .setDirectUrl("h2://127.0.0.1:12300")
-            .setSerialization("protobuf")
-            .setRegister(false)
-            .setTimeout(1000);
+                .setInterfaceId(ProtoService.class.getName())
+                .setProtocol("h2")
+                .setDirectUrl("h2://127.0.0.1:12300")
+                .setSerialization("protobuf")
+                .setRegister(false)
+                .setTimeout(1000);
         ProtoService helloService = consumerConfig.refer();
 
         LOGGER.warn("started at pid {}", RpcRuntimeContext.PID);

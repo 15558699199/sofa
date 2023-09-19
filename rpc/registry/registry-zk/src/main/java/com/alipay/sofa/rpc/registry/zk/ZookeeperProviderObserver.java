@@ -42,8 +42,8 @@ public class ZookeeperProviderObserver {
     /**
      * slf4j Logger for this class
      */
-    private final static Logger                                       LOGGER              = LoggerFactory
-                                                                                              .getLogger(ZookeeperProviderObserver.class);
+    private final static Logger LOGGER = LoggerFactory
+            .getLogger(ZookeeperProviderObserver.class);
 
     /**
      * The Provider add listener map.
@@ -81,12 +81,12 @@ public class ZookeeperProviderObserver {
      * @throws UnsupportedEncodingException decode error
      */
     public void updateProvider(ConsumerConfig config, String providerPath, ChildData data, List<ChildData> currentData)
-        throws UnsupportedEncodingException {
+            throws UnsupportedEncodingException {
         if (LOGGER.isInfoEnabled(config.getAppName())) {
             LOGGER.infoWithApp(config.getAppName(),
-                "Receive update provider: path=[" + data.getPath() + "]" + ", data=[" +
-                    StringSerializer.decode(data.getData()) + "]" + ", stat=[" + data.getStat() + "]" + ", list=[" +
-                    currentData.size() + "]");
+                    "Receive update provider: path=[" + data.getPath() + "]" + ", data=[" +
+                            StringSerializer.decode(data.getData()) + "]" + ", stat=[" + data.getStat() + "]" + ", list=[" +
+                            currentData.size() + "]");
         }
         notifyListeners(config, providerPath, currentData, false);
     }
@@ -101,12 +101,12 @@ public class ZookeeperProviderObserver {
      * @throws UnsupportedEncodingException decode error
      */
     public void removeProvider(ConsumerConfig config, String providerPath, ChildData data, List<ChildData> currentData)
-        throws UnsupportedEncodingException {
+            throws UnsupportedEncodingException {
         if (LOGGER.isInfoEnabled(config.getAppName())) {
             LOGGER.infoWithApp(config.getAppName(),
-                "Receive remove provider: path=[" + data.getPath() + "]" + ", data=[" +
-                    StringSerializer.decode(data.getData()) + "]" + ", stat=[" + data.getStat() + "]" + ", list=[" +
-                    currentData.size() + "]");
+                    "Receive remove provider: path=[" + data.getPath() + "]" + ", data=[" +
+                            StringSerializer.decode(data.getData()) + "]" + ", stat=[" + data.getStat() + "]" + ", list=[" +
+                            currentData.size() + "]");
         }
         notifyListeners(config, providerPath, currentData, false);
     }
@@ -121,22 +121,22 @@ public class ZookeeperProviderObserver {
      * @throws UnsupportedEncodingException decode error
      */
     public void addProvider(ConsumerConfig config, String providerPath, ChildData data, List<ChildData> currentData)
-        throws UnsupportedEncodingException {
+            throws UnsupportedEncodingException {
         if (LOGGER.isInfoEnabled(config.getAppName())) {
             LOGGER.infoWithApp(config.getAppName(),
-                "Receive add provider: path=[" + data.getPath() + "]" + ", data=[" +
-                    StringSerializer.decode(data.getData()) + "]" + ", stat=[" + data.getStat() + "]" + ", list=[" +
-                    currentData.size() + "]");
+                    "Receive add provider: path=[" + data.getPath() + "]" + ", data=[" +
+                            StringSerializer.decode(data.getData()) + "]" + ", stat=[" + data.getStat() + "]" + ", list=[" +
+                            currentData.size() + "]");
         }
         notifyListeners(config, providerPath, currentData, true);
     }
 
     private void notifyListeners(ConsumerConfig config, String providerPath, List<ChildData> currentData, boolean add)
-        throws UnsupportedEncodingException {
+            throws UnsupportedEncodingException {
         List<ProviderInfoListener> providerInfoListeners = providerListenerMap.get(config);
         if (CommonUtils.isNotEmpty(providerInfoListeners)) {
             List<ProviderInfo> providerInfos = ZookeeperRegistryHelper.convertUrlsToProviders(providerPath,
-                currentData);
+                    currentData);
             List<ProviderInfo> providerInfosForProtocol = RegistryUtils.matchProviderInfos(config, providerInfos);
             for (ProviderInfoListener listener : providerInfoListeners) {
                 if (add) {

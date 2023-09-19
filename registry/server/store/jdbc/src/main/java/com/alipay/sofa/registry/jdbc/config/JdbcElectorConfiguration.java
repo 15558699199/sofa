@@ -31,17 +31,17 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @EnableConfigurationProperties
 @ConditionalOnProperty(
-    value = SpringContext.PERSISTENCE_PROFILE_ACTIVE,
-    havingValue = SpringContext.META_STORE_API_JDBC,
-    matchIfMissing = true)
+        value = SpringContext.PERSISTENCE_PROFILE_ACTIVE,
+        havingValue = SpringContext.META_STORE_API_JDBC,
+        matchIfMissing = true)
 public class JdbcElectorConfiguration {
 
-  @Configuration
-  public static class JdbcElectorBeanConfiguration {
+    @Configuration
+    public static class JdbcElectorBeanConfiguration {
 
-    @Bean
-    public LeaderElector leaderElector() {
-      return new MetaJdbcLeaderElector();
+        @Bean
+        public LeaderElector leaderElector() {
+            return new MetaJdbcLeaderElector();
+        }
     }
-  }
 }

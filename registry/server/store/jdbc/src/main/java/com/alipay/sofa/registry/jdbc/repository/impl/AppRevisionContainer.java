@@ -20,37 +20,38 @@ import com.alipay.sofa.registry.common.model.store.WordCache;
 import com.alipay.sofa.registry.jdbc.domain.AppRevisionDomain;
 import com.alipay.sofa.registry.jdbc.informer.DbEntryContainer;
 import com.google.common.collect.Maps;
+
 import java.util.Map;
 import java.util.Set;
 import java.util.function.BiConsumer;
 
 public class AppRevisionContainer implements DbEntryContainer<AppRevisionDomain> {
-  private final Map<String, String> data = Maps.newConcurrentMap();
+    private final Map<String, String> data = Maps.newConcurrentMap();
 
-  @Override
-  public synchronized void onEntry(AppRevisionDomain entry) {
-    String revision = WordCache.getWordCache(entry.getRevision());
-    String appName = WordCache.getWordCache(entry.getAppName());
-    if (entry.isDeleted()) {
-      data.remove(revision);
-    } else {
-      data.put(revision, appName);
+    @Override
+    public synchronized void onEntry(AppRevisionDomain entry) {
+        String revision = WordCache.getWordCache(entry.getRevision());
+        String appName = WordCache.getWordCache(entry.getAppName());
+        if (entry.isDeleted()) {
+            data.remove(revision);
+        } else {
+            data.put(revision, appName);
+        }
     }
-  }
 
-  public boolean containsRevisionId(String revisionId) {
-    return data.containsKey(revisionId);
-  }
+    public boolean containsRevisionId(String revisionId) {
+        return data.containsKey(revisionId);
+    }
 
-  public int size() {
-    return data.size();
-  }
+    public int size() {
+        return data.size();
+    }
 
-  public Set<String> allRevisionIds() {
-    return data.keySet();
-  }
+    public Set<String> allRevisionIds() {
+        return data.keySet();
+    }
 
-  public void foreach(BiConsumer<String, String> f) {
-    data.forEach(f);
-  }
+    public void foreach(BiConsumer<String, String> f) {
+        data.forEach(f);
+    }
 }

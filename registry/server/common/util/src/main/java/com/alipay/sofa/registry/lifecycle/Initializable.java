@@ -20,9 +20,9 @@ import com.alipay.sofa.registry.exception.InitializeException;
 
 /**
  * @author chen.zhu
- *     <p>Nov 13, 2020
+ * <p>Nov 13, 2020
  */
 public interface Initializable {
 
-  void initialize() throws InitializeException;
+    void initialize() throws InitializeException;
 }

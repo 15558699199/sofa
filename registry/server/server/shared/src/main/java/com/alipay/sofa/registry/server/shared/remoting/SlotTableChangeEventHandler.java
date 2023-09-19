@@ -22,56 +22,59 @@ import com.alipay.sofa.registry.common.model.metaserver.SlotTableChangeEvent;
 import com.alipay.sofa.registry.remoting.Channel;
 import com.alipay.sofa.registry.server.shared.meta.MetaServerService;
 import com.alipay.sofa.registry.util.ParaCheckUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.util.concurrent.Executor;
 import java.util.concurrent.ThreadPoolExecutor;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * @author chen.zhu
- *     <p>Feb 24, 2021
+ * <p>Feb 24, 2021
  */
 public class SlotTableChangeEventHandler extends AbstractClientHandler<SlotTableChangeEvent> {
 
-  @Autowired MetaServerService metaServerService;
+    @Autowired
+    MetaServerService metaServerService;
 
-  @Autowired ThreadPoolExecutor metaNodeExecutor;
+    @Autowired
+    ThreadPoolExecutor metaNodeExecutor;
 
-  @Override
-  protected Node.NodeType getConnectNodeType() {
-    return Node.NodeType.META;
-  }
-
-  @Override
-  public void checkParam(SlotTableChangeEvent request) {
-    ParaCheckUtil.checkNotNull(request, "SlotTableChangeEvent");
-    super.checkParam(request);
-    ParaCheckUtil.checkIsPositive(
-        request.getSlotTableEpoch(), "SlotTableChangeEvent.slotTableEpoch");
-  }
-
-  @Override
-  public Object doHandle(Channel channel, SlotTableChangeEvent request) {
-    boolean result = metaServerService.handleSlotTableChange(request);
-    if (result) {
-      return CommonResponse.buildSuccessResponse("successfully triggered slot-table retrieval");
-    } else {
-      return CommonResponse.buildFailedResponse(
-          "won't update slot-table, check [AbstractMetaServerService] log");
+    @Override
+    protected Node.NodeType getConnectNodeType() {
+        return Node.NodeType.META;
     }
-  }
 
-  @Override
-  public Object buildFailedResponse(String msg) {
-    return CommonResponse.buildFailedResponse(msg);
-  }
+    @Override
+    public void checkParam(SlotTableChangeEvent request) {
+        ParaCheckUtil.checkNotNull(request, "SlotTableChangeEvent");
+        super.checkParam(request);
+        ParaCheckUtil.checkIsPositive(
+                request.getSlotTableEpoch(), "SlotTableChangeEvent.slotTableEpoch");
+    }
 
-  @Override
-  public Class interest() {
-    return SlotTableChangeEvent.class;
-  }
+    @Override
+    public Object doHandle(Channel channel, SlotTableChangeEvent request) {
+        boolean result = metaServerService.handleSlotTableChange(request);
+        if (result) {
+            return CommonResponse.buildSuccessResponse("successfully triggered slot-table retrieval");
+        } else {
+            return CommonResponse.buildFailedResponse(
+                    "won't update slot-table, check [AbstractMetaServerService] log");
+        }
+    }
 
-  @Override
-  public Executor getExecutor() {
-    return metaNodeExecutor;
-  }
+    @Override
+    public Object buildFailedResponse(String msg) {
+        return CommonResponse.buildFailedResponse(msg);
+    }
+
+    @Override
+    public Class interest() {
+        return SlotTableChangeEvent.class;
+    }
+
+    @Override
+    public Executor getExecutor() {
+        return metaNodeExecutor;
+    }
 }

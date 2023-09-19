@@ -17,41 +17,44 @@
 package com.alipay.sofa.registry.common.model.client.pb;
 
 public interface AppListOrBuilder
-    extends
-    // @@protoc_insertion_point(interface_extends:AppList)
-    com.google.protobuf.MessageOrBuilder {
+        extends
+        // @@protoc_insertion_point(interface_extends:AppList)
+        com.google.protobuf.MessageOrBuilder {
 
-  /**
-   * <code>int64 version = 1;</code>
-   *
-   * @return long
-   */
-  long getVersion();
+    /**
+     * <code>int64 version = 1;</code>
+     *
+     * @return long
+     */
+    long getVersion();
 
-  /**
-   * <code>repeated string apps = 2;</code>
-   *
-   * @return List
-   */
-  java.util.List<java.lang.String> getAppsList();
-  /**
-   * <code>repeated string apps = 2;</code>
-   *
-   * @return int
-   */
-  int getAppsCount();
-  /**
-   * <code>repeated string apps = 2;</code>
-   *
-   * @param index index
-   * @return String
-   */
-  java.lang.String getApps(int index);
-  /**
-   * <code>repeated string apps = 2;</code>
-   *
-   * @param index index
-   * @return ByteString
-   */
-  com.google.protobuf.ByteString getAppsBytes(int index);
+    /**
+     * <code>repeated string apps = 2;</code>
+     *
+     * @return List
+     */
+    java.util.List<java.lang.String> getAppsList();
+
+    /**
+     * <code>repeated string apps = 2;</code>
+     *
+     * @return int
+     */
+    int getAppsCount();
+
+    /**
+     * <code>repeated string apps = 2;</code>
+     *
+     * @param index index
+     * @return String
+     */
+    java.lang.String getApps(int index);
+
+    /**
+     * <code>repeated string apps = 2;</code>
+     *
+     * @param index index
+     * @return ByteString
+     */
+    com.google.protobuf.ByteString getAppsBytes(int index);
 }

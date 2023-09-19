@@ -26,11 +26,11 @@ import com.alipay.sofa.registry.client.api.model.UserData;
  */
 public interface SubscriberDataObserver {
 
-  /**
-   * Handle data.
-   *
-   * @param dataId the data id
-   * @param data the data
-   */
-  void handleData(String dataId, UserData data);
+    /**
+     * Handle data.
+     *
+     * @param dataId the data id
+     * @param data   the data
+     */
+    void handleData(String dataId, UserData data);
 }

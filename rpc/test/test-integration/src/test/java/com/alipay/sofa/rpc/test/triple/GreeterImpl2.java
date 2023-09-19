@@ -31,9 +31,9 @@ import java.time.format.DateTimeFormatter;
 public class GreeterImpl2 extends SofaGreeterTriple.GreeterImplBase {
 
     //Intentionally using unsupported format
-    static final DateTimeFormatter[] datetimeFormatter = new DateTimeFormatter[] { DateTimeFormatter.ISO_DATE_TIME,
-                                                       DateTimeFormatter.ISO_LOCAL_DATE_TIME,
-                                                       DateTimeFormatter.BASIC_ISO_DATE };
+    static final DateTimeFormatter[] datetimeFormatter = new DateTimeFormatter[]{DateTimeFormatter.ISO_DATE_TIME,
+            DateTimeFormatter.ISO_LOCAL_DATE_TIME,
+            DateTimeFormatter.BASIC_ISO_DATE};
 
     @Override
     public void sayHello(HelloRequest req, StreamObserver<HelloReply> responseObserver) {
@@ -47,11 +47,11 @@ public class GreeterImpl2 extends SofaGreeterTriple.GreeterImplBase {
         LocalDateTime dt = LocalDateTime.now();
         String dtStr = dt.format(datetimeFormatter[i % datetimeFormatter.length]);
         HelloRequest.DateTime rplyDateTime = HelloRequest.DateTime.newBuilder(reqDateTime)
-            .setDate(dtStr).build();
+                .setDate(dtStr).build();
         HelloReply reply = HelloReply.newBuilder()
-            .setMessage("Hello2 " + req.getName())
-            .setDateTime(rplyDateTime)
-            .build();
+                .setMessage("Hello2 " + req.getName())
+                .setDateTime(rplyDateTime)
+                .build();
         responseObserver.onNext(reply);
         responseObserver.onCompleted();
     }

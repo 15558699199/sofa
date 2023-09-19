@@ -32,11 +32,7 @@ import com.alipay.sofa.rpc.tracer.Tracers;
 import com.alipay.sofa.rpc.tracer.sofatracer.RpcSofaTracer;
 import com.alipay.sofa.rpc.tracer.sofatracer.base.AbstractTracerBase;
 import com.alipay.sofa.rpc.tracer.sofatracer.factory.MemoryReporterImpl;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.*;
 
 import java.lang.reflect.Field;
 import java.util.Map;

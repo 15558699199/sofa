@@ -17,6 +17,7 @@
 package com.alipay.sofa.registry.common.model.dataserver;
 
 import com.alipay.sofa.registry.common.model.ProcessId;
+
 import java.io.Serializable;
 
 /**
@@ -24,60 +25,60 @@ import java.io.Serializable;
  * @version v 0.1 2020-12-04 16:44 yuzhi.lyz Exp $
  */
 public abstract class AbstractSlotRequest implements Serializable {
-  protected final ProcessId sessionProcessId;
-  private final int slotId;
-  protected long slotTableEpoch;
-  protected long slotLeaderEpoch;
+    protected final ProcessId sessionProcessId;
+    private final int slotId;
+    protected long slotTableEpoch;
+    protected long slotLeaderEpoch;
 
-  protected AbstractSlotRequest(int slotId, ProcessId sessionProcessId) {
-    this.slotId = slotId;
-    this.sessionProcessId = sessionProcessId;
-  }
+    protected AbstractSlotRequest(int slotId, ProcessId sessionProcessId) {
+        this.slotId = slotId;
+        this.sessionProcessId = sessionProcessId;
+    }
 
-  protected AbstractSlotRequest(
-      int slotId, ProcessId sessionProcessId, long slotTableEpoch, long slotLeaderEpoc) {
-    this.slotId = slotId;
-    this.sessionProcessId = sessionProcessId;
-    this.slotTableEpoch = slotTableEpoch;
-    this.slotLeaderEpoch = slotLeaderEpoc;
-  }
+    protected AbstractSlotRequest(
+            int slotId, ProcessId sessionProcessId, long slotTableEpoch, long slotLeaderEpoc) {
+        this.slotId = slotId;
+        this.sessionProcessId = sessionProcessId;
+        this.slotTableEpoch = slotTableEpoch;
+        this.slotLeaderEpoch = slotLeaderEpoc;
+    }
 
-  /**
-   * Getter method for property <tt>sessionProcessId</tt>.
-   *
-   * @return property value of sessionProcessId
-   */
-  public ProcessId getSessionProcessId() {
-    return sessionProcessId;
-  }
+    /**
+     * Getter method for property <tt>sessionProcessId</tt>.
+     *
+     * @return property value of sessionProcessId
+     */
+    public ProcessId getSessionProcessId() {
+        return sessionProcessId;
+    }
 
-  /**
-   * Getter method for property <tt>slotTableEpoch</tt>.
-   *
-   * @return property value of slotTableEpoch
-   */
-  public long getSlotTableEpoch() {
-    return slotTableEpoch;
-  }
+    /**
+     * Getter method for property <tt>slotTableEpoch</tt>.
+     *
+     * @return property value of slotTableEpoch
+     */
+    public long getSlotTableEpoch() {
+        return slotTableEpoch;
+    }
 
-  /**
-   * Setter method for property <tt>slotTableEpoch</tt>.
-   *
-   * @param slotTableEpoch value to be assigned to property slotTableEpoch
-   */
-  public void setSlotTableEpoch(long slotTableEpoch) {
-    this.slotTableEpoch = slotTableEpoch;
-  }
+    /**
+     * Setter method for property <tt>slotTableEpoch</tt>.
+     *
+     * @param slotTableEpoch value to be assigned to property slotTableEpoch
+     */
+    public void setSlotTableEpoch(long slotTableEpoch) {
+        this.slotTableEpoch = slotTableEpoch;
+    }
 
-  public long getSlotLeaderEpoch() {
-    return slotLeaderEpoch;
-  }
+    public long getSlotLeaderEpoch() {
+        return slotLeaderEpoch;
+    }
 
-  public void setSlotLeaderEpoch(long slotLeaderEpoch) {
-    this.slotLeaderEpoch = slotLeaderEpoch;
-  }
+    public void setSlotLeaderEpoch(long slotLeaderEpoch) {
+        this.slotLeaderEpoch = slotLeaderEpoch;
+    }
 
-  public int getSlotId() {
-    return slotId;
-  }
+    public int getSlotId() {
+        return slotId;
+    }
 }

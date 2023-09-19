@@ -31,12 +31,7 @@ import com.alipay.sofa.rpc.log.Logger;
 import com.alipay.sofa.rpc.log.LoggerFactory;
 import com.alipay.sofa.rpc.message.MessageBuilder;
 import com.alipay.sofa.rpc.proxy.Proxy;
-import javassist.ClassPool;
-import javassist.CtClass;
-import javassist.CtConstructor;
-import javassist.CtField;
-import javassist.CtMethod;
-import javassist.LoaderClassPath;
+import javassist.*;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -58,10 +53,13 @@ public class JavassistProxy implements Proxy {
     /**
      * Logger for this class
      */
-    private static final Logger            LOGGER          = LoggerFactory.getLogger(JavassistProxy.class);
-
-    private static AtomicInteger           counter         = new AtomicInteger();
-    private boolean                        disableCache    = false;
+    private static final Logger LOGGER = LoggerFactory.getLogger(JavassistProxy.class);
+    /**
+     * 原始类和代理类的映射
+     */
+    private static final Map<Class, Class> PROXY_CLASS_MAP = new ConcurrentHashMap<Class, Class>();
+    private static AtomicInteger counter = new AtomicInteger();
+    private boolean disableCache = false;
 
     {
         String disableCacheStr = System.getProperty("sofa.rpc.proxy.disableCache");
@@ -71,9 +69,22 @@ public class JavassistProxy implements Proxy {
     }
 
     /**
-     * 原始类和代理类的映射
+     * Parse proxy invoker from proxy object
+     *
+     * @param proxyObject Proxy object
+     * @return proxy invoker
      */
-    private static final Map<Class, Class> PROXY_CLASS_MAP = new ConcurrentHashMap<Class, Class>();
+    public static Invoker parseInvoker(Object proxyObject) {
+        try {
+            Field field = proxyObject.getClass().getField("proxyInvoker");
+            if (!field.isAccessible()) {
+                field.setAccessible(true);
+            }
+            return (Invoker) field.get(proxyObject);
+        } catch (Exception e) {
+            return null;
+        }
+    }
 
     @Override
     @SuppressWarnings("unchecked")
@@ -126,16 +137,16 @@ public class JavassistProxy implements Proxy {
                 }
                 if (LOGGER.isDebugEnabled()) {
                     LOGGER.debug("javassist proxy of interface: {} \r\n{}", interfaceClass,
-                        debug != null ? debug.toString() : "");
+                            debug != null ? debug.toString() : "");
                 }
                 // Under jdk 11+, `neighbour` param is required to apply LookUp.defineClass
                 // and avoid reflect calling to Classloader.defineClass(), as calling
                 // Classloader.defineClass() from unnamed module is prohibited, which may
                 // provoke InaccessibleObjectException.
                 clazz = mPool.toClass(mCtc, interfaceClass,
-                    // use tccl as former
-                    Thread.currentThread().getContextClassLoader(),
-                    interfaceClass.getProtectionDomain());
+                        // use tccl as former
+                        Thread.currentThread().getContextClassLoader(),
+                        interfaceClass.getProtectionDomain());
                 PROXY_CLASS_MAP.put(interfaceClass, clazz);
             }
             Object instance = clazz.newInstance();
@@ -144,7 +155,7 @@ public class JavassistProxy implements Proxy {
         } catch (Exception e) {
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("javassist proxy of interface: {} \r\n{}", interfaceClass,
-                    debug != null ? debug.toString() : "");
+                        debug != null ? debug.toString() : "");
             }
             throw new SofaRpcRuntimeException(LogCodes.getLog(LogCodes.ERROR_PROXY_CONSTRUCT, "javassist"), e);
         }
@@ -157,15 +168,15 @@ public class JavassistProxy implements Proxy {
         for (Method m : methodAry) {
             mi++;
             if (Modifier.isNative(m.getModifiers()) || Modifier.isFinal(m.getModifiers()) ||
-                Modifier.isStatic(m.getModifiers())) {
+                    Modifier.isStatic(m.getModifiers())) {
                 continue;
             }
             Class<?>[] mType = m.getParameterTypes();
             Class<?> returnType = m.getReturnType();
 
             sb.append(Modifier.toString(m.getModifiers()).replace("abstract", ""))
-                .append(" ").append(ClassTypeUtils.getTypeStr(returnType)).append(" ").append(m.getName())
-                .append("( ");
+                    .append(" ").append(ClassTypeUtils.getTypeStr(returnType)).append(" ").append(m.getName())
+                    .append("( ");
             int c = 0;
 
             for (Class<?> mp : mType) {
@@ -196,20 +207,20 @@ public class JavassistProxy implements Proxy {
             }
 
             fieldList.add("private " + Method.class.getCanonicalName() + " method_" + mi + " = "
-                + ReflectUtils.class.getCanonicalName() + ".getMethod("
-                + interfaceClass.getCanonicalName() + ".class, \"" + m.getName() + "\", "
-                + (c > 0 ? "new Class[]{" + methodSig.toString().substring(1) + "}" : "new Class[0]") + ");"
-                );
+                    + ReflectUtils.class.getCanonicalName() + ".getMethod("
+                    + interfaceClass.getCanonicalName() + ".class, \"" + m.getName() + "\", "
+                    + (c > 0 ? "new Class[]{" + methodSig.toString().substring(1) + "}" : "new Class[0]") + ");"
+            );
 
             sb.append(SofaRequest.class.getCanonicalName()).append(" request = ")
-                .append(MessageBuilder.class.getCanonicalName())
-                .append(".buildSofaRequest(clazz, method, paramTypes, paramValues);");
+                    .append(MessageBuilder.class.getCanonicalName())
+                    .append(".buildSofaRequest(clazz, method, paramTypes, paramValues);");
             sb.append(SofaResponse.class.getCanonicalName()).append(" response = ")
-                .append("proxyInvoker.invoke(request);");
+                    .append("proxyInvoker.invoke(request);");
             sb.append("if(response.isError()){");
             sb.append("  throw new ").append(SofaRpcException.class.getName()).append("(")
-                .append(RpcErrorType.class.getName())
-                .append(".SERVER_UNDECLARED_ERROR,").append(" response.getErrorMsg());");
+                    .append(RpcErrorType.class.getName())
+                    .append(".SERVER_UNDECLARED_ERROR,").append(" response.getErrorMsg());");
             sb.append("}");
 
             sb.append("Object ret = response.getAppResponse();");
@@ -244,7 +255,7 @@ public class JavassistProxy implements Proxy {
         sb.delete(0, sb.length());
         sb.append("public boolean equals(Object obj) {");
         sb.append("  return this == obj || (getClass().isInstance($1) && proxyInvoker.equals(")
-            .append(JavassistProxy.class.getName()).append(".parseInvoker($1)));");
+                .append(JavassistProxy.class.getName()).append(".parseInvoker($1)));");
         sb.append("}");
         resultList.add(sb.toString());
     }
@@ -283,23 +294,5 @@ public class JavassistProxy implements Proxy {
     @Override
     public Invoker getInvoker(Object proxyObject) {
         return parseInvoker(proxyObject);
-    }
-
-    /**
-     * Parse proxy invoker from proxy object
-     *
-     * @param proxyObject Proxy object
-     * @return proxy invoker
-     */
-    public static Invoker parseInvoker(Object proxyObject) {
-        try {
-            Field field = proxyObject.getClass().getField("proxyInvoker");
-            if (!field.isAccessible()) {
-                field.setAccessible(true);
-            }
-            return (Invoker) field.get(proxyObject);
-        } catch (Exception e) {
-            return null;
-        }
     }
 }

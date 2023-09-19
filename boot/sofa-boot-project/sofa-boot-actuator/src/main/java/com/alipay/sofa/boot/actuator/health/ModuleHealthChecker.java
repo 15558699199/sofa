@@ -29,7 +29,7 @@ import org.springframework.boot.actuate.health.Status;
  */
 public class ModuleHealthChecker implements HealthChecker {
 
-    public static final String            COMPONENT_NAME = "modules";
+    public static final String COMPONENT_NAME = "modules";
 
     private final ApplicationRuntimeModel applicationRuntimeModel;
 

@@ -40,16 +40,16 @@ public class SofaRuntimeAwareProcessorTests extends SofaRuntimeManagerTestBase {
     @Test
     public void checkSofaRuntimeAware() {
         SofaRuntimeAwareProcessor sofaRuntimeAwareProcessor = new SofaRuntimeAwareProcessor(
-            sofaRuntimeManager);
+                sofaRuntimeManager);
         SofaRuntimeAwareBean sofaRuntimeAwareBean = new SofaRuntimeAwareBean();
         sofaRuntimeAwareProcessor.postProcessBeforeInitialization(sofaRuntimeAwareBean, "testBean");
 
         assertThat(sofaRuntimeAwareBean.getSofaRuntimeContext()).isEqualTo(
-            sofaRuntimeManager.getSofaRuntimeContext());
+                sofaRuntimeManager.getSofaRuntimeContext());
         assertThat(sofaRuntimeAwareBean.getClientFactory()).isEqualTo(clientFactoryInternal);
         assertThat(sofaRuntimeAwareBean.getExtensionClient()).isNotNull();
         assertThat(sofaRuntimeManager.getSofaRuntimeContext().getJvmFilterHolder().getJvmFilters())
-            .contains(sofaRuntimeAwareBean);
+                .contains(sofaRuntimeAwareBean);
 
         assertThat(sofaRuntimeAwareBean.isInvoked()).isFalse();
         sofaRuntimeManager.shutdown();
@@ -57,25 +57,15 @@ public class SofaRuntimeAwareProcessorTests extends SofaRuntimeManagerTestBase {
     }
 
     static class SofaRuntimeAwareBean implements SofaRuntimeContextAware, ClientFactoryAware,
-                                     ExtensionClientAware, JvmFilter, RuntimeShutdownAware {
+            ExtensionClientAware, JvmFilter, RuntimeShutdownAware {
 
-        private ClientFactory      clientFactory;
+        private ClientFactory clientFactory;
 
-        private ExtensionClient    extensionClient;
+        private ExtensionClient extensionClient;
 
         private SofaRuntimeContext sofaRuntimeContext;
 
-        private boolean            invoked;
-
-        @Override
-        public void setClientFactory(ClientFactory clientFactory) {
-            this.clientFactory = clientFactory;
-        }
-
-        @Override
-        public void setExtensionClient(ExtensionClient extensionClient) {
-            this.extensionClient = extensionClient;
-        }
+        private boolean invoked;
 
         @Override
         public boolean before(JvmFilterContext context) {
@@ -93,11 +83,6 @@ public class SofaRuntimeAwareProcessorTests extends SofaRuntimeManagerTestBase {
         }
 
         @Override
-        public void setSofaRuntimeContext(SofaRuntimeContext sofaRuntimeContext) {
-            this.sofaRuntimeContext = sofaRuntimeContext;
-        }
-
-        @Override
         public int getOrder() {
             return 0;
         }
@@ -106,12 +91,27 @@ public class SofaRuntimeAwareProcessorTests extends SofaRuntimeManagerTestBase {
             return clientFactory;
         }
 
+        @Override
+        public void setClientFactory(ClientFactory clientFactory) {
+            this.clientFactory = clientFactory;
+        }
+
         public ExtensionClient getExtensionClient() {
             return extensionClient;
         }
 
+        @Override
+        public void setExtensionClient(ExtensionClient extensionClient) {
+            this.extensionClient = extensionClient;
+        }
+
         public SofaRuntimeContext getSofaRuntimeContext() {
             return sofaRuntimeContext;
+        }
+
+        @Override
+        public void setSofaRuntimeContext(SofaRuntimeContext sofaRuntimeContext) {
+            this.sofaRuntimeContext = sofaRuntimeContext;
         }
 
         public boolean isInvoked() {

@@ -20,32 +20,36 @@ import com.alipay.sofa.registry.store.api.elector.AbstractLeaderElector.LeaderIn
 
 /**
  * @author chen.zhu
- *     <p>Mar 09, 2021
+ * <p>Mar 09, 2021
  */
 public interface LeaderElector {
 
-  void registerLeaderAware(LeaderAware leaderAware);
+    void registerLeaderAware(LeaderAware leaderAware);
 
-  String myself();
+    String myself();
 
-  /** start compete leader */
-  void change2Follow();
+    /**
+     * start compete leader
+     */
+    void change2Follow();
 
-  /** stop compete leader */
-  void change2Observer();
+    /**
+     * stop compete leader
+     */
+    void change2Observer();
 
-  /**
-   * Am i elector boolean.
-   *
-   * @return the boolean
-   */
-  boolean amILeader();
+    /**
+     * Am i elector boolean.
+     *
+     * @return the boolean
+     */
+    boolean amILeader();
 
-  LeaderInfo getLeaderInfo();
+    LeaderInfo getLeaderInfo();
 
-  enum ElectorRole {
-    LEADER,
-    FOLLOWER,
-    ;
-  }
+    enum ElectorRole {
+        LEADER,
+        FOLLOWER,
+        ;
+    }
 }

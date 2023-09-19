@@ -24,5 +24,5 @@ import java.io.Serializable;
  */
 public interface SyncSlotAcceptorManager extends Serializable {
 
-  boolean accept(SyncAcceptorRequest request);
+    boolean accept(SyncAcceptorRequest request);
 }

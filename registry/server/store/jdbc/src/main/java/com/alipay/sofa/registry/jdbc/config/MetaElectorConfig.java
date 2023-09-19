@@ -22,5 +22,5 @@ package com.alipay.sofa.registry.jdbc.config;
  */
 public interface MetaElectorConfig {
 
-  long getLockExpireDuration();
+    long getLockExpireDuration();
 }

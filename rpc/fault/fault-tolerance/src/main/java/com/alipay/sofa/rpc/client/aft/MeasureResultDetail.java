@@ -23,16 +23,16 @@ package com.alipay.sofa.rpc.client.aft;
  */
 public class MeasureResultDetail {
     private final InvocationStatDimension invocationStatDimension;
-    private final MeasureState            measureState;
+    private final MeasureState measureState;
 
-    private long                          timeWindow;
-    private long                          windowCount;
-    private long                          leastWindowCount;
-    private double                        abnormalRate;
-    private double                        averageAbnormalRate;
-    private double                        leastAbnormalRateMultiple;
-    private boolean                       recoveredOriginWeight;
-    private transient boolean             logOnly;
+    private long timeWindow;
+    private long windowCount;
+    private long leastWindowCount;
+    private double abnormalRate;
+    private double averageAbnormalRate;
+    private double leastAbnormalRateMultiple;
+    private boolean recoveredOriginWeight;
+    private transient boolean logOnly;
 
     /**
      * Instantiates a new Measure result detail.

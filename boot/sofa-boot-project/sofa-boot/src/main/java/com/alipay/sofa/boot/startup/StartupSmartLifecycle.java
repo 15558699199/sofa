@@ -32,9 +32,9 @@ import static com.alipay.sofa.boot.startup.BootStageConstants.APPLICATION_CONTEX
  */
 public class StartupSmartLifecycle implements SmartLifecycle, ApplicationContextAware {
 
-    public static final String             ROOT_MODULE_NAME = "ROOT_APPLICATION_CONTEXT";
+    public static final String ROOT_MODULE_NAME = "ROOT_APPLICATION_CONTEXT";
 
-    private final StartupReporter          startupReporter;
+    private final StartupReporter startupReporter;
 
     private ConfigurableApplicationContext applicationContext;
 

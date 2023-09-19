@@ -23,7 +23,7 @@ import java.io.Serializable;
  */
 public class ExampleObj implements Serializable {
 
-    private int    id;
+    private int id;
     private String name;
 
     public int getId() {

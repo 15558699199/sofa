@@ -29,17 +29,15 @@ import java.util.concurrent.ConcurrentMap;
  */
 public class RpcLookoutId {
 
-    private final ConcurrentMap<String, Id> consumerIds          = new ConcurrentHashMap<String, Id>();
+    private final ConcurrentMap<String, Id> consumerIds = new ConcurrentHashMap<String, Id>();
 
-    private final ConcurrentMap<String, Id> providerIds          = new ConcurrentHashMap<String, Id>();
+    private final ConcurrentMap<String, Id> providerIds = new ConcurrentHashMap<String, Id>();
 
-    private final ConcurrentMap<String, Id> serverConfigIds      = new ConcurrentHashMap<String, Id>();
-
-    private volatile Id                     consumerConfigId;
-    private final Object                    consumerConfigIdLock = new Object();
-
-    private volatile Id                     providerConfigId;
-    private final Object                    providerConfigIdLock = new Object();
+    private final ConcurrentMap<String, Id> serverConfigIds = new ConcurrentHashMap<String, Id>();
+    private final Object consumerConfigIdLock = new Object();
+    private final Object providerConfigIdLock = new Object();
+    private volatile Id consumerConfigId;
+    private volatile Id providerConfigId;
 
     /**
      * create consumerId

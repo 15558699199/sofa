@@ -201,6 +201,7 @@ public class SofaRegistrySubscribeCallbackTest {
 
     /**
      * build config data
+     *
      * @param num
      * @return
      */

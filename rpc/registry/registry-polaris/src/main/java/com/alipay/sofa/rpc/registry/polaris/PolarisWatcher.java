@@ -28,11 +28,7 @@ import com.tencent.polaris.api.pojo.Instance;
 import com.tencent.polaris.api.rpc.GetAllInstancesRequest;
 import com.tencent.polaris.api.rpc.InstancesResponse;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -45,21 +41,21 @@ import static com.alipay.sofa.rpc.registry.utils.RegistryUtils.convertInstanceTo
  * @author <a href=mailto:bner666@gmail.com>ZhangLibin</a>
  */
 public class PolarisWatcher {
-    private static final Logger        LOGGER = LoggerFactory.getLogger(PolarisWatcher.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(PolarisWatcher.class);
 
-    private String                     nameSpace;
-    private String                     serviceName;
-    private String                     protocol;
+    private String nameSpace;
+    private String serviceName;
+    private String protocol;
 
-    private InstancesResponse          currentData;
+    private InstancesResponse currentData;
 
-    private ConsumerAPI                consumerAPI;
+    private ConsumerAPI consumerAPI;
 
-    private PolarisRegistryProperties  properties;
+    private PolarisRegistryProperties properties;
 
     private List<ProviderInfoListener> listeners;
 
-    private ScheduledExecutorService   watchExecutor;
+    private ScheduledExecutorService watchExecutor;
 
     public PolarisWatcher(String nameSpace, String serviceName, String protocol, ConsumerAPI consumerAPI, PolarisRegistryProperties properties) {
         this.nameSpace = nameSpace;

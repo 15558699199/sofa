@@ -21,7 +21,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- *
  * @author <a href="mailto:lw111072@antfin.com">liangen</a>
  */
 public class InvocationStatDimensionTest extends FaultBaseTest {
@@ -29,11 +28,11 @@ public class InvocationStatDimensionTest extends FaultBaseTest {
     @Test
     public void testInvocation() {
         InvocationStatDimension invocationA = new InvocationStatDimension(ProviderHelper.toProviderInfo("ipA"),
-            consumerConfig);
+                consumerConfig);
         InvocationStatDimension invocationB = new InvocationStatDimension(ProviderHelper.toProviderInfo("ipA"),
-            consumerConfig);
+                consumerConfig);
         InvocationStatDimension invocationC = new InvocationStatDimension(ProviderHelper.toProviderInfo("ipC"),
-            consumerConfig);
+                consumerConfig);
 
         Assert.assertTrue(invocationA.hashCode() == invocationB.hashCode());
         Assert.assertTrue(invocationA.equals(invocationB));

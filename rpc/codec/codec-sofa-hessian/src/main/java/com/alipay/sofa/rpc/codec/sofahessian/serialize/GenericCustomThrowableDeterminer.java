@@ -21,17 +21,16 @@ import com.alipay.sofa.common.config.SofaConfigs;
 import com.alipay.sofa.rpc.common.config.RpcConfigKeys;
 
 /**
- *
  * @author xingqi
  * @version : CustomThrowableGenericDeserialize.java, v 0.1 2022年10月18日 5:02 PM xingqi Exp $
  */
 public class GenericCustomThrowableDeterminer {
 
-    private static final boolean  GENERIC_THROW_EXCEPTION = SofaConfigs
-                                                              .getOrDefault(RpcConfigKeys.GENERIC_THROW_EXCEPTION);
+    private static final boolean GENERIC_THROW_EXCEPTION = SofaConfigs
+            .getOrDefault(RpcConfigKeys.GENERIC_THROW_EXCEPTION);
 
-    private static final String[] THROWABLE_FIELDS        = SofaConfigs
-                                                              .getOrDefault(RpcConfigKeys.GENERIC_THROWABLE_FIELDS);
+    private static final String[] THROWABLE_FIELDS = SofaConfigs
+            .getOrDefault(RpcConfigKeys.GENERIC_THROWABLE_FIELDS);
 
     public static Object judgeCustomThrowableForGenericObject(Object appObject) {
         if (!GENERIC_THROW_EXCEPTION || appObject == null) {
@@ -46,8 +45,8 @@ public class GenericCustomThrowableDeterminer {
             }
         }
         return new RuntimeException(
-            "occur business exception, but type=" + ((GenericObject) appObject).getType() +
-                " class is not found, error: " + appObject);
+                "occur business exception, but type=" + ((GenericObject) appObject).getType() +
+                        " class is not found, error: " + appObject);
     }
 
     public static boolean isGenericThrowException() {

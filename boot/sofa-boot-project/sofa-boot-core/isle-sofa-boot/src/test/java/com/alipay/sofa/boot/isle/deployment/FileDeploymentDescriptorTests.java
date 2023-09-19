@@ -29,7 +29,7 @@ import java.util.Properties;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- *  * Tests for {@link FileDeploymentDescriptorTests}.
+ * * Tests for {@link FileDeploymentDescriptorTests}.
  *
  * @author huzijie
  * @version FileDeploymentDescriptorTests.java, v 0.1 2023年04月07日 10:26 AM huzijie Exp $
@@ -44,13 +44,13 @@ public class FileDeploymentDescriptorTests {
         URL url = new URL("file://" + path);
         Properties properties = new Properties();
         DeploymentDescriptorConfiguration configuration = new DeploymentDescriptorConfiguration(
-            null, null);
+                null, null);
         ClassLoader classLoader = getClass().getClassLoader();
 
         // When
         DeploymentDescriptorFactory factory = new DeploymentDescriptorFactory();
         DeploymentDescriptor descriptor = factory.build(url, properties, configuration,
-            classLoader, "test-module.properties");
+                classLoader, "test-module.properties");
 
         // Then
         String xmlPath = getClass().getClassLoader().getResource("META-INF/spring").getPath();
@@ -62,7 +62,7 @@ public class FileDeploymentDescriptorTests {
         assertThat(descriptor.getSpringResources().size()).isEqualTo(2);
         for (File f : expectedSpringFiles) {
             assertThat(descriptor.getSpringResources().containsValue(new FileSystemResource(f)))
-                .isTrue();
+                    .isTrue();
         }
     }
 

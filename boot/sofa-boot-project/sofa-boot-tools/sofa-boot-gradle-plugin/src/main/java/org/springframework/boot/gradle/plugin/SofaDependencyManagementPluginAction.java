@@ -16,14 +16,13 @@
  */
 package org.springframework.boot.gradle.plugin;
 
-import java.util.Objects;
-
+import io.spring.gradle.dependencymanagement.DependencyManagementPlugin;
+import io.spring.gradle.dependencymanagement.dsl.DependencyManagementExtension;
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 
-import io.spring.gradle.dependencymanagement.DependencyManagementPlugin;
-import io.spring.gradle.dependencymanagement.dsl.DependencyManagementExtension;
+import java.util.Objects;
 
 /**
  * {@link Action} that is performed in response to the {@link SofaDependencyManagementPluginAction}

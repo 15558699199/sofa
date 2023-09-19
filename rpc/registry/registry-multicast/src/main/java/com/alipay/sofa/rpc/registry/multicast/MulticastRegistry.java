@@ -38,22 +38,9 @@ import com.alipay.sofa.rpc.log.Logger;
 import com.alipay.sofa.rpc.log.LoggerFactory;
 import com.alipay.sofa.rpc.registry.Registry;
 
-import java.net.DatagramPacket;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.MulticastSocket;
-import java.net.Socket;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.net.*;
+import java.util.*;
+import java.util.concurrent.*;
 
 /**
  * @author zhaowang
@@ -73,25 +60,18 @@ public class MulticastRegistry extends Registry {
     private static final String UNSUBSCRIBE = "unsubscribe";
     private static final String CLEAN_PERIOD = "cleanPeriod";
     private static final String CLEAN = "clean";
-
-    private InetAddress multicastAddress;
-
-    private MulticastSocket multicastSocket;
-
-    private int multicastPort;
-
     /**
      * 内存里的服务列表 {service : [provider...]}
      */
     protected Map<String, ProviderGroup> allProviderCache = new ConcurrentHashMap<>();
-
     /**
      * 订阅者通知列表（key为订阅者关键字，value为ConsumerConfig列表）
      */
     protected Map<String, List<ConsumerConfig>> notifyListeners = new ConcurrentHashMap<>();
-
     protected Map<String, ProviderGroup> registeredCache = new ConcurrentHashMap<>();
-
+    private InetAddress multicastAddress;
+    private MulticastSocket multicastSocket;
+    private int multicastPort;
     private ScheduledExecutorService cleanExecutor = new ScheduledThreadPoolExecutor(1, new NamedThreadFactory("SofaMulticastRegistryCleanTimer", true));
 
     private ScheduledFuture<?> cleanFuture;

@@ -20,16 +20,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
- *
  * @author <a href=mailto:zhanggeng@howtimeflies.org>GengZhang</a>
  */
 public class TestClass3 {
 
     private final Logger LOGGER = LoggerFactory.getLogger(TestClass3.class);
 
-    private String       name;
-    private int          age;
+    private String name;
+    private int age;
 
     private TestClass3(String s, int n) {
         LOGGER.info("init TestClass3 ");

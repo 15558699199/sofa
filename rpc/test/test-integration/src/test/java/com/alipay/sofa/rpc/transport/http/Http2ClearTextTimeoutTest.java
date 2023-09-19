@@ -48,28 +48,28 @@ public class Http2ClearTextTimeoutTest extends ActivelyDestroyTest {
     public void testProtobuf() throws InterruptedException {
         // 只有1个线程 执行
         ServerConfig serverConfig = new ServerConfig()
-            .setStopTimeout(60000)
-            .setPort(12300)
-            .setProtocol(RpcConstants.PROTOCOL_TYPE_H2C)
-            .setDaemon(true);
+                .setStopTimeout(60000)
+                .setPort(12300)
+                .setProtocol(RpcConstants.PROTOCOL_TYPE_H2C)
+                .setDaemon(true);
 
         // 发布一个服务，每个请求要执行1秒
         ProviderConfig<HttpService> providerConfig = new ProviderConfig<HttpService>()
-            .setInterfaceId(HttpService.class.getName())
-            .setRef(new HttpServiceImpl(1000))
-            .setApplication(new ApplicationConfig().setAppName("serverApp"))
-            .setServer(serverConfig)
-            .setRegister(false);
+                .setInterfaceId(HttpService.class.getName())
+                .setRef(new HttpServiceImpl(1000))
+                .setApplication(new ApplicationConfig().setAppName("serverApp"))
+                .setServer(serverConfig)
+                .setRegister(false);
         providerConfig.export();
 
         {
             ConsumerConfig<HttpService> consumerConfig = new ConsumerConfig<HttpService>()
-                .setInterfaceId(HttpService.class.getName())
-                .setSerialization(RpcConstants.SERIALIZE_PROTOBUF)
-                .setDirectUrl("h2c://127.0.0.1:12300")
-                .setApplication(new ApplicationConfig().setAppName("clientApp"))
-                .setTimeout(500)
-                .setProtocol(RpcConstants.PROTOCOL_TYPE_H2C);
+                    .setInterfaceId(HttpService.class.getName())
+                    .setSerialization(RpcConstants.SERIALIZE_PROTOBUF)
+                    .setDirectUrl("h2c://127.0.0.1:12300")
+                    .setApplication(new ApplicationConfig().setAppName("clientApp"))
+                    .setTimeout(500)
+                    .setProtocol(RpcConstants.PROTOCOL_TYPE_H2C);
 
             HttpService httpService = consumerConfig.refer();
 
@@ -84,14 +84,14 @@ public class Http2ClearTextTimeoutTest extends ActivelyDestroyTest {
 
         {
             ConsumerConfig<HttpService> consumerConfig2 = new ConsumerConfig<HttpService>()
-                .setInterfaceId(HttpService.class.getName())
-                .setSerialization(RpcConstants.SERIALIZE_PROTOBUF)
-                .setDirectUrl("h2c://127.0.0.1:12300")
-                .setApplication(new ApplicationConfig().setAppName("clientApp"))
-                .setTimeout(500)
-                .setProtocol(RpcConstants.PROTOCOL_TYPE_H2C)
-                .setInvokeType(RpcConstants.INVOKER_TYPE_ONEWAY)
-                .setRepeatedReferLimit(-1);
+                    .setInterfaceId(HttpService.class.getName())
+                    .setSerialization(RpcConstants.SERIALIZE_PROTOBUF)
+                    .setDirectUrl("h2c://127.0.0.1:12300")
+                    .setApplication(new ApplicationConfig().setAppName("clientApp"))
+                    .setTimeout(500)
+                    .setProtocol(RpcConstants.PROTOCOL_TYPE_H2C)
+                    .setInvokeType(RpcConstants.INVOKER_TYPE_ONEWAY)
+                    .setRepeatedReferLimit(-1);
             HttpService httpService2 = consumerConfig2.refer();
             EchoRequest request = EchoRequest.newBuilder().setGroup(Group.A).setName("xxx").build();
             try {
@@ -105,14 +105,14 @@ public class Http2ClearTextTimeoutTest extends ActivelyDestroyTest {
 
         {
             ConsumerConfig<HttpService> consumerConfig3 = new ConsumerConfig<HttpService>()
-                .setInterfaceId(HttpService.class.getName())
-                .setSerialization(RpcConstants.SERIALIZE_PROTOBUF)
-                .setDirectUrl("h2c://127.0.0.1:12300")
-                .setApplication(new ApplicationConfig().setAppName("clientApp"))
-                .setTimeout(500)
-                .setProtocol(RpcConstants.PROTOCOL_TYPE_H2C)
-                .setInvokeType(RpcConstants.INVOKER_TYPE_FUTURE)
-                .setRepeatedReferLimit(-1);
+                    .setInterfaceId(HttpService.class.getName())
+                    .setSerialization(RpcConstants.SERIALIZE_PROTOBUF)
+                    .setDirectUrl("h2c://127.0.0.1:12300")
+                    .setApplication(new ApplicationConfig().setAppName("clientApp"))
+                    .setTimeout(500)
+                    .setProtocol(RpcConstants.PROTOCOL_TYPE_H2C)
+                    .setInvokeType(RpcConstants.INVOKER_TYPE_FUTURE)
+                    .setRepeatedReferLimit(-1);
             HttpService httpService3 = consumerConfig3.refer();
             EchoRequest request = EchoRequest.newBuilder().setGroup(Group.A).setName("xxx").build();
             EchoResponse response = httpService3.echoPb(request);
@@ -131,33 +131,33 @@ public class Http2ClearTextTimeoutTest extends ActivelyDestroyTest {
             final Object[] result = new Object[1];
             final CountDownLatch latch = new CountDownLatch(1);
             ConsumerConfig<HttpService> consumerConfig4 = new ConsumerConfig<HttpService>()
-                .setInterfaceId(HttpService.class.getName())
-                .setSerialization(RpcConstants.SERIALIZE_PROTOBUF)
-                .setTimeout(500)
-                .setDirectUrl("h2c://127.0.0.1:12300")
-                .setApplication(new ApplicationConfig().setAppName("clientApp"))
-                .setProtocol(RpcConstants.PROTOCOL_TYPE_H2C)
-                .setInvokeType(RpcConstants.INVOKER_TYPE_CALLBACK)
-                .setOnReturn(new SofaResponseCallback() {
-                    @Override
-                    public void onAppResponse(Object appResponse, String methodName, RequestBase request) {
-                        result[0] = appResponse;
-                        latch.countDown();
-                    }
+                    .setInterfaceId(HttpService.class.getName())
+                    .setSerialization(RpcConstants.SERIALIZE_PROTOBUF)
+                    .setTimeout(500)
+                    .setDirectUrl("h2c://127.0.0.1:12300")
+                    .setApplication(new ApplicationConfig().setAppName("clientApp"))
+                    .setProtocol(RpcConstants.PROTOCOL_TYPE_H2C)
+                    .setInvokeType(RpcConstants.INVOKER_TYPE_CALLBACK)
+                    .setOnReturn(new SofaResponseCallback() {
+                        @Override
+                        public void onAppResponse(Object appResponse, String methodName, RequestBase request) {
+                            result[0] = appResponse;
+                            latch.countDown();
+                        }
 
-                    @Override
-                    public void onAppException(Throwable throwable, String methodName, RequestBase request) {
-                        result[0] = throwable;
-                        latch.countDown();
-                    }
+                        @Override
+                        public void onAppException(Throwable throwable, String methodName, RequestBase request) {
+                            result[0] = throwable;
+                            latch.countDown();
+                        }
 
-                    @Override
-                    public void onSofaException(SofaRpcException exception, String methodName, RequestBase request) {
-                        result[0] = exception;
-                        latch.countDown();
-                    }
-                })
-                .setRepeatedReferLimit(-1);
+                        @Override
+                        public void onSofaException(SofaRpcException exception, String methodName, RequestBase request) {
+                            result[0] = exception;
+                            latch.countDown();
+                        }
+                    })
+                    .setRepeatedReferLimit(-1);
             HttpService httpService4 = consumerConfig4.refer();
             EchoRequest request = EchoRequest.newBuilder().setGroup(Group.A).setName("xxx").build();
             EchoResponse response = httpService4.echoPb(request);

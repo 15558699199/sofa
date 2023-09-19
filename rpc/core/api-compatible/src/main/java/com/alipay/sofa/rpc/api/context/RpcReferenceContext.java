@@ -23,51 +23,83 @@ package com.alipay.sofa.rpc.api.context;
  */
 public class RpcReferenceContext {
 
-    protected String         traceId;
-    protected String         rpcId;
+    protected String traceId;
+    protected String rpcId;
 
-    /** service interface */
-    protected String         interfaceName;
-    /** service invoke method */
-    protected String         methodName;
-    /** uniqueId */
-    protected String         uniqueId;
-    /** unique service name */
-    protected String         serviceName;
-    /** is generic service */
-    protected boolean        isGeneric;
+    /**
+     * service interface
+     */
+    protected String interfaceName;
+    /**
+     * service invoke method
+     */
+    protected String methodName;
+    /**
+     * uniqueId
+     */
+    protected String uniqueId;
+    /**
+     * unique service name
+     */
+    protected String serviceName;
+    /**
+     * is generic service
+     */
+    protected boolean isGeneric;
 
-    /** target appName */
-    protected String         targetAppName;
-    /** target url */
-    protected String         targetUrl;
+    /**
+     * target appName
+     */
+    protected String targetAppName;
+    /**
+     * target url
+     */
+    protected String targetUrl;
 
-    /** RPC protocol, such as TR */
-    protected String         protocol;
-    /** RPC invoke type, such as sync, oneway */
-    protected String         invokeType;
-    /** RPC route trace
-     for example: TURL>CFS>RDM, it indicate route trace is: test-url to config server to random select */
-    protected String         routeRecord;
+    /**
+     * RPC protocol, such as TR
+     */
+    protected String protocol;
+    /**
+     * RPC invoke type, such as sync, oneway
+     */
+    protected String invokeType;
+    /**
+     * RPC route trace
+     * for example: TURL>CFS>RDM, it indicate route trace is: test-url to config server to random select
+     */
+    protected String routeRecord;
 
-    protected long           connEstablishedSpan;
+    protected long connEstablishedSpan;
 
-    /** cost time (ms) */
-    protected long           costTime;
-    /** result code
-     * 00: success, 01: application exception, 02: framework exception, 03: timeout exception, 04: route exception */
+    /**
+     * cost time (ms)
+     */
+    protected long costTime;
+    /**
+     * result code
+     * 00: success, 01: application exception, 02: framework exception, 03: timeout exception, 04: route exception
+     */
     protected ResultCodeEnum resultCode;
 
-    /** request size */
-    protected long           requestSize;
+    /**
+     * request size
+     */
+    protected long requestSize;
 
-    /** response size */
-    protected long           responseSize;
+    /**
+     * response size
+     */
+    protected long responseSize;
 
-    /** client ip */
-    String                   clientIP;
-    /** rpc客户端端口号 */
-    int                      clientPort;
+    /**
+     * client ip
+     */
+    String clientIP;
+    /**
+     * rpc客户端端口号
+     */
+    int clientPort;
 
     public String getInterfaceName() {
         return interfaceName;

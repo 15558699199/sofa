@@ -21,11 +21,7 @@ import org.mockito.MockSettings;
 import org.springframework.boot.test.mock.mockito.MockReset;
 import org.springframework.core.annotation.AliasFor;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 /**
  * Annotation that can be used to create mocks and inject mock to a target bean's field.
@@ -36,7 +32,7 @@ import java.lang.annotation.Target;
  * <p>
  * Field in target bean will be found by {@link #field()}. If no field could be found, {@link IllegalStateException} will be thrown.
  * <p>
- *
+ * <p>
  * Typical usage might be: <pre class="code">
  * &#064;RunWith(SpringRunner.class)
  * public class ExampleServiceTest {
@@ -82,10 +78,11 @@ import java.lang.annotation.Target;
  *     ...
  * }
  * </pre>
+ *
  * @author pengym
  * @version MockBeanInjector.java, v 0.1 2023年08月07日 15:32 pengym
  */
-@Target({ ElementType.FIELD })
+@Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface MockBeanInjector {
@@ -98,6 +95,7 @@ public @interface MockBeanInjector {
 
     /**
      * The name of the bean to inject the mock to a field.
+     *
      * @return the name of the target bean
      */
     String name() default "";
@@ -105,6 +103,7 @@ public @interface MockBeanInjector {
     /**
      * The class type of the bean to inject the mock to a field. This is an alias of {@link #type()} which can be used for
      * brevity if no other attributes are defined. See {@link #type()} for details.
+     *
      * @return the class ype of the target bean
      */
     @AliasFor("type")
@@ -112,6 +111,7 @@ public @interface MockBeanInjector {
 
     /**
      * The class type of the bean to inject the mock to a field
+     *
      * @return the class ype of the target bean
      */
     @AliasFor("value")
@@ -126,12 +126,14 @@ public @interface MockBeanInjector {
     /**
      * Any extra interfaces that should also be declared on the mock. See
      * {@link MockSettings#extraInterfaces(Class...)} for details.
+     *
      * @return any extra interfaces
      */
     Class<?>[] extraInterfaces() default {};
 
     /**
      * The {@link Answers} type to use on the mock.
+     *
      * @return the answer type
      */
     Answers answer() default Answers.RETURNS_DEFAULTS;
@@ -139,6 +141,7 @@ public @interface MockBeanInjector {
     /**
      * If the generated mock is serializable. See {@link MockSettings#serializable()} for
      * details.
+     *
      * @return if the mock is serializable
      */
     boolean serializable() default false;
@@ -146,6 +149,7 @@ public @interface MockBeanInjector {
     /**
      * The reset mode to apply to the mock. The default is {@link MockReset#AFTER}
      * meaning that mocks are automatically reset after each test method is invoked.
+     *
      * @return the reset mode
      */
     MockReset reset() default MockReset.AFTER;

@@ -26,12 +26,13 @@ import com.alipay.sofa.registry.server.meta.resource.StopPushDataResource;
 import com.alipay.sofa.registry.store.api.meta.RecoverConfigRepository;
 import com.alipay.sofa.registry.test.BaseIntegrationTest;
 import com.alipay.sofa.registry.util.ConcurrentUtils;
-import java.util.concurrent.TimeUnit;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author xiaojian.xj
@@ -40,62 +41,59 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 public class ProvideDataConfigTest extends BaseIntegrationTest {
 
-  private StopPushDataResource stopPushDataResource;
+    public static final String CLUSTER_ID = "DEFAULT_SEGMENT";
+    public static final String RECOVER_CLUSTER_ID = "RECOVER_DEFAULT_SEGMENT";
+    private StopPushDataResource stopPushDataResource;
+    private RecoverConfigRepository recoverConfigRepository;
+    private ProvideDataMapper provideDataMapper;
 
-  private RecoverConfigRepository recoverConfigRepository;
+    @Before
+    public void beforeProvideDataTest() {
 
-  private ProvideDataMapper provideDataMapper;
+        System.setProperty("nodes.clusterId", CLUSTER_ID);
+        System.setProperty("nodes.recoverClusterId", RECOVER_CLUSTER_ID);
 
-  public static final String CLUSTER_ID = "DEFAULT_SEGMENT";
-  public static final String RECOVER_CLUSTER_ID = "RECOVER_DEFAULT_SEGMENT";
+        stopPushDataResource =
+                metaApplicationContext.getBean("stopPushDataResource", StopPushDataResource.class);
 
-  @Before
-  public void beforeProvideDataTest() {
+        recoverConfigRepository =
+                metaApplicationContext.getBean(
+                        "recoverConfigJdbcRepository", RecoverConfigRepository.class);
 
-    System.setProperty("nodes.clusterId", CLUSTER_ID);
-    System.setProperty("nodes.recoverClusterId", RECOVER_CLUSTER_ID);
+        provideDataMapper =
+                metaApplicationContext.getBean("provideDataMapper", ProvideDataMapper.class);
 
-    stopPushDataResource =
-        metaApplicationContext.getBean("stopPushDataResource", StopPushDataResource.class);
+        recoverConfigRepository.save(
+                TableEnum.PROVIDE_DATA.getTableName(),
+                ValueConstants.STOP_PUSH_DATA_SWITCH_DATA_ID,
+                RECOVER_CLUSTER_ID);
+        recoverConfigRepository.save(
+                TableEnum.PROVIDE_DATA.getTableName(),
+                ValueConstants.PUSH_SWITCH_GRAY_OPEN_DATA_ID,
+                RECOVER_CLUSTER_ID);
 
-    recoverConfigRepository =
-        metaApplicationContext.getBean(
-            "recoverConfigJdbcRepository", RecoverConfigRepository.class);
+        ((RecoverConfigJdbcRepository) recoverConfigRepository).doRefresh();
 
-    provideDataMapper =
-        metaApplicationContext.getBean("provideDataMapper", ProvideDataMapper.class);
+        // refresh provide data cache
+        provideDataService.becomeLeader();
+        ConcurrentUtils.sleepUninterruptibly(1000, TimeUnit.MILLISECONDS);
+    }
 
-    recoverConfigRepository.save(
-        TableEnum.PROVIDE_DATA.getTableName(),
-        ValueConstants.STOP_PUSH_DATA_SWITCH_DATA_ID,
-        RECOVER_CLUSTER_ID);
-    recoverConfigRepository.save(
-        TableEnum.PROVIDE_DATA.getTableName(),
-        ValueConstants.PUSH_SWITCH_GRAY_OPEN_DATA_ID,
-        RECOVER_CLUSTER_ID);
+    @Test
+    public void testClosePush() {
 
-    ((RecoverConfigJdbcRepository) recoverConfigRepository).doRefresh();
+        Result result = stopPushDataResource.closePush();
+        Assert.assertTrue(result.isSuccess());
 
-    // refresh provide data cache
-    provideDataService.becomeLeader();
-    ConcurrentUtils.sleepUninterruptibly(1000, TimeUnit.MILLISECONDS);
-  }
+        ProvideDataDomain query =
+                provideDataMapper.query(RECOVER_CLUSTER_ID, ValueConstants.STOP_PUSH_DATA_SWITCH_DATA_ID);
+        Assert.assertEquals(query.getDataValue(), Boolean.TRUE.toString());
 
-  @Test
-  public void testClosePush() {
+        result = stopPushDataResource.openPush();
+        Assert.assertTrue(result.isSuccess());
 
-    Result result = stopPushDataResource.closePush();
-    Assert.assertTrue(result.isSuccess());
-
-    ProvideDataDomain query =
-        provideDataMapper.query(RECOVER_CLUSTER_ID, ValueConstants.STOP_PUSH_DATA_SWITCH_DATA_ID);
-    Assert.assertEquals(query.getDataValue(), Boolean.TRUE.toString());
-
-    result = stopPushDataResource.openPush();
-    Assert.assertTrue(result.isSuccess());
-
-    query =
-        provideDataMapper.query(RECOVER_CLUSTER_ID, ValueConstants.STOP_PUSH_DATA_SWITCH_DATA_ID);
-    Assert.assertEquals(query.getDataValue(), Boolean.FALSE.toString());
-  }
+        query =
+                provideDataMapper.query(RECOVER_CLUSTER_ID, ValueConstants.STOP_PUSH_DATA_SWITCH_DATA_ID);
+        Assert.assertEquals(query.getDataValue(), Boolean.FALSE.toString());
+    }
 }

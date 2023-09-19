@@ -26,8 +26,9 @@ import com.alipay.sofa.registry.remoting.RemotingException;
 import com.alipay.sofa.registry.server.session.converter.pb.RegisterResponseConvertor;
 import com.alipay.sofa.registry.server.session.converter.pb.SubscriberRegisterConvertor;
 import com.alipay.sofa.registry.server.shared.remoting.RemotingHelper;
-import java.util.concurrent.Executor;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.concurrent.Executor;
 
 /**
  * @author zhuoyu.sjw
@@ -35,48 +36,49 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class SubscriberPbHandler extends AbstractClientDataRequestHandler<SubscriberRegisterPb> {
 
-  @Autowired SubscriberHandler subscriberHandler;
+    @Autowired
+    SubscriberHandler subscriberHandler;
 
-  @Override
-  protected Node.NodeType getConnectNodeType() {
-    return subscriberHandler.getConnectNodeType();
-  }
-
-  /**
-   * Reply object.
-   *
-   * @param channel the channel
-   * @param message the message
-   * @return the object
-   * @throws RemotingException the remoting exception
-   */
-  @Override
-  public Object doHandle(Channel channel, SubscriberRegisterPb message) {
-    RemotingHelper.markProtobuf(channel);
-    RemotingHelper.setPbSerializer(channel);
-
-    RegisterResponsePb.Builder builder = RegisterResponsePb.newBuilder();
-    SubscriberRegister register = SubscriberRegisterConvertor.convert2Java(message);
-    Object response = subscriberHandler.doHandle(channel, register);
-    if (!(response instanceof RegisterResponse)) {
-      return builder.setSuccess(false).setMessage("Unknown response type").build();
+    @Override
+    protected Node.NodeType getConnectNodeType() {
+        return subscriberHandler.getConnectNodeType();
     }
 
-    return RegisterResponseConvertor.convert2Pb((RegisterResponse) response);
-  }
+    /**
+     * Reply object.
+     *
+     * @param channel the channel
+     * @param message the message
+     * @return the object
+     * @throws RemotingException the remoting exception
+     */
+    @Override
+    public Object doHandle(Channel channel, SubscriberRegisterPb message) {
+        RemotingHelper.markProtobuf(channel);
+        RemotingHelper.setPbSerializer(channel);
 
-  /**
-   * Interest class.
-   *
-   * @return the class
-   */
-  @Override
-  public Class interest() {
-    return SubscriberRegisterPb.class;
-  }
+        RegisterResponsePb.Builder builder = RegisterResponsePb.newBuilder();
+        SubscriberRegister register = SubscriberRegisterConvertor.convert2Java(message);
+        Object response = subscriberHandler.doHandle(channel, register);
+        if (!(response instanceof RegisterResponse)) {
+            return builder.setSuccess(false).setMessage("Unknown response type").build();
+        }
 
-  @Override
-  public Executor getExecutor() {
-    return subscriberHandler.getExecutor();
-  }
+        return RegisterResponseConvertor.convert2Pb((RegisterResponse) response);
+    }
+
+    /**
+     * Interest class.
+     *
+     * @return the class
+     */
+    @Override
+    public Class interest() {
+        return SubscriberRegisterPb.class;
+    }
+
+    @Override
+    public Executor getExecutor() {
+        return subscriberHandler.getExecutor();
+    }
 }

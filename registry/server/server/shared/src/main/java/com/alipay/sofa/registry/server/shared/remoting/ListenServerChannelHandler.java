@@ -24,23 +24,23 @@ import com.alipay.sofa.registry.remoting.Channel;
  */
 public abstract class ListenServerChannelHandler extends AbstractServerHandler {
 
-  @Override
-  public Object doHandle(Channel channel, Object request) {
-    throw new UnsupportedOperationException();
-  }
+    @Override
+    public Object doHandle(Channel channel, Object request) {
+        throw new UnsupportedOperationException();
+    }
 
-  @Override
-  public Object buildFailedResponse(String msg) {
-    throw new RuntimeException(msg);
-  }
+    @Override
+    public Object buildFailedResponse(String msg) {
+        throw new RuntimeException(msg);
+    }
 
-  @Override
-  public Class interest() {
-    return null;
-  }
+    @Override
+    public Class interest() {
+        return null;
+    }
 
-  @Override
-  public HandlerType getType() {
-    return HandlerType.LISTENER;
-  }
+    @Override
+    public HandlerType getType() {
+        return HandlerType.LISTENER;
+    }
 }

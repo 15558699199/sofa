@@ -49,7 +49,7 @@ public class ComponentContextRefreshInterceptorTests {
         Mockito.when(sofaRuntimeManager.getSofaRuntimeContext()).thenReturn(sofaRuntimeContext);
         SofaGenericApplicationContext context = new SofaGenericApplicationContext();
         ComponentContextRefreshInterceptor interceptor = new ComponentContextRefreshInterceptor(
-            sofaRuntimeManager);
+                sofaRuntimeManager);
 
         // Act
         interceptor.afterRefresh(context, null);
@@ -67,11 +67,11 @@ public class ComponentContextRefreshInterceptorTests {
         SofaGenericApplicationContext context = new SofaGenericApplicationContext();
         ComponentInfo componentInfo = Mockito.mock(ComponentInfo.class);
         Mockito.when(componentInfo.getName()).thenReturn(
-            new ComponentName(new ComponentType("test"), "TestComponent"));
+                new ComponentName(new ComponentType("test"), "TestComponent"));
         Mockito.when(componentManager.getComponentInfosByApplicationContext(context)).thenReturn(
-            Collections.singletonList(componentInfo));
+                Collections.singletonList(componentInfo));
         ComponentContextRefreshInterceptor interceptor = new ComponentContextRefreshInterceptor(
-            sofaRuntimeManager);
+                sofaRuntimeManager);
 
         // Act
         interceptor.afterRefresh(context, new Throwable());

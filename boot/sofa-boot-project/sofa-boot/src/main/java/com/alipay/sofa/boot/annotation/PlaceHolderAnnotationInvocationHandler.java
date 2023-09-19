@@ -33,11 +33,11 @@ import java.lang.reflect.Method;
  */
 public class PlaceHolderAnnotationInvocationHandler implements InvocationHandler {
 
-    private final Annotation        delegate;
+    private final Annotation delegate;
 
     private final PlaceHolderBinder binder;
 
-    private final Environment       environment;
+    private final Environment environment;
 
     public PlaceHolderAnnotationInvocationHandler(Annotation delegate, PlaceHolderBinder binder,
                                                   Environment environment) {
@@ -57,7 +57,7 @@ public class PlaceHolderAnnotationInvocationHandler implements InvocationHandler
 
     private boolean isAttributeMethod(Method method) {
         return method != null && method.getParameterTypes().length == 0
-               && method.getReturnType() != void.class;
+                && method.getReturnType() != void.class;
     }
 
     public Object resolvePlaceHolder(Object origin) {
@@ -78,7 +78,7 @@ public class PlaceHolderAnnotationInvocationHandler implements InvocationHandler
             return binder.bind(environment, (String) origin);
         } else if (origin instanceof Annotation && !(origin instanceof WrapperAnnotation)) {
             return AnnotationWrapper.create((Annotation) origin).withBinder(binder)
-                .withEnvironment(environment).wrap((Annotation) origin);
+                    .withEnvironment(environment).wrap((Annotation) origin);
         } else {
             return origin;
         }

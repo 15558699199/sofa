@@ -19,12 +19,7 @@ package com.alipay.sofa.boot.lisener;
 import com.alipay.sofa.boot.listener.SwitchableApplicationListener;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.context.event.ApplicationContextInitializedEvent;
-import org.springframework.boot.context.event.ApplicationEnvironmentPreparedEvent;
-import org.springframework.boot.context.event.ApplicationFailedEvent;
-import org.springframework.boot.context.event.ApplicationPreparedEvent;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.boot.context.event.ApplicationStartedEvent;
+import org.springframework.boot.context.event.*;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -45,9 +40,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class SwitchableApplicationListenerTests {
 
     private final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
-                                                             .withBean(SampleBean.class)
-                                                             .withBean(
-                                                                 SampleSwitchSpringContextInitializer.class);
+            .withBean(SampleBean.class)
+            .withBean(
+                    SampleSwitchSpringContextInitializer.class);
 
     @Test
     public void enableFalse() {
@@ -70,52 +65,52 @@ public class SwitchableApplicationListenerTests {
     public void checkAllEvents() {
         MockEnvironment mockEnvironment = new MockEnvironment();
         mockEnvironment.setProperty("sofa.boot.switch.listener.sampleswitchabletest.enabled",
-            "false");
+                "false");
         GenericApplicationContext applicationContext = new GenericXmlApplicationContext();
         applicationContext.setEnvironment(mockEnvironment);
         GlobalSwitchSpringContextInitializer globalSwitchSpringContextInitializer = new GlobalSwitchSpringContextInitializer();
 
         // trigger ApplicationContextInitializedEvent
         globalSwitchSpringContextInitializer
-            .onApplicationEvent(new ApplicationContextInitializedEvent(new SpringApplication(),
-                null, applicationContext));
+                .onApplicationEvent(new ApplicationContextInitializedEvent(new SpringApplication(),
+                        null, applicationContext));
         assertThat(globalSwitchSpringContextInitializer.isTrigger()).isFalse();
         globalSwitchSpringContextInitializer.clear();
 
         // trigger ApplicationEnvironmentPreparedEvent
         globalSwitchSpringContextInitializer
-            .onApplicationEvent(new ApplicationEnvironmentPreparedEvent(null,
-                new SpringApplication(), null, mockEnvironment));
+                .onApplicationEvent(new ApplicationEnvironmentPreparedEvent(null,
+                        new SpringApplication(), null, mockEnvironment));
         assertThat(globalSwitchSpringContextInitializer.isTrigger()).isFalse();
         globalSwitchSpringContextInitializer.clear();
 
         // trigger ApplicationPreparedEvent
         globalSwitchSpringContextInitializer.onApplicationEvent(new ApplicationPreparedEvent(
-            new SpringApplication(), null, applicationContext));
+                new SpringApplication(), null, applicationContext));
         assertThat(globalSwitchSpringContextInitializer.isTrigger()).isFalse();
         globalSwitchSpringContextInitializer.clear();
 
         // trigger ApplicationReadyEvent
         globalSwitchSpringContextInitializer.onApplicationEvent(new ApplicationReadyEvent(
-            new SpringApplication(), null, applicationContext, Duration.ZERO));
+                new SpringApplication(), null, applicationContext, Duration.ZERO));
         assertThat(globalSwitchSpringContextInitializer.isTrigger()).isFalse();
         globalSwitchSpringContextInitializer.clear();
 
         // trigger ApplicationStartedEvent
         globalSwitchSpringContextInitializer.onApplicationEvent(new ApplicationStartedEvent(
-            new SpringApplication(), null, applicationContext, Duration.ZERO));
+                new SpringApplication(), null, applicationContext, Duration.ZERO));
         assertThat(globalSwitchSpringContextInitializer.isTrigger()).isFalse();
         globalSwitchSpringContextInitializer.clear();
 
         // trigger ApplicationFailedEvent
         globalSwitchSpringContextInitializer.onApplicationEvent(new ApplicationFailedEvent(
-            new SpringApplication(), null, applicationContext, null));
+                new SpringApplication(), null, applicationContext, null));
         assertThat(globalSwitchSpringContextInitializer.isTrigger()).isFalse();
         globalSwitchSpringContextInitializer.clear();
 
         // trigger CustomApplicationEvent
         globalSwitchSpringContextInitializer.onApplicationEvent(new CustomApplicationEvent(
-            new Object()));
+                new Object()));
         assertThat(globalSwitchSpringContextInitializer.isTrigger()).isTrue();
         globalSwitchSpringContextInitializer.clear();
     }
@@ -135,8 +130,8 @@ public class SwitchableApplicationListenerTests {
     }
 
     static class SampleSwitchSpringContextInitializer
-                                                     extends
-                                                     SwitchableApplicationListener<ContextRefreshedEvent> {
+            extends
+            SwitchableApplicationListener<ContextRefreshedEvent> {
 
         @Override
         protected void doOnApplicationEvent(ContextRefreshedEvent event) {
@@ -152,8 +147,8 @@ public class SwitchableApplicationListenerTests {
     }
 
     static class GlobalSwitchSpringContextInitializer
-                                                     extends
-                                                     SwitchableApplicationListener<ApplicationEvent> {
+            extends
+            SwitchableApplicationListener<ApplicationEvent> {
 
         private boolean trigger;
 

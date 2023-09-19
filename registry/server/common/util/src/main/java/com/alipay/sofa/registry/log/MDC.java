@@ -19,27 +19,28 @@ package com.alipay.sofa.registry.log;
 import com.alipay.sofa.registry.trace.TraceID;
 
 public final class MDC {
-  private static final String KEY_TRACE_ID = "traceID";
-  private static final String KEY_ADDRESS = "address";
+    private static final String KEY_TRACE_ID = "traceID";
+    private static final String KEY_ADDRESS = "address";
 
-  private MDC() {}
+    private MDC() {
+    }
 
-  public static void startTraceRequest(String address) {
-    TraceID traceID = TraceID.newTraceID();
-    put(KEY_TRACE_ID, traceID.toString());
-    put(KEY_ADDRESS, address);
-  }
+    public static void startTraceRequest(String address) {
+        TraceID traceID = TraceID.newTraceID();
+        put(KEY_TRACE_ID, traceID.toString());
+        put(KEY_ADDRESS, address);
+    }
 
-  public static void finishTraceRequest() {
-    org.slf4j.MDC.remove(KEY_TRACE_ID);
-    org.slf4j.MDC.remove(KEY_ADDRESS);
-  }
+    public static void finishTraceRequest() {
+        org.slf4j.MDC.remove(KEY_TRACE_ID);
+        org.slf4j.MDC.remove(KEY_ADDRESS);
+    }
 
-  public static void put(String key, String val) {
-    org.slf4j.MDC.put(key, val);
-  }
+    public static void put(String key, String val) {
+        org.slf4j.MDC.put(key, val);
+    }
 
-  public static void clear() {
-    org.slf4j.MDC.clear();
-  }
+    public static void clear() {
+        org.slf4j.MDC.clear();
+    }
 }

@@ -92,41 +92,41 @@ public class SofaTracerConfigurationListenerTests {
         application.addListeners(new SofaTracerConfigurationListener());
         this.context = application.run();
         assertThat(
-            SofaTracerConfiguration
-                .getProperty(SofaTracerConfiguration.DISABLE_MIDDLEWARE_DIGEST_LOG_KEY)).isEqualTo(
-            "true");
+                SofaTracerConfiguration
+                        .getProperty(SofaTracerConfiguration.DISABLE_MIDDLEWARE_DIGEST_LOG_KEY)).isEqualTo(
+                "true");
         assertThat(
-            SofaTracerConfiguration.getMapEmptyIfNull(
-                SofaTracerConfiguration.DISABLE_DIGEST_LOG_KEY).get("a")).isEqualTo("true");
+                SofaTracerConfiguration.getMapEmptyIfNull(
+                        SofaTracerConfiguration.DISABLE_DIGEST_LOG_KEY).get("a")).isEqualTo("true");
         assertThat(
-            SofaTracerConfiguration.getProperty(SofaTracerConfiguration.TRACER_GLOBAL_ROLLING_KEY))
-            .isEqualTo("'.'yyyy-MM-dd_HH");
+                SofaTracerConfiguration.getProperty(SofaTracerConfiguration.TRACER_GLOBAL_ROLLING_KEY))
+                .isEqualTo("'.'yyyy-MM-dd_HH");
         assertThat(
-            SofaTracerConfiguration
-                .getProperty(SofaTracerConfiguration.TRACER_GLOBAL_LOG_RESERVE_DAY)).isEqualTo("8");
+                SofaTracerConfiguration
+                        .getProperty(SofaTracerConfiguration.TRACER_GLOBAL_LOG_RESERVE_DAY)).isEqualTo("8");
         assertThat(SofaTracerConfiguration.getProperty(SofaTracerConfiguration.STAT_LOG_INTERVAL))
-            .isEqualTo("120");
+                .isEqualTo("120");
         assertThat(
-            SofaTracerConfiguration
-                .getProperty(SofaTracerConfiguration.TRACER_PENETRATE_ATTRIBUTE_MAX_LENGTH))
-            .isEqualTo("2048");
+                SofaTracerConfiguration
+                        .getProperty(SofaTracerConfiguration.TRACER_PENETRATE_ATTRIBUTE_MAX_LENGTH))
+                .isEqualTo("2048");
         assertThat(
-            SofaTracerConfiguration
-                .getProperty(SofaTracerConfiguration.TRACER_SYSTEM_PENETRATE_ATTRIBUTE_MAX_LENGTH))
-            .isEqualTo("2048");
+                SofaTracerConfiguration
+                        .getProperty(SofaTracerConfiguration.TRACER_SYSTEM_PENETRATE_ATTRIBUTE_MAX_LENGTH))
+                .isEqualTo("2048");
         assertThat(
-            SofaTracerConfiguration.getProperty(SofaTracerConfiguration.SAMPLER_STRATEGY_NAME_KEY))
-            .isEqualTo("test");
+                SofaTracerConfiguration.getProperty(SofaTracerConfiguration.SAMPLER_STRATEGY_NAME_KEY))
+                .isEqualTo("test");
         assertThat(
-            SofaTracerConfiguration
-                .getProperty(SofaTracerConfiguration.SAMPLER_STRATEGY_PERCENTAGE_KEY)).isEqualTo(
-            "200.0");
+                SofaTracerConfiguration
+                        .getProperty(SofaTracerConfiguration.SAMPLER_STRATEGY_PERCENTAGE_KEY)).isEqualTo(
+                "200.0");
         assertThat(
-            SofaTracerConfiguration
-                .getProperty(SofaTracerConfiguration.SAMPLER_STRATEGY_CUSTOM_RULE_CLASS_NAME))
-            .isEqualTo("TestRuleClass");
+                SofaTracerConfiguration
+                        .getProperty(SofaTracerConfiguration.SAMPLER_STRATEGY_CUSTOM_RULE_CLASS_NAME))
+                .isEqualTo("TestRuleClass");
         assertThat(SofaTracerConfiguration.getProperty(SofaTracerConfiguration.JSON_FORMAT_OUTPUT))
-            .isEqualTo("false");
+                .isEqualTo("false");
     }
 
     @Configuration(proxyBeanMethods = false)

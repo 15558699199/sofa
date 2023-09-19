@@ -21,6 +21,7 @@ import com.alipay.sofa.registry.common.model.GenericResponse;
 import com.alipay.sofa.registry.common.model.sessionserver.StopPushRequest;
 import com.alipay.sofa.registry.remoting.Channel;
 import com.alipay.sofa.registry.server.session.providedata.FetchStopPushService;
+
 import javax.annotation.Resource;
 
 /**
@@ -29,16 +30,17 @@ import javax.annotation.Resource;
  */
 public class StopPushRequestHandler extends AbstractConsoleHandler<StopPushRequest> {
 
-  @Resource private FetchStopPushService fetchStopPushService;
+    @Resource
+    private FetchStopPushService fetchStopPushService;
 
-  @Override
-  public Class interest() {
-    return StopPushRequest.class;
-  }
+    @Override
+    public Class interest() {
+        return StopPushRequest.class;
+    }
 
-  @Override
-  public CommonResponse doHandle(Channel channel, StopPushRequest request) {
-    fetchStopPushService.setStopPushSwitch(System.currentTimeMillis(), request.isStop());
-    return GenericResponse.buildSuccessResponse();
-  }
+    @Override
+    public CommonResponse doHandle(Channel channel, StopPushRequest request) {
+        fetchStopPushService.setStopPushSwitch(System.currentTimeMillis(), request.isStop());
+        return GenericResponse.buildSuccessResponse();
+    }
 }

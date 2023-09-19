@@ -20,9 +20,9 @@ import com.alipay.sofa.registry.exception.DisposeException;
 
 /**
  * @author chen.zhu
- *     <p>Nov 13, 2020
+ * <p>Nov 13, 2020
  */
 public interface Disposable {
 
-  void dispose() throws DisposeException;
+    void dispose() throws DisposeException;
 }

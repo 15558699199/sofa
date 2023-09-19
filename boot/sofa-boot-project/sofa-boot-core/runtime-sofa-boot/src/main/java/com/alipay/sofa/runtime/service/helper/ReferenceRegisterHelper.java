@@ -22,11 +22,7 @@ import com.alipay.sofa.runtime.service.component.Reference;
 import com.alipay.sofa.runtime.service.component.ReferenceComponent;
 import com.alipay.sofa.runtime.spi.binding.Binding;
 import com.alipay.sofa.runtime.spi.binding.BindingAdapterFactory;
-import com.alipay.sofa.runtime.spi.component.ComponentDefinitionInfo;
-import com.alipay.sofa.runtime.spi.component.ComponentInfo;
-import com.alipay.sofa.runtime.spi.component.ComponentManager;
-import com.alipay.sofa.runtime.spi.component.DefaultImplementation;
-import com.alipay.sofa.runtime.spi.component.SofaRuntimeContext;
+import com.alipay.sofa.runtime.spi.component.*;
 import org.springframework.context.ApplicationContext;
 
 import java.util.Collection;
@@ -52,7 +48,7 @@ public class ReferenceRegisterHelper {
                                            SofaRuntimeContext sofaRuntimeContext,
                                            ApplicationContext applicationContext) {
         return registerReference(reference, bindingAdapterFactory, sofaRuntimeContext,
-            applicationContext, null);
+                applicationContext, null);
 
     }
 
@@ -64,14 +60,14 @@ public class ReferenceRegisterHelper {
         Binding binding = (Binding) reference.getBindings().toArray()[0];
 
         if (!binding.getBindingType().equals(JvmBinding.JVM_BINDING_TYPE)
-            && !sofaRuntimeContext.getProperties().isDisableJvmFirst() && reference.isJvmFirst()) {
+                && !sofaRuntimeContext.getProperties().isDisableJvmFirst() && reference.isJvmFirst()) {
             // as rpc invocation would be serialized, so here would Not ignore serialized
             reference.addBinding(new JvmBinding());
         }
 
         ComponentManager componentManager = sofaRuntimeContext.getComponentManager();
         ReferenceComponent referenceComponent = new ReferenceComponent(reference,
-            new DefaultImplementation(), bindingAdapterFactory, sofaRuntimeContext);
+                new DefaultImplementation(), bindingAdapterFactory, sofaRuntimeContext);
         Property property = new Property();
         property.setName(SOURCE);
         property.setValue(definitionInfo);
@@ -79,7 +75,7 @@ public class ReferenceRegisterHelper {
 
         if (componentManager.isRegistered(referenceComponent.getName())) {
             return componentManager.getComponentInfo(referenceComponent.getName())
-                .getImplementation().getTarget();
+                    .getImplementation().getTarget();
         }
 
         ComponentInfo componentInfo = componentManager.registerAndGet(referenceComponent);

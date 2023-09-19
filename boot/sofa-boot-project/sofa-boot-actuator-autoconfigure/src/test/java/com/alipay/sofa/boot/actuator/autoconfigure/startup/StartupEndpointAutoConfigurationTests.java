@@ -35,12 +35,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class StartupEndpointAutoConfigurationTests {
 
     private final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
-                                                             .withConfiguration(
-                                                                 AutoConfigurations
-                                                                     .of(StartupEndPointAutoConfiguration.class))
-                                                             .withClassLoader(
-                                                                 new FilteredClassLoader(
-                                                                     ApplicationRuntimeModel.class));
+            .withConfiguration(
+                    AutoConfigurations
+                            .of(StartupEndPointAutoConfiguration.class))
+            .withClassLoader(
+                    new FilteredClassLoader(
+                            ApplicationRuntimeModel.class));
 
     @Test
     void runShouldHaveEndpointBean() {

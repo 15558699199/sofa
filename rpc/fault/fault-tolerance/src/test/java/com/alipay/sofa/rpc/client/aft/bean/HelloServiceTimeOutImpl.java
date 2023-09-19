@@ -19,7 +19,6 @@ package com.alipay.sofa.rpc.client.aft.bean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- *
  * @author <a href="mailto:lw111072@antfin.com">liangen</a>
  */
 public class HelloServiceTimeOutImpl implements FaultHelloService {

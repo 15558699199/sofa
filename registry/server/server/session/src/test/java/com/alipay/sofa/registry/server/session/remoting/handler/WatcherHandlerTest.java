@@ -16,10 +16,6 @@
  */
 package com.alipay.sofa.registry.server.session.remoting.handler;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyObject;
-import static org.mockito.Mockito.*;
-
 import com.alipay.sofa.registry.common.model.Node;
 import com.alipay.sofa.registry.core.model.ConfiguratorRegister;
 import com.alipay.sofa.registry.core.model.RegisterResponse;
@@ -30,32 +26,36 @@ import com.alipay.sofa.registry.server.session.strategy.WatcherHandlerStrategy;
 import org.junit.Assert;
 import org.junit.Test;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Mockito.*;
+
 public class WatcherHandlerTest {
 
-  private WatcherHandler newHandler() {
-    WatcherHandler handler = new WatcherHandler();
-    handler.executorManager = new ExecutorManager(TestUtils.newSessionConfig("testDc"));
-    Assert.assertNotNull(handler.getExecutor());
-    Assert.assertEquals(handler.interest(), ConfiguratorRegister.class);
-    Assert.assertEquals(handler.getConnectNodeType(), Node.NodeType.CLIENT);
-    Assert.assertEquals(handler.getType(), ChannelHandler.HandlerType.PROCESSER);
-    Assert.assertEquals(handler.getInvokeType(), ChannelHandler.InvokeType.SYNC);
-    handler.watcherHandlerStrategy = mock(WatcherHandlerStrategy.class);
-    return handler;
-  }
+    private static ConfiguratorRegister request() {
+        ConfiguratorRegister register = new ConfiguratorRegister();
+        return register;
+    }
 
-  @Test
-  public void testHandle() {
-    WatcherHandler handler = newHandler();
+    private WatcherHandler newHandler() {
+        WatcherHandler handler = new WatcherHandler();
+        handler.executorManager = new ExecutorManager(TestUtils.newSessionConfig("testDc"));
+        Assert.assertNotNull(handler.getExecutor());
+        Assert.assertEquals(handler.interest(), ConfiguratorRegister.class);
+        Assert.assertEquals(handler.getConnectNodeType(), Node.NodeType.CLIENT);
+        Assert.assertEquals(handler.getType(), ChannelHandler.HandlerType.PROCESSER);
+        Assert.assertEquals(handler.getInvokeType(), ChannelHandler.InvokeType.SYNC);
+        handler.watcherHandlerStrategy = mock(WatcherHandlerStrategy.class);
+        return handler;
+    }
 
-    RegisterResponse response = (RegisterResponse) handler.doHandle(null, request());
-    Assert.assertFalse(response.isSuccess());
-    verify(handler.watcherHandlerStrategy, times(1))
-        .handleConfiguratorRegister(anyObject(), anyObject(), any());
-  }
+    @Test
+    public void testHandle() {
+        WatcherHandler handler = newHandler();
 
-  private static ConfiguratorRegister request() {
-    ConfiguratorRegister register = new ConfiguratorRegister();
-    return register;
-  }
+        RegisterResponse response = (RegisterResponse) handler.doHandle(null, request());
+        Assert.assertFalse(response.isSuccess());
+        verify(handler.watcherHandlerStrategy, times(1))
+                .handleConfiguratorRegister(anyObject(), anyObject(), any());
+    }
 }

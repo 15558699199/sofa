@@ -16,16 +16,7 @@
  */
 package com.alipay.sofa.rpc.proxy;
 
-import org.openjdk.jmh.annotations.Benchmark;
-import org.openjdk.jmh.annotations.BenchmarkMode;
-import org.openjdk.jmh.annotations.Fork;
-import org.openjdk.jmh.annotations.Measurement;
-import org.openjdk.jmh.annotations.Mode;
-import org.openjdk.jmh.annotations.OutputTimeUnit;
-import org.openjdk.jmh.annotations.Scope;
-import org.openjdk.jmh.annotations.Setup;
-import org.openjdk.jmh.annotations.State;
-import org.openjdk.jmh.annotations.Warmup;
+import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.infra.Blackhole;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
@@ -43,12 +34,12 @@ import java.util.concurrent.TimeUnit;
 @Warmup(iterations = 5, time = 1, timeUnit = TimeUnit.SECONDS)
 @Measurement(iterations = 5, time = 1, timeUnit = TimeUnit.SECONDS)
 @State(Scope.Benchmark)
-@BenchmarkMode({ Mode.Throughput, Mode.AverageTime, Mode.SampleTime })
+@BenchmarkMode({Mode.Throughput, Mode.AverageTime, Mode.SampleTime})
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 public class ProxyBuildBenchMark {
 
     public static final String JAVASSIST = "javassist";
-    public static final String JDK       = "jdk";
+    public static final String JDK = "jdk";
     public static final String BYTEBUDDY = "bytebuddy";
 
     public static void main(String[] args) throws RunnerException {

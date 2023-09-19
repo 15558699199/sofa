@@ -30,17 +30,18 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class PublisherHandler extends AbstractClientDataRequestHandler<PublisherRegister> {
 
-  @Autowired PublisherHandlerStrategy publisherHandlerStrategy;
+    @Autowired
+    PublisherHandlerStrategy publisherHandlerStrategy;
 
-  @Override
-  public Object doHandle(Channel channel, PublisherRegister publisherRegister) {
-    RegisterResponse result = new RegisterResponse();
-    publisherHandlerStrategy.handlePublisherRegister(channel, publisherRegister, result);
-    return result;
-  }
+    @Override
+    public Object doHandle(Channel channel, PublisherRegister publisherRegister) {
+        RegisterResponse result = new RegisterResponse();
+        publisherHandlerStrategy.handlePublisherRegister(channel, publisherRegister, result);
+        return result;
+    }
 
-  @Override
-  public Class interest() {
-    return PublisherRegister.class;
-  }
+    @Override
+    public Class interest() {
+        return PublisherRegister.class;
+    }
 }

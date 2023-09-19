@@ -17,22 +17,21 @@
 package com.alipay.sofa.rpc.metrics.lookout;
 
 /**
- *
  * @author <a href="mailto:lw111072@antfin.com">LiWei.Liangen</a>
  */
 public class RpcAbstractLookoutModel {
 
-    protected String  app;
+    protected String app;
 
-    protected String  service;
+    protected String service;
 
-    protected String  method;
+    protected String method;
 
-    protected String  protocol;
+    protected String protocol;
 
-    protected String  invokeType;
+    protected String invokeType;
 
-    protected Long    elapsedTime;
+    protected Long elapsedTime;
 
     protected boolean success;
 
@@ -48,7 +47,7 @@ public class RpcAbstractLookoutModel {
     /**
      * Setter method for property <tt>app</tt>.
      *
-     * @param app  value to be assigned to property app
+     * @param app value to be assigned to property app
      */
     public void setApp(String app) {
         this.app = app;
@@ -66,7 +65,7 @@ public class RpcAbstractLookoutModel {
     /**
      * Setter method for property <tt>service</tt>.
      *
-     * @param service  value to be assigned to property service
+     * @param service value to be assigned to property service
      */
     public void setService(String service) {
         this.service = service;
@@ -84,7 +83,7 @@ public class RpcAbstractLookoutModel {
     /**
      * Setter method for property <tt>method</tt>.
      *
-     * @param method  value to be assigned to property method
+     * @param method value to be assigned to property method
      */
     public void setMethod(String method) {
         this.method = method;
@@ -102,7 +101,7 @@ public class RpcAbstractLookoutModel {
     /**
      * Setter method for property <tt>protocol</tt>.
      *
-     * @param protocol  value to be assigned to property protocol
+     * @param protocol value to be assigned to property protocol
      */
     public void setProtocol(String protocol) {
         this.protocol = protocol;
@@ -120,7 +119,7 @@ public class RpcAbstractLookoutModel {
     /**
      * Setter method for property <tt>invokeType</tt>.
      *
-     * @param invokeType  value to be assigned to property invokeType
+     * @param invokeType value to be assigned to property invokeType
      */
     public void setInvokeType(String invokeType) {
         this.invokeType = invokeType;
@@ -138,7 +137,7 @@ public class RpcAbstractLookoutModel {
     /**
      * Setter method for property <tt>elapsedTime</tt>.
      *
-     * @param elapsedTime  value to be assigned to property elapsedTime
+     * @param elapsedTime value to be assigned to property elapsedTime
      */
     public void setElapsedTime(Long elapsedTime) {
         this.elapsedTime = elapsedTime;
@@ -156,7 +155,7 @@ public class RpcAbstractLookoutModel {
     /**
      * Setter method for property <tt>success</tt>.
      *
-     * @param success  value to be assigned to property success
+     * @param success value to be assigned to property success
      */
     public void setSuccess(boolean success) {
         this.success = success;

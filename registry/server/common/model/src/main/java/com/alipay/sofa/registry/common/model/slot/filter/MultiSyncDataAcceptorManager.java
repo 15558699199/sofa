@@ -20,6 +20,7 @@ import com.alipay.sofa.registry.common.model.console.MultiSegmentSyncSwitch;
 import com.alipay.sofa.registry.common.model.constants.MultiValueConstants;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Map;
@@ -31,39 +32,39 @@ import java.util.Set;
  */
 public class MultiSyncDataAcceptorManager implements Serializable {
 
-  private static final long serialVersionUID = 5218066919220398566L;
+    private static final long serialVersionUID = 5218066919220398566L;
 
-  private Map<String, RemoteSyncDataAcceptorManager> remoteManagers = Maps.newConcurrentMap();
+    private Map<String, RemoteSyncDataAcceptorManager> remoteManagers = Maps.newConcurrentMap();
 
-  public void updateFrom(Collection<MultiSegmentSyncSwitch> syncConfigs) {
+    public void updateFrom(Collection<MultiSegmentSyncSwitch> syncConfigs) {
 
-    Map<String, RemoteSyncDataAcceptorManager> remoteManagers =
-        Maps.newHashMapWithExpectedSize(syncConfigs.size());
-    for (MultiSegmentSyncSwitch syncConfig : syncConfigs) {
+        Map<String, RemoteSyncDataAcceptorManager> remoteManagers =
+                Maps.newHashMapWithExpectedSize(syncConfigs.size());
+        for (MultiSegmentSyncSwitch syncConfig : syncConfigs) {
 
-      Set<SyncSlotAcceptor> acceptors = Sets.newConcurrentHashSet();
-      acceptors.add(MultiValueConstants.DATUM_SYNCER_SOURCE_FILTER);
-      acceptors.add(new SyncPublisherGroupAcceptor(syncConfig.getSynPublisherGroups()));
-      acceptors.add(
-          new SyncSlotDataInfoIdAcceptor(
-              syncConfig.getSyncDataInfoIds(), syncConfig.getIgnoreDataInfoIds()));
-      RemoteSyncDataAcceptorManager manager = new RemoteSyncDataAcceptorManager(acceptors);
-      remoteManagers.put(syncConfig.getRemoteDataCenter(), manager);
+            Set<SyncSlotAcceptor> acceptors = Sets.newConcurrentHashSet();
+            acceptors.add(MultiValueConstants.DATUM_SYNCER_SOURCE_FILTER);
+            acceptors.add(new SyncPublisherGroupAcceptor(syncConfig.getSynPublisherGroups()));
+            acceptors.add(
+                    new SyncSlotDataInfoIdAcceptor(
+                            syncConfig.getSyncDataInfoIds(), syncConfig.getIgnoreDataInfoIds()));
+            RemoteSyncDataAcceptorManager manager = new RemoteSyncDataAcceptorManager(acceptors);
+            remoteManagers.put(syncConfig.getRemoteDataCenter(), manager);
+        }
+
+        synchronized (this) {
+            this.remoteManagers = remoteManagers;
+        }
     }
 
-    synchronized (this) {
-      this.remoteManagers = remoteManagers;
+    public synchronized SyncSlotAcceptorManager getSyncSlotAcceptorManager(String dataCenter) {
+        return remoteManagers.get(dataCenter);
     }
-  }
 
-  public synchronized SyncSlotAcceptorManager getSyncSlotAcceptorManager(String dataCenter) {
-    return remoteManagers.get(dataCenter);
-  }
+    public final class RemoteSyncDataAcceptorManager extends BaseSyncSlotAcceptorManager {
 
-  public final class RemoteSyncDataAcceptorManager extends BaseSyncSlotAcceptorManager {
-
-    public RemoteSyncDataAcceptorManager(Set<SyncSlotAcceptor> acceptors) {
-      super(acceptors);
+        public RemoteSyncDataAcceptorManager(Set<SyncSlotAcceptor> acceptors) {
+            super(acceptors);
+        }
     }
-  }
 }

@@ -28,8 +28,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- *
- *
  * @author <a href="mailto:zhanggeng.zg@antfin.com">GengZhang</a>
  */
 public class SofaRequestTest {
@@ -45,14 +43,14 @@ public class SofaRequestTest {
         request.setInterfaceName(Invoker.class.getName());
         request.setMethodName("invoke");
         request.setMethod(Invoker.class.getMethod("invoke", SofaRequest.class));
-        request.setMethodArgs(new Object[] { new SofaRequest() });
-        request.setMethodArgSigs(new String[] { SofaRequest.class.getCanonicalName() });
+        request.setMethodArgs(new Object[]{new SofaRequest()});
+        request.setMethodArgSigs(new String[]{SofaRequest.class.getCanonicalName()});
         request.setTargetServiceUniqueName(Invoker.class.getName() + ":1.0");
         request.setTargetAppName("targetApp");
         request.setSerializeType((byte) 11);
         request.setTimeout(1024);
         request.setSerializeType((byte) 11);
-        request.setData(new ByteArrayWrapperByteBuf(new byte[] { 1, 2, 3 }));
+        request.setData(new ByteArrayWrapperByteBuf(new byte[]{1, 2, 3}));
         request.setInvokeType(RpcConstants.INVOKER_TYPE_SYNC);
         request.setSofaResponseCallback(new SofaResponseCallback() {
             @Override
@@ -74,8 +72,8 @@ public class SofaRequestTest {
         Assert.assertEquals(Invoker.class.getName(), request.getInterfaceName());
         Assert.assertEquals("invoke", request.getMethodName());
         Assert.assertEquals("invoke", request.getMethod().getName());
-        Assert.assertArrayEquals(new String[] { SofaRequest.class.getCanonicalName() },
-            request.getMethodArgSigs());
+        Assert.assertArrayEquals(new String[]{SofaRequest.class.getCanonicalName()},
+                request.getMethodArgSigs());
         Assert.assertEquals(1, request.getMethodArgs().length);
         Assert.assertEquals(Invoker.class.getName() + ":1.0", request.getTargetServiceUniqueName());
         Assert.assertEquals("targetApp", request.getTargetAppName());

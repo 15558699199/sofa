@@ -35,12 +35,12 @@ public class BoltExceptionTest extends ActivelyDestroyTest {
 
         final String directUrl = "bolt://127.0.0.1:12300";
         final ConsumerConfig<HelloService> consumerConfig = new ConsumerConfig<HelloService>()
-            .setInterfaceId(HelloService.class.getName())
-            .setDirectUrl(directUrl)
-            .setProtocol(RpcConstants.PROTOCOL_TYPE_BOLT)
-            .setBootstrap("bolt")
-            .setApplication(new ApplicationConfig().setAppName("clientApp"))
-            .setReconnectPeriod(1000);
+                .setInterfaceId(HelloService.class.getName())
+                .setDirectUrl(directUrl)
+                .setProtocol(RpcConstants.PROTOCOL_TYPE_BOLT)
+                .setBootstrap("bolt")
+                .setApplication(new ApplicationConfig().setAppName("clientApp"))
+                .setReconnectPeriod(1000);
 
         HelloService helloService = consumerConfig.refer();
 

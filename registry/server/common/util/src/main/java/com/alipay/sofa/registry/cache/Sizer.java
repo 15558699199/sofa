@@ -17,5 +17,5 @@
 package com.alipay.sofa.registry.cache;
 
 public interface Sizer {
-  int size();
+    int size();
 }

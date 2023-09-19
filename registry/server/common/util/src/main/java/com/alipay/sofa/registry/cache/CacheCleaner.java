@@ -18,17 +18,18 @@ package com.alipay.sofa.registry.cache;
 
 import com.alipay.sofa.registry.util.NamedThreadFactory;
 import com.google.common.cache.Cache;
+
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 public class CacheCleaner {
-  private static final CacheCleaner cleaner = new CacheCleaner();
-  private final ScheduledExecutorService executorService =
-      new ScheduledThreadPoolExecutor(1, new NamedThreadFactory("CacheCleaner"));
+    private static final CacheCleaner cleaner = new CacheCleaner();
+    private final ScheduledExecutorService executorService =
+            new ScheduledThreadPoolExecutor(1, new NamedThreadFactory("CacheCleaner"));
 
-  public static void autoClean(Cache cache, long intervalMs) {
-    cleaner.executorService.scheduleAtFixedRate(
-        cache::cleanUp, intervalMs, intervalMs, TimeUnit.MILLISECONDS);
-  }
+    public static void autoClean(Cache cache, long intervalMs) {
+        cleaner.executorService.scheduleAtFixedRate(
+                cache::cleanUp, intervalMs, intervalMs, TimeUnit.MILLISECONDS);
+    }
 }

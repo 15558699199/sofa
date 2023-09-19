@@ -39,175 +39,132 @@ import java.util.Map;
  */
 public abstract class XValueFactory {
 
-    private static final Logger            LOGGER           = SofaBootLoggerFactory
-                                                                .getLogger(XValueFactory.class);
+    public static final XValueFactory STRING = new XValueFactory() {
 
-    static final Map<Class, XValueFactory> defaultFactories = new Hashtable<Class, XValueFactory>();
-
-    public abstract Object getValue(Context ctx, String value);
-
-    public final Object getElementValue(Context ctx, Node element, boolean trim) {
-        String text = element.getTextContent();
-        return getValue(ctx, trim ? text.trim() : text);
-    }
-
-    public final Object getAttributeValue(Context ctx, Node element, String name) {
-        Node at = element.getAttributes().getNamedItem(name);
-        return at != null ? getValue(ctx, at.getNodeValue()) : null;
-    }
-
-    public static void addFactory(Class klass, XValueFactory factory) {
-        defaultFactories.put(klass, factory);
-    }
-
-    public static XValueFactory getFactory(Class type) {
-        return defaultFactories.get(type);
-    }
-
-    public static Object getValue(Context ctx, Class klass, String value) {
-        XValueFactory factory = defaultFactories.get(klass);
-        if (factory == null) {
-            return null;
+        @Override
+        public Object getValue(Context ctx, String value) {
+            return value;
         }
-        return factory.getValue(ctx, value);
-    }
+    };
+    public static final XValueFactory INTEGER = new XValueFactory() {
 
-    public static final XValueFactory STRING   = new XValueFactory() {
+        @Override
+        public Object getValue(Context ctx, String value) {
+            return Integer.valueOf(value);
+        }
+    };
+    public static final XValueFactory LONG = new XValueFactory() {
 
-                                                   @Override
-                                                   public Object getValue(Context ctx, String value) {
-                                                       return value;
-                                                   }
-                                               };
+        @Override
+        public Object getValue(Context ctx, String value) {
+            return Long.valueOf(value);
+        }
+    };
+    public static final XValueFactory DOUBLE = new XValueFactory() {
 
-    public static final XValueFactory INTEGER  = new XValueFactory() {
+        @Override
+        public Object getValue(Context ctx, String value) {
+            return Double.valueOf(value);
+        }
+    };
+    public static final XValueFactory FLOAT = new XValueFactory() {
 
-                                                   @Override
-                                                   public Object getValue(Context ctx, String value) {
-                                                       return Integer.valueOf(value);
-                                                   }
-                                               };
+        @Override
+        public Object getValue(Context ctx, String value) {
+            return Float.valueOf(value);
+        }
+    };
+    public static final XValueFactory BOOLEAN = new XValueFactory() {
 
-    public static final XValueFactory LONG     = new XValueFactory() {
+        @Override
+        public Object getValue(Context ctx, String value) {
+            return Boolean.valueOf(value);
+        }
+    };
+    public static final XValueFactory DATE = new XValueFactory() {
+        final DateFormat df = new SimpleDateFormat(
+                "dd-MM-yyyy");
 
-                                                   @Override
-                                                   public Object getValue(Context ctx, String value) {
-                                                       return Long.valueOf(value);
-                                                   }
-                                               };
+        @Override
+        public Object getValue(Context ctx, String value) {
+            try {
+                return df.parse(value);
+            } catch (Exception e) {
+                return null;
+            }
+        }
+    };
+    public static final XValueFactory FILE = new XValueFactory() {
 
-    public static final XValueFactory DOUBLE   = new XValueFactory() {
+        @Override
+        public Object getValue(Context ctx, String value) {
+            return new File(value);
+        }
+    };
+    public static final XValueFactory URL = new XValueFactory() {
+        @Override
+        public Object getValue(Context ctx, String value) {
+            try {
+                return new java.net.URL(value);
+            } catch (Exception e) {
+                return null;
+            }
+        }
+    };
+    public static final XValueFactory SHORT = new XValueFactory() {
+        @Override
+        public Object getValue(Context ctx, String value) {
+            return Short.valueOf(value);
+        }
+    };
+    public static final XValueFactory CHAR = new XValueFactory() {
+        @Override
+        public Object getValue(Context ctx, String value) {
+            try {
+                return value.toCharArray()[0];
+            } catch (Throwable e) {
+                return null;
+            }
+        }
+    };
+    public static final XValueFactory BYTE = new XValueFactory() {
+        @Override
+        public Object getValue(Context ctx, String value) {
+            try {
+                return value.getBytes()[0];
+            } catch (Throwable e) {
+                return null;
+            }
+        }
+    };
+    static final Map<Class, XValueFactory> defaultFactories = new Hashtable<Class, XValueFactory>();
+    private static final Logger LOGGER = SofaBootLoggerFactory
+            .getLogger(XValueFactory.class);
+    public static final XValueFactory CLASS = new XValueFactory() {
 
-                                                   @Override
-                                                   public Object getValue(Context ctx, String value) {
-                                                       return Double.valueOf(value);
-                                                   }
-                                               };
-
-    public static final XValueFactory FLOAT    = new XValueFactory() {
-
-                                                   @Override
-                                                   public Object getValue(Context ctx, String value) {
-                                                       return Float.valueOf(value);
-                                                   }
-                                               };
-
-    public static final XValueFactory BOOLEAN  = new XValueFactory() {
-
-                                                   @Override
-                                                   public Object getValue(Context ctx, String value) {
-                                                       return Boolean.valueOf(value);
-                                                   }
-                                               };
-
-    public static final XValueFactory DATE     = new XValueFactory() {
-                                                   final DateFormat df = new SimpleDateFormat(
-                                                                           "dd-MM-yyyy");
-
-                                                   @Override
-                                                   public Object getValue(Context ctx, String value) {
-                                                       try {
-                                                           return df.parse(value);
-                                                       } catch (Exception e) {
-                                                           return null;
-                                                       }
-                                                   }
-                                               };
-
-    public static final XValueFactory FILE     = new XValueFactory() {
-
-                                                   @Override
-                                                   public Object getValue(Context ctx, String value) {
-                                                       return new File(value);
-                                                   }
-                                               };
-
-    public static final XValueFactory URL      = new XValueFactory() {
-                                                   @Override
-                                                   public Object getValue(Context ctx, String value) {
-                                                       try {
-                                                           return new java.net.URL(value);
-                                                       } catch (Exception e) {
-                                                           return null;
-                                                       }
-                                                   }
-                                               };
-
-    public static final XValueFactory CLASS    = new XValueFactory() {
-
-                                                   @Override
-                                                   public Object getValue(Context ctx, String value) {
-                                                       try {
-                                                           return ctx.loadClass(value);
-                                                       } catch (Throwable t) {
-                                                           LOGGER.error("load class error", t);
-                                                           return null;
-                                                       }
-                                                   }
-                                               };
-
+        @Override
+        public Object getValue(Context ctx, String value) {
+            try {
+                return ctx.loadClass(value);
+            } catch (Throwable t) {
+                LOGGER.error("load class error", t);
+                return null;
+            }
+        }
+    };
     public static final XValueFactory RESOURCE = new XValueFactory() {
 
-                                                   @Override
-                                                   public Object getValue(Context ctx, String value) {
-                                                       try {
-                                                           return new Resource(
-                                                               ctx.getResource(value));
-                                                       } catch (Throwable t) {
-                                                           LOGGER.error("new resource error", t);
-                                                           return null;
-                                                       }
-                                                   }
-                                               };
-
-    public static final XValueFactory SHORT    = new XValueFactory() {
-                                                   @Override
-                                                   public Object getValue(Context ctx, String value) {
-                                                       return Short.valueOf(value);
-                                                   }
-                                               };
-
-    public static final XValueFactory CHAR     = new XValueFactory() {
-                                                   @Override
-                                                   public Object getValue(Context ctx, String value) {
-                                                       try {
-                                                           return value.toCharArray()[0];
-                                                       } catch (Throwable e) {
-                                                           return null;
-                                                       }
-                                                   }
-                                               };
-
-    public static final XValueFactory BYTE     = new XValueFactory() {
-                                                   @Override
-                                                   public Object getValue(Context ctx, String value) {
-                                                       try {
-                                                           return value.getBytes()[0];
-                                                       } catch (Throwable e) {
-                                                           return null;
-                                                       }
-                                                   }
-                                               };
+        @Override
+        public Object getValue(Context ctx, String value) {
+            try {
+                return new Resource(
+                        ctx.getResource(value));
+            } catch (Throwable t) {
+                LOGGER.error("new resource error", t);
+                return null;
+            }
+        }
+    };
 
     static {
         addFactory(String.class, STRING);
@@ -234,6 +191,34 @@ public abstract class XValueFactory {
 
         addFactory(Class.class, CLASS);
         addFactory(Resource.class, RESOURCE);
+    }
+
+    public static void addFactory(Class klass, XValueFactory factory) {
+        defaultFactories.put(klass, factory);
+    }
+
+    public static XValueFactory getFactory(Class type) {
+        return defaultFactories.get(type);
+    }
+
+    public static Object getValue(Context ctx, Class klass, String value) {
+        XValueFactory factory = defaultFactories.get(klass);
+        if (factory == null) {
+            return null;
+        }
+        return factory.getValue(ctx, value);
+    }
+
+    public abstract Object getValue(Context ctx, String value);
+
+    public final Object getElementValue(Context ctx, Node element, boolean trim) {
+        String text = element.getTextContent();
+        return getValue(ctx, trim ? text.trim() : text);
+    }
+
+    public final Object getAttributeValue(Context ctx, Node element, String name) {
+        Node at = element.getAttributes().getNamedItem(name);
+        return at != null ? getValue(ctx, at.getNodeValue()) : null;
     }
 
 }

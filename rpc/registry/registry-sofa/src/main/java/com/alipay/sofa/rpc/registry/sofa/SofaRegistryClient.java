@@ -29,8 +29,8 @@ import com.alipay.sofa.rpc.config.RegistryConfig;
  */
 public class SofaRegistryClient {
 
-    public static final String    LOCAL_DATACENTER = "DefaultDataCenter";
-    public static final String    LOCAL_REGION     = "DEFAULT_ZONE";
+    public static final String LOCAL_DATACENTER = "DefaultDataCenter";
+    public static final String LOCAL_REGION = "DEFAULT_ZONE";
 
     private static RegistryClient registryClient;
 
@@ -39,9 +39,9 @@ public class SofaRegistryClient {
             String address = registryConfig.getAddress();
             final String portStr = StringUtils.substringAfter(address, ":");
             RegistryClientConfig config = DefaultRegistryClientConfigBuilder.start()
-                .setAppName(appName).setDataCenter(LOCAL_DATACENTER).setZone(LOCAL_REGION)
-                .setRegistryEndpoint(StringUtils.substringBefore(address, ":"))
-                .setRegistryEndpointPort(Integer.parseInt(portStr)).build();
+                    .setAppName(appName).setDataCenter(LOCAL_DATACENTER).setZone(LOCAL_REGION)
+                    .setRegistryEndpoint(StringUtils.substringBefore(address, ":"))
+                    .setRegistryEndpointPort(Integer.parseInt(portStr)).build();
 
             registryClient = new DefaultRegistryClient(config);
             ((DefaultRegistryClient) registryClient).init();

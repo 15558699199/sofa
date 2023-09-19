@@ -36,12 +36,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * @author <a href=mailto:orezsilence@163.com>zhangchengxi</a>
@@ -286,7 +281,7 @@ public class DomainRegistryTest {
 
         ConcurrentHashMap<String, List<ProviderInfo>> ps = new ConcurrentHashMap();
 
-        private CountDownLatch                        countDownLatch;
+        private CountDownLatch countDownLatch;
 
         public void setCountDownLatch(CountDownLatch countDownLatch) {
             this.countDownLatch = countDownLatch;

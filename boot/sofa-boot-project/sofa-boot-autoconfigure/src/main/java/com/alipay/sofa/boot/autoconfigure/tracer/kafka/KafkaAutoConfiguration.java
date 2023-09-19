@@ -37,8 +37,8 @@ import org.springframework.kafka.core.ProducerFactory;
  */
 @AutoConfiguration(after = org.springframework.boot.autoconfigure.kafka.KafkaAutoConfiguration.class)
 @EnableAspectJAutoProxy(proxyTargetClass = true)
-@ConditionalOnClass({ ProducerFactory.class, KafkaConsumerFactoryBeanPostProcessor.class,
-                     KafkaListenerSofaTracerAspect.class })
+@ConditionalOnClass({ProducerFactory.class, KafkaConsumerFactoryBeanPostProcessor.class,
+        KafkaListenerSofaTracerAspect.class})
 @ConditionalOnProperty(name = "sofa.boot.tracer.kafka.enabled", havingValue = "true", matchIfMissing = true)
 public class KafkaAutoConfiguration {
 

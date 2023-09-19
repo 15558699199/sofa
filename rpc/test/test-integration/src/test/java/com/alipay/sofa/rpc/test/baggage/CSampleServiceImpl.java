@@ -23,15 +23,13 @@ import com.alipay.sofa.rpc.server.bolt.pb.EchoRequest;
 import com.alipay.sofa.rpc.server.bolt.pb.EchoResponse;
 
 /**
- *
- *
  * @author zhanggeng
  */
 public class CSampleServiceImpl implements SampleService {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(CSampleServiceImpl.class);
 
-    private String              reqBaggage;
+    private String reqBaggage;
 
     @Override
     public String hello() {

@@ -19,30 +19,30 @@ package com.alipay.sofa.registry.compress;
 import com.alipay.sofa.registry.cache.Sizer;
 
 public class CompressedItem implements Sizer {
-  private final byte[] compressedData;
-  private final int originSize;
-  private final String encoding;
+    private final byte[] compressedData;
+    private final int originSize;
+    private final String encoding;
 
-  public CompressedItem(byte[] compressedData, int originSize, String encoding) {
-    this.compressedData = compressedData;
-    this.originSize = originSize;
-    this.encoding = encoding;
-  }
+    public CompressedItem(byte[] compressedData, int originSize, String encoding) {
+        this.compressedData = compressedData;
+        this.originSize = originSize;
+        this.encoding = encoding;
+    }
 
-  @Override
-  public int size() {
-    return compressedData.length + 16 + encoding.length();
-  }
+    @Override
+    public int size() {
+        return compressedData.length + 16 + encoding.length();
+    }
 
-  public int getOriginSize() {
-    return originSize;
-  }
+    public int getOriginSize() {
+        return originSize;
+    }
 
-  public byte[] getCompressedData() {
-    return compressedData;
-  }
+    public byte[] getCompressedData() {
+        return compressedData;
+    }
 
-  public String getEncoding() {
-    return encoding;
-  }
+    public String getEncoding() {
+        return encoding;
+    }
 }

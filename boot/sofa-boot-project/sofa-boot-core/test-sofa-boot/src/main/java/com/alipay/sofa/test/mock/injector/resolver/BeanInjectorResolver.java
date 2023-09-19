@@ -36,14 +36,7 @@ import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 /**
  * A resolve used to find inject target bean and create {@link BeanInjectorStub}.
@@ -53,13 +46,13 @@ import java.util.TreeSet;
  */
 public class BeanInjectorResolver {
 
-    private static final String                   ISLE_MARKER_CLASS       = "com.alipay.sofa.boot.isle.ApplicationRuntimeModel";
+    private static final String ISLE_MARKER_CLASS = "com.alipay.sofa.boot.isle.ApplicationRuntimeModel";
 
-    private static final boolean                  ISLE_MODEL_EXIST        = ClassUtils.isPresent(
-                                                                              ISLE_MARKER_CLASS,
-                                                                              null);
+    private static final boolean ISLE_MODEL_EXIST = ClassUtils.isPresent(
+            ISLE_MARKER_CLASS,
+            null);
 
-    private final ApplicationContext              rootApplicationContext;
+    private final ApplicationContext rootApplicationContext;
 
     private final Map<String, ApplicationContext> isleApplicationContexts = new LinkedHashMap<>();
 
@@ -67,12 +60,12 @@ public class BeanInjectorResolver {
         this.rootApplicationContext = applicationContext;
         if (ISLE_MODEL_EXIST) {
             if (rootApplicationContext
-                .containsBean(ApplicationRuntimeModel.APPLICATION_RUNTIME_MODEL_NAME)) {
+                    .containsBean(ApplicationRuntimeModel.APPLICATION_RUNTIME_MODEL_NAME)) {
                 IsleDeploymentModel isleDeploymentModel = applicationContext.getBean(
-                    ApplicationRuntimeModel.APPLICATION_RUNTIME_MODEL_NAME,
-                    IsleDeploymentModel.class);
+                        ApplicationRuntimeModel.APPLICATION_RUNTIME_MODEL_NAME,
+                        IsleDeploymentModel.class);
                 isleApplicationContexts
-                    .putAll(isleDeploymentModel.getModuleApplicationContextMap());
+                        .putAll(isleDeploymentModel.getModuleApplicationContextMap());
             }
         }
     }
@@ -81,7 +74,7 @@ public class BeanInjectorResolver {
         // find target application context
         ApplicationContext applicationContext = getApplicationContext(definition);
         ConfigurableListableBeanFactory beanFactory = (ConfigurableListableBeanFactory) applicationContext
-            .getAutowireCapableBeanFactory();
+                .getAutowireCapableBeanFactory();
 
         // find target beanName
         String beanName = getBeanName(beanFactory, definition);
@@ -116,8 +109,8 @@ public class BeanInjectorResolver {
 
         if (targetField == null) {
             throw new IllegalStateException("Unable to inject target field to bean " + beanName
-                                            + ", can not find field " + fieldName + " in "
-                                            + bean.getClass());
+                    + ", can not find field " + fieldName + " in "
+                    + bean.getClass());
         }
 
         BeanInjectorStub beanStubbedField = new BeanInjectorStub(definition, targetField, bean);
@@ -139,7 +132,7 @@ public class BeanInjectorResolver {
             return definition.getName();
         }
         Set<String> existingBeans = getExistingBeans(beanFactory, definition.getType(),
-            definition.getQualifier());
+                definition.getQualifier());
         if (existingBeans.isEmpty()) {
             throw new IllegalStateException(ErrorCode.convert("01-30003", definition.getType()));
         }
@@ -147,12 +140,12 @@ public class BeanInjectorResolver {
             return existingBeans.iterator().next();
         }
         String primaryCandidate = determinePrimaryCandidate(beanFactory, existingBeans,
-            definition.getType());
+                definition.getType());
         if (primaryCandidate != null) {
             return primaryCandidate;
         }
         throw new IllegalStateException(ErrorCode.convert("01-30004", definition.getType(),
-            existingBeans));
+                existingBeans));
     }
 
     private Set<String> getExistingBeans(ConfigurableListableBeanFactory beanFactory,
@@ -192,9 +185,9 @@ public class BeanInjectorResolver {
             if (beanDefinition.isPrimary()) {
                 if (primaryBeanName != null) {
                     throw new NoUniqueBeanDefinitionException(type.resolve(),
-                        candidateBeanNames.size(),
-                        "more than one 'primary' bean found among candidates: "
-                                + Collections.singletonList(candidateBeanNames));
+                            candidateBeanNames.size(),
+                            "more than one 'primary' bean found among candidates: "
+                                    + Collections.singletonList(candidateBeanNames));
                 }
                 primaryBeanName = candidateBeanName;
             }

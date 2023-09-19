@@ -17,7 +17,6 @@
 package com.alipay.sofa.rpc.test.async;
 
 /**
- *
  * @author <a href=mailto:zhanggeng.zg@antfin.com>GengZhang</a>
  */
 public interface AsyncHelloService {

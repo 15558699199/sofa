@@ -17,23 +17,24 @@
 package com.alipay.sofa.registry.server.session.push;
 
 import com.alipay.sofa.registry.util.StringFormatter;
+
 import java.util.Map;
 
 public final class PushCause {
-  final TriggerPushContext triggerPushCtx;
-  final Map<String, Long> datumTimestamp;
-  final PushType pushType;
+    final TriggerPushContext triggerPushCtx;
+    final Map<String, Long> datumTimestamp;
+    final PushType pushType;
 
-  PushCause(
-      TriggerPushContext triggerPushCtx, PushType pushType, Map<String, Long> datumTimestamp) {
-    this.pushType = pushType;
-    this.datumTimestamp = datumTimestamp;
-    this.triggerPushCtx = triggerPushCtx;
-  }
+    PushCause(
+            TriggerPushContext triggerPushCtx, PushType pushType, Map<String, Long> datumTimestamp) {
+        this.pushType = pushType;
+        this.datumTimestamp = datumTimestamp;
+        this.triggerPushCtx = triggerPushCtx;
+    }
 
-  @Override
-  public String toString() {
-    return StringFormatter.format(
-        "PushCause{{},datumTs={},triggerPushCtx={}}", pushType, datumTimestamp, triggerPushCtx);
-  }
+    @Override
+    public String toString() {
+        return StringFormatter.format(
+                "PushCause{{},datumTs={},triggerPushCtx={}}", pushType, datumTimestamp, triggerPushCtx);
+    }
 }

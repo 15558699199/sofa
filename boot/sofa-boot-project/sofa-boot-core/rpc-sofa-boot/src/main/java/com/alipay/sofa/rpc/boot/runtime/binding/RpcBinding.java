@@ -31,11 +31,11 @@ import org.w3c.dom.Element;
  */
 public abstract class RpcBinding extends AbstractBinding {
 
-    protected String             appName;
+    protected String appName;
 
-    protected String             beanId;
+    protected String beanId;
 
-    protected RpcBindingParam    rpcBindingParam;
+    protected RpcBindingParam rpcBindingParam;
 
     /**
      * Spring 上下文
@@ -45,12 +45,12 @@ public abstract class RpcBinding extends AbstractBinding {
     /**
      * 是否是服务引用方
      */
-    protected boolean            inBinding;
+    protected boolean inBinding;
 
     /**
      * the ConsumerConfig 。在服务引用方才有值。
      */
-    protected ConsumerConfig     consumerConfig;
+    protected ConsumerConfig consumerConfig;
 
     public RpcBinding(RpcBindingParam bindingParam, ApplicationContext applicationContext,
                       boolean inBinding) {
@@ -239,15 +239,15 @@ public abstract class RpcBinding extends AbstractBinding {
             return false;
         }
         if (rpcBindingParam != null ? !rpcBindingParam.equals(that.rpcBindingParam)
-            : that.rpcBindingParam != null) {
+                : that.rpcBindingParam != null) {
             return false;
         }
         if (applicationContext != null ? !applicationContext.equals(that.applicationContext)
-            : that.applicationContext != null) {
+                : that.applicationContext != null) {
             return false;
         }
         return consumerConfig != null ? consumerConfig.equals(that.consumerConfig)
-            : that.consumerConfig == null;
+                : that.consumerConfig == null;
     }
 
     @Override

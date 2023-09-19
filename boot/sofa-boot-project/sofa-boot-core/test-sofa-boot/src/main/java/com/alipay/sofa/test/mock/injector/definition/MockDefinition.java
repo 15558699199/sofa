@@ -39,13 +39,13 @@ import static org.mockito.Mockito.mock;
  */
 public class MockDefinition extends Definition {
 
-    private static final int    MULTIPLIER = 31;
+    private static final int MULTIPLIER = 31;
 
     private final Set<Class<?>> extraInterfaces;
 
-    private final Answers       answer;
+    private final Answers answer;
 
-    private final boolean       serializable;
+    private final boolean serializable;
 
     public MockDefinition(ResolvableType resolvableType, String name, ResolvableType type,
                           String module, String field, Class<?>[] extraInterfaces, Answers answer,
@@ -112,11 +112,11 @@ public class MockDefinition extends Definition {
     @Override
     public String toString() {
         return new ToStringCreator(this).append("mockType", this.getMockType())
-            .append("name", this.getName()).append("type", this.getType())
-            .append("module", this.getModule()).append("field", this.getField())
-            .append("extraInterfaces", this.extraInterfaces).append("answer", this.answer)
-            .append("serializable", this.serializable).append("reset", getReset())
-            .append("qualifier", getQualifier()).toString();
+                .append("name", this.getName()).append("type", this.getType())
+                .append("module", this.getModule()).append("field", this.getField())
+                .append("extraInterfaces", this.extraInterfaces).append("answer", this.answer)
+                .append("serializable", this.serializable).append("reset", getReset())
+                .append("qualifier", getQualifier()).toString();
     }
 
     private Set<Class<?>> asClassSet(Class<?>[] classes) {

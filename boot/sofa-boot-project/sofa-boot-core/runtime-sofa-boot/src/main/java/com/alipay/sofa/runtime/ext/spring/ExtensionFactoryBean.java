@@ -30,9 +30,7 @@ import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import org.w3c.dom.Element;
 
-import static com.alipay.sofa.runtime.spi.component.ComponentDefinitionInfo.BEAN_ID;
-import static com.alipay.sofa.runtime.spi.component.ComponentDefinitionInfo.EXTENSION_POINT_NAME;
-import static com.alipay.sofa.runtime.spi.component.ComponentDefinitionInfo.SOURCE;
+import static com.alipay.sofa.runtime.spi.component.ComponentDefinitionInfo.*;
 
 /**
  * Implementation of {@link org.springframework.beans.factory.FactoryBean} to register extension.
@@ -45,26 +43,26 @@ import static com.alipay.sofa.runtime.spi.component.ComponentDefinitionInfo.SOUR
 public class ExtensionFactoryBean extends AbstractExtFactoryBean {
 
     private static final Logger LOGGER = SofaBootLoggerFactory
-                                           .getLogger(ExtensionFactoryBean.class);
+            .getLogger(ExtensionFactoryBean.class);
 
     /* extension bean */
-    private String              bean;
+    private String bean;
 
     /* extension point name */
-    private String              point;
+    private String point;
 
     /* content need to be parsed with XMap */
-    private Element             content;
+    private Element content;
 
-    private String[]            require;
+    private String[] require;
 
-    private ClassLoader         classLoader;
+    private ClassLoader classLoader;
 
     @Override
     public void afterPropertiesSet() throws Exception {
         super.afterPropertiesSet();
         Assert.notNull(applicationContext,
-            "required property 'applicationContext' has not been set");
+                "required property 'applicationContext' has not been set");
         Assert.notNull(getPoint(), "required property 'point' has not been set for extension");
         // checked
         if (!StringUtils.hasText(getPoint())) {
@@ -72,7 +70,7 @@ public class ExtensionFactoryBean extends AbstractExtFactoryBean {
         }
 
         if (getBeanClassLoaderWrapper() == null
-            || getBeanClassLoaderWrapper().getInnerClassLoader() == null) {
+                || getBeanClassLoaderWrapper().getInnerClassLoader() == null) {
             classLoader = Thread.currentThread().getContextClassLoader();
         } else {
             classLoader = getBeanClassLoaderWrapper().getInnerClassLoader();
@@ -88,11 +86,11 @@ public class ExtensionFactoryBean extends AbstractExtFactoryBean {
 
     private void publishAsNuxeoExtension() throws Exception {
         ExtensionBuilder extensionBuilder = ExtensionBuilder.genericExtension(this.getPoint(),
-            this.getContent(), applicationContext, classLoader);
+                this.getContent(), applicationContext, classLoader);
         extensionBuilder.setExtensionPoint(getExtensionPointComponentName());
 
         ComponentInfo componentInfo = new ExtensionComponent(extensionBuilder.getExtension(),
-            sofaRuntimeContext);
+                sofaRuntimeContext);
         ComponentDefinitionInfo extensionDefinitionInfo = new ComponentDefinitionInfo();
         extensionDefinitionInfo.setInterfaceMode(InterfaceMode.spring);
         extensionDefinitionInfo.putInfo(BEAN_ID, bean);
@@ -107,8 +105,8 @@ public class ExtensionFactoryBean extends AbstractExtFactoryBean {
 
     private ComponentName getExtensionPointComponentName() {
         return ComponentNameFactory.createComponentName(
-            ExtensionPointComponent.EXTENSION_POINT_COMPONENT_TYPE, this.getBean() + LINK_SYMBOL
-                                                                    + this.getPoint());
+                ExtensionPointComponent.EXTENSION_POINT_COMPONENT_TYPE, this.getBean() + LINK_SYMBOL
+                        + this.getPoint());
     }
 
     public void setContribution(String[] contribution) throws Exception {
@@ -122,36 +120,36 @@ public class ExtensionFactoryBean extends AbstractExtFactoryBean {
         }
     }
 
-    public void setRequire(String[] require) {
-        this.require = require;
-    }
-
     public String[] getRequire() {
         return require;
     }
 
-    public void setBean(String bean) {
-        this.bean = bean;
+    public void setRequire(String[] require) {
+        this.require = require;
     }
 
     public String getBean() {
         return bean;
     }
 
-    public void setContent(Element content) {
-        this.content = content;
+    public void setBean(String bean) {
+        this.bean = bean;
     }
 
     public Element getContent() {
         return content;
     }
 
-    public void setPoint(String point) {
-        this.point = point;
+    public void setContent(Element content) {
+        this.content = content;
     }
 
     public String getPoint() {
         return point;
+    }
+
+    public void setPoint(String point) {
+        this.point = point;
     }
 
     @Override

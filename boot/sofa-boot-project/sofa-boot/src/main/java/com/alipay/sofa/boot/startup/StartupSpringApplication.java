@@ -39,12 +39,12 @@ public class StartupSpringApplication extends SpringApplication {
         super(primarySources);
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings({"rawtypes", "unchecked"})
     @Override
     protected void applyInitializers(ConfigurableApplicationContext context) {
         for (ApplicationContextInitializer initializer : getInitializers()) {
             Class<?> requiredType = GenericTypeResolver.resolveTypeArgument(initializer.getClass(),
-                ApplicationContextInitializer.class);
+                    ApplicationContextInitializer.class);
             if (requiredType != null) {
                 Assert.isInstanceOf(requiredType, context, "Unable to call initializer.");
                 BaseStat stat = new BaseStat();

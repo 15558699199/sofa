@@ -17,8 +17,9 @@
 package com.alipay.sofa.registry.jdbc.mapper;
 
 import com.alipay.sofa.registry.jdbc.domain.ProvideDataDomain;
-import java.util.List;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * @author xiaojian.xj
@@ -26,63 +27,63 @@ import org.apache.ibatis.annotations.Param;
  */
 public interface ProvideDataMapper {
 
-  /**
-   * insert or update provideData
-   *
-   * @param data data
-   * @return int
-   */
-  public int save(ProvideDataDomain data);
+    /**
+     * insert or update provideData
+     *
+     * @param data data
+     * @return int
+     */
+    public int save(ProvideDataDomain data);
 
-  /**
-   * insert or update provideData
-   *
-   * @param data data
-   * @param exceptVersion exceptVersion
-   * @return int
-   */
-  public int update(
-      @Param("data") ProvideDataDomain data, @Param("exceptVersion") long exceptVersion);
+    /**
+     * insert or update provideData
+     *
+     * @param data          data
+     * @param exceptVersion exceptVersion
+     * @return int
+     */
+    public int update(
+            @Param("data") ProvideDataDomain data, @Param("exceptVersion") long exceptVersion);
 
-  /**
-   * query provideData
-   *
-   * @param dataCenter dataCenter
-   * @param dataKey dataKey
-   * @return ProvideDataDomain
-   */
-  public ProvideDataDomain query(
-      @Param("dataCenter") String dataCenter, @Param("dataKey") String dataKey);
+    /**
+     * query provideData
+     *
+     * @param dataCenter dataCenter
+     * @param dataKey    dataKey
+     * @return ProvideDataDomain
+     */
+    public ProvideDataDomain query(
+            @Param("dataCenter") String dataCenter, @Param("dataKey") String dataKey);
 
-  /**
-   * remove provideData
-   *
-   * @param dataCenter dataCenter
-   * @param dataKey dataKey
-   * @param dataVersion dataVersion
-   * @return int
-   */
-  public int remove(
-      @Param("dataCenter") String dataCenter,
-      @Param("dataKey") String dataKey,
-      @Param("dataVersion") long dataVersion);
+    /**
+     * remove provideData
+     *
+     * @param dataCenter  dataCenter
+     * @param dataKey     dataKey
+     * @param dataVersion dataVersion
+     * @return int
+     */
+    public int remove(
+            @Param("dataCenter") String dataCenter,
+            @Param("dataKey") String dataKey,
+            @Param("dataVersion") long dataVersion);
 
-  /**
-   * query by page
-   *
-   * @param dataCenter dataCenter
-   * @param start start
-   * @param limit limit
-   * @return List
-   */
-  List<ProvideDataDomain> queryByPage(
-      @Param("dataCenter") String dataCenter, @Param("start") int start, @Param("limit") int limit);
+    /**
+     * query by page
+     *
+     * @param dataCenter dataCenter
+     * @param start      start
+     * @param limit      limit
+     * @return List
+     */
+    List<ProvideDataDomain> queryByPage(
+            @Param("dataCenter") String dataCenter, @Param("start") int start, @Param("limit") int limit);
 
-  /**
-   * query total count
-   *
-   * @param dataCenter dataCenter
-   * @return int
-   */
-  int selectTotalCount(@Param("dataCenter") String dataCenter);
+    /**
+     * query total count
+     *
+     * @param dataCenter dataCenter
+     * @return int
+     */
+    int selectTotalCount(@Param("dataCenter") String dataCenter);
 }

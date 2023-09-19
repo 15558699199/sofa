@@ -32,8 +32,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- *
- *
  * @author <a href="mailto:zhanggeng.zg@antfin.com">GengZhang</a>
  */
 public class BoltServerTest extends ActivelyDestroyTest {
@@ -48,25 +46,25 @@ public class BoltServerTest extends ActivelyDestroyTest {
     public void badClose() {
         // 只有2个线程 执行
         ServerConfig serverConfig = new ServerConfig()
-            .setStopTimeout(0)
-            .setPort(22222)
-            .setProtocol(RpcConstants.PROTOCOL_TYPE_BOLT)
-            .setQueues(100).setCoreThreads(1).setMaxThreads(2);
+                .setStopTimeout(0)
+                .setPort(22222)
+                .setProtocol(RpcConstants.PROTOCOL_TYPE_BOLT)
+                .setQueues(100).setCoreThreads(1).setMaxThreads(2);
 
         // 发布一个服务，每个请求要执行1秒
         ProviderConfig<HelloService> providerConfig = new ProviderConfig<HelloService>()
-            .setInterfaceId(HelloService.class.getName())
-            .setRef(new HelloServiceImpl(1000))
-            .setServer(serverConfig)
-            .setRepeatedExportLimit(-1)
-            .setRegister(false);
+                .setInterfaceId(HelloService.class.getName())
+                .setRef(new HelloServiceImpl(1000))
+                .setServer(serverConfig)
+                .setRepeatedExportLimit(-1)
+                .setRegister(false);
         providerConfig.export();
 
         ConsumerConfig<HelloService> consumerConfig = new ConsumerConfig<HelloService>()
-            .setInterfaceId(HelloService.class.getName())
-            .setDirectUrl("bolt://127.0.0.1:22222")
-            .setTimeout(30000)
-            .setRegister(false);
+                .setInterfaceId(HelloService.class.getName())
+                .setDirectUrl("bolt://127.0.0.1:22222")
+                .setTimeout(30000)
+                .setRegister(false);
         final HelloService helloService = consumerConfig.refer();
 
         int times = 5;
@@ -109,25 +107,25 @@ public class BoltServerTest extends ActivelyDestroyTest {
     public void wellClose() {
         // 只有1个线程 执行
         ServerConfig serverConfig = new ServerConfig()
-            .setStopTimeout(60000)
-            .setPort(22222)
-            .setProtocol(RpcConstants.PROTOCOL_TYPE_BOLT)
-            .setQueues(100).setCoreThreads(1).setMaxThreads(2);
+                .setStopTimeout(60000)
+                .setPort(22222)
+                .setProtocol(RpcConstants.PROTOCOL_TYPE_BOLT)
+                .setQueues(100).setCoreThreads(1).setMaxThreads(2);
 
         // 发布一个服务，每个请求要执行1秒
         ProviderConfig<HelloService> providerConfig = new ProviderConfig<HelloService>()
-            .setInterfaceId(HelloService.class.getName())
-            .setRef(new HelloServiceImpl(1000))
-            .setServer(serverConfig)
-            .setRepeatedExportLimit(-1)
-            .setRegister(false);
+                .setInterfaceId(HelloService.class.getName())
+                .setRef(new HelloServiceImpl(1000))
+                .setServer(serverConfig)
+                .setRepeatedExportLimit(-1)
+                .setRegister(false);
         providerConfig.export();
 
         ConsumerConfig<HelloService> consumerConfig = new ConsumerConfig<HelloService>()
-            .setInterfaceId(HelloService.class.getName())
-            .setDirectUrl("bolt://127.0.0.1:22222")
-            .setTimeout(30000)
-            .setRegister(false);
+                .setInterfaceId(HelloService.class.getName())
+                .setDirectUrl("bolt://127.0.0.1:22222")
+                .setTimeout(30000)
+                .setRegister(false);
         final HelloService helloService = consumerConfig.refer();
 
         int times = 5;

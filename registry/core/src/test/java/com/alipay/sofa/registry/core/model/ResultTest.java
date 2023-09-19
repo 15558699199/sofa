@@ -20,17 +20,17 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class ResultTest {
-  @Test
-  public void test() {
-    Result result = new Result(false, "xxx");
-    Assert.assertFalse(result.isSuccess());
-    Assert.assertEquals(result.getMessage(), "xxx");
+    @Test
+    public void test() {
+        Result result = new Result(false, "xxx");
+        Assert.assertFalse(result.isSuccess());
+        Assert.assertEquals(result.getMessage(), "xxx");
 
-    result = Result.failed("yyy");
-    Assert.assertFalse(result.isSuccess());
-    Assert.assertEquals(result.getMessage(), "yyy");
+        result = Result.failed("yyy");
+        Assert.assertFalse(result.isSuccess());
+        Assert.assertEquals(result.getMessage(), "yyy");
 
-    result = Result.success();
-    Assert.assertTrue(result.isSuccess());
-  }
+        result = Result.success();
+        Assert.assertTrue(result.isSuccess());
+    }
 }

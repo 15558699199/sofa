@@ -27,31 +27,31 @@ import com.alipay.sofa.registry.core.model.ScopeEnum;
  */
 public interface Subscriber extends Register {
 
-  /**
-   * Gets data observer.
-   *
-   * @return the data observer
-   */
-  SubscriberDataObserver getDataObserver();
+    /**
+     * Gets data observer.
+     *
+     * @return the data observer
+     */
+    SubscriberDataObserver getDataObserver();
 
-  /**
-   * Sets data observer.
-   *
-   * @param observer the observer
-   */
-  void setDataObserver(SubscriberDataObserver observer);
+    /**
+     * Sets data observer.
+     *
+     * @param observer the observer
+     */
+    void setDataObserver(SubscriberDataObserver observer);
 
-  /**
-   * Peek data user data multi.
-   *
-   * @return the user data multi
-   */
-  UserData peekData();
+    /**
+     * Peek data user data multi.
+     *
+     * @return the user data multi
+     */
+    UserData peekData();
 
-  /**
-   * Gets scope enum.
-   *
-   * @return the scope enum
-   */
-  ScopeEnum getScopeEnum();
+    /**
+     * Gets scope enum.
+     *
+     * @return the scope enum
+     */
+    ScopeEnum getScopeEnum();
 }

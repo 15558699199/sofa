@@ -19,109 +19,99 @@ package com.alipay.sofa.registry.server.session.scheduler.timertask;
 import io.prometheus.client.Gauge;
 
 public final class Metrics {
-  private Metrics() {}
+    static final Gauge PUB_SUM =
+            Gauge.build()
+                    .namespace("session")
+                    .subsystem("cache")
+                    .name("pub_sum")
+                    .help("publisher cache num")
+                    .register();
+    static final Gauge SUB_SUM =
+            Gauge.build()
+                    .namespace("session")
+                    .subsystem("cache")
+                    .name("sub_sum")
+                    .help("subscriber cache num")
+                    .register();
+    static final Gauge WAT_SUM =
+            Gauge.build()
+                    .namespace("session")
+                    .subsystem("cache")
+                    .name("wat_sum")
+                    .help("watcher cache num")
+                    .register();
+    static final Gauge CHANNEL_SUM =
+            Gauge.build()
+                    .namespace("session")
+                    .subsystem("cache")
+                    .name("channel_sum")
+                    .help("channel cache num")
+                    .register();
+    static final Gauge PUB_GAUGE =
+            Gauge.build()
+                    .namespace("session")
+                    .subsystem("cache")
+                    .name("pub_total")
+                    .labelNames("instanceId", "group")
+                    .help("publisher cache num")
+                    .register();
+    static final Gauge PUB_DATA_ID_GAUGE =
+            Gauge.build()
+                    .namespace("session")
+                    .subsystem("cache")
+                    .name("pub_dataID_total")
+                    .labelNames("instanceId", "group")
+                    .help("publisher dataID cache num")
+                    .register();
+    static final Gauge NOT_MULTI_SUB_GAUGE =
+            Gauge.build()
+                    .namespace("session")
+                    .subsystem("cache")
+                    .name("not_multi_sub_total")
+                    .labelNames("instanceId", "group")
+                    .help("subscriber cache num")
+                    .register();
+    static final Gauge MULTI_SUB_GAUGE =
+            Gauge.build()
+                    .namespace("session")
+                    .subsystem("cache")
+                    .name("multi_sub_total")
+                    .labelNames("instanceId", "group")
+                    .help("subscriber cache num")
+                    .register();
+    static final Gauge NOT_MULTI_SUB_DATA_ID_GAUGE =
+            Gauge.build()
+                    .namespace("session")
+                    .subsystem("cache")
+                    .name("not_multi_sub_dataID_total")
+                    .labelNames("instanceId", "group")
+                    .help("subscriber dataID cache num")
+                    .register();
+    static final Gauge MULTI_SUB_DATA_ID_GAUGE =
+            Gauge.build()
+                    .namespace("session")
+                    .subsystem("cache")
+                    .name("multi_sub_dataID_total")
+                    .labelNames("instanceId", "group")
+                    .help("subscriber dataID cache num")
+                    .register();
+    static final Gauge WAT_COUNTER =
+            Gauge.build()
+                    .namespace("session")
+                    .subsystem("cache")
+                    .name("wat_total")
+                    .labelNames("instanceId", "group")
+                    .help("watcher cache num")
+                    .register();
+    static final Gauge WAT_DATA_ID_COUNTER =
+            Gauge.build()
+                    .namespace("session")
+                    .subsystem("cache")
+                    .name("wat_dataID_total")
+                    .labelNames("instanceId", "group")
+                    .help("watcher cache num")
+                    .register();
 
-  static final Gauge PUB_SUM =
-      Gauge.build()
-          .namespace("session")
-          .subsystem("cache")
-          .name("pub_sum")
-          .help("publisher cache num")
-          .register();
-
-  static final Gauge SUB_SUM =
-      Gauge.build()
-          .namespace("session")
-          .subsystem("cache")
-          .name("sub_sum")
-          .help("subscriber cache num")
-          .register();
-
-  static final Gauge WAT_SUM =
-      Gauge.build()
-          .namespace("session")
-          .subsystem("cache")
-          .name("wat_sum")
-          .help("watcher cache num")
-          .register();
-
-  static final Gauge CHANNEL_SUM =
-      Gauge.build()
-          .namespace("session")
-          .subsystem("cache")
-          .name("channel_sum")
-          .help("channel cache num")
-          .register();
-
-  static final Gauge PUB_GAUGE =
-      Gauge.build()
-          .namespace("session")
-          .subsystem("cache")
-          .name("pub_total")
-          .labelNames("instanceId", "group")
-          .help("publisher cache num")
-          .register();
-
-  static final Gauge PUB_DATA_ID_GAUGE =
-      Gauge.build()
-          .namespace("session")
-          .subsystem("cache")
-          .name("pub_dataID_total")
-          .labelNames("instanceId", "group")
-          .help("publisher dataID cache num")
-          .register();
-
-  static final Gauge NOT_MULTI_SUB_GAUGE =
-      Gauge.build()
-          .namespace("session")
-          .subsystem("cache")
-          .name("not_multi_sub_total")
-          .labelNames("instanceId", "group")
-          .help("subscriber cache num")
-          .register();
-
-  static final Gauge MULTI_SUB_GAUGE =
-      Gauge.build()
-          .namespace("session")
-          .subsystem("cache")
-          .name("multi_sub_total")
-          .labelNames("instanceId", "group")
-          .help("subscriber cache num")
-          .register();
-
-  static final Gauge NOT_MULTI_SUB_DATA_ID_GAUGE =
-      Gauge.build()
-          .namespace("session")
-          .subsystem("cache")
-          .name("not_multi_sub_dataID_total")
-          .labelNames("instanceId", "group")
-          .help("subscriber dataID cache num")
-          .register();
-
-  static final Gauge MULTI_SUB_DATA_ID_GAUGE =
-      Gauge.build()
-          .namespace("session")
-          .subsystem("cache")
-          .name("multi_sub_dataID_total")
-          .labelNames("instanceId", "group")
-          .help("subscriber dataID cache num")
-          .register();
-
-  static final Gauge WAT_COUNTER =
-      Gauge.build()
-          .namespace("session")
-          .subsystem("cache")
-          .name("wat_total")
-          .labelNames("instanceId", "group")
-          .help("watcher cache num")
-          .register();
-
-  static final Gauge WAT_DATA_ID_COUNTER =
-      Gauge.build()
-          .namespace("session")
-          .subsystem("cache")
-          .name("wat_dataID_total")
-          .labelNames("instanceId", "group")
-          .help("watcher cache num")
-          .register();
+    private Metrics() {
+    }
 }

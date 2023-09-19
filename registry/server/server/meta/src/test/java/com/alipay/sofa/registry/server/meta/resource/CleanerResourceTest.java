@@ -16,27 +16,27 @@
  */
 package com.alipay.sofa.registry.server.meta.resource;
 
-import static org.mockito.Mockito.mock;
-
 import com.alipay.sofa.registry.server.meta.cleaner.InterfaceAppsIndexCleaner;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.mockito.Mockito.mock;
+
 public class CleanerResourceTest {
 
-  private MetaCenterResource cleanerResource;
+    private MetaCenterResource cleanerResource;
 
-  private InterfaceAppsIndexCleaner interfaceAppsIndexCleaner =
-      mock(InterfaceAppsIndexCleaner.class);
+    private InterfaceAppsIndexCleaner interfaceAppsIndexCleaner =
+            mock(InterfaceAppsIndexCleaner.class);
 
-  @Before
-  public void before() {
-    cleanerResource =
-        new MetaCenterResource().setInterfaceAppsIndexCleaner(interfaceAppsIndexCleaner);
-  }
+    @Before
+    public void before() {
+        cleanerResource =
+                new MetaCenterResource().setInterfaceAppsIndexCleaner(interfaceAppsIndexCleaner);
+    }
 
-  @Test
-  public void testInterfaceAppsIndexRenew() {
-    cleanerResource.interfaceAppsIndexRenew();
-  }
+    @Test
+    public void testInterfaceAppsIndexRenew() {
+        cleanerResource.interfaceAppsIndexRenew();
+    }
 }

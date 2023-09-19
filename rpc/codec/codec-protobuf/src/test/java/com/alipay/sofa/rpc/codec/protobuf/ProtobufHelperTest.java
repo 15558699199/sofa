@@ -20,8 +20,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- *
- *
  * @author <a href="mailto:zhanggeng.zg@antfin.com">GengZhang</a>
  */
 public class ProtobufHelperTest {
@@ -31,14 +29,14 @@ public class ProtobufHelperTest {
     @Test
     public void getReqClass() {
         Class req = protobufHelper.getReqClass(
-            "com.alipay.sofa.rpc.codec.protobuf.ProtoService", "echoStr");
+                "com.alipay.sofa.rpc.codec.protobuf.ProtoService", "echoStr");
         Assert.assertTrue(req == EchoStrReq.class);
     }
 
     @Test
     public void getResClass() {
         Class res = protobufHelper.getResClass(
-            "com.alipay.sofa.rpc.codec.protobuf.ProtoService", "echoStr");
+                "com.alipay.sofa.rpc.codec.protobuf.ProtoService", "echoStr");
         Assert.assertTrue(res == EchoStrRes.class);
     }
 

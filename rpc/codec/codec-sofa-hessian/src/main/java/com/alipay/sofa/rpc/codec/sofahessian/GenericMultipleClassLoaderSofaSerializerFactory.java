@@ -16,18 +16,8 @@
  */
 package com.alipay.sofa.rpc.codec.sofahessian;
 
-import com.alipay.hessian.generic.io.GenericArraySerializer;
-import com.alipay.hessian.generic.io.GenericClassDeserializer;
-import com.alipay.hessian.generic.io.GenericClassSerializer;
-import com.alipay.hessian.generic.io.GenericCollectionSerializer;
-import com.alipay.hessian.generic.io.GenericDeserializer;
-import com.alipay.hessian.generic.io.GenericMapSerializer;
-import com.alipay.hessian.generic.io.GenericObjectSerializer;
-import com.alipay.hessian.generic.model.GenericArray;
-import com.alipay.hessian.generic.model.GenericClass;
-import com.alipay.hessian.generic.model.GenericCollection;
-import com.alipay.hessian.generic.model.GenericMap;
-import com.alipay.hessian.generic.model.GenericObject;
+import com.alipay.hessian.generic.io.*;
+import com.alipay.hessian.generic.model.*;
 import com.alipay.hessian.generic.util.ClassFilter;
 import com.alipay.sofa.rpc.common.utils.StringUtils;
 import com.caucho.hessian.io.Deserializer;
@@ -38,12 +28,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 /**
- *
  * @author <a href="mailto:caojie.cj@antfin.com">CaoJie</a>
  */
 public class GenericMultipleClassLoaderSofaSerializerFactory extends MultipleClassLoaderSofaSerializerFactory {
 
-    private static final char                                ARRAY_PREFIX     = '[';
+    private static final char ARRAY_PREFIX = '[';
 
     private static final ConcurrentMap<String, Deserializer> DESERIALIZER_MAP = new ConcurrentHashMap<String, Deserializer>();
 

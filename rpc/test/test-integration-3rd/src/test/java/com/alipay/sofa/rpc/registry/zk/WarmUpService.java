@@ -17,7 +17,6 @@
 package com.alipay.sofa.rpc.registry.zk;
 
 /**
- *
  * @author <a href="mailto:lw111072@antfin.com">LiWei.Liengen</a>
  */
 public interface WarmUpService {

@@ -17,80 +17,116 @@
 package com.alipay.sofa.registry.common.model.client.pb;
 
 public interface MultiSegmentDataPbOrBuilder
-    extends
-    // @@protoc_insertion_point(interface_extends:MultiSegmentDataPb)
-    com.google.protobuf.MessageOrBuilder {
+        extends
+        // @@protoc_insertion_point(interface_extends:MultiSegmentDataPb)
+        com.google.protobuf.MessageOrBuilder {
 
-  /**
-   * <code>string segment = 1;</code>
-   *
-   * @return The segment.
-   */
-  java.lang.String getSegment();
-  /**
-   * <code>string segment = 1;</code>
-   *
-   * @return The bytes for segment.
-   */
-  com.google.protobuf.ByteString getSegmentBytes();
+    /**
+     * <code>string segment = 1;</code>
+     *
+     * @return The segment.
+     */
+    java.lang.String getSegment();
 
-  /**
-   * <code>bytes zipData = 2;</code>
-   *
-   * @return The zipData.
-   */
-  com.google.protobuf.ByteString getZipData();
+    /**
+     * <code>string segment = 1;</code>
+     *
+     * @return The bytes for segment.
+     */
+    com.google.protobuf.ByteString getSegmentBytes();
 
-  /** <code>map&lt;string, .DataBoxesPb&gt; unzipData = 3;</code> */
-  int getUnzipDataCount();
-  /** <code>map&lt;string, .DataBoxesPb&gt; unzipData = 3;</code> */
-  boolean containsUnzipData(java.lang.String key);
-  /** Use {@link #getUnzipDataMap()} instead. */
-  @java.lang.Deprecated
-  java.util.Map<java.lang.String, com.alipay.sofa.registry.common.model.client.pb.DataBoxesPb>
-      getUnzipData();
-  /** <code>map&lt;string, .DataBoxesPb&gt; unzipData = 3;</code> */
-  java.util.Map<java.lang.String, com.alipay.sofa.registry.common.model.client.pb.DataBoxesPb>
-      getUnzipDataMap();
-  /** <code>map&lt;string, .DataBoxesPb&gt; unzipData = 3;</code> */
-  com.alipay.sofa.registry.common.model.client.pb.DataBoxesPb getUnzipDataOrDefault(
-      java.lang.String key,
-      com.alipay.sofa.registry.common.model.client.pb.DataBoxesPb defaultValue);
-  /** <code>map&lt;string, .DataBoxesPb&gt; unzipData = 3;</code> */
-  com.alipay.sofa.registry.common.model.client.pb.DataBoxesPb getUnzipDataOrThrow(
-      java.lang.String key);
+    /**
+     * <code>bytes zipData = 2;</code>
+     *
+     * @return The zipData.
+     */
+    com.google.protobuf.ByteString getZipData();
 
-  /**
-   * <code>string encoding = 4;</code>
-   *
-   * @return The encoding.
-   */
-  java.lang.String getEncoding();
-  /**
-   * <code>string encoding = 4;</code>
-   *
-   * @return The bytes for encoding.
-   */
-  com.google.protobuf.ByteString getEncodingBytes();
+    /**
+     * <code>map&lt;string, .DataBoxesPb&gt; unzipData = 3;</code>
+     */
+    int getUnzipDataCount();
 
-  /**
-   * <code>int64 version = 5;</code>
-   *
-   * @return The version.
-   */
-  long getVersion();
+    /**
+     * <code>map&lt;string, .DataBoxesPb&gt; unzipData = 3;</code>
+     */
+    boolean containsUnzipData(java.lang.String key);
 
-  /** <code>map&lt;string, int32&gt; pushDataCount = 6;</code> */
-  int getPushDataCountCount();
-  /** <code>map&lt;string, int32&gt; pushDataCount = 6;</code> */
-  boolean containsPushDataCount(java.lang.String key);
-  /** Use {@link #getPushDataCountMap()} instead. */
-  @java.lang.Deprecated
-  java.util.Map<java.lang.String, java.lang.Integer> getPushDataCount();
-  /** <code>map&lt;string, int32&gt; pushDataCount = 6;</code> */
-  java.util.Map<java.lang.String, java.lang.Integer> getPushDataCountMap();
-  /** <code>map&lt;string, int32&gt; pushDataCount = 6;</code> */
-  int getPushDataCountOrDefault(java.lang.String key, int defaultValue);
-  /** <code>map&lt;string, int32&gt; pushDataCount = 6;</code> */
-  int getPushDataCountOrThrow(java.lang.String key);
+    /**
+     * Use {@link #getUnzipDataMap()} instead.
+     */
+    @java.lang.Deprecated
+    java.util.Map<java.lang.String, com.alipay.sofa.registry.common.model.client.pb.DataBoxesPb>
+    getUnzipData();
+
+    /**
+     * <code>map&lt;string, .DataBoxesPb&gt; unzipData = 3;</code>
+     */
+    java.util.Map<java.lang.String, com.alipay.sofa.registry.common.model.client.pb.DataBoxesPb>
+    getUnzipDataMap();
+
+    /**
+     * <code>map&lt;string, .DataBoxesPb&gt; unzipData = 3;</code>
+     */
+    com.alipay.sofa.registry.common.model.client.pb.DataBoxesPb getUnzipDataOrDefault(
+            java.lang.String key,
+            com.alipay.sofa.registry.common.model.client.pb.DataBoxesPb defaultValue);
+
+    /**
+     * <code>map&lt;string, .DataBoxesPb&gt; unzipData = 3;</code>
+     */
+    com.alipay.sofa.registry.common.model.client.pb.DataBoxesPb getUnzipDataOrThrow(
+            java.lang.String key);
+
+    /**
+     * <code>string encoding = 4;</code>
+     *
+     * @return The encoding.
+     */
+    java.lang.String getEncoding();
+
+    /**
+     * <code>string encoding = 4;</code>
+     *
+     * @return The bytes for encoding.
+     */
+    com.google.protobuf.ByteString getEncodingBytes();
+
+    /**
+     * <code>int64 version = 5;</code>
+     *
+     * @return The version.
+     */
+    long getVersion();
+
+    /**
+     * <code>map&lt;string, int32&gt; pushDataCount = 6;</code>
+     */
+    int getPushDataCountCount();
+
+    /**
+     * <code>map&lt;string, int32&gt; pushDataCount = 6;</code>
+     */
+    boolean containsPushDataCount(java.lang.String key);
+
+    /**
+     * Use {@link #getPushDataCountMap()} instead.
+     */
+    @java.lang.Deprecated
+    java.util.Map<java.lang.String, java.lang.Integer> getPushDataCount();
+
+    /**
+     * <code>map&lt;string, int32&gt; pushDataCount = 6;</code>
+     */
+    java.util.Map<java.lang.String, java.lang.Integer> getPushDataCountMap();
+
+    /**
+     * <code>map&lt;string, int32&gt; pushDataCount = 6;</code>
+     */
+    int getPushDataCountOrDefault(java.lang.String key, int defaultValue);
+
+    /**
+     * <code>map&lt;string, int32&gt; pushDataCount = 6;</code>
+     */
+    int getPushDataCountOrThrow(java.lang.String key);
 }

@@ -16,108 +16,113 @@
  */
 package com.alipay.sofa.registry.server.meta.slot.arrange;
 
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.when;
-
 import com.alipay.sofa.registry.server.meta.AbstractMetaServerTestBase;
 import com.alipay.sofa.registry.server.meta.lease.data.DefaultDataServerManager;
 import com.alipay.sofa.registry.server.meta.monitor.SlotTableMonitor;
 import com.alipay.sofa.registry.server.meta.resource.SlotTableResource;
 import com.alipay.sofa.registry.server.meta.slot.SlotManager;
 import com.alipay.sofa.registry.server.meta.slot.status.SlotTableStatusService;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.CyclicBarrier;
-import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.CyclicBarrier;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
+
 public class ScheduledSlotArrangerTest extends AbstractMetaServerTestBase {
 
-  private ScheduledSlotArranger slotArranger;
+    private ScheduledSlotArranger slotArranger;
 
-  private SlotTableResource slotTableResource;
+    private SlotTableResource slotTableResource;
 
-  @Mock private DefaultDataServerManager dataServerManager;
+    @Mock
+    private DefaultDataServerManager dataServerManager;
 
-  @Mock private SlotManager slotManager;
+    @Mock
+    private SlotManager slotManager;
 
-  @Mock private SlotTableMonitor slotTableMonitor;
+    @Mock
+    private SlotTableMonitor slotTableMonitor;
 
-  @Mock private SlotTableStatusService slotTableStatusService;
+    @Mock
+    private SlotTableStatusService slotTableStatusService;
 
-  @Before
-  public void beforeScheduledSlotArrangerTest() {
-    MockitoAnnotations.initMocks(this);
-    when(metaLeaderService.amILeader()).thenReturn(true);
-    when(metaLeaderService.amIStableAsLeader()).thenReturn(true);
-    slotArranger =
-        spy(
-            new ScheduledSlotArranger(
-                dataServerManager,
-                slotManager,
-                slotTableMonitor,
-                metaLeaderService,
-                metaServerConfig));
+    @Before
+    public void beforeScheduledSlotArrangerTest() {
+        MockitoAnnotations.initMocks(this);
+        when(metaLeaderService.amILeader()).thenReturn(true);
+        when(metaLeaderService.amIStableAsLeader()).thenReturn(true);
+        slotArranger =
+                spy(
+                        new ScheduledSlotArranger(
+                                dataServerManager,
+                                slotManager,
+                                slotTableMonitor,
+                                metaLeaderService,
+                                metaServerConfig));
 
-    slotTableStatusService = new SlotTableStatusService();
-    slotTableStatusService
-        .setSlotArranger(slotArranger)
-        .setDataServerManager(dataServerManager)
-        .setSlotTableMonitor(slotTableMonitor)
-        .setSlotManager(slotManager);
-  }
-
-  @Test
-  public void testTryLock() throws InterruptedException {
-    Assert.assertTrue(slotArranger.tryLock());
-    slotArranger.unlock();
-    Assert.assertTrue(slotArranger.tryLock());
-    slotArranger.unlock();
-    AtomicInteger counter = new AtomicInteger();
-    int tasks = 100;
-    CyclicBarrier barrier = new CyclicBarrier(tasks);
-    CountDownLatch latch = new CountDownLatch(tasks);
-    for (int i = 0; i < tasks; i++) {
-      executors.execute(
-          new Runnable() {
-            @Override
-            public void run() {
-              try {
-                barrier.await();
-                if (slotArranger.tryLock()) {
-                  counter.incrementAndGet();
-                }
-              } catch (Throwable th) {
-
-              } finally {
-                latch.countDown();
-              }
-            }
-          });
+        slotTableStatusService = new SlotTableStatusService();
+        slotTableStatusService
+                .setSlotArranger(slotArranger)
+                .setDataServerManager(dataServerManager)
+                .setSlotTableMonitor(slotTableMonitor)
+                .setSlotManager(slotManager);
     }
-    latch.await();
-    Assert.assertEquals(1, counter.get());
-  }
 
-  @Test
-  public void testStopStartReconcile() throws Exception {
-    slotTableResource =
-        new SlotTableResource(
-            slotManager,
-            dataServerManager,
-            slotArranger,
-            metaLeaderService,
-            slotTableStatusService);
-    slotArranger.postConstruct();
-    Assert.assertEquals("running", slotTableResource.getReconcileStatus().getMessage());
+    @Test
+    public void testTryLock() throws InterruptedException {
+        Assert.assertTrue(slotArranger.tryLock());
+        slotArranger.unlock();
+        Assert.assertTrue(slotArranger.tryLock());
+        slotArranger.unlock();
+        AtomicInteger counter = new AtomicInteger();
+        int tasks = 100;
+        CyclicBarrier barrier = new CyclicBarrier(tasks);
+        CountDownLatch latch = new CountDownLatch(tasks);
+        for (int i = 0; i < tasks; i++) {
+            executors.execute(
+                    new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                barrier.await();
+                                if (slotArranger.tryLock()) {
+                                    counter.incrementAndGet();
+                                }
+                            } catch (Throwable th) {
 
-    slotTableResource.stopSlotTableReconcile();
-    Assert.assertEquals("stopped", slotTableResource.getReconcileStatus().getMessage());
+                            } finally {
+                                latch.countDown();
+                            }
+                        }
+                    });
+        }
+        latch.await();
+        Assert.assertEquals(1, counter.get());
+    }
 
-    slotTableResource.startSlotTableReconcile();
-    Assert.assertEquals("running", slotTableResource.getReconcileStatus().getMessage());
-  }
+    @Test
+    public void testStopStartReconcile() throws Exception {
+        slotTableResource =
+                new SlotTableResource(
+                        slotManager,
+                        dataServerManager,
+                        slotArranger,
+                        metaLeaderService,
+                        slotTableStatusService);
+        slotArranger.postConstruct();
+        Assert.assertEquals("running", slotTableResource.getReconcileStatus().getMessage());
+
+        slotTableResource.stopSlotTableReconcile();
+        Assert.assertEquals("stopped", slotTableResource.getReconcileStatus().getMessage());
+
+        slotTableResource.startSlotTableReconcile();
+        Assert.assertEquals("running", slotTableResource.getReconcileStatus().getMessage());
+    }
 }

@@ -18,4 +18,5 @@ package com.alipay.sofa.registry.compress;
 
 import com.alipay.sofa.registry.cache.Sizer;
 
-public interface CompressKey extends Sizer {}
+public interface CompressKey extends Sizer {
+}

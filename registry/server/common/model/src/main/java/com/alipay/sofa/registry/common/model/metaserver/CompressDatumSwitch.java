@@ -23,38 +23,38 @@ import com.fasterxml.jackson.annotation.Nulls;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CompressDatumSwitch {
-  private boolean enabled = false;
+    private boolean enabled = false;
 
-  @JsonSetter(nulls = Nulls.SKIP)
-  private int compressMinSize = CompressConstants.defaultCompressDatumMinSize;
+    @JsonSetter(nulls = Nulls.SKIP)
+    private int compressMinSize = CompressConstants.defaultCompressDatumMinSize;
 
-  public static CompressDatumSwitch defaultSwitch() {
-    return new CompressDatumSwitch();
-  }
+    public static CompressDatumSwitch defaultSwitch() {
+        return new CompressDatumSwitch();
+    }
 
-  public boolean isEnabled() {
-    return enabled;
-  }
+    public boolean isEnabled() {
+        return enabled;
+    }
 
-  public void setEnabled(boolean enabled) {
-    this.enabled = enabled;
-  }
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
 
-  public int getCompressMinSize() {
-    return compressMinSize;
-  }
+    public int getCompressMinSize() {
+        return compressMinSize;
+    }
 
-  public void setCompressMinSize(int compressMinSize) {
-    this.compressMinSize = compressMinSize;
-  }
+    public void setCompressMinSize(int compressMinSize) {
+        this.compressMinSize = compressMinSize;
+    }
 
-  @Override
-  public String toString() {
-    return "CompressDatumSwitch{"
-        + "enabled="
-        + enabled
-        + ", compressMinSize="
-        + compressMinSize
-        + '}';
-  }
+    @Override
+    public String toString() {
+        return "CompressDatumSwitch{"
+                + "enabled="
+                + enabled
+                + ", compressMinSize="
+                + compressMinSize
+                + '}';
+    }
 }

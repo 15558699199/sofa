@@ -22,5 +22,5 @@ package com.alipay.sofa.registry.server.session.filter;
  */
 public interface ProcessFilter<T> {
 
-  boolean match(T input);
+    boolean match(T input);
 }

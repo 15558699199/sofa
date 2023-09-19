@@ -18,6 +18,6 @@ package com.alipay.sofa.rpc.common;
 
 public class MockMode {
 
-    public static final String LOCAL  = "local";
+    public static final String LOCAL = "local";
     public static final String REMOTE = "remote";
 }

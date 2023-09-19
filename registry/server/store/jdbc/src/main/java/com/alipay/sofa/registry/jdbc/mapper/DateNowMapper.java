@@ -23,5 +23,5 @@ import com.alipay.sofa.registry.jdbc.domain.DateNowDomain;
  * @version : DateNowMapper.java, v 0.1 2021年09月29日 15:03 xiaojian.xj Exp $
  */
 public interface DateNowMapper {
-  DateNowDomain getNow();
+    DateNowDomain getNow();
 }

@@ -17,19 +17,20 @@
 package com.alipay.sofa.registry.common.model.slot;
 
 import com.alipay.sofa.registry.server.meta.AbstractMetaServerTestBase;
+
 import java.util.ArrayList;
 
 /**
  * @author chen.zhu
- *     <p>Jan 13, 2021
+ * <p>Jan 13, 2021
  */
 public class BaseSlotFunctionTest extends AbstractMetaServerTestBase {
 
-  public String[] getDataInfoIds() {
-    ArrayList<String> list = new ArrayList<>();
-    for (int i = 0; i < 10000; i++) {
-      list.add(String.format("dataInfoId-%s", i));
+    public String[] getDataInfoIds() {
+        ArrayList<String> list = new ArrayList<>();
+        for (int i = 0; i < 10000; i++) {
+            list.add(String.format("dataInfoId-%s", i));
+        }
+        return list.toArray(new String[]{});
     }
-    return list.toArray(new String[] {});
-  }
 }

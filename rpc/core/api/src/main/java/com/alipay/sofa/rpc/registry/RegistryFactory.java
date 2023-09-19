@@ -45,8 +45,8 @@ public class RegistryFactory {
     /**
      * slf4j Logger for this class
      */
-    private final static Logger                                  LOGGER         = LoggerFactory
-                                                                                    .getLogger(RegistryFactory.class);
+    private final static Logger LOGGER = LoggerFactory
+            .getLogger(RegistryFactory.class);
 
     /**
      * 得到注册中心对象
@@ -67,11 +67,11 @@ public class RegistryFactory {
             if (registry == null) {
                 protocol = registryConfig.getProtocol();
                 ExtensionClass<Registry> ext = ExtensionLoaderFactory.getExtensionLoader(Registry.class)
-                    .getExtensionClass(protocol);
+                        .getExtensionClass(protocol);
                 if (ext == null) {
                     throw new SofaRpcRuntimeException(LogCodes.getLog(LogCodes.ERROR_LOAD_EXT, "Registry", protocol));
                 }
-                registry = ext.getExtInstance(new Class[] { RegistryConfig.class }, new Object[] { registryConfig });
+                registry = ext.getExtInstance(new Class[]{RegistryConfig.class}, new Object[]{registryConfig});
                 ALL_REGISTRIES.put(registryConfig, registry);
             }
             return registry;

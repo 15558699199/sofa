@@ -16,13 +16,14 @@
  */
 package com.alipay.sofa.runtime.spring.factory;
 
-import java.io.ByteArrayInputStream;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.xml.parsers.DocumentBuilderFactory;
-
 import com.alipay.sofa.boot.log.ErrorCode;
+import com.alipay.sofa.runtime.api.ServiceRuntimeException;
+import com.alipay.sofa.runtime.spi.binding.Binding;
+import com.alipay.sofa.runtime.spi.binding.BindingAdapterFactory;
+import com.alipay.sofa.runtime.spi.component.SofaRuntimeContext;
+import com.alipay.sofa.runtime.spi.service.BindingConverter;
+import com.alipay.sofa.runtime.spi.service.BindingConverterContext;
+import com.alipay.sofa.runtime.spi.service.BindingConverterFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
@@ -32,13 +33,10 @@ import org.springframework.context.ApplicationContextAware;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 
-import com.alipay.sofa.runtime.api.ServiceRuntimeException;
-import com.alipay.sofa.runtime.spi.binding.Binding;
-import com.alipay.sofa.runtime.spi.binding.BindingAdapterFactory;
-import com.alipay.sofa.runtime.spi.component.SofaRuntimeContext;
-import com.alipay.sofa.runtime.spi.service.BindingConverter;
-import com.alipay.sofa.runtime.spi.service.BindingConverterContext;
-import com.alipay.sofa.runtime.spi.service.BindingConverterFactory;
+import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.ByteArrayInputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Abstract Contract Factory Bean.
@@ -46,34 +44,60 @@ import com.alipay.sofa.runtime.spi.service.BindingConverterFactory;
  * @author xuanbei 18/3/1
  */
 public abstract class AbstractContractFactoryBean implements InitializingBean, FactoryBean,
-                                                 ApplicationContextAware {
-    /** bean id */
-    protected String                  beanId;
-    /** unique id */
-    protected String                  uniqueId;
-    /** interface class name */
-    protected String                  interfaceType;
-    /** interface class type */
-    protected Class<?>                interfaceClass;
+        ApplicationContextAware {
+    /**
+     * bean id
+     */
+    protected String beanId;
+    /**
+     * unique id
+     */
+    protected String uniqueId;
+    /**
+     * interface class name
+     */
+    protected String interfaceType;
+    /**
+     * interface class type
+     */
+    protected Class<?> interfaceClass;
 
-    /** sofa runtime context */
-    protected SofaRuntimeContext      sofaRuntimeContext;
-    /** xml elements */
-    protected List<TypedStringValue>  elements;
-    /** spring context */
-    protected ApplicationContext      applicationContext;
-    /** bindings */
-    protected List<Binding>           bindings = new ArrayList<>(2);
-    /** document encoding */
-    protected String                  documentEncoding;
-    /** repeat times */
-    protected String                  repeatReferLimit;
-    /** binding converter factory */
+    /**
+     * sofa runtime context
+     */
+    protected SofaRuntimeContext sofaRuntimeContext;
+    /**
+     * xml elements
+     */
+    protected List<TypedStringValue> elements;
+    /**
+     * spring context
+     */
+    protected ApplicationContext applicationContext;
+    /**
+     * bindings
+     */
+    protected List<Binding> bindings = new ArrayList<>(2);
+    /**
+     * document encoding
+     */
+    protected String documentEncoding;
+    /**
+     * repeat times
+     */
+    protected String repeatReferLimit;
+    /**
+     * binding converter factory
+     */
     protected BindingConverterFactory bindingConverterFactory;
-    /** binding adapter factory */
-    protected BindingAdapterFactory   bindingAdapterFactory;
-    /** way to create factory bean. api or xml*/
-    protected boolean                 apiType;
+    /**
+     * binding adapter factory
+     */
+    protected BindingAdapterFactory bindingAdapterFactory;
+    /**
+     * way to create factory bean. api or xml
+     */
+    protected boolean apiType;
 
     @Override
     public void afterPropertiesSet() throws Exception {
@@ -81,19 +105,19 @@ public abstract class AbstractContractFactoryBean implements InitializingBean, F
         if (elements != null) {
             for (TypedStringValue element : elements) {
                 DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory
-                    .newInstance();
+                        .newInstance();
                 documentBuilderFactory.setNamespaceAware(true);
                 InputSource inputSource;
                 if (documentEncoding != null) {
                     inputSource = new InputSource(new ByteArrayInputStream(element.getValue()
-                        .getBytes(documentEncoding)));
+                            .getBytes(documentEncoding)));
                 } else {
                     inputSource = new InputSource(new ByteArrayInputStream(element.getValue()
-                        .getBytes()));
+                            .getBytes()));
                 }
                 inputSource.setEncoding(documentEncoding);
                 Element node = documentBuilderFactory.newDocumentBuilder().parse(inputSource)
-                    .getDocumentElement();
+                        .getDocumentElement();
                 tempElements.add(node);
             }
         }
@@ -110,7 +134,7 @@ public abstract class AbstractContractFactoryBean implements InitializingBean, F
             for (Element element : parseElements) {
                 String tagName = element.getLocalName();
                 BindingConverter bindingConverter = bindingConverterFactory
-                    .getBindingConverterByTagName(tagName);
+                        .getBindingConverterByTagName(tagName);
 
                 if (bindingConverter == null) {
                     dealWithbindingConverterNotExist(tagName);
@@ -149,7 +173,7 @@ public abstract class AbstractContractFactoryBean implements InitializingBean, F
         if (interfaceClass == null) {
             try {
                 interfaceClass = Thread.currentThread().getContextClassLoader()
-                    .loadClass(interfaceType);
+                        .loadClass(interfaceType);
             } catch (ClassNotFoundException e) {
                 throw new RuntimeException(e);
             } catch (NullPointerException e) {
@@ -174,20 +198,20 @@ public abstract class AbstractContractFactoryBean implements InitializingBean, F
         this.bindings = bindings;
     }
 
-    public void setUniqueId(String uniqueId) {
-        this.uniqueId = uniqueId;
-    }
-
     public String getUniqueId() {
         return uniqueId;
     }
 
-    public void setInterfaceType(String interfaceType) {
-        this.interfaceType = interfaceType;
+    public void setUniqueId(String uniqueId) {
+        this.uniqueId = uniqueId;
     }
 
     public String getInterfaceType() {
         return this.interfaceType;
+    }
+
+    public void setInterfaceType(String interfaceType) {
+        this.interfaceType = interfaceType;
     }
 
     public void setElements(List<TypedStringValue> elements) {

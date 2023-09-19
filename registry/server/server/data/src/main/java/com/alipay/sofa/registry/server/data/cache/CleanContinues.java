@@ -17,18 +17,19 @@
 package com.alipay.sofa.registry.server.data.cache;
 
 public interface CleanContinues {
-  CleanContinues ALWAYS =
-      new CleanContinues() {
-        @Override
-        public boolean continues() {
-          return true;
-        }
+    CleanContinues ALWAYS =
+            new CleanContinues() {
+                @Override
+                public boolean continues() {
+                    return true;
+                }
 
-        @Override
-        public void onClean(int num) {}
-      };
+                @Override
+                public void onClean(int num) {
+                }
+            };
 
-  boolean continues();
+    boolean continues();
 
-  void onClean(int num);
+    void onClean(int num);
 }

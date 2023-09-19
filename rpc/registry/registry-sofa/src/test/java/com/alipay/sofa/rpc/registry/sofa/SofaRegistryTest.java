@@ -19,19 +19,10 @@ package com.alipay.sofa.rpc.registry.sofa;
 import com.alipay.sofa.registry.server.test.TestRegistryMain;
 import com.alipay.sofa.rpc.client.ProviderGroup;
 import com.alipay.sofa.rpc.common.RpcConstants;
-import com.alipay.sofa.rpc.config.ApplicationConfig;
-import com.alipay.sofa.rpc.config.ConsumerConfig;
-import com.alipay.sofa.rpc.config.ProviderConfig;
-import com.alipay.sofa.rpc.config.RegistryConfig;
-import com.alipay.sofa.rpc.config.ServerConfig;
+import com.alipay.sofa.rpc.config.*;
 import com.alipay.sofa.rpc.listener.ProviderInfoListener;
 import com.alipay.sofa.rpc.registry.RegistryFactory;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -47,19 +38,19 @@ import java.util.concurrent.TimeUnit;
  */
 public class SofaRegistryTest {
 
-    private static RegistryConfig    registryConfig;
+    private static RegistryConfig registryConfig;
 
-    private static SofaRegistry      registry;
+    private static SofaRegistry registry;
 
     private static ConsumerConfig<?> consumer1;
     private static ConsumerConfig<?> consumer2;
 
-    private static ServerConfig      serverConfig1;
-    private static ServerConfig      serverConfig2;
+    private static ServerConfig serverConfig1;
+    private static ServerConfig serverConfig2;
 
     private static ProviderConfig<?> provider;
 
-    private static TestRegistryMain  registryMain;
+    private static TestRegistryMain registryMain;
 
     @BeforeClass
     public static void beforeClass() {
@@ -71,14 +62,23 @@ public class SofaRegistryTest {
         }
     }
 
+    @AfterClass
+    public static void afterClass() {
+        try {
+            registryMain.stopRegistry();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     @Before
     public void setUp() {
 
         registryConfig = new RegistryConfig()
-            .setProtocol("sofa")
-            .setSubscribe(true)
-            .setRegister(true)
-            .setAddress("127.0.0.1:9603");
+                .setProtocol("sofa")
+                .setSubscribe(true)
+                .setRegister(true)
+                .setAddress("127.0.0.1:9603");
 
         registry = (SofaRegistry) RegistryFactory.getRegistry(registryConfig);
         registry.init();
@@ -107,49 +107,40 @@ public class SofaRegistryTest {
         }
     }
 
-    @AfterClass
-    public static void afterClass() {
-        try {
-            registryMain.stopRegistry();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     @Test
     public void testAll() throws Exception {
 
         int timeoutPerSub = 5000;
 
         serverConfig1 = new ServerConfig()
-            .setProtocol("bolt")
-            .setHost("0.0.0.0")
-            .setPort(12200);
+                .setProtocol("bolt")
+                .setHost("0.0.0.0")
+                .setPort(12200);
 
         provider = new ProviderConfig();
         provider.setInterfaceId("com.alipay.xxx.TestService")
-            .setUniqueId("unique123Id")
-            .setApplication(new ApplicationConfig().setAppName("test-server"))
-            .setProxy("javassist")
-            .setRegister(true)
-            .setRegistry(registryConfig)
-            .setSerialization("hessian2")
-            .setServer(serverConfig1)
-            .setWeight(222)
-            .setTimeout(3000);
+                .setUniqueId("unique123Id")
+                .setApplication(new ApplicationConfig().setAppName("test-server"))
+                .setProxy("javassist")
+                .setRegister(true)
+                .setRegistry(registryConfig)
+                .setSerialization("hessian2")
+                .setServer(serverConfig1)
+                .setWeight(222)
+                .setTimeout(3000);
 
         // 注册
         registry.register(provider);
 
         consumer1 = new ConsumerConfig();
         consumer1.setInterfaceId("com.alipay.xxx.TestService")
-            .setUniqueId("unique123Id")
-            .setApplication(new ApplicationConfig().setAppName("test-server"))
-            .setProxy("javassist")
-            .setSubscribe(true)
-            .setSerialization("java")
-            .setInvokeType("sync")
-            .setTimeout(4444);
+                .setUniqueId("unique123Id")
+                .setApplication(new ApplicationConfig().setAppName("test-server"))
+                .setProxy("javassist")
+                .setSubscribe(true)
+                .setSerialization("java")
+                .setInvokeType("sync")
+                .setTimeout(4444);
 
         String tag0 = SofaRegistryHelper.buildListDataId(provider, serverConfig1.getProtocol());
         String tag1 = SofaRegistryHelper.buildListDataId(consumer1, consumer1.getProtocol());
@@ -180,9 +171,9 @@ public class SofaRegistryTest {
         latch = new CountDownLatch(2);
         providerInfoListener.setCountDownLatch(latch);
         serverConfig2 = new ServerConfig()
-            .setProtocol("bolt")
-            .setHost("0.0.0.0")
-            .setPort(12201);
+                .setProtocol("bolt")
+                .setHost("0.0.0.0")
+                .setPort(12201);
         provider.getServer().add(serverConfig2);
         registry.register(provider);
         latch.await(timeoutPerSub * 2, TimeUnit.MILLISECONDS);
@@ -193,13 +184,13 @@ public class SofaRegistryTest {
         // 重复订阅
         consumer2 = new ConsumerConfig();
         consumer2.setInterfaceId("com.alipay.xxx.TestService")
-            .setUniqueId("unique123Id")
-            .setApplication(new ApplicationConfig().setAppName("test-server"))
-            .setProxy("javassist")
-            .setSubscribe(true)
-            .setSerialization("java")
-            .setInvokeType("sync")
-            .setTimeout(4444);
+                .setUniqueId("unique123Id")
+                .setApplication(new ApplicationConfig().setAppName("test-server"))
+                .setProxy("javassist")
+                .setSubscribe(true)
+                .setSerialization("java")
+                .setInvokeType("sync")
+                .setTimeout(4444);
         CountDownLatch latch2 = new CountDownLatch(1);
         MockProviderInfoListener providerInfoListener2 = new MockProviderInfoListener();
         providerInfoListener2.setCountDownLatch(latch2);
@@ -216,7 +207,7 @@ public class SofaRegistryTest {
         // 取消订阅者1
         registry.unSubscribe(consumer1);
         SofaRegistrySubscribeCallback callback = (SofaRegistrySubscribeCallback) registry.subscribers.get(tag1)
-            .getDataObserver();
+                .getDataObserver();
         Assert.assertFalse(callback.providerInfoListeners.contains(consumer1));
         Assert.assertEquals(1, registry.subscribers.size());
         Assert.assertEquals(1, registry.configurators.size());
@@ -250,13 +241,13 @@ public class SofaRegistryTest {
 
         consumer1 = new ConsumerConfig();
         consumer1.setInterfaceId("com.alipay.xxx.TestService")
-            .setUniqueId("unique123Id")
-            .setApplication(new ApplicationConfig().setAppName("test-server"))
-            .setProxy("javassist")
-            .setSubscribe(true)
-            .setSerialization("java")
-            .setInvokeType("sync")
-            .setTimeout(4444);
+                .setUniqueId("unique123Id")
+                .setApplication(new ApplicationConfig().setAppName("test-server"))
+                .setProxy("javassist")
+                .setSubscribe(true)
+                .setSerialization("java")
+                .setInvokeType("sync")
+                .setTimeout(4444);
 
         // 订阅
         CountDownLatch latch = new CountDownLatch(2);
@@ -274,13 +265,13 @@ public class SofaRegistryTest {
         // 重复订阅
         consumer2 = new ConsumerConfig();
         consumer2.setInterfaceId("com.alipay.xxx.TestService")
-            .setUniqueId("unique123Id")
-            .setApplication(new ApplicationConfig().setAppName("test-server"))
-            .setProxy("javassist")
-            .setSubscribe(true)
-            .setSerialization("java")
-            .setInvokeType("sync")
-            .setTimeout(4444);
+                .setUniqueId("unique123Id")
+                .setApplication(new ApplicationConfig().setAppName("test-server"))
+                .setProxy("javassist")
+                .setSubscribe(true)
+                .setSerialization("java")
+                .setInvokeType("sync")
+                .setTimeout(4444);
         CountDownLatch latch2 = new CountDownLatch(1);
         MockProviderInfoListener providerInfoListener2 = new MockProviderInfoListener();
         providerInfoListener2.setCountDownLatch(latch2);
@@ -308,7 +299,7 @@ public class SofaRegistryTest {
 
         Map<String, ProviderGroup> ps = new HashMap<String, ProviderGroup>();
 
-        private CountDownLatch     countDownLatch;
+        private CountDownLatch countDownLatch;
 
         public void setCountDownLatch(CountDownLatch countDownLatch) {
             this.countDownLatch = countDownLatch;

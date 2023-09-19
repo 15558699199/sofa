@@ -17,34 +17,35 @@
 package com.alipay.sofa.registry.server.data.resource;
 
 import com.alipay.sofa.registry.server.data.bootstrap.DataServerBootstrap;
-import javax.ws.rs.core.Response;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import javax.ws.rs.core.Response;
+
 public class HealthResourceTest {
-  @Test
-  public void test() {
-    HealthResource resource = new HealthResource();
-    resource.dataServerBootstrap = Mockito.mock(DataServerBootstrap.class);
-    resource.init();
-    Response resp = resource.checkHealth();
-    Assert.assertEquals(resp.getStatus(), Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
+    @Test
+    public void test() {
+        HealthResource resource = new HealthResource();
+        resource.dataServerBootstrap = Mockito.mock(DataServerBootstrap.class);
+        resource.init();
+        Response resp = resource.checkHealth();
+        Assert.assertEquals(resp.getStatus(), Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
 
-    Mockito.when(resource.dataServerBootstrap.getServerForSessionStarted()).thenReturn(true);
-    resp = resource.checkHealth();
-    Assert.assertEquals(resp.getStatus(), Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
+        Mockito.when(resource.dataServerBootstrap.getServerForSessionStarted()).thenReturn(true);
+        resp = resource.checkHealth();
+        Assert.assertEquals(resp.getStatus(), Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
 
-    Mockito.when(resource.dataServerBootstrap.getServerForDataSyncStarted()).thenReturn(true);
-    resp = resource.checkHealth();
-    Assert.assertEquals(resp.getStatus(), Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
+        Mockito.when(resource.dataServerBootstrap.getServerForDataSyncStarted()).thenReturn(true);
+        resp = resource.checkHealth();
+        Assert.assertEquals(resp.getStatus(), Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
 
-    Mockito.when(resource.dataServerBootstrap.getHttpServerStarted()).thenReturn(true);
-    resp = resource.checkHealth();
-    Assert.assertEquals(resp.getStatus(), Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
+        Mockito.when(resource.dataServerBootstrap.getHttpServerStarted()).thenReturn(true);
+        resp = resource.checkHealth();
+        Assert.assertEquals(resp.getStatus(), Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
 
-    Mockito.when(resource.dataServerBootstrap.getSchedulerStarted()).thenReturn(true);
-    resp = resource.checkHealth();
-    Assert.assertEquals(resp.getStatus(), Response.Status.OK.getStatusCode());
-  }
+        Mockito.when(resource.dataServerBootstrap.getSchedulerStarted()).thenReturn(true);
+        resp = resource.checkHealth();
+        Assert.assertEquals(resp.getStatus(), Response.Status.OK.getStatusCode());
+    }
 }

@@ -25,25 +25,25 @@ import java.util.concurrent.ConcurrentMap;
  * @author <a href=mailto:zhanggeng.zg@antfin.com>GengZhang</a>
  */
 public class ExtensionLoaderFactory {
-    private ExtensionLoaderFactory() {
-    }
-
     /**
      * All extension loader {Class : ExtensionLoader}
      */
     private static final ConcurrentMap<Class, ExtensionLoader> LOADER_MAP = new ConcurrentHashMap<Class, ExtensionLoader>();
 
+    private ExtensionLoaderFactory() {
+    }
+
     /**
      * Get extension loader by extensible class with listener
-     *
+     * <p>
      * This method is deprecated, use com.alipay.sofa.rpc.ext.ExtensionLoaderFactory#getExtensionLoader(java.lang.Class) instead.
      * Use com.alipay.sofa.rpc.ext.ExtensionLoader#addListener(com.alipay.sofa.rpc.ext.ExtensionLoaderListener) to add listener.
      *
-     * @deprecated
      * @param clazz    Extensible class
      * @param listener Listener of ExtensionLoader
      * @param <T>      Class
      * @return ExtensionLoader of this class
+     * @deprecated
      */
     public static <T> ExtensionLoader<T> getExtensionLoader(Class<T> clazz, ExtensionLoaderListener<T> listener) {
         ExtensionLoader<T> loader = LOADER_MAP.get(clazz);

@@ -30,11 +30,11 @@ public class SystemInfo {
     /**
      * 缓存了本机地址
      */
-    private static String  LOCALHOST;
+    private static String LOCALHOST;
     /**
      * 缓存了物理机地址
      */
-    private static String  HOSTMACHINE;
+    private static String HOSTMACHINE;
     /**
      * 是否Windows系统
      */
@@ -65,7 +65,7 @@ public class SystemInfo {
      */
     @VisibleForTesting
     static boolean[] parseOSName() {
-        boolean[] result = new boolean[] { false, false, false };
+        boolean[] result = new boolean[]{false, false, false};
         String osName = System.getProperty("os.name").toLowerCase();
         if (osName.contains("windows")) {
             result[0] = true;

@@ -24,18 +24,18 @@ import java.io.Serializable;
  */
 public final class SlotTableChangeEvent implements Serializable {
 
-  private final long slotTableEpoch;
+    private final long slotTableEpoch;
 
-  public SlotTableChangeEvent(long slotTableEpoch) {
-    this.slotTableEpoch = slotTableEpoch;
-  }
+    public SlotTableChangeEvent(long slotTableEpoch) {
+        this.slotTableEpoch = slotTableEpoch;
+    }
 
-  public long getSlotTableEpoch() {
-    return slotTableEpoch;
-  }
+    public long getSlotTableEpoch() {
+        return slotTableEpoch;
+    }
 
-  @Override
-  public String toString() {
-    return "SlotTableChangeEvent{" + "slotTableEpoch=" + slotTableEpoch + '}';
-  }
+    @Override
+    public String toString() {
+        return "SlotTableChangeEvent{" + "slotTableEpoch=" + slotTableEpoch + '}';
+    }
 }

@@ -17,6 +17,7 @@
 package com.alipay.sofa.registry.common.model.metaserver;
 
 import com.alipay.sofa.registry.common.model.slot.DataNodeSlot;
+
 import java.util.List;
 
 /**
@@ -24,34 +25,34 @@ import java.util.List;
  * @version v 0.1 2020-11-11 13:48 yuzhi.lyz Exp $
  */
 public class GetSlotTableResult {
-  private final long epoch;
-  private final List<DataNodeSlot> slots;
+    private final long epoch;
+    private final List<DataNodeSlot> slots;
 
-  public GetSlotTableResult(long epoch, List<DataNodeSlot> slots) {
-    this.epoch = epoch;
-    this.slots = slots;
-  }
+    public GetSlotTableResult(long epoch, List<DataNodeSlot> slots) {
+        this.epoch = epoch;
+        this.slots = slots;
+    }
 
-  /**
-   * Getter method for property <tt>epoch</tt>.
-   *
-   * @return property value of epoch
-   */
-  public long getEpoch() {
-    return epoch;
-  }
+    /**
+     * Getter method for property <tt>epoch</tt>.
+     *
+     * @return property value of epoch
+     */
+    public long getEpoch() {
+        return epoch;
+    }
 
-  /**
-   * Getter method for property <tt>slots</tt>.
-   *
-   * @return property value of slots
-   */
-  public List<DataNodeSlot> getSlots() {
-    return slots;
-  }
+    /**
+     * Getter method for property <tt>slots</tt>.
+     *
+     * @return property value of slots
+     */
+    public List<DataNodeSlot> getSlots() {
+        return slots;
+    }
 
-  @Override
-  public String toString() {
-    return "GetSlotTableResult{" + "epoch=" + epoch + ", slots=" + slots + '}';
-  }
+    @Override
+    public String toString() {
+        return "GetSlotTableResult{" + "epoch=" + epoch + ", slots=" + slots + '}';
+    }
 }

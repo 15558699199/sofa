@@ -42,17 +42,17 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @SpringBootTest(classes = RuntimeSofaBootApplication.class)
 @Import(SofaReferenceAnnotationTests.ReferenceBeanAnnotationConfiguration.class)
-@TestPropertySource(properties = { "uniqueIdB=b", "uniqueIdC=c", "uniqueIdD=d", "bindingType=jvm" })
+@TestPropertySource(properties = {"uniqueIdB=b", "uniqueIdC=c", "uniqueIdD=d", "bindingType=jvm"})
 public class SofaReferenceAnnotationTests {
 
     @Autowired
     private TestSofaReferenceBean testSofaReferenceBean;
 
     @Autowired
-    private ApplicationContext    applicationContext;
+    private ApplicationContext applicationContext;
 
     @Autowired
-    private SofaRuntimeManager    sofaRuntimeManager;
+    private SofaRuntimeManager sofaRuntimeManager;
 
     @Test
     public void checkFieldInject() {
@@ -70,27 +70,27 @@ public class SofaReferenceAnnotationTests {
     @Test
     public void checkFactoryBean() {
         assertThat(
-            applicationContext.containsBean(SofaBeanNameGenerator.generateSofaReferenceBeanName(
-                SampleService.class, null))).isFalse();
+                applicationContext.containsBean(SofaBeanNameGenerator.generateSofaReferenceBeanName(
+                        SampleService.class, null))).isFalse();
         assertThat(
-            applicationContext.containsBean(SofaBeanNameGenerator.generateSofaReferenceBeanName(
-                SampleService.class, "b"))).isFalse();
+                applicationContext.containsBean(SofaBeanNameGenerator.generateSofaReferenceBeanName(
+                        SampleService.class, "b"))).isFalse();
         assertThat(
-            applicationContext.containsBean(SofaBeanNameGenerator.generateSofaReferenceBeanName(
-                SampleService.class, "d"))).isFalse();
+                applicationContext.containsBean(SofaBeanNameGenerator.generateSofaReferenceBeanName(
+                        SampleService.class, "d"))).isFalse();
         assertThat(
-            applicationContext.containsBean(SofaBeanNameGenerator.generateSofaReferenceBeanName(
-                SampleService.class, "c"))).isTrue();
+                applicationContext.containsBean(SofaBeanNameGenerator.generateSofaReferenceBeanName(
+                        SampleService.class, "c"))).isTrue();
         assertThat(
-            applicationContext.getBean(SofaBeanNameGenerator.generateSofaReferenceBeanName(
-                SampleService.class, "c"))).isInstanceOf(SampleService.class);
+                applicationContext.getBean(SofaBeanNameGenerator.generateSofaReferenceBeanName(
+                        SampleService.class, "c"))).isInstanceOf(SampleService.class);
     }
 
     @Test
     public void checkReferenceComponent() {
         assertThat(
-            sofaRuntimeManager.getComponentManager()
-                .getComponentInfosByType(REFERENCE_COMPONENT_TYPE).size()).isEqualTo(4);
+                sofaRuntimeManager.getComponentManager()
+                        .getComponentInfosByType(REFERENCE_COMPONENT_TYPE).size()).isEqualTo(4);
     }
 
     @Configuration
@@ -104,23 +104,15 @@ public class SofaReferenceAnnotationTests {
 
     public static class TestSofaReferenceBean {
 
-        @SofaReference(binding = @SofaReferenceBinding(bindingType = "${bindingType}"))
-        private SampleService       sampleServiceA;
-
-        @SofaReference(uniqueId = "${uniqueIdB}")
-        private SampleService       sampleServiceB;
-
         private final SampleService sampleServiceC;
-
-        private SampleService       sampleServiceD;
+        @SofaReference(binding = @SofaReferenceBinding(bindingType = "${bindingType}"))
+        private SampleService sampleServiceA;
+        @SofaReference(uniqueId = "${uniqueIdB}")
+        private SampleService sampleServiceB;
+        private SampleService sampleServiceD;
 
         public TestSofaReferenceBean(SampleService sampleService) {
             sampleServiceC = sampleService;
-        }
-
-        @SofaReference(uniqueId = "${uniqueIdD}")
-        public void setSampleServiceD(SampleService sampleService) {
-            this.sampleServiceD = sampleService;
         }
 
         public SampleService getSampleServiceA() {
@@ -137,6 +129,11 @@ public class SofaReferenceAnnotationTests {
 
         public SampleService getSampleServiceD() {
             return sampleServiceD;
+        }
+
+        @SofaReference(uniqueId = "${uniqueIdD}")
+        public void setSampleServiceD(SampleService sampleService) {
+            this.sampleServiceD = sampleService;
         }
     }
 

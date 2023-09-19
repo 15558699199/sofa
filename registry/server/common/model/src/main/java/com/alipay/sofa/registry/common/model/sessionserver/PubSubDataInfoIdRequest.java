@@ -25,29 +25,30 @@ import java.util.Set;
  */
 public class PubSubDataInfoIdRequest implements Serializable {
 
-  private Set<String> ips;
+    private Set<String> ips;
 
-  public PubSubDataInfoIdRequest() {}
+    public PubSubDataInfoIdRequest() {
+    }
 
-  public PubSubDataInfoIdRequest(Set<String> ips) {
-    this.ips = ips;
-  }
+    public PubSubDataInfoIdRequest(Set<String> ips) {
+        this.ips = ips;
+    }
 
-  /**
-   * Getter method for property <tt>ips</tt>.
-   *
-   * @return property value of ips
-   */
-  public Set<String> getIps() {
-    return ips;
-  }
+    /**
+     * Getter method for property <tt>ips</tt>.
+     *
+     * @return property value of ips
+     */
+    public Set<String> getIps() {
+        return ips;
+    }
 
-  /**
-   * Setter method for property <tt>ips</tt>.
-   *
-   * @param ips value to be assigned to property ips
-   */
-  public void setIps(Set<String> ips) {
-    this.ips = ips;
-  }
+    /**
+     * Setter method for property <tt>ips</tt>.
+     *
+     * @param ips value to be assigned to property ips
+     */
+    public void setIps(Set<String> ips) {
+        this.ips = ips;
+    }
 }

@@ -18,27 +18,28 @@ package com.alipay.sofa.registry.remoting.bolt;
 
 import com.alipay.remoting.BizContext;
 import com.alipay.sofa.registry.remoting.ChannelHandler;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-public class AsyncUserProcessorAdapterTest {
-  @Test
-  public void test() throws Exception {
-    final ChannelHandler handler = Mockito.mock(ChannelHandler.class);
-    AsyncUserProcessorAdapter adapter = new AsyncUserProcessorAdapter(handler);
-    Assert.assertNull(adapter.interest());
-    Mockito.when(handler.interest()).thenReturn(String.class);
-    Assert.assertEquals(adapter.interest(), String.class.getName());
-    Executor executor = Executors.newCachedThreadPool();
-    Mockito.when(handler.getExecutor()).thenReturn(executor);
-    Assert.assertEquals(adapter.getExecutor(), executor);
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
-    final BizContext exceptionContext = Mockito.mock(BizContext.class);
-    Mockito.when(exceptionContext.getConnection()).thenThrow(new RuntimeException());
-    TestUtils.assertException(
-        RuntimeException.class, () -> adapter.handleRequest(exceptionContext, null, "test"));
-  }
+public class AsyncUserProcessorAdapterTest {
+    @Test
+    public void test() throws Exception {
+        final ChannelHandler handler = Mockito.mock(ChannelHandler.class);
+        AsyncUserProcessorAdapter adapter = new AsyncUserProcessorAdapter(handler);
+        Assert.assertNull(adapter.interest());
+        Mockito.when(handler.interest()).thenReturn(String.class);
+        Assert.assertEquals(adapter.interest(), String.class.getName());
+        Executor executor = Executors.newCachedThreadPool();
+        Mockito.when(handler.getExecutor()).thenReturn(executor);
+        Assert.assertEquals(adapter.getExecutor(), executor);
+
+        final BizContext exceptionContext = Mockito.mock(BizContext.class);
+        Mockito.when(exceptionContext.getConnection()).thenThrow(new RuntimeException());
+        TestUtils.assertException(
+                RuntimeException.class, () -> adapter.handleRequest(exceptionContext, null, "test"));
+    }
 }

@@ -25,124 +25,124 @@ public class RpcSpanTags {
 
     //************** String 类型
 
-    public static final String TRACERID                     = "tracerId";
+    public static final String TRACERID = "tracerId";
 
-    public static final String SPANID                       = "spanId";
+    public static final String SPANID = "spanId";
 
-    public static final String BAGGAGE                      = "baggage";
+    public static final String BAGGAGE = "baggage";
 
-    public static final String TIMESTAMP                    = "timestamp";
+    public static final String TIMESTAMP = "timestamp";
 
-    public static final String LOCAL_APP                    = "local.app";
+    public static final String LOCAL_APP = "local.app";
 
-    public static final String SERVICE                      = "service";
+    public static final String SERVICE = "service";
 
-    public static final String METHOD                       = "method";
+    public static final String METHOD = "method";
 
-    public static final String PROTOCOL                     = "protocol";
+    public static final String PROTOCOL = "protocol";
 
-    public static final String INVOKE_TYPE                  = "invoke.type";
+    public static final String INVOKE_TYPE = "invoke.type";
 
     /***
      * 对端地址:目标、来源（相对当前而言）
      */
-    public static final String REMOTE_IP                    = "remote.ip";
+    public static final String REMOTE_IP = "remote.ip";
 
     /***
      * 对端应用
      */
-    public static final String REMOTE_APP                   = "remote.app";
+    public static final String REMOTE_APP = "remote.app";
 
     /***
      * 对端 zone
      */
-    public static final String REMOTE_ZONE                  = "remote.zone";
+    public static final String REMOTE_ZONE = "remote.zone";
 
     /***
      * 对端 idc
      */
-    public static final String REMOTE_IDC                   = "remote.idc";
+    public static final String REMOTE_IDC = "remote.idc";
 
     /***
      * 对端 city
      */
-    public static final String REMOTE_CITY                  = "remote.city";
+    public static final String REMOTE_CITY = "remote.city";
 
     /***
      * userId
      */
-    public static final String USER_ID                      = "user.id";
+    public static final String USER_ID = "user.id";
 
     /**
      * 结果码:00=成功/01=业务异常/02=RPC逻辑错误/03=超时失败/04=路由失败
      */
-    public static final String RESULT_CODE                  = "result.code";
+    public static final String RESULT_CODE = "result.code";
 
     /***
      * 当前线程名字
      */
-    public static final String CURRENT_THREAD_NAME          = "current.thread.name";
+    public static final String CURRENT_THREAD_NAME = "current.thread.name";
 
     /**
      * 路由记录
      */
-    public static final String ROUTE_RECORD                 = "router.record";
+    public static final String ROUTE_RECORD = "router.record";
 
     /***
      * 当前客户端ip地址
      */
-    public static final String LOCAL_IP                     = "local.client.ip";
+    public static final String LOCAL_IP = "local.client.ip";
 
     /***
      * 当前客户端端口
      */
-    public static final String LOCAL_PORT                   = "local.client.port";
+    public static final String LOCAL_PORT = "local.client.port";
 
     //************************* Number 类型 ****************************
     /***
      * 业务处理时间
      */
-    public static final String SERVER_BIZ_TIME              = "biz.impl.time";
+    public static final String SERVER_BIZ_TIME = "biz.impl.time";
 
     /***
      * 请求大小
      */
-    public static final String REQ_SIZE                     = "req.size";
+    public static final String REQ_SIZE = "req.size";
 
     /***
      * 响应大小
      */
-    public static final String RESP_SIZE                    = "resp.size";
+    public static final String RESP_SIZE = "resp.size";
 
     /***
      * 客户端创建长连接时间
      */
-    public static final String CLIENT_CONN_TIME             = "client.conn.time";
+    public static final String CLIENT_CONN_TIME = "client.conn.time";
 
     /***
      * 客户端总耗时
      */
-    public static final String CLIENT_ELAPSE_TIME           = "client.elapse.time";
+    public static final String CLIENT_ELAPSE_TIME = "client.elapse.time";
 
     /***
      * 客户端请求序列化时间
      */
-    public static final String REQ_SERIALIZE_TIME           = "req.serialize.time";
+    public static final String REQ_SERIALIZE_TIME = "req.serialize.time";
 
     /***
      * 服务端响应序列化耗时
      */
-    public static final String RESP_SERIALIZE_TIME          = "resp.serialize.time";
+    public static final String RESP_SERIALIZE_TIME = "resp.serialize.time";
 
     /***
      * 服务端请求序列化耗时
      */
-    public static final String REQ_DESERIALIZE_TIME         = "req.deserialize.time";
+    public static final String REQ_DESERIALIZE_TIME = "req.deserialize.time";
 
     /***
      * 客户端接收响应反序列化时间
      */
-    public static final String RESP_DESERIALIZE_TIME        = "resp.deserialize.time";
+    public static final String RESP_DESERIALIZE_TIME = "resp.deserialize.time";
 
     /***
      * 服务端线程池等待时间
@@ -152,37 +152,37 @@ public class RpcSpanTags {
     /**
      * 客户端转发请求耗时
      */
-    public static final String SEND_TIME_COST               = "send.time.cost";
+    public static final String SEND_TIME_COST = "send.time.cost";
 
     /**
      * 服务端转发请求耗时
      */
-    public static final String SERVER_SEND_TIME_COST        = "server.send.time.cost";
+    public static final String SERVER_SEND_TIME_COST = "server.send.time.cost";
 
     /**
      * 客户端各阶段耗时统计
      */
-    public static final String PHASE_TIME_COST              = "phase.time.cost";
+    public static final String PHASE_TIME_COST = "phase.time.cost";
 
     /**
      * 客户端特殊时间点标记
      */
-    public static final String SPECIAL_TIME_MARK            = "special.time.mark";
+    public static final String SPECIAL_TIME_MARK = "special.time.mark";
 
     /**
      * 客户端路由转发链路详情
      */
-    public static final String ROUTER_FORWARD_DETAIL        = "router.forward.detail";
+    public static final String ROUTER_FORWARD_DETAIL = "router.forward.detail";
 
     /**
      * 服务端各阶段耗时统计
      */
-    public static final String SERVER_PHASE_TIME_COST       = "server.phase.time.cost";
+    public static final String SERVER_PHASE_TIME_COST = "server.phase.time.cost";
 
     /**
      * 服务端特殊时间点标记
      */
-    public static final String SERVER_SPECIAL_TIME_MARK     = "server.special.time.mark";
+    public static final String SERVER_SPECIAL_TIME_MARK = "server.special.time.mark";
 
     /**
      * 服务端路由转发链路详情

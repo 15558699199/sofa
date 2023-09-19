@@ -24,11 +24,7 @@ import org.springframework.util.Assert;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
 /**
  * @author huzijie
@@ -41,7 +37,7 @@ public class CustomModelCreatingStage extends ModelCreatingStage {
     public CustomModelCreatingStage(String... paths) {
         for (String path : paths) {
             URL url = getClass().getClassLoader().getResource(
-                path + "/" + DeploymentDescriptorConfiguration.SOFA_MODULE_FILE);
+                    path + "/" + DeploymentDescriptorConfiguration.SOFA_MODULE_FILE);
             Assert.notNull(url, "url must not be null: " + path);
             additionUrls.add(url);
         }
@@ -50,7 +46,7 @@ public class CustomModelCreatingStage extends ModelCreatingStage {
     @Override
     protected List<DeploymentDescriptor> getDeploymentDescriptors(String modulePropertyFileName,
                                                                   DeploymentDescriptorConfiguration deploymentDescriptorConfiguration)
-                                                                                                                                      throws IOException {
+            throws IOException {
         List<DeploymentDescriptor> deploymentDescriptors = new ArrayList<>();
 
         Enumeration<URL> urls = appClassLoader.getResources(modulePropertyFileName);
@@ -63,7 +59,7 @@ public class CustomModelCreatingStage extends ModelCreatingStage {
             Properties props = new Properties();
             props.load(urlResource.getInputStream());
             DeploymentDescriptor deploymentDescriptor = createDeploymentDescriptor(url, props,
-                deploymentDescriptorConfiguration, appClassLoader, modulePropertyFileName);
+                    deploymentDescriptorConfiguration, appClassLoader, modulePropertyFileName);
             if (ignoreCalculateRequireModules.contains(deploymentDescriptor.getModuleName())) {
                 deploymentDescriptor.setIgnoreRequireModule(true);
             }

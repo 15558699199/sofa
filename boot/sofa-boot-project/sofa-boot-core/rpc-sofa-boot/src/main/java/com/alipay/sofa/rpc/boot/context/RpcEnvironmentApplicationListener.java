@@ -26,8 +26,8 @@ import org.springframework.core.env.Environment;
  * @author khotyn
  */
 public class RpcEnvironmentApplicationListener
-                                              implements
-                                              ApplicationListener<ApplicationEnvironmentPreparedEvent> {
+        implements
+        ApplicationListener<ApplicationEnvironmentPreparedEvent> {
 
     @Override
     public void onApplicationEvent(ApplicationEnvironmentPreparedEvent event) {

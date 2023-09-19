@@ -17,6 +17,7 @@
 package com.alipay.sofa.registry.server.session.bootstrap;
 
 import com.alipay.sofa.registry.server.shared.config.ServerShareConfig;
+
 import java.util.Collection;
 import java.util.Set;
 
@@ -28,185 +29,185 @@ import java.util.Set;
  */
 public interface SessionServerConfig extends ServerShareConfig {
 
-  int getServerPort();
+    int getServerPort();
 
-  int getSyncSessionPort();
+    int getSyncSessionPort();
 
-  int getConsolePort();
+    int getConsolePort();
 
-  int getSyncSessionIOLowWaterMark();
+    int getSyncSessionIOLowWaterMark();
 
-  int getSyncSessionIOHighWaterMark();
+    int getSyncSessionIOHighWaterMark();
 
-  int getClientIOLowWaterMark();
+    int getClientIOLowWaterMark();
 
-  int getClientIOHighWaterMark();
+    int getClientIOHighWaterMark();
 
-  int getMetaServerPort();
+    int getMetaServerPort();
 
-  int getDataServerPort();
+    int getDataServerPort();
 
-  int getDataServerNotifyPort();
+    int getDataServerNotifyPort();
 
-  int getHttpServerPort();
+    int getHttpServerPort();
 
-  int getSchedulerHeartbeatIntervalSecs();
+    int getSchedulerHeartbeatIntervalSecs();
 
-  int getScanSubscriberIntervalMillis();
+    int getScanSubscriberIntervalMillis();
 
-  int getClientNodeExchangeTimeoutMillis();
+    int getClientNodeExchangeTimeoutMillis();
 
-  int getClientNodePushConcurrencyLevel();
+    int getClientNodePushConcurrencyLevel();
 
-  int getDataNodeExchangeTimeoutMillis();
+    int getDataNodeExchangeTimeoutMillis();
 
-  int getDataNodeExchangeForFetchDatumTimeoutMillis();
+    int getDataNodeExchangeForFetchDatumTimeoutMillis();
 
-  int getMetaNodeExchangeTimeoutMillis();
+    int getMetaNodeExchangeTimeoutMillis();
 
-  String getSessionServerRegion();
+    String getSessionServerRegion();
 
-  Set<String> getLocalDataCenterZones();
+    Set<String> getLocalDataCenterZones();
 
-  String getClientCell(String clientCell);
+    String getClientCell(String clientCell);
 
-  boolean isLocalDataCenter(String dataCenter);
+    boolean isLocalDataCenter(String dataCenter);
 
-  String getSessionServerDataCenter();
+    String getSessionServerDataCenter();
 
-  int getAccessDataExecutorPoolSize();
+    int getAccessDataExecutorPoolSize();
 
-  int getAccessDataExecutorQueueSize();
+    int getAccessDataExecutorQueueSize();
 
-  int getAccessSubDataExecutorPoolSize();
+    int getAccessSubDataExecutorPoolSize();
 
-  int getAccessSubDataExecutorQueueSize();
+    int getAccessSubDataExecutorQueueSize();
 
-  int getConsoleExecutorPoolSize();
+    int getConsoleExecutorPoolSize();
 
-  int getConsoleExecutorQueueSize();
+    int getConsoleExecutorQueueSize();
 
-  int getDataChangeExecutorPoolSize();
+    int getDataChangeExecutorPoolSize();
 
-  int getDataChangeExecutorQueueSize();
+    int getDataChangeExecutorQueueSize();
 
-  int getDataChangeDebouncingMillis();
+    int getDataChangeDebouncingMillis();
 
-  int getDataChangeMaxDebouncingMillis();
+    int getDataChangeMaxDebouncingMillis();
 
-  int getPushTaskExecutorPoolSize();
+    int getPushTaskExecutorPoolSize();
 
-  int getPushTaskExecutorQueueSize();
+    int getPushTaskExecutorQueueSize();
 
-  int getPushTaskBufferBucketSize();
+    int getPushTaskBufferBucketSize();
 
-  int getPushTaskRetryTimes();
+    int getPushTaskRetryTimes();
 
-  int getPushDataTaskRetryFirstDelayMillis();
+    int getPushDataTaskRetryFirstDelayMillis();
 
-  int getPushDataTaskRetryIncrementDelayMillis();
+    int getPushDataTaskRetryIncrementDelayMillis();
 
-  int getPushDataTaskDebouncingMillis();
+    int getPushDataTaskDebouncingMillis();
 
-  int getDataChangeFetchTaskWorkerSize();
+    int getDataChangeFetchTaskWorkerSize();
 
-  int getSubscriberRegisterTaskWorkerSize();
+    int getSubscriberRegisterTaskWorkerSize();
 
-  int getWatchPushTaskWorkerSize();
+    int getWatchPushTaskWorkerSize();
 
-  int getWatchPushTaskMaxBufferSize();
+    int getWatchPushTaskMaxBufferSize();
 
-  boolean isInvalidForeverZone(String zoneId);
+    boolean isInvalidForeverZone(String zoneId);
 
-  boolean isInvalidIgnored(String dataId);
+    boolean isInvalidIgnored(String dataId);
 
-  int getDataNodeRetryQueueSize();
+    int getDataNodeRetryQueueSize();
 
-  int getDataNodeRetryTimes();
+    int getDataNodeRetryTimes();
 
-  int getDataNodeRetryBackoffMillis();
+    int getDataNodeRetryBackoffMillis();
 
-  int getDataNodeExecutorWorkerSize();
+    int getDataNodeExecutorWorkerSize();
 
-  int getDataNodeExecutorQueueSize();
+    int getDataNodeExecutorQueueSize();
 
-  int getDataNodeMaxBatchSize();
+    int getDataNodeMaxBatchSize();
 
-  double getAccessLimitRate();
+    double getAccessLimitRate();
 
-  int getDataClientConnNum();
+    int getDataClientConnNum();
 
-  int getDataNotifyClientConnNum();
+    int getDataNotifyClientConnNum();
 
-  int getSessionSchedulerPoolSize();
+    int getSessionSchedulerPoolSize();
 
-  int getSlotSyncPublisherMaxNum();
+    int getSlotSyncPublisherMaxNum();
 
-  Collection<String> getMetaServerAddresses();
+    Collection<String> getMetaServerAddresses();
 
-  int getSlotSyncMaxBufferSize();
+    int getSlotSyncMaxBufferSize();
 
-  int getSlotSyncWorkerSize();
+    int getSlotSyncWorkerSize();
 
-  int getMetaNodeBufferSize();
+    int getMetaNodeBufferSize();
 
-  int getMetaNodeWorkerSize();
+    int getMetaNodeWorkerSize();
 
-  int getAccessMetadataMaxBufferSize();
+    int getAccessMetadataMaxBufferSize();
 
-  int getAccessMetadataWorkerSize();
+    int getAccessMetadataWorkerSize();
 
-  int getCacheDigestIntervalMinutes();
+    int getCacheDigestIntervalMinutes();
 
-  int getCacheCountIntervalSecs();
+    int getCacheCountIntervalSecs();
 
-  int getCacheDatumMaxWeight();
+    int getCacheDatumMaxWeight();
 
-  int getCacheDatumExpireSecs();
+    int getCacheDatumExpireSecs();
 
-  int getHeartbeatCacheCheckerInitialDelaySecs();
+    int getHeartbeatCacheCheckerInitialDelaySecs();
 
-  int getHeartbeatCacheCheckerSecs();
+    int getHeartbeatCacheCheckerSecs();
 
-  int getRevisionHeartbeatInitialDelayMinutes();
+    int getRevisionHeartbeatInitialDelayMinutes();
 
-  int getRevisionHeartbeatMinutes();
+    int getRevisionHeartbeatMinutes();
 
-  int getClientManagerIntervalMillis();
+    int getClientManagerIntervalMillis();
 
-  int getClientOpenIntervalSecs();
+    int getClientOpenIntervalSecs();
 
-  int getPushCircuitBreakerThreshold();
+    int getPushCircuitBreakerThreshold();
 
-  int getPushCircuitBreakerSilenceMillis();
+    int getPushCircuitBreakerSilenceMillis();
 
-  int getSkipPushEmptySilentMillis();
+    int getSkipPushEmptySilentMillis();
 
-  int getClientManagerAddressIntervalMillis();
+    int getClientManagerAddressIntervalMillis();
 
-  int getWatchConfigFetchBatchSize();
+    int getWatchConfigFetchBatchSize();
 
-  int getWatchConfigFetchIntervalMillis();
+    int getWatchConfigFetchIntervalMillis();
 
-  int getWatchConfigFetchLeaseSecs();
+    int getWatchConfigFetchLeaseSecs();
 
-  boolean isWatchConfigEnable();
+    boolean isWatchConfigEnable();
 
-  int getScanWatcherIntervalMillis();
+    int getScanWatcherIntervalMillis();
 
-  boolean isGracefulShutdown();
+    boolean isGracefulShutdown();
 
-  int getPushAddressCircuitBreakerThreshold();
+    int getPushAddressCircuitBreakerThreshold();
 
-  int getPushConsecutiveSuccess();
+    int getPushConsecutiveSuccess();
 
-  int getMetadataRegisterExecutorPoolSize();
+    int getMetadataRegisterExecutorPoolSize();
 
-  int getMetadataRegisterExecutorQueueSize();
+    int getMetadataRegisterExecutorQueueSize();
 
-  int getScanExecutorPoolSize();
+    int getScanExecutorPoolSize();
 
-  int getScanExecutorQueueSize();
+    int getScanExecutorQueueSize();
 
-  long getScanTimeoutMills();
+    long getScanTimeoutMills();
 }

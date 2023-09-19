@@ -40,10 +40,10 @@ public class MulticastRegistryHelper extends RegistryUtils {
             String message = "Invalid multicast address " + multicastAddress;
             if (multicastAddress instanceof Inet4Address) {
                 throw new IllegalArgumentException(message + ", " +
-                    "ipv4 multicast address scope: 224.0.0.0 - 239.255.255.255.");
+                        "ipv4 multicast address scope: 224.0.0.0 - 239.255.255.255.");
             } else {
                 throw new IllegalArgumentException(message + ", " + "ipv6 multicast address must start with ff, " +
-                    "for example: ff01::1");
+                        "for example: ff01::1");
             }
         }
     }
@@ -57,7 +57,7 @@ public class MulticastRegistryHelper extends RegistryUtils {
      */
     public static String buildListDataId(AbstractInterfaceConfig config, String protocol) {
         if (RpcConstants.PROTOCOL_TYPE_BOLT.equals(protocol)
-            || RpcConstants.PROTOCOL_TYPE_TR.equals(protocol)) {
+                || RpcConstants.PROTOCOL_TYPE_TR.equals(protocol)) {
             return ConfigUniqueNameGenerator.getUniqueName(config) + "@DEFAULT";
         } else {
             return ConfigUniqueNameGenerator.getUniqueName(config) + "@" + protocol;
@@ -74,12 +74,12 @@ public class MulticastRegistryHelper extends RegistryUtils {
      */
     public static ProviderInfo convertProviderToProviderInfo(ProviderConfig config, ServerConfig server) {
         ProviderInfo providerInfo = new ProviderInfo()
-            .setPort(server.getPort())
-            .setWeight(config.getWeight())
-            .setSerializationType(config.getSerialization())
-            .setProtocolType(server.getProtocol())
-            .setPath(server.getContextPath())
-            .setStaticAttrs(config.getParameters());
+                .setPort(server.getPort())
+                .setWeight(config.getWeight())
+                .setSerializationType(config.getSerialization())
+                .setProtocolType(server.getProtocol())
+                .setPath(server.getContextPath())
+                .setStaticAttrs(config.getParameters());
         String host = server.getHost();
         if (NetUtils.isLocalHost(host) || NetUtils.isAnyHost(host)) {
             host = SystemInfo.getLocalHost();

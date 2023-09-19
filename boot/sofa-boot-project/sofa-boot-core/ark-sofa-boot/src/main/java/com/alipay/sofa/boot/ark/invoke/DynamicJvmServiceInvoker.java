@@ -40,18 +40,16 @@ import java.lang.reflect.Method;
  */
 public class DynamicJvmServiceInvoker extends ServiceProxy {
 
-    private static final Logger            LOGGER            = SofaBootLoggerFactory
-                                                                 .getLogger(DynamicJvmServiceInvoker.class);
-
-    private final Contract                 contract;
-    private final Object                   targetService;
-    private final String                   bizIdentity;
+    static protected final String TOSTRING_METHOD = "toString";
+    static protected final String EQUALS_METHOD = "equals";
+    static protected final String HASHCODE_METHOD = "hashCode";
+    private static final Logger LOGGER = SofaBootLoggerFactory
+            .getLogger(DynamicJvmServiceInvoker.class);
+    private final Contract contract;
+    private final Object targetService;
+    private final String bizIdentity;
     private final ThreadLocal<ClassLoader> clientClassloader = new ThreadLocal<>();
-    private final boolean                  serialize;
-
-    static protected final String          TOSTRING_METHOD   = "toString";
-    static protected final String          EQUALS_METHOD     = "equals";
-    static protected final String          HASHCODE_METHOD   = "hashCode";
+    private final boolean serialize;
 
     public DynamicJvmServiceInvoker(ClassLoader clientClassloader, ClassLoader serviceClassLoader,
                                     Object targetService, Contract contract, String bizIdentity,
@@ -62,6 +60,33 @@ public class DynamicJvmServiceInvoker extends ServiceProxy {
         this.contract = contract;
         this.bizIdentity = bizIdentity;
         this.serialize = serialize;
+    }
+
+    private static Object hessianTransport(Object source, ClassLoader contextClassLoader) {
+        Object target;
+        ClassLoader currentContextClassloader = Thread.currentThread().getContextClassLoader();
+        try {
+            if (contextClassLoader != null) {
+                Thread.currentThread().setContextClassLoader(contextClassLoader);
+            }
+            SerializerFactory serializerFactory = new SerializerFactory();
+            serializerFactory.setAllowNonSerializable(true);
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            Hessian2Output h2o = new Hessian2Output(bos);
+            h2o.setSerializerFactory(serializerFactory);
+            h2o.writeObject(source);
+            h2o.flush();
+            byte[] content = bos.toByteArray();
+
+            Hessian2Input h2i = new Hessian2Input(new ByteArrayInputStream(content));
+            h2i.setSerializerFactory(serializerFactory);
+            target = h2i.readObject();
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        } finally {
+            Thread.currentThread().setContextClassLoader(currentContextClassloader);
+        }
+        return target;
     }
 
     @Override
@@ -79,13 +104,13 @@ public class DynamicJvmServiceInvoker extends ServiceProxy {
             Object[] targetArguments = invocation.getArguments();
 
             if (TOSTRING_METHOD.equalsIgnoreCase(targetMethod.getName())
-                && targetMethod.getParameterTypes().length == 0) {
+                    && targetMethod.getParameterTypes().length == 0) {
                 return targetService.toString();
             } else if (EQUALS_METHOD.equalsIgnoreCase(targetMethod.getName())
-                       && targetMethod.getParameterTypes().length == 1) {
+                    && targetMethod.getParameterTypes().length == 1) {
                 return targetService.equals(targetArguments[0]);
             } else if (HASHCODE_METHOD.equalsIgnoreCase(targetMethod.getName())
-                       && targetMethod.getParameterTypes().length == 0) {
+                    && targetMethod.getParameterTypes().length == 0) {
                 return targetService.hashCode();
             }
 
@@ -153,34 +178,7 @@ public class DynamicJvmServiceInvoker extends ServiceProxy {
             return targetService.getClass().getMethod(method.getName(), argumentTypes);
         } catch (NoSuchMethodException ex) {
             throw new IllegalStateException(targetService + " in " + bizIdentity
-                                            + " don't have the method " + method);
+                    + " don't have the method " + method);
         }
-    }
-
-    private static Object hessianTransport(Object source, ClassLoader contextClassLoader) {
-        Object target;
-        ClassLoader currentContextClassloader = Thread.currentThread().getContextClassLoader();
-        try {
-            if (contextClassLoader != null) {
-                Thread.currentThread().setContextClassLoader(contextClassLoader);
-            }
-            SerializerFactory serializerFactory = new SerializerFactory();
-            serializerFactory.setAllowNonSerializable(true);
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            Hessian2Output h2o = new Hessian2Output(bos);
-            h2o.setSerializerFactory(serializerFactory);
-            h2o.writeObject(source);
-            h2o.flush();
-            byte[] content = bos.toByteArray();
-
-            Hessian2Input h2i = new Hessian2Input(new ByteArrayInputStream(content));
-            h2i.setSerializerFactory(serializerFactory);
-            target = h2i.readObject();
-        } catch (IOException ex) {
-            throw new RuntimeException(ex);
-        } finally {
-            Thread.currentThread().setContextClassLoader(currentContextClassloader);
-        }
-        return target;
     }
 }

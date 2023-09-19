@@ -46,20 +46,42 @@ import java.util.jar.JarFile;
  */
 public class SofaBootPlugin implements Plugin<Project> {
 
-    private static final String SOFA_BOOT_VERSION                = determineSofaBootVersion();
-
+    /**
+     * The name of the {@link Configuration} that contains Spring Boot archives.
+     *
+     * @since 2.0.0
+     */
+    public static final String BOOT_ARCHIVES_CONFIGURATION_NAME = "bootArchives";
+    private static final String SOFA_BOOT_VERSION = determineSofaBootVersion();
     /**
      * The coordinates {@code (group:name:version)} of the
      * {@code sofaboot-dependencies} bom.
      */
-    static final String         BOM_COORDINATES                  = "com.alipay.sofa:sofaboot-dependencies:"
-                                                                   + SOFA_BOOT_VERSION;
+    static final String BOM_COORDINATES = "com.alipay.sofa:sofaboot-dependencies:"
+            + SOFA_BOOT_VERSION;
 
-    /**
-     * The name of the {@link Configuration} that contains Spring Boot archives.
-     * @since 2.0.0
-     */
-    public static final String  BOOT_ARCHIVES_CONFIGURATION_NAME = "bootArchives";
+    // This method always returns null when executing gradle test
+    // The version of the sofaboot-dependencies is determined by dependency graph resolving
+    // As is {@link org.springframework.boot.gradle.plugin.SpringBootPlugin#determineSpringBootVersion}
+    private static String determineSofaBootVersion() {
+        URL codeSourceLocation = Marker.class.getProtectionDomain().getCodeSource().getLocation();
+        try {
+            URLConnection connection = codeSourceLocation.openConnection();
+            if (connection instanceof JarURLConnection) {
+                return getImplementationVersion(((JarURLConnection) connection).getJarFile());
+            }
+            try (JarFile jarFile = new JarFile(new File(codeSourceLocation.toURI()))) {
+                return getImplementationVersion(jarFile);
+            }
+        } catch (Exception ex) {
+            return null;
+        }
+    }
+
+    private static String getImplementationVersion(JarFile jarFile) throws IOException {
+        return jarFile.getManifest().getMainAttributes()
+                .getValue(Attributes.Name.IMPLEMENTATION_VERSION);
+    }
 
     @Override
     public void apply(Project project) {
@@ -73,7 +95,7 @@ public class SofaBootPlugin implements Plugin<Project> {
         GradleVersion currentVersion = GradleVersion.current();
         if (currentVersion.compareTo(GradleVersion.version("7.4")) < 0) {
             throw new GradleException("Spring Boot plugin requires Gradle 7.x (7.4 or later). "
-                                      + "The current version is " + currentVersion);
+                    + "The current version is " + currentVersion);
         }
     }
 
@@ -83,7 +105,7 @@ public class SofaBootPlugin implements Plugin<Project> {
 
     private Configuration createBootArchivesConfiguration(Project project) {
         Configuration bootArchives = project.getConfigurations().create(
-            BOOT_ARCHIVES_CONFIGURATION_NAME);
+                BOOT_ARCHIVES_CONFIGURATION_NAME);
         bootArchives.setDescription("Configuration for Spring Boot archive artifacts.");
         bootArchives.setCanBeResolved(false);
         return bootArchives;
@@ -111,28 +133,5 @@ public class SofaBootPlugin implements Plugin<Project> {
             return;
         }
         consumer.accept(pluginClass);
-    }
-
-    // This method always returns null when executing gradle test
-    // The version of the sofaboot-dependencies is determined by dependency graph resolving
-    // As is {@link org.springframework.boot.gradle.plugin.SpringBootPlugin#determineSpringBootVersion}
-    private static String determineSofaBootVersion() {
-        URL codeSourceLocation = Marker.class.getProtectionDomain().getCodeSource().getLocation();
-        try {
-            URLConnection connection = codeSourceLocation.openConnection();
-            if (connection instanceof JarURLConnection) {
-                return getImplementationVersion(((JarURLConnection) connection).getJarFile());
-            }
-            try (JarFile jarFile = new JarFile(new File(codeSourceLocation.toURI()))) {
-                return getImplementationVersion(jarFile);
-            }
-        } catch (Exception ex) {
-            return null;
-        }
-    }
-
-    private static String getImplementationVersion(JarFile jarFile) throws IOException {
-        return jarFile.getManifest().getMainAttributes()
-            .getValue(Attributes.Name.IMPLEMENTATION_VERSION);
     }
 }

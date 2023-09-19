@@ -18,10 +18,11 @@ package com.alipay.sofa.registry.remoting.jersey;
 
 import com.alipay.sofa.registry.net.NetUtil;
 import com.alipay.sofa.registry.remoting.Channel;
-import java.net.InetSocketAddress;
-import java.net.URI;
+
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.WebTarget;
+import java.net.InetSocketAddress;
+import java.net.URI;
 
 /**
  * @author shangyu.wh
@@ -29,62 +30,64 @@ import javax.ws.rs.client.WebTarget;
  */
 public class JerseyChannel implements Channel {
 
-  private final WebTarget webTarget;
+    private final WebTarget webTarget;
 
-  private final Client client;
+    private final Client client;
 
-  public JerseyChannel(WebTarget webTarget, Client client) {
-    this.webTarget = webTarget;
-    this.client = client;
-  }
-
-  @Override
-  public InetSocketAddress getRemoteAddress() {
-    URI uri = webTarget.getUri();
-    return new InetSocketAddress(uri.getHost(), uri.getPort());
-  }
-
-  @Override
-  public InetSocketAddress getLocalAddress() {
-    return NetUtil.getLocalSocketAddress();
-  }
-
-  @Override
-  public boolean isConnected() {
-    if (client instanceof org.glassfish.jersey.client.JerseyClient) {
-      return !((org.glassfish.jersey.client.JerseyClient) client).isClosed();
+    public JerseyChannel(WebTarget webTarget, Client client) {
+        this.webTarget = webTarget;
+        this.client = client;
     }
-    return false;
-  }
 
-  @Override
-  public Object getAttribute(String key) {
-    return null;
-  }
+    @Override
+    public InetSocketAddress getRemoteAddress() {
+        URI uri = webTarget.getUri();
+        return new InetSocketAddress(uri.getHost(), uri.getPort());
+    }
 
-  @Override
-  public void setAttribute(String key, Object value) {}
+    @Override
+    public InetSocketAddress getLocalAddress() {
+        return NetUtil.getLocalSocketAddress();
+    }
 
-  @Override
-  public Object getConnAttribute(String key) {
-    return null;
-  }
+    @Override
+    public boolean isConnected() {
+        if (client instanceof org.glassfish.jersey.client.JerseyClient) {
+            return !((org.glassfish.jersey.client.JerseyClient) client).isClosed();
+        }
+        return false;
+    }
 
-  @Override
-  public void setConnAttribute(String key, Object value) {}
+    @Override
+    public Object getAttribute(String key) {
+        return null;
+    }
 
-  /**
-   * Getter method for property <tt>webTarget</tt>.
-   *
-   * @return property value of webTarget
-   */
-  @Override
-  public WebTarget getWebTarget() {
-    return webTarget;
-  }
+    @Override
+    public void setAttribute(String key, Object value) {
+    }
 
-  @Override
-  public void close() {
-    client.close();
-  }
+    @Override
+    public Object getConnAttribute(String key) {
+        return null;
+    }
+
+    @Override
+    public void setConnAttribute(String key, Object value) {
+    }
+
+    /**
+     * Getter method for property <tt>webTarget</tt>.
+     *
+     * @return property value of webTarget
+     */
+    @Override
+    public WebTarget getWebTarget() {
+        return webTarget;
+    }
+
+    @Override
+    public void close() {
+        client.close();
+    }
 }

@@ -40,11 +40,11 @@ public class ReporterFactory {
         if (StringUtils.equals(REPORT_TYPE, "MEMORY")) {
             //构造实例
             reporter = new MemoryReporterImpl(digestLog, digestRollingPolicy,
-                digestLogReserveConfig, spanEncoder, statReporter);
+                    digestLogReserveConfig, spanEncoder, statReporter);
         } else {
             //构造实例
             reporter = new DiskReporterImpl(digestLog, digestRollingPolicy,
-                digestLogReserveConfig, spanEncoder, statReporter);
+                    digestLogReserveConfig, spanEncoder, statReporter);
         }
         return reporter;
     }

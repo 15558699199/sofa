@@ -18,8 +18,11 @@ package com.alipay.sofa.registry.server.session.resource;
 
 import com.alipay.sofa.registry.common.model.metaserver.CompressPushSwitch;
 import com.alipay.sofa.registry.server.session.providedata.CompressPushService;
+
 import javax.annotation.Resource;
-import javax.ws.rs.*;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 /*
@@ -27,12 +30,13 @@ temp set current session push compress switch
 */
 @Path("compress")
 public class CompressResource {
-  @Resource CompressPushService compressPushService;
+    @Resource
+    CompressPushService compressPushService;
 
-  @GET
-  @Path("push/state")
-  @Produces(MediaType.APPLICATION_JSON)
-  public CompressPushSwitch getCurrentSwitch() {
-    return compressPushService.getCompressSwitch();
-  }
+    @GET
+    @Path("push/state")
+    @Produces(MediaType.APPLICATION_JSON)
+    public CompressPushSwitch getCurrentSwitch() {
+        return compressPushService.getCompressSwitch();
+    }
 }

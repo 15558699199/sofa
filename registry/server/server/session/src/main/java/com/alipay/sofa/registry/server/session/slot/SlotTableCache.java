@@ -19,6 +19,7 @@ package com.alipay.sofa.registry.server.session.slot;
 import com.alipay.sofa.registry.common.model.multi.cluster.RemoteSlotTableStatus;
 import com.alipay.sofa.registry.common.model.slot.Slot;
 import com.alipay.sofa.registry.common.model.slot.SlotTable;
+
 import java.util.Map;
 
 /**
@@ -26,67 +27,67 @@ import java.util.Map;
  * @version v 0.1 2020-11-06 16:21 yuzhi.lyz Exp $
  */
 public interface SlotTableCache {
-  /**
-   * Slot of int.
-   *
-   * @param dataInfoId the data info id
-   * @return the int
-   */
-  int slotOf(String dataInfoId);
+    /**
+     * Slot of int.
+     *
+     * @param dataInfoId the data info id
+     * @return the int
+     */
+    int slotOf(String dataInfoId);
 
-  /**
-   * Gets get slot.
-   *
-   * @param dataInfoId the data info id
-   * @param dataCenter dataCenter
-   * @return the get slot
-   */
-  Slot getSlot(String dataCenter, String dataInfoId);
+    /**
+     * Gets get slot.
+     *
+     * @param dataInfoId the data info id
+     * @param dataCenter dataCenter
+     * @return the get slot
+     */
+    Slot getSlot(String dataCenter, String dataInfoId);
 
-  /**
-   * Gets get slot.
-   *
-   * @param slotId the slot id
-   * @param dataCenter dataCenter
-   * @return the get slot
-   */
-  Slot getSlot(String dataCenter, int slotId);
+    /**
+     * Gets get slot.
+     *
+     * @param slotId     the slot id
+     * @param dataCenter dataCenter
+     * @return the get slot
+     */
+    Slot getSlot(String dataCenter, int slotId);
 
-  /**
-   * Gets get leader.
-   *
-   * @param slotId the slot id
-   * @param dataCenter dataCenter
-   * @return the get leader
-   */
-  String getLeader(String dataCenter, int slotId);
+    /**
+     * Gets get leader.
+     *
+     * @param slotId     the slot id
+     * @param dataCenter dataCenter
+     * @return the get leader
+     */
+    String getLeader(String dataCenter, int slotId);
 
-  /**
-   * Gets get epoch.
-   *
-   * @param dataCenter dataCenter
-   * @return the get epoch
-   */
-  long getEpoch(String dataCenter);
+    /**
+     * Gets get epoch.
+     *
+     * @param dataCenter dataCenter
+     * @return the get epoch
+     */
+    long getEpoch(String dataCenter);
 
-  /**
-   * Update slot table boolean.
-   *
-   * @param slotTable the slot table
-   * @return the boolean
-   */
-  boolean updateLocalSlotTable(SlotTable slotTable);
+    /**
+     * Update slot table boolean.
+     *
+     * @param slotTable the slot table
+     * @return the boolean
+     */
+    boolean updateLocalSlotTable(SlotTable slotTable);
 
-  boolean updateRemoteSlotTable(Map<String, RemoteSlotTableStatus> remoteSlotTableStatus);
+    boolean updateRemoteSlotTable(Map<String, RemoteSlotTableStatus> remoteSlotTableStatus);
 
-  /**
-   * Gets get current slot table.
-   *
-   * @return the get current slot table
-   */
-  SlotTable getLocalSlotTable();
+    /**
+     * Gets get current slot table.
+     *
+     * @return the get current slot table
+     */
+    SlotTable getLocalSlotTable();
 
-  Map<String, Long> getRemoteSlotTableEpoch();
+    Map<String, Long> getRemoteSlotTableEpoch();
 
-  SlotTable getSlotTable(String dataCenter);
+    SlotTable getSlotTable(String dataCenter);
 }

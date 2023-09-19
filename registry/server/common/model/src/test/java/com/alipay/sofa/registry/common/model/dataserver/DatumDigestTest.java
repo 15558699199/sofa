@@ -20,16 +20,16 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class DatumDigestTest {
-  @Test
-  public void test() {
-    DatumDigest datumDigest1 = new DatumDigest(1, 2, 3, 4, (short) 5, (short) 6);
-    DatumDigest datumDigest2 = new DatumDigest(1, 2, 3, 4, (short) 5, (short) 6);
-    Assert.assertEquals(datumDigest1, datumDigest2);
-    Assert.assertEquals(datumDigest1.hashCode(), datumDigest2.hashCode());
-    Assert.assertEquals(datumDigest1.toString(), datumDigest2.toString());
+    @Test
+    public void test() {
+        DatumDigest datumDigest1 = new DatumDigest(1, 2, 3, 4, (short) 5, (short) 6);
+        DatumDigest datumDigest2 = new DatumDigest(1, 2, 3, 4, (short) 5, (short) 6);
+        Assert.assertEquals(datumDigest1, datumDigest2);
+        Assert.assertEquals(datumDigest1.hashCode(), datumDigest2.hashCode());
+        Assert.assertEquals(datumDigest1.toString(), datumDigest2.toString());
 
-    DatumDigest datumDigest3 = new DatumDigest(2, 2, 3, 4, (short) 5, (short) 6);
-    Assert.assertNotEquals(datumDigest1, datumDigest3);
-    Assert.assertNotEquals(datumDigest1.toString(), datumDigest3.toString());
-  }
+        DatumDigest datumDigest3 = new DatumDigest(2, 2, 3, 4, (short) 5, (short) 6);
+        Assert.assertNotEquals(datumDigest1, datumDigest3);
+        Assert.assertNotEquals(datumDigest1.toString(), datumDigest3.toString());
+    }
 }

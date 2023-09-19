@@ -17,20 +17,21 @@
 package com.alipay.sofa.registry.server.shared.comparator;
 
 import com.google.common.collect.Sets;
-import java.util.Set;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class ComparatorTest {
-  @Test
-  public void test() {
-    Set<String> prev = Sets.newHashSet("1", "2");
-    Set<String> cur = Sets.newHashSet("2", "3");
+import java.util.Set;
 
-    NodeComparator comparator = new NodeComparator(prev, cur);
-    Assert.assertEquals(comparator.totalChange(), 2);
-    Assert.assertTrue(comparator.hasAnyChange());
-    Assert.assertEquals(comparator.getAdded(), Sets.newHashSet("3"));
-    Assert.assertEquals(comparator.getRemoved(), Sets.newHashSet("1"));
-  }
+public class ComparatorTest {
+    @Test
+    public void test() {
+        Set<String> prev = Sets.newHashSet("1", "2");
+        Set<String> cur = Sets.newHashSet("2", "3");
+
+        NodeComparator comparator = new NodeComparator(prev, cur);
+        Assert.assertEquals(comparator.totalChange(), 2);
+        Assert.assertTrue(comparator.hasAnyChange());
+        Assert.assertEquals(comparator.getAdded(), Sets.newHashSet("3"));
+        Assert.assertEquals(comparator.getRemoved(), Sets.newHashSet("1"));
+    }
 }

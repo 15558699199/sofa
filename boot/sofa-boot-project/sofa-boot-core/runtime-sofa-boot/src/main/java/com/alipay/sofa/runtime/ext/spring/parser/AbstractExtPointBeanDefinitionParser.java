@@ -49,15 +49,15 @@ public abstract class AbstractExtPointBeanDefinitionParser implements BeanDefini
                 String id = resolveId(element, definition, parserContext);
                 if (!StringUtils.hasText(id)) {
                     parserContext.getReaderContext().error(
-                        "Id is required for element '"
-                                + parserContext.getDelegate().getLocalName(element)
-                                + "' when used as a top-level tag", element);
+                            "Id is required for element '"
+                                    + parserContext.getDelegate().getLocalName(element)
+                                    + "' when used as a top-level tag", element);
                 }
                 BeanDefinitionHolder holder = new BeanDefinitionHolder(definition, id);
                 registerBeanDefinition(holder, parserContext.getRegistry());
                 if (shouldFireEvents()) {
                     BeanComponentDefinition componentDefinition = new BeanComponentDefinition(
-                        holder);
+                            holder);
                     postProcessComponentDefinition(componentDefinition);
                     parserContext.registerComponent(componentDefinition);
                 }

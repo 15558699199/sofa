@@ -37,7 +37,7 @@ public class SofaBizHealthCheckEventHandler implements EventHandler<AfterBizStar
 
     private static final String READINESS_CHECK_LISTENER_CLASS = "com.alipay.sofa.boot.actuator.health.ReadinessCheckListener";
 
-    private static boolean      isReadinessCheckListenerClassExist;
+    private static boolean isReadinessCheckListenerClassExist;
 
     static {
         try {
@@ -60,14 +60,14 @@ public class SofaBizHealthCheckEventHandler implements EventHandler<AfterBizStar
         }
 
         ApplicationContext applicationContext = SofaRuntimeContainer.getApplicationContext(biz
-            .getBizClassLoader());
+                .getBizClassLoader());
 
         if (applicationContext == null) {
             throw new IllegalStateException("No application match classLoader");
         }
 
         ObjectProvider<ReadinessCheckListener> provider = applicationContext
-            .getBeanProvider(ReadinessCheckListener.class);
+                .getBeanProvider(ReadinessCheckListener.class);
         ReadinessCheckListener readinessCheckListener = provider.getIfUnique();
 
         if (readinessCheckListener != null) {

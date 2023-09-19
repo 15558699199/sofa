@@ -28,12 +28,13 @@ import com.alipay.sofa.registry.remoting.exchange.message.Response.ResultStatus;
 import com.alipay.sofa.registry.server.meta.MetaLeaderService;
 import com.alipay.sofa.registry.server.meta.bootstrap.config.MetaServerConfig;
 import com.alipay.sofa.registry.server.shared.remoting.ClientSideExchanger;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * @author xiaojian.xj
@@ -41,93 +42,91 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class MetaNodeExchange extends ClientSideExchanger {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(MetaNodeExchange.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MetaNodeExchange.class);
+    private final ReadWriteLock lock = new ReentrantReadWriteLock();
+    protected volatile String metaLeader;
+    @Autowired
+    private MetaServerConfig metaServerConfig;
+    @Autowired
+    private MetaLeaderService metaLeaderService;
 
-  @Autowired private MetaServerConfig metaServerConfig;
-
-  @Autowired private MetaLeaderService metaLeaderService;
-
-  protected volatile String metaLeader;
-
-  private final ReadWriteLock lock = new ReentrantReadWriteLock();
-
-  public MetaNodeExchange() {
-    super(Exchange.META_SERVER_TYPE);
-  }
-
-  @Override
-  public int getRpcTimeoutMillis() {
-    return metaServerConfig.getMetaNodeExchangeTimeoutMillis();
-  }
-
-  @Override
-  public int getServerPort() {
-    return metaServerConfig.getMetaServerPort();
-  }
-
-  @Override
-  protected Collection<ChannelHandler> getClientHandlers() {
-    return Collections.emptyList();
-  }
-
-  @Override
-  public int getConnNum() {
-    return 3;
-  }
-
-  public Response sendRequest(Object requestBody) throws RequestException {
-    final String newLeader = metaLeaderService.getLeader();
-    if (StringUtils.isBlank(newLeader)) {
-      LOGGER.error("[sendRequest] meta leader is empty.");
-      return () -> ResultStatus.FAILED;
+    public MetaNodeExchange() {
+        super(Exchange.META_SERVER_TYPE);
     }
 
-    if (!StringUtils.equals(metaLeader, newLeader) || boltExchange.getClient(serverType) == null) {
-      setLeaderAndConnect(newLeader);
+    @Override
+    public int getRpcTimeoutMillis() {
+        return metaServerConfig.getMetaNodeExchangeTimeoutMillis();
     }
 
-    Request request =
-        new Request() {
-          @Override
-          public Object getRequestBody() {
-            return requestBody;
-          }
-
-          @Override
-          public URL getRequestUrl() {
-            return new URL(newLeader, getServerPort());
-          }
-        };
-    return request(request);
-  }
-
-  private void setLeaderAndConnect(String newLeader) {
-    String removed = metaLeader;
-    try {
-      lock.writeLock().lock();
-      metaLeader = newLeader;
-    } finally {
-      lock.writeLock().unlock();
+    @Override
+    public int getServerPort() {
+        return metaServerConfig.getMetaServerPort();
     }
 
-    try {
-      LOGGER.info(
-          "[setLeaderAndConnect][reset leader when heartbeat] connect meta leader: {}",
-          newLeader,
-          removed);
-      connect(new URL(newLeader, metaServerConfig.getMetaServerPort()));
-
-    } catch (Throwable th) {
-      LOGGER.error("[setLeaderAndConnect]", th);
+    @Override
+    protected Collection<ChannelHandler> getClientHandlers() {
+        return Collections.emptyList();
     }
-  }
 
-  /**
-   * Getter method for property <tt>metaLeader</tt>.
-   *
-   * @return property value of metaLeader
-   */
-  public String getMetaLeader() {
-    return metaLeader;
-  }
+    @Override
+    public int getConnNum() {
+        return 3;
+    }
+
+    public Response sendRequest(Object requestBody) throws RequestException {
+        final String newLeader = metaLeaderService.getLeader();
+        if (StringUtils.isBlank(newLeader)) {
+            LOGGER.error("[sendRequest] meta leader is empty.");
+            return () -> ResultStatus.FAILED;
+        }
+
+        if (!StringUtils.equals(metaLeader, newLeader) || boltExchange.getClient(serverType) == null) {
+            setLeaderAndConnect(newLeader);
+        }
+
+        Request request =
+                new Request() {
+                    @Override
+                    public Object getRequestBody() {
+                        return requestBody;
+                    }
+
+                    @Override
+                    public URL getRequestUrl() {
+                        return new URL(newLeader, getServerPort());
+                    }
+                };
+        return request(request);
+    }
+
+    private void setLeaderAndConnect(String newLeader) {
+        String removed = metaLeader;
+        try {
+            lock.writeLock().lock();
+            metaLeader = newLeader;
+        } finally {
+            lock.writeLock().unlock();
+        }
+
+        try {
+            LOGGER.info(
+                    "[setLeaderAndConnect][reset leader when heartbeat] connect meta leader: {}",
+                    newLeader,
+                    removed);
+            connect(new URL(newLeader, metaServerConfig.getMetaServerPort()));
+
+        } catch (Throwable th) {
+            LOGGER.error("[setLeaderAndConnect]", th);
+        }
+    }
+
+    /**
+     * Getter method for property <tt>metaLeader</tt>.
+     *
+     * @return property value of metaLeader
+     */
+    public String getMetaLeader() {
+        return metaLeader;
+    }
 }

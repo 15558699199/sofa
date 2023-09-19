@@ -17,28 +17,29 @@
 package com.alipay.sofa.registry.common.model.metaserver;
 
 import com.google.common.collect.Sets;
-import java.util.HashSet;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class CompressPushSwitchTest {
-  @Test
-  public void test() {
-    CompressPushSwitch compressPushSwitch = CompressPushSwitch.defaultSwitch();
-    Assert.assertFalse(compressPushSwitch.isEnabled());
-    compressPushSwitch.setEnabled(true);
-    Assert.assertTrue(compressPushSwitch.isEnabled());
-    compressPushSwitch.setEnabledClients(new HashSet<>());
-    Assert.assertEquals(compressPushSwitch.getEnabledClients().size(), 0);
-    compressPushSwitch.setEnabledSessions(new HashSet<>());
-    Assert.assertEquals(compressPushSwitch.getEnabledSessions().size(), 0);
-    compressPushSwitch.setForbidEncodes(new HashSet<>());
-    Assert.assertEquals(compressPushSwitch.getForbidEncodes().size(), 0);
+import java.util.HashSet;
 
-    compressPushSwitch.setCompressMinSize(1000);
-    Assert.assertEquals(compressPushSwitch.getCompressMinSize(), 1000);
-    compressPushSwitch.setEnabledClients(Sets.newHashSet("123"));
-    compressPushSwitch.setEnabledSessions(Sets.newHashSet("123"));
-    compressPushSwitch.setForbidEncodes(Sets.newHashSet("123"));
-  }
+public class CompressPushSwitchTest {
+    @Test
+    public void test() {
+        CompressPushSwitch compressPushSwitch = CompressPushSwitch.defaultSwitch();
+        Assert.assertFalse(compressPushSwitch.isEnabled());
+        compressPushSwitch.setEnabled(true);
+        Assert.assertTrue(compressPushSwitch.isEnabled());
+        compressPushSwitch.setEnabledClients(new HashSet<>());
+        Assert.assertEquals(compressPushSwitch.getEnabledClients().size(), 0);
+        compressPushSwitch.setEnabledSessions(new HashSet<>());
+        Assert.assertEquals(compressPushSwitch.getEnabledSessions().size(), 0);
+        compressPushSwitch.setForbidEncodes(new HashSet<>());
+        Assert.assertEquals(compressPushSwitch.getForbidEncodes().size(), 0);
+
+        compressPushSwitch.setCompressMinSize(1000);
+        Assert.assertEquals(compressPushSwitch.getCompressMinSize(), 1000);
+        compressPushSwitch.setEnabledClients(Sets.newHashSet("123"));
+        compressPushSwitch.setEnabledSessions(Sets.newHashSet("123"));
+        compressPushSwitch.setForbidEncodes(Sets.newHashSet("123"));
+    }
 }

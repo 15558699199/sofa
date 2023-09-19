@@ -40,17 +40,17 @@ public class ConnectionHolderFactory {
         try {
             connectionHolder = consumerBootstrap.getConsumerConfig().getConnectionHolder();
             ExtensionClass<ConnectionHolder> ext = ExtensionLoaderFactory
-                .getExtensionLoader(ConnectionHolder.class).getExtensionClass(connectionHolder);
+                    .getExtensionLoader(ConnectionHolder.class).getExtensionClass(connectionHolder);
             if (ext == null) {
                 throw new SofaRpcRuntimeException(LogCodes.getLog(LogCodes.ERROR_LOAD_CONNECTION_HOLDER,
-                    connectionHolder));
+                        connectionHolder));
             }
-            return ext.getExtInstance(new Class[] { ConsumerBootstrap.class }, new Object[] { consumerBootstrap });
+            return ext.getExtInstance(new Class[]{ConsumerBootstrap.class}, new Object[]{consumerBootstrap});
         } catch (SofaRpcRuntimeException e) {
             throw e;
         } catch (Throwable e) {
             throw new SofaRpcRuntimeException(LogCodes.getLog(LogCodes.ERROR_LOAD_CONNECTION_HOLDER, connectionHolder),
-                e);
+                    e);
         }
     }
 }

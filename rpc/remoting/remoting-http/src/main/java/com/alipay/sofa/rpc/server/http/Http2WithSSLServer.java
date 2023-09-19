@@ -19,7 +19,6 @@ package com.alipay.sofa.rpc.server.http;
 import com.alipay.sofa.rpc.ext.Extension;
 
 /**
- *
  * @author <a href="mailto:466178395@qq.com">LiHao</a>
  * @since 5.6.2
  */

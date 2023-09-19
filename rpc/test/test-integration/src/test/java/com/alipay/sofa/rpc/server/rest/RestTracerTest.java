@@ -32,8 +32,8 @@ import com.alipay.sofa.rpc.tracer.Tracer;
 import com.alipay.sofa.rpc.tracer.Tracers;
 import com.alipay.sofa.rpc.tracer.sofatracer.RpcSofaTracer;
 import com.alipay.sofa.rpc.tracer.sofatracer.factory.MemoryReporterImpl;
-import org.junit.Assert;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -55,15 +55,15 @@ public class RestTracerTest extends ActivelyDestroyTest {
 
     private MemoryReporterImpl memoryReporter;
 
-    private DiskReporterImpl   diskReporter;
+    private DiskReporterImpl diskReporter;
 
-    private Field              tracerField         = null;
+    private Field tracerField = null;
 
-    private Field              clientReporterField = null;
+    private Field clientReporterField = null;
 
-    private Field              serverReporterField = null;
+    private Field serverReporterField = null;
 
-    private SofaTracer         tracer              = null;
+    private SofaTracer tracer = null;
 
     @Before
     public void before() {
@@ -78,26 +78,26 @@ public class RestTracerTest extends ActivelyDestroyTest {
         memoryReporter = (MemoryReporterImpl) clientReporter;
 
         ServerConfig restServer = new ServerConfig()
-            .setPort(8583)
-            .setProtocol(RpcConstants.PROTOCOL_TYPE_REST);
+                .setPort(8583)
+                .setProtocol(RpcConstants.PROTOCOL_TYPE_REST);
 
         List<ServerConfig> servers = new ArrayList<ServerConfig>(2);
         servers.add(restServer);
 
         ProviderConfig<RestService> providerConfig = new ProviderConfig<RestService>()
-            .setInterfaceId(RestService.class.getName())
-            .setRef(new RestServiceImpl())
-            .setRegister(false)
-            .setServer(servers);
+                .setInterfaceId(RestService.class.getName())
+                .setRef(new RestServiceImpl())
+                .setRegister(false)
+                .setServer(servers);
         providerConfig.export();
 
         //rest服务
         ConsumerConfig<RestService> consumerConfigRest = new ConsumerConfig<RestService>()
-            .setInterfaceId(RestService.class.getName())
-            .setProtocol(RpcConstants.PROTOCOL_TYPE_REST)
-            .setDirectUrl("rest://127.0.0.1:8583")
-            .setTimeout(1000)
-            .setApplication(new ApplicationConfig().setAppName("TestClientRest"));
+                .setInterfaceId(RestService.class.getName())
+                .setProtocol(RpcConstants.PROTOCOL_TYPE_REST)
+                .setDirectUrl("rest://127.0.0.1:8583")
+                .setTimeout(1000)
+                .setApplication(new ApplicationConfig().setAppName("TestClientRest"));
         final RestService restServiceRest = consumerConfigRest.refer();
 
         restServiceRest.get("test");
@@ -153,7 +153,7 @@ public class RestTracerTest extends ActivelyDestroyTest {
         //validate one rpc server and rpc client field
 
         boolean result = TracerChecker.validateTracerDigest(clientDigest.get(0), "client",
-            RpcConstants.PROTOCOL_TYPE_REST);
+                RpcConstants.PROTOCOL_TYPE_REST);
 
         Assert.assertTrue(result);
         result = TracerChecker.validateTracerDigest(serverDigest.get(0), "server", RpcConstants.PROTOCOL_TYPE_REST);

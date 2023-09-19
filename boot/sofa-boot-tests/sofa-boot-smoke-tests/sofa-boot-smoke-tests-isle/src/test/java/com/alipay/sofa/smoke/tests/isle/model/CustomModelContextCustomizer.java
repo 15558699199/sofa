@@ -38,9 +38,9 @@ import org.springframework.test.context.MergedContextConfiguration;
  * @version CustomModelContextCustomizer.java, v 0.1 2023年02月03日 10:37 AM huzijie Exp $
  */
 public class CustomModelContextCustomizer implements ContextCustomizer, ApplicationContextAware,
-                                         BeanDefinitionRegistryPostProcessor, BeanPostProcessor {
+        BeanDefinitionRegistryPostProcessor, BeanPostProcessor {
 
-    private final String[]     paths;
+    private final String[] paths;
     private ApplicationContext applicationContext;
 
     public CustomModelContextCustomizer(String[] paths) {
@@ -58,7 +58,7 @@ public class CustomModelContextCustomizer implements ContextCustomizer, Applicat
 
     @Override
     public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry)
-                                                                                  throws BeansException {
+            throws BeansException {
         String modelCreatingStageBeanName = "modelCreatingStage";
         if (registry.containsBeanDefinition(modelCreatingStageBeanName)) {
             registry.removeBeanDefinition(modelCreatingStageBeanName);
@@ -66,7 +66,7 @@ public class CustomModelContextCustomizer implements ContextCustomizer, Applicat
             RootBeanDefinition beanDef = new RootBeanDefinition(CustomModelCreatingStage.class);
             beanDef.getConstructorArgumentValues().addIndexedArgumentValue(0, paths);
             beanDef.getPropertyValues().addPropertyValue("applicationRuntimeModel",
-                new RuntimeBeanReference(ApplicationRuntimeModel.APPLICATION_RUNTIME_MODEL_NAME));
+                    new RuntimeBeanReference(ApplicationRuntimeModel.APPLICATION_RUNTIME_MODEL_NAME));
             registry.registerBeanDefinition(modelCreatingStageBeanName, beanDef);
         }
     }
@@ -85,7 +85,7 @@ public class CustomModelContextCustomizer implements ContextCustomizer, Applicat
 
     @Override
     public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory)
-                                                                                   throws BeansException {
+            throws BeansException {
 
     }
 

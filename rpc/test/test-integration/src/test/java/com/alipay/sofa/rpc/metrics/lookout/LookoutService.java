@@ -17,7 +17,6 @@
 package com.alipay.sofa.rpc.metrics.lookout;
 
 /**
- *
  * @author <a href="mailto:lw111072@antfin.com">LiWei.Liangen</a>
  */
 public interface LookoutService {

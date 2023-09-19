@@ -24,41 +24,41 @@ import com.alipay.sofa.registry.server.shared.TestUtils;
 import org.junit.Test;
 
 public class ChannelHandlerTest {
-  private static final Logger LOGGER = LoggerFactory.getLogger(ChannelHandlerTest.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ChannelHandlerTest.class);
 
-  @Test
-  public void test() {
-    MockHandler handler = new MockHandler(LOGGER, LOGGER);
-    handler.connected(null);
-    handler.disconnected(null);
-    handler.caught(null, null, null);
-    TestUtils.assertRunException(
-        UnsupportedOperationException.class, () -> handler.received(null, null));
+    @Test
+    public void test() {
+        MockHandler handler = new MockHandler(LOGGER, LOGGER);
+        handler.connected(null);
+        handler.disconnected(null);
+        handler.caught(null, null, null);
+        TestUtils.assertRunException(
+                UnsupportedOperationException.class, () -> handler.received(null, null));
 
-    TestUtils.assertRunException(IllegalStateException.class, () -> handler.doHandle(null, null));
+        TestUtils.assertRunException(IllegalStateException.class, () -> handler.doHandle(null, null));
 
-    TestUtils.assertRunException(RuntimeException.class, () -> handler.buildFailedResponse(null));
-  }
-
-  private static class MockHandler extends AbstractChannelHandler {
-
-    MockHandler(Logger connectLog, Logger exchangeLog) {
-      super(connectLog, exchangeLog);
+        TestUtils.assertRunException(RuntimeException.class, () -> handler.buildFailedResponse(null));
     }
 
-    @Override
-    protected Node.NodeType getConnectNodeType() {
-      return Node.NodeType.CLIENT;
-    }
+    private static class MockHandler extends AbstractChannelHandler {
 
-    @Override
-    public Object doHandle(Channel channel, Object request) {
-      throw new IllegalStateException();
-    }
+        MockHandler(Logger connectLog, Logger exchangeLog) {
+            super(connectLog, exchangeLog);
+        }
 
-    @Override
-    public Class interest() {
-      return MockHandler.class;
+        @Override
+        protected Node.NodeType getConnectNodeType() {
+            return Node.NodeType.CLIENT;
+        }
+
+        @Override
+        public Object doHandle(Channel channel, Object request) {
+            throw new IllegalStateException();
+        }
+
+        @Override
+        public Class interest() {
+            return MockHandler.class;
+        }
     }
-  }
 }

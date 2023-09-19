@@ -17,30 +17,52 @@
 package com.alipay.sofa.registry.common.model.client.pb;
 
 public interface MetaServiceOrBuilder
-    extends
-    // @@protoc_insertion_point(interface_extends:MetaService)
-    com.google.protobuf.MessageOrBuilder {
+        extends
+        // @@protoc_insertion_point(interface_extends:MetaService)
+        com.google.protobuf.MessageOrBuilder {
 
-  /** <code>string id = 1;</code> */
-  java.lang.String getId();
-  /** <code>string id = 1;</code> */
-  com.google.protobuf.ByteString getIdBytes();
+    /**
+     * <code>string id = 1;</code>
+     */
+    java.lang.String getId();
 
-  /** <code>map&lt;string, .StringList&gt; params = 3;</code> */
-  int getParamsCount();
-  /** <code>map&lt;string, .StringList&gt; params = 3;</code> */
-  boolean containsParams(java.lang.String key);
-  /** Use {@link #getParamsMap()} instead. */
-  @java.lang.Deprecated
-  java.util.Map<java.lang.String, com.alipay.sofa.registry.common.model.client.pb.StringList>
-      getParams();
-  /** <code>map&lt;string, .StringList&gt; params = 3;</code> */
-  java.util.Map<java.lang.String, com.alipay.sofa.registry.common.model.client.pb.StringList>
-      getParamsMap();
-  /** <code>map&lt;string, .StringList&gt; params = 3;</code> */
-  com.alipay.sofa.registry.common.model.client.pb.StringList getParamsOrDefault(
-      java.lang.String key,
-      com.alipay.sofa.registry.common.model.client.pb.StringList defaultValue);
-  /** <code>map&lt;string, .StringList&gt; params = 3;</code> */
-  com.alipay.sofa.registry.common.model.client.pb.StringList getParamsOrThrow(java.lang.String key);
+    /**
+     * <code>string id = 1;</code>
+     */
+    com.google.protobuf.ByteString getIdBytes();
+
+    /**
+     * <code>map&lt;string, .StringList&gt; params = 3;</code>
+     */
+    int getParamsCount();
+
+    /**
+     * <code>map&lt;string, .StringList&gt; params = 3;</code>
+     */
+    boolean containsParams(java.lang.String key);
+
+    /**
+     * Use {@link #getParamsMap()} instead.
+     */
+    @java.lang.Deprecated
+    java.util.Map<java.lang.String, com.alipay.sofa.registry.common.model.client.pb.StringList>
+    getParams();
+
+    /**
+     * <code>map&lt;string, .StringList&gt; params = 3;</code>
+     */
+    java.util.Map<java.lang.String, com.alipay.sofa.registry.common.model.client.pb.StringList>
+    getParamsMap();
+
+    /**
+     * <code>map&lt;string, .StringList&gt; params = 3;</code>
+     */
+    com.alipay.sofa.registry.common.model.client.pb.StringList getParamsOrDefault(
+            java.lang.String key,
+            com.alipay.sofa.registry.common.model.client.pb.StringList defaultValue);
+
+    /**
+     * <code>map&lt;string, .StringList&gt; params = 3;</code>
+     */
+    com.alipay.sofa.registry.common.model.client.pb.StringList getParamsOrThrow(java.lang.String key);
 }

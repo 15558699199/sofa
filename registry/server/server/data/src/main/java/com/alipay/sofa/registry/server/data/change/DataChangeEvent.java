@@ -18,6 +18,7 @@ package com.alipay.sofa.registry.server.data.change;
 
 import com.alipay.sofa.registry.common.model.TraceTimes;
 import com.google.common.collect.Lists;
+
 import java.util.Collections;
 import java.util.List;
 
@@ -28,42 +29,42 @@ import java.util.List;
  * @version $Id: DataChangeEvent.java, v 0.1 2017-12-07 18:44 qian.lqlq Exp $
  */
 public class DataChangeEvent {
-  private final String dataCenter;
-  private final List<String> dataInfoIds;
-  private final TraceTimes traceTimes;
+    private final String dataCenter;
+    private final List<String> dataInfoIds;
+    private final TraceTimes traceTimes;
 
-  public DataChangeEvent(String dataCenter, List<String> dataInfoIds, TraceTimes parentTimes) {
-    this.dataCenter = dataCenter;
-    this.dataInfoIds = Collections.unmodifiableList(Lists.newArrayList(dataInfoIds));
-    traceTimes = parentTimes.copy();
-  }
+    public DataChangeEvent(String dataCenter, List<String> dataInfoIds, TraceTimes parentTimes) {
+        this.dataCenter = dataCenter;
+        this.dataInfoIds = Collections.unmodifiableList(Lists.newArrayList(dataInfoIds));
+        traceTimes = parentTimes.copy();
+    }
 
-  /**
-   * Getter method for property <tt>dataCenter</tt>.
-   *
-   * @return property value of dataCenter
-   */
-  public String getDataCenter() {
-    return dataCenter;
-  }
+    /**
+     * Getter method for property <tt>dataCenter</tt>.
+     *
+     * @return property value of dataCenter
+     */
+    public String getDataCenter() {
+        return dataCenter;
+    }
 
-  public List<String> getDataInfoIds() {
-    return dataInfoIds;
-  }
+    public List<String> getDataInfoIds() {
+        return dataInfoIds;
+    }
 
-  public TraceTimes getTraceTimes() {
-    return traceTimes;
-  }
+    public TraceTimes getTraceTimes() {
+        return traceTimes;
+    }
 
-  @Override
-  public String toString() {
-    return "DataChangeEvent{"
-        + "dataCenter='"
-        + dataCenter
-        + '\''
-        + ", dataInfoIds='"
-        + dataInfoIds
-        + '\''
-        + '}';
-  }
+    @Override
+    public String toString() {
+        return "DataChangeEvent{"
+                + "dataCenter='"
+                + dataCenter
+                + '\''
+                + ", dataInfoIds='"
+                + dataInfoIds
+                + '\''
+                + '}';
+    }
 }

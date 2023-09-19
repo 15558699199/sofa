@@ -27,13 +27,13 @@ import org.junit.Test;
  */
 public class DataCenterMetadataTest {
 
-  @Test
-  public void test() {
-    DataCenterMetadata metadata1 = new DataCenterMetadata("dc1", Sets.newHashSet("zone1", "zone2"));
-    DataCenterMetadata metadata2 = new DataCenterMetadata("dc1", Sets.newHashSet("zone1", "zone2"));
-    DataCenterMetadata metadata3 = new DataCenterMetadata("dc2", Sets.newHashSet("zone1", "zone2"));
-    Assert.assertEquals(metadata1, metadata2);
-    Assert.assertNotEquals(metadata1, metadata3);
-    Assert.assertEquals(metadata1.toString(), metadata2.toString());
-  }
+    @Test
+    public void test() {
+        DataCenterMetadata metadata1 = new DataCenterMetadata("dc1", Sets.newHashSet("zone1", "zone2"));
+        DataCenterMetadata metadata2 = new DataCenterMetadata("dc1", Sets.newHashSet("zone1", "zone2"));
+        DataCenterMetadata metadata3 = new DataCenterMetadata("dc2", Sets.newHashSet("zone1", "zone2"));
+        Assert.assertEquals(metadata1, metadata2);
+        Assert.assertNotEquals(metadata1, metadata3);
+        Assert.assertEquals(metadata1.toString(), metadata2.toString());
+    }
 }

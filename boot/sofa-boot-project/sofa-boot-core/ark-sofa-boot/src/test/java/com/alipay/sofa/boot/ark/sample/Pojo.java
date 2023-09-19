@@ -24,7 +24,7 @@ import java.util.Objects;
  */
 public class Pojo {
 
-    private int    id;
+    private int id;
 
     private String name;
 

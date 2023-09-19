@@ -26,8 +26,8 @@ import com.alipay.sofa.rpc.common.json.JSON;
 import com.alipay.sofa.runtime.api.annotation.SofaParameter;
 import com.alipay.sofa.runtime.api.annotation.SofaReference;
 import com.alipay.sofa.runtime.api.annotation.SofaReferenceBinding;
-import com.alipay.sofa.smoke.tests.rpc.boot.bean.invoke.HelloSyncService;
 import com.alipay.sofa.smoke.tests.rpc.boot.RpcSofaBootApplication;
+import com.alipay.sofa.smoke.tests.rpc.boot.bean.invoke.HelloSyncService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -46,15 +46,17 @@ import static org.assertj.core.api.Assertions.fail;
  * @version : MockBeanConfigTest.java, v 0.1 2020年03月10日 9:12 下午 zhaowang Exp $
  */
 @SpringBootTest(classes = RpcSofaBootApplication.class)
-@TestPropertySource(properties = { "sofa.boot.rpc" + ".consumer.repeated.reference.limit=10", })
+@TestPropertySource(properties = {"sofa.boot.rpc" + ".consumer.repeated.reference.limit=10",})
 @Import(MockBeanConfigTests.MockBeanConfiguration.class)
 public class MockBeanConfigTests {
 
     @SofaReference(binding = @SofaReferenceBinding(bindingType = "bolt", mockMode = MockMode.LOCAL, mockBean = "mockHello"))
-    private HelloSyncService     helloSyncService;
+    private HelloSyncService helloSyncService;
 
     @Autowired
     private ConsumerConfigHelper consumerConfigHelper;
+    @SofaReference(binding = @SofaReferenceBinding(bindingType = "bolt", mockMode = MockMode.REMOTE, parameters = @SofaParameter(key = "mockUrl", value = "http://127.0.0.1:1235/")))
+    private HelloSyncService remoteMock;
 
     @Test
     public void localMock() {
@@ -74,9 +76,6 @@ public class MockBeanConfigTests {
             // success;
         }
     }
-
-    @SofaReference(binding = @SofaReferenceBinding(bindingType = "bolt", mockMode = MockMode.REMOTE, parameters = @SofaParameter(key = "mockUrl", value = "http://127.0.0.1:1235/")))
-    private HelloSyncService remoteMock;
 
     @Test
     public void remote() {

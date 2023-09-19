@@ -25,30 +25,30 @@ import com.alipay.sofa.registry.remoting.Channel;
  */
 public class RegisterInvokeData {
 
-  private final StoreData storeData;
+    private final StoreData storeData;
 
-  private final Channel channel;
+    private final Channel channel;
 
-  public RegisterInvokeData(StoreData storeData, Channel channel) {
-    this.storeData = storeData;
-    this.channel = channel;
-  }
+    public RegisterInvokeData(StoreData storeData, Channel channel) {
+        this.storeData = storeData;
+        this.channel = channel;
+    }
 
-  /**
-   * Getter method for property <tt>storeData</tt>.
-   *
-   * @return property value of storeData
-   */
-  public StoreData getStoreData() {
-    return storeData;
-  }
+    /**
+     * Getter method for property <tt>storeData</tt>.
+     *
+     * @return property value of storeData
+     */
+    public StoreData getStoreData() {
+        return storeData;
+    }
 
-  /**
-   * Getter method for property <tt>channel</tt>.
-   *
-   * @return property value of channel
-   */
-  public Channel getChannel() {
-    return channel;
-  }
+    /**
+     * Getter method for property <tt>channel</tt>.
+     *
+     * @return property value of channel
+     */
+    public Channel getChannel() {
+        return channel;
+    }
 }

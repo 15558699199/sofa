@@ -21,81 +21,82 @@ import com.alipay.sofa.registry.common.model.slot.SlotTable;
 import com.alipay.sofa.registry.log.Logger;
 import com.alipay.sofa.registry.log.LoggerFactory;
 import com.google.common.collect.Maps;
-import java.util.Map;
 import org.apache.commons.lang.StringUtils;
+
+import java.util.Map;
 
 /**
  * @author chen.zhu
- *     <p>Jan 21, 2021
+ * <p>Jan 21, 2021
  */
 public class SlotTableUtils {
 
-  private static final Logger logger = LoggerFactory.getLogger(SlotTableUtils.class);
+    private static final Logger logger = LoggerFactory.getLogger(SlotTableUtils.class);
 
-  public static Map<String, Integer> getSlotTableLeaderCount(SlotTable slotTable) {
-    Map<String, Integer> leaderCounter =
-        Maps.newHashMapWithExpectedSize(slotTable.getSlots().size());
-    for (Map.Entry<Integer, Slot> entry : slotTable.getSlotMap().entrySet()) {
-      Slot slot = entry.getValue();
-      incrCount(leaderCounter, slot.getLeader());
+    public static Map<String, Integer> getSlotTableLeaderCount(SlotTable slotTable) {
+        Map<String, Integer> leaderCounter =
+                Maps.newHashMapWithExpectedSize(slotTable.getSlots().size());
+        for (Map.Entry<Integer, Slot> entry : slotTable.getSlotMap().entrySet()) {
+            Slot slot = entry.getValue();
+            incrCount(leaderCounter, slot.getLeader());
+        }
+        return leaderCounter;
     }
-    return leaderCounter;
-  }
 
-  public static Map<String, Integer> getSlotTableFollowerCount(SlotTable slotTable) {
-    Map<String, Integer> followerCounter = Maps.newHashMap();
-    for (Slot slot : slotTable.getSlots()) {
-      for (String follower : slot.getFollowers()) {
-        incrCount(followerCounter, follower);
-      }
+    public static Map<String, Integer> getSlotTableFollowerCount(SlotTable slotTable) {
+        Map<String, Integer> followerCounter = Maps.newHashMap();
+        for (Slot slot : slotTable.getSlots()) {
+            for (String follower : slot.getFollowers()) {
+                incrCount(followerCounter, follower);
+            }
+        }
+        return followerCounter;
     }
-    return followerCounter;
-  }
 
-  public static Map<String, Integer> getSlotTableSlotCount(SlotTable slotTable) {
-    Map<String, Integer> slotCounter = Maps.newHashMapWithExpectedSize(slotTable.getSlots().size());
-    for (Map.Entry<Integer, Slot> entry : slotTable.getSlotMap().entrySet()) {
-      Slot slot = entry.getValue();
-      incrCount(slotCounter, slot.getLeader());
-      for (String follower : slot.getFollowers()) {
-        incrCount(slotCounter, follower);
-      }
+    public static Map<String, Integer> getSlotTableSlotCount(SlotTable slotTable) {
+        Map<String, Integer> slotCounter = Maps.newHashMapWithExpectedSize(slotTable.getSlots().size());
+        for (Map.Entry<Integer, Slot> entry : slotTable.getSlotMap().entrySet()) {
+            Slot slot = entry.getValue();
+            incrCount(slotCounter, slot.getLeader());
+            for (String follower : slot.getFollowers()) {
+                incrCount(slotCounter, follower);
+            }
+        }
+        return slotCounter;
     }
-    return slotCounter;
-  }
 
-  private static void incrCount(Map<String, Integer> counter, String dataServer) {
-    Integer count = counter.get(dataServer);
-    if (count == null) {
-      count = 0;
+    private static void incrCount(Map<String, Integer> counter, String dataServer) {
+        Integer count = counter.get(dataServer);
+        if (count == null) {
+            count = 0;
+        }
+        counter.put(dataServer, count + 1);
     }
-    counter.put(dataServer, count + 1);
-  }
 
-  public static boolean isValidSlotTable(SlotTable slotTable) {
-    return checkNoDupLeaderAndFollowers(slotTable) && checkNoLeaderEmpty(slotTable);
-  }
-
-  public static boolean checkNoDupLeaderAndFollowers(SlotTable slotTable) {
-    for (Map.Entry<Integer, Slot> entry : slotTable.getSlotMap().entrySet()) {
-      Slot slot = entry.getValue();
-      if (slot.getFollowers().contains(slot.getLeader())) {
-        logger.error(
-            "[checkNoDupLeaderAndFollowers] slot[{}] leader and follower duplicates", slot);
-        return false;
-      }
+    public static boolean isValidSlotTable(SlotTable slotTable) {
+        return checkNoDupLeaderAndFollowers(slotTable) && checkNoLeaderEmpty(slotTable);
     }
-    return true;
-  }
 
-  public static boolean checkNoLeaderEmpty(SlotTable slotTable) {
-    for (Map.Entry<Integer, Slot> entry : slotTable.getSlotMap().entrySet()) {
-      Slot slot = entry.getValue();
-      if (StringUtils.isEmpty(slot.getLeader())) {
-        logger.error("[checkNoLeaderEmpty] slot[{}] empty leader", slot);
-        return false;
-      }
+    public static boolean checkNoDupLeaderAndFollowers(SlotTable slotTable) {
+        for (Map.Entry<Integer, Slot> entry : slotTable.getSlotMap().entrySet()) {
+            Slot slot = entry.getValue();
+            if (slot.getFollowers().contains(slot.getLeader())) {
+                logger.error(
+                        "[checkNoDupLeaderAndFollowers] slot[{}] leader and follower duplicates", slot);
+                return false;
+            }
+        }
+        return true;
     }
-    return true;
-  }
+
+    public static boolean checkNoLeaderEmpty(SlotTable slotTable) {
+        for (Map.Entry<Integer, Slot> entry : slotTable.getSlotMap().entrySet()) {
+            Slot slot = entry.getValue();
+            if (StringUtils.isEmpty(slot.getLeader())) {
+                logger.error("[checkNoLeaderEmpty] slot[{}] empty leader", slot);
+                return false;
+            }
+        }
+        return true;
+    }
 }

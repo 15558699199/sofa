@@ -22,15 +22,15 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class DataNodeExchangerTest {
-  @Test
-  public void test() {
-    DataNodeExchanger dataNodeExchanger = new DataNodeExchanger();
-    DataServerConfig cfg = TestBaseUtils.newDataConfig("testDc");
-    dataNodeExchanger.setDataServerConfig(cfg);
+    @Test
+    public void test() {
+        DataNodeExchanger dataNodeExchanger = new DataNodeExchanger();
+        DataServerConfig cfg = TestBaseUtils.newDataConfig("testDc");
+        dataNodeExchanger.setDataServerConfig(cfg);
 
-    Assert.assertEquals(cfg.getSyncDataConnNum(), dataNodeExchanger.getConnNum());
-    Assert.assertEquals(cfg.getSyncDataPort(), dataNodeExchanger.getServerPort());
-    Assert.assertEquals(cfg.getRpcTimeoutMillis(), dataNodeExchanger.getRpcTimeoutMillis());
-    Assert.assertEquals(0, dataNodeExchanger.getClientHandlers().size());
-  }
+        Assert.assertEquals(cfg.getSyncDataConnNum(), dataNodeExchanger.getConnNum());
+        Assert.assertEquals(cfg.getSyncDataPort(), dataNodeExchanger.getServerPort());
+        Assert.assertEquals(cfg.getRpcTimeoutMillis(), dataNodeExchanger.getRpcTimeoutMillis());
+        Assert.assertEquals(0, dataNodeExchanger.getClientHandlers().size());
+    }
 }

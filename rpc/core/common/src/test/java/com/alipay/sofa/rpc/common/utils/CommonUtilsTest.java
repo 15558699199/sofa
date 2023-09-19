@@ -19,11 +19,7 @@ package com.alipay.sofa.rpc.common.utils;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CountDownLatch;
@@ -46,7 +42,7 @@ public class CommonUtilsTest {
 
     @Test
     public void parseInts() {
-        Assert.assertArrayEquals(new int[] { 1, 2, 3 }, CommonUtils.parseInts("1,2,3", ","));
+        Assert.assertArrayEquals(new int[]{1, 2, 3}, CommonUtils.parseInts("1,2,3", ","));
     }
 
     @Test
@@ -124,7 +120,7 @@ public class CommonUtilsTest {
 
         String[] array1 = null;
         String[] array2 = new String[0];
-        String[] array3 = new String[] { "11" };
+        String[] array3 = new String[]{"11"};
 
         Assert.assertTrue(CommonUtils.isEmpty(array1));
         Assert.assertTrue(CommonUtils.isEmpty(array2));

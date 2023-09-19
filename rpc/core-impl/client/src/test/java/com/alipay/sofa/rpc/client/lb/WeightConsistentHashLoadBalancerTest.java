@@ -21,11 +21,7 @@ import com.alipay.sofa.rpc.core.request.SofaRequest;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author 景竹 2018/8/13 since 5.5.0
@@ -89,7 +85,7 @@ public class WeightConsistentHashLoadBalancerTest extends BaseLoadBalancerTest {
         List<ProviderInfo> providers = buildDiffWeightProviderList(size);
         Map<Integer, Integer> map = new HashMap(total * 2);
         for (int i = 0; i < total; i++) {
-            request.setMethodArgs(new Object[] { "method" + i });
+            request.setMethodArgs(new Object[]{"method" + i});
             ProviderInfo provider = loadBalancer.doSelect(request, providers);
             Integer key = provider.getPort();
             if (map.containsKey(key)) {

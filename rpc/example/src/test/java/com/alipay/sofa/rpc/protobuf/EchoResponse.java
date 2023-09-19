@@ -23,29 +23,45 @@ package com.alipay.sofa.rpc.protobuf;
  * Protobuf type {@code com.alipay.sofa.rpc.protobuf.EchoResponse}
  */
 public final class EchoResponse extends
-                               com.google.protobuf.GeneratedMessageV3 implements
-                                                                     // @@protoc_insertion_point(message_implements:com.alipay.sofa.rpc.protobuf.EchoResponse)
-                                                                     EchoResponseOrBuilder {
+        com.google.protobuf.GeneratedMessageV3 implements
+        // @@protoc_insertion_point(message_implements:com.alipay.sofa.rpc.protobuf.EchoResponse)
+        EchoResponseOrBuilder {
+    public static final int CODE_FIELD_NUMBER = 1;
+    public static final int MESSAGE_FIELD_NUMBER = 2;
+    private static final long serialVersionUID = 0L;
+    // @@protoc_insertion_point(class_scope:com.alipay.sofa.rpc.protobuf.EchoResponse)
+    private static final com.alipay.sofa.rpc.protobuf.EchoResponse DEFAULT_INSTANCE;
+    private static final com.google.protobuf.Parser<EchoResponse> PARSER = new com.google.protobuf.AbstractParser<EchoResponse>() {
+        public EchoResponse parsePartialFrom(
+                com.google.protobuf.CodedInputStream input,
+                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+                throws com.google.protobuf.InvalidProtocolBufferException {
+            return new EchoResponse(input,
+                    extensionRegistry);
+        }
+    };
+
+    static {
+        DEFAULT_INSTANCE = new com.alipay.sofa.rpc.protobuf.EchoResponse();
+    }
+
+    private int code_;
+    private volatile java.lang.Object message_;
+    private byte memoizedIsInitialized = -1;
+
     // Use EchoResponse.newBuilder() to construct.
     private EchoResponse(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
         super(builder);
     }
-
     private EchoResponse() {
         code_ = 0;
         message_ = "";
     }
 
-    @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-            getUnknownFields() {
-        return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
-    }
-
     private EchoResponse(
-                         com.google.protobuf.CodedInputStream input,
-                         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                                                                                     throws com.google.protobuf.InvalidProtocolBufferException {
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
         this();
         int mutable_bitField0_ = 0;
         try {
@@ -79,27 +95,114 @@ public final class EchoResponse extends
             throw e.setUnfinishedMessage(this);
         } catch (java.io.IOException e) {
             throw new com.google.protobuf.InvalidProtocolBufferException(
-                e).setUnfinishedMessage(this);
+                    e).setUnfinishedMessage(this);
         } finally {
             makeExtensionsImmutable();
         }
     }
 
     public static final com.google.protobuf.Descriptors.Descriptor
-            getDescriptor() {
+    getDescriptor() {
         return com.alipay.sofa.rpc.protobuf.ProtoServiceOuterClass.internal_static_com_alipay_sofa_rpc_protobuf_EchoResponse_descriptor;
     }
 
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-            internalGetFieldAccessorTable() {
-        return com.alipay.sofa.rpc.protobuf.ProtoServiceOuterClass.internal_static_com_alipay_sofa_rpc_protobuf_EchoResponse_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                com.alipay.sofa.rpc.protobuf.EchoResponse.class,
-                com.alipay.sofa.rpc.protobuf.EchoResponse.Builder.class);
+    public static com.alipay.sofa.rpc.protobuf.EchoResponse parseFrom(
+            com.google.protobuf.ByteString data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
     }
 
-    public static final int CODE_FIELD_NUMBER = 1;
-    private int             code_;
+    public static com.alipay.sofa.rpc.protobuf.EchoResponse parseFrom(
+            com.google.protobuf.ByteString data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+    }
+
+    public static com.alipay.sofa.rpc.protobuf.EchoResponse parseFrom(byte[] data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+    }
+
+    public static com.alipay.sofa.rpc.protobuf.EchoResponse parseFrom(
+            byte[] data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+    }
+
+    public static com.alipay.sofa.rpc.protobuf.EchoResponse parseFrom(java.io.InputStream input)
+            throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+                .parseWithIOException(PARSER, input);
+    }
+
+    public static com.alipay.sofa.rpc.protobuf.EchoResponse parseFrom(
+            java.io.InputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+                .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static com.alipay.sofa.rpc.protobuf.EchoResponse parseDelimitedFrom(java.io.InputStream input)
+            throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+                .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static com.alipay.sofa.rpc.protobuf.EchoResponse parseDelimitedFrom(
+            java.io.InputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+                .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static com.alipay.sofa.rpc.protobuf.EchoResponse parseFrom(
+            com.google.protobuf.CodedInputStream input)
+            throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+                .parseWithIOException(PARSER, input);
+    }
+
+    public static com.alipay.sofa.rpc.protobuf.EchoResponse parseFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+                .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static Builder newBuilder() {
+        return DEFAULT_INSTANCE.toBuilder();
+    }
+
+    public static Builder newBuilder(com.alipay.sofa.rpc.protobuf.EchoResponse prototype) {
+        return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+
+    public static com.alipay.sofa.rpc.protobuf.EchoResponse getDefaultInstance() {
+        return DEFAULT_INSTANCE;
+    }
+
+    public static com.google.protobuf.Parser<EchoResponse> parser() {
+        return PARSER;
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+        return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
+    }
+
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+    internalGetFieldAccessorTable() {
+        return com.alipay.sofa.rpc.protobuf.ProtoServiceOuterClass.internal_static_com_alipay_sofa_rpc_protobuf_EchoResponse_fieldAccessorTable
+                .ensureFieldAccessorsInitialized(
+                        com.alipay.sofa.rpc.protobuf.EchoResponse.class,
+                        com.alipay.sofa.rpc.protobuf.EchoResponse.Builder.class);
+    }
 
     /**
      * <code>int32 code = 1;</code>
@@ -107,9 +210,6 @@ public final class EchoResponse extends
     public int getCode() {
         return code_;
     }
-
-    public static final int           MESSAGE_FIELD_NUMBER = 2;
-    private volatile java.lang.Object message_;
 
     /**
      * <code>string message = 2;</code>
@@ -131,20 +231,18 @@ public final class EchoResponse extends
      * <code>string message = 2;</code>
      */
     public com.google.protobuf.ByteString
-            getMessageBytes() {
+    getMessageBytes() {
         java.lang.Object ref = message_;
         if (ref instanceof java.lang.String) {
             com.google.protobuf.ByteString b =
                     com.google.protobuf.ByteString.copyFromUtf8(
-                        (java.lang.String) ref);
+                            (java.lang.String) ref);
             message_ = b;
             return b;
         } else {
             return (com.google.protobuf.ByteString) ref;
         }
     }
-
-    private byte memoizedIsInitialized = -1;
 
     public final boolean isInitialized() {
         byte isInitialized = memoizedIsInitialized;
@@ -158,7 +256,7 @@ public final class EchoResponse extends
     }
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
-        throws java.io.IOException {
+            throws java.io.IOException {
         if (code_ != 0) {
             output.writeInt32(1, code_);
         }
@@ -175,7 +273,7 @@ public final class EchoResponse extends
         size = 0;
         if (code_ != 0) {
             size += com.google.protobuf.CodedOutputStream
-                .computeInt32Size(1, code_);
+                    .computeInt32Size(1, code_);
         }
         if (!getMessageBytes().isEmpty()) {
             size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, message_);
@@ -183,8 +281,6 @@ public final class EchoResponse extends
         memoizedSize = size;
         return size;
     }
-
-    private static final long serialVersionUID = 0L;
 
     @java.lang.Override
     public boolean equals(final java.lang.Object obj) {
@@ -200,7 +296,7 @@ public final class EchoResponse extends
         result = result && (getCode()
                 == other.getCode());
         result = result && getMessage()
-            .equals(other.getMessage());
+                .equals(other.getMessage());
         return result;
     }
 
@@ -220,118 +316,41 @@ public final class EchoResponse extends
         return hash;
     }
 
-    public static com.alipay.sofa.rpc.protobuf.EchoResponse parseFrom(
-                                                                      com.google.protobuf.ByteString data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data);
-    }
-
-    public static com.alipay.sofa.rpc.protobuf.EchoResponse parseFrom(
-                                                                      com.google.protobuf.ByteString data,
-                                                                      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data, extensionRegistry);
-    }
-
-    public static com.alipay.sofa.rpc.protobuf.EchoResponse parseFrom(byte[] data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data);
-    }
-
-    public static com.alipay.sofa.rpc.protobuf.EchoResponse parseFrom(
-                                                                      byte[] data,
-                                                                      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data, extensionRegistry);
-    }
-
-    public static com.alipay.sofa.rpc.protobuf.EchoResponse parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-        return com.google.protobuf.GeneratedMessageV3
-            .parseWithIOException(PARSER, input);
-    }
-
-    public static com.alipay.sofa.rpc.protobuf.EchoResponse parseFrom(
-                                                                      java.io.InputStream input,
-                                                                      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-        return com.google.protobuf.GeneratedMessageV3
-            .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-
-    public static com.alipay.sofa.rpc.protobuf.EchoResponse parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-        return com.google.protobuf.GeneratedMessageV3
-            .parseDelimitedWithIOException(PARSER, input);
-    }
-
-    public static com.alipay.sofa.rpc.protobuf.EchoResponse parseDelimitedFrom(
-                                                                               java.io.InputStream input,
-                                                                               com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-        return com.google.protobuf.GeneratedMessageV3
-            .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
-    }
-
-    public static com.alipay.sofa.rpc.protobuf.EchoResponse parseFrom(
-                                                                      com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-        return com.google.protobuf.GeneratedMessageV3
-            .parseWithIOException(PARSER, input);
-    }
-
-    public static com.alipay.sofa.rpc.protobuf.EchoResponse parseFrom(
-                                                                      com.google.protobuf.CodedInputStream input,
-                                                                      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-        return com.google.protobuf.GeneratedMessageV3
-            .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-
     public Builder newBuilderForType() {
         return newBuilder();
     }
 
-    public static Builder newBuilder() {
-        return DEFAULT_INSTANCE.toBuilder();
-    }
-
-    public static Builder newBuilder(com.alipay.sofa.rpc.protobuf.EchoResponse prototype) {
-        return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-    }
-
     public Builder toBuilder() {
         return this == DEFAULT_INSTANCE
-            ? new Builder() : new Builder().mergeFrom(this);
+                ? new Builder() : new Builder().mergeFrom(this);
     }
 
     @java.lang.Override
     protected Builder newBuilderForType(
-                                        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+            com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
         Builder builder = new Builder(parent);
         return builder;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<EchoResponse> getParserForType() {
+        return PARSER;
+    }
+
+    public com.alipay.sofa.rpc.protobuf.EchoResponse getDefaultInstanceForType() {
+        return DEFAULT_INSTANCE;
     }
 
     /**
      * Protobuf type {@code com.alipay.sofa.rpc.protobuf.EchoResponse}
      */
     public static final class Builder extends
-                                     com.google.protobuf.GeneratedMessageV3.Builder<Builder>
-                                                                                            implements
-                                                                                            // @@protoc_insertion_point(builder_implements:com.alipay.sofa.rpc.protobuf.EchoResponse)
-                                                                                            com.alipay.sofa.rpc.protobuf.EchoResponseOrBuilder {
-        public static final com.google.protobuf.Descriptors.Descriptor
-                getDescriptor() {
-            return com.alipay.sofa.rpc.protobuf.ProtoServiceOuterClass.internal_static_com_alipay_sofa_rpc_protobuf_EchoResponse_descriptor;
-        }
-
-        protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-                internalGetFieldAccessorTable() {
-            return com.alipay.sofa.rpc.protobuf.ProtoServiceOuterClass.internal_static_com_alipay_sofa_rpc_protobuf_EchoResponse_fieldAccessorTable
-                .ensureFieldAccessorsInitialized(
-                    com.alipay.sofa.rpc.protobuf.EchoResponse.class,
-                    com.alipay.sofa.rpc.protobuf.EchoResponse.Builder.class);
-        }
+            com.google.protobuf.GeneratedMessageV3.Builder<Builder>
+            implements
+            // @@protoc_insertion_point(builder_implements:com.alipay.sofa.rpc.protobuf.EchoResponse)
+            com.alipay.sofa.rpc.protobuf.EchoResponseOrBuilder {
+        private int code_;
+        private java.lang.Object message_ = "";
 
         // Construct using com.alipay.sofa.rpc.protobuf.EchoResponse.newBuilder()
         private Builder() {
@@ -339,9 +358,22 @@ public final class EchoResponse extends
         }
 
         private Builder(
-                        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+                com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
             super(parent);
             maybeForceBuilderInitialization();
+        }
+
+        public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+            return com.alipay.sofa.rpc.protobuf.ProtoServiceOuterClass.internal_static_com_alipay_sofa_rpc_protobuf_EchoResponse_descriptor;
+        }
+
+        protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+            return com.alipay.sofa.rpc.protobuf.ProtoServiceOuterClass.internal_static_com_alipay_sofa_rpc_protobuf_EchoResponse_fieldAccessorTable
+                    .ensureFieldAccessorsInitialized(
+                            com.alipay.sofa.rpc.protobuf.EchoResponse.class,
+                            com.alipay.sofa.rpc.protobuf.EchoResponse.Builder.class);
         }
 
         private void maybeForceBuilderInitialization() {
@@ -359,7 +391,7 @@ public final class EchoResponse extends
         }
 
         public com.google.protobuf.Descriptors.Descriptor
-                getDescriptorForType() {
+        getDescriptorForType() {
             return com.alipay.sofa.rpc.protobuf.ProtoServiceOuterClass.internal_static_com_alipay_sofa_rpc_protobuf_EchoResponse_descriptor;
         }
 
@@ -388,30 +420,30 @@ public final class EchoResponse extends
         }
 
         public Builder setField(
-                                com.google.protobuf.Descriptors.FieldDescriptor field,
-                                Object value) {
+                com.google.protobuf.Descriptors.FieldDescriptor field,
+                Object value) {
             return (Builder) super.setField(field, value);
         }
 
         public Builder clearField(
-                                  com.google.protobuf.Descriptors.FieldDescriptor field) {
+                com.google.protobuf.Descriptors.FieldDescriptor field) {
             return (Builder) super.clearField(field);
         }
 
         public Builder clearOneof(
-                                  com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+                com.google.protobuf.Descriptors.OneofDescriptor oneof) {
             return (Builder) super.clearOneof(oneof);
         }
 
         public Builder setRepeatedField(
-                                        com.google.protobuf.Descriptors.FieldDescriptor field,
-                                        int index, Object value) {
+                com.google.protobuf.Descriptors.FieldDescriptor field,
+                int index, Object value) {
             return (Builder) super.setRepeatedField(field, index, value);
         }
 
         public Builder addRepeatedField(
-                                        com.google.protobuf.Descriptors.FieldDescriptor field,
-                                        Object value) {
+                com.google.protobuf.Descriptors.FieldDescriptor field,
+                Object value) {
             return (Builder) super.addRepeatedField(field, value);
         }
 
@@ -443,9 +475,9 @@ public final class EchoResponse extends
         }
 
         public Builder mergeFrom(
-                                 com.google.protobuf.CodedInputStream input,
-                                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws java.io.IOException {
+                com.google.protobuf.CodedInputStream input,
+                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+                throws java.io.IOException {
             com.alipay.sofa.rpc.protobuf.EchoResponse parsedMessage = null;
             try {
                 parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
@@ -459,8 +491,6 @@ public final class EchoResponse extends
             }
             return this;
         }
-
-        private int code_;
 
         /**
          * <code>int32 code = 1;</code>
@@ -489,8 +519,6 @@ public final class EchoResponse extends
             return this;
         }
 
-        private java.lang.Object message_ = "";
-
         /**
          * <code>string message = 2;</code>
          */
@@ -510,13 +538,27 @@ public final class EchoResponse extends
         /**
          * <code>string message = 2;</code>
          */
+        public Builder setMessage(
+                java.lang.String value) {
+            if (value == null) {
+                throw new NullPointerException();
+            }
+
+            message_ = value;
+            onChanged();
+            return this;
+        }
+
+        /**
+         * <code>string message = 2;</code>
+         */
         public com.google.protobuf.ByteString
-                getMessageBytes() {
+        getMessageBytes() {
             java.lang.Object ref = message_;
             if (ref instanceof String) {
                 com.google.protobuf.ByteString b =
                         com.google.protobuf.ByteString.copyFromUtf8(
-                            (java.lang.String) ref);
+                                (java.lang.String) ref);
                 message_ = b;
                 return b;
             } else {
@@ -527,11 +569,12 @@ public final class EchoResponse extends
         /**
          * <code>string message = 2;</code>
          */
-        public Builder setMessage(
-                                  java.lang.String value) {
+        public Builder setMessageBytes(
+                com.google.protobuf.ByteString value) {
             if (value == null) {
                 throw new NullPointerException();
             }
+            checkByteStringIsUtf8(value);
 
             message_ = value;
             onChanged();
@@ -548,65 +591,17 @@ public final class EchoResponse extends
             return this;
         }
 
-        /**
-         * <code>string message = 2;</code>
-         */
-        public Builder setMessageBytes(
-                                       com.google.protobuf.ByteString value) {
-            if (value == null) {
-                throw new NullPointerException();
-            }
-            checkByteStringIsUtf8(value);
-
-            message_ = value;
-            onChanged();
-            return this;
-        }
-
         public final Builder setUnknownFields(
-                                              final com.google.protobuf.UnknownFieldSet unknownFields) {
+                final com.google.protobuf.UnknownFieldSet unknownFields) {
             return this;
         }
 
         public final Builder mergeUnknownFields(
-                                                final com.google.protobuf.UnknownFieldSet unknownFields) {
+                final com.google.protobuf.UnknownFieldSet unknownFields) {
             return this;
         }
 
         // @@protoc_insertion_point(builder_scope:com.alipay.sofa.rpc.protobuf.EchoResponse)
-    }
-
-    // @@protoc_insertion_point(class_scope:com.alipay.sofa.rpc.protobuf.EchoResponse)
-    private static final com.alipay.sofa.rpc.protobuf.EchoResponse DEFAULT_INSTANCE;
-    static {
-        DEFAULT_INSTANCE = new com.alipay.sofa.rpc.protobuf.EchoResponse();
-    }
-
-    public static com.alipay.sofa.rpc.protobuf.EchoResponse getDefaultInstance() {
-        return DEFAULT_INSTANCE;
-    }
-
-    private static final com.google.protobuf.Parser<EchoResponse> PARSER = new com.google.protobuf.AbstractParser<EchoResponse>() {
-                                                                             public EchoResponse parsePartialFrom(
-                                                                                                                  com.google.protobuf.CodedInputStream input,
-                                                                                                                  com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                                                                                 throws com.google.protobuf.InvalidProtocolBufferException {
-                                                                                 return new EchoResponse(input,
-                                                                                     extensionRegistry);
-                                                                             }
-                                                                         };
-
-    public static com.google.protobuf.Parser<EchoResponse> parser() {
-        return PARSER;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<EchoResponse> getParserForType() {
-        return PARSER;
-    }
-
-    public com.alipay.sofa.rpc.protobuf.EchoResponse getDefaultInstanceForType() {
-        return DEFAULT_INSTANCE;
     }
 
 }

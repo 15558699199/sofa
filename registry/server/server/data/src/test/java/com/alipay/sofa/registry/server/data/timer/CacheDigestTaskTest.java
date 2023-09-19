@@ -24,29 +24,29 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class CacheDigestTaskTest {
-  @Test
-  public void test() throws Exception {
-    CacheDigestTask task = new CacheDigestTask();
-    DataServerConfig cfg = TestBaseUtils.newDataConfig("testDc");
-    task.setDataServerConfig(cfg);
+    @Test
+    public void test() throws Exception {
+        CacheDigestTask task = new CacheDigestTask();
+        DataServerConfig cfg = TestBaseUtils.newDataConfig("testDc");
+        task.setDataServerConfig(cfg);
 
-    // npe error
-    Assert.assertFalse(task.dump());
+        // npe error
+        Assert.assertFalse(task.dump());
 
-    DatumStorageDelegate datumStorageDelegate = TestBaseUtils.newLocalDatumDelegate("testDc", true);
-    task.setDatumCache(datumStorageDelegate);
+        DatumStorageDelegate datumStorageDelegate = TestBaseUtils.newLocalDatumDelegate("testDc", true);
+        task.setDatumCache(datumStorageDelegate);
 
-    cfg.setCacheDigestIntervalMinutes(0);
-    Assert.assertFalse(task.init());
+        cfg.setCacheDigestIntervalMinutes(0);
+        Assert.assertFalse(task.init());
 
-    // empty
-    Assert.assertTrue(task.dump());
+        // empty
+        Assert.assertTrue(task.dump());
 
-    cfg.setCacheDigestIntervalMinutes(1);
-    Publisher pub = TestBaseUtils.createTestPublisher("testDataId");
-    datumStorageDelegate.getLocalDatumStorage().putPublisher("testDc", pub);
-    // has item
-    Assert.assertTrue(task.dump());
-    Assert.assertTrue(task.init());
-  }
+        cfg.setCacheDigestIntervalMinutes(1);
+        Publisher pub = TestBaseUtils.createTestPublisher("testDataId");
+        datumStorageDelegate.getLocalDatumStorage().putPublisher("testDc", pub);
+        // has item
+        Assert.assertTrue(task.dump());
+        Assert.assertTrue(task.init());
+    }
 }

@@ -18,6 +18,7 @@ package com.alipay.sofa.registry.server.session.circuit.breaker;
 
 import com.alipay.sofa.registry.common.model.store.CircuitBreakerStatistic;
 import com.alipay.sofa.registry.common.model.store.Subscriber;
+
 import java.util.Map;
 
 /**
@@ -26,30 +27,30 @@ import java.util.Map;
  */
 public interface CircuitBreakerService {
 
-  /**
-   * @param statistic statistic
-   * @param hasPushed hasPushed
-   * @return boolean
-   */
-  boolean pushCircuitBreaker(CircuitBreakerStatistic statistic, boolean hasPushed);
+    /**
+     * @param statistic statistic
+     * @param hasPushed hasPushed
+     * @return boolean
+     */
+    boolean pushCircuitBreaker(CircuitBreakerStatistic statistic, boolean hasPushed);
 
-  /**
-   * statistic when push success
-   *
-   * @param versions dataCenter version
-   * @param pushNums dataCenter pushNum
-   * @param subscriber subscriber
-   * @return boolean
-   */
-  boolean onPushSuccess(
-      Map<String, Long> versions, Map<String, Integer> pushNums, Subscriber subscriber);
+    /**
+     * statistic when push success
+     *
+     * @param versions   dataCenter version
+     * @param pushNums   dataCenter pushNum
+     * @param subscriber subscriber
+     * @return boolean
+     */
+    boolean onPushSuccess(
+            Map<String, Long> versions, Map<String, Integer> pushNums, Subscriber subscriber);
 
-  /**
-   * statistic when push fail
-   *
-   * @param versions versions
-   * @param subscriber subscriber
-   * @return boolean
-   */
-  boolean onPushFail(Map<String, Long> versions, Subscriber subscriber);
+    /**
+     * statistic when push fail
+     *
+     * @param versions   versions
+     * @param subscriber subscriber
+     * @return boolean
+     */
+    boolean onPushFail(Map<String, Long> versions, Subscriber subscriber);
 }

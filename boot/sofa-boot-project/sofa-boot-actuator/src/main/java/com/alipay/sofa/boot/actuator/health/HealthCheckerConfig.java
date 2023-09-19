@@ -32,7 +32,7 @@ public class HealthCheckerConfig {
     /**
      * retry interval, unit milliseconds.
      */
-    private Long    retryTimeInterval;
+    private Long retryTimeInterval;
 
     /**
      * stric check.

@@ -16,12 +16,7 @@
  */
 package com.alipay.sofa.rpc.metrics.lookout;
 
-import com.alipay.lookout.api.Counter;
-import com.alipay.lookout.api.DistributionSummary;
-import com.alipay.lookout.api.Gauge;
-import com.alipay.lookout.api.Id;
-import com.alipay.lookout.api.Lookout;
-import com.alipay.lookout.api.Timer;
+import com.alipay.lookout.api.*;
 import com.alipay.lookout.api.composite.MixinMetric;
 import com.alipay.lookout.api.info.Info;
 import com.alipay.sofa.rpc.common.utils.StringUtils;
@@ -47,9 +42,9 @@ public class RpcLookout {
     /**
      * slf4j Logger for this class
      */
-    private final static Logger LOGGER       = LoggerFactory.getLogger(RpcLookout.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(RpcLookout.class);
 
-    private final RpcLookoutId  rpcLookoutId = new RpcLookoutId();
+    private final RpcLookoutId rpcLookoutId = new RpcLookoutId();
 
     /**
      * Collect the RPC client information.
@@ -113,13 +108,13 @@ public class RpcLookout {
             });
 
             Lookout.registry().gauge(rpcLookoutId.fetchServerThreadPoolActiveCountId(serverConfig),
-                new Gauge<Integer>() {
+                    new Gauge<Integer>() {
 
-                    @Override
-                    public Integer value() {
-                        return threadPoolExecutor.getActiveCount();
-                    }
-                });
+                        @Override
+                        public Integer value() {
+                            return threadPoolExecutor.getActiveCount();
+                        }
+                    });
 
             Lookout.registry().gauge(rpcLookoutId.fetchServerThreadPoolIdleCountId(serverConfig), new Gauge<Integer>() {
 

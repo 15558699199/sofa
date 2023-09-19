@@ -27,46 +27,46 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class NamedThreadFactory implements ThreadFactory {
 
-  private static final AtomicInteger POOL_NUMBER = new AtomicInteger(1);
-  private final AtomicInteger threadNumber = new AtomicInteger(1);
-  private final ThreadGroup group;
-  private final String namePrefix;
-  private final boolean isDaemon;
+    private static final AtomicInteger POOL_NUMBER = new AtomicInteger(1);
+    private final AtomicInteger threadNumber = new AtomicInteger(1);
+    private final ThreadGroup group;
+    private final String namePrefix;
+    private final boolean isDaemon;
 
-  /**
-   * Instantiates a new Named thread factory.
-   *
-   * @param name the name
-   */
-  public NamedThreadFactory(String name) {
-    this(name, false);
-  }
-
-  /**
-   * Instantiates a new Named thread factory.
-   *
-   * @param prefix the prefix
-   * @param daemon the daemon
-   */
-  public NamedThreadFactory(String prefix, boolean daemon) {
-    SecurityManager s = System.getSecurityManager();
-    group = (s != null) ? s.getThreadGroup() : Thread.currentThread().getThreadGroup();
-    namePrefix = prefix + "-" + POOL_NUMBER.getAndIncrement() + "-thread-";
-    isDaemon = daemon;
-  }
-
-  /**
-   * Create a thread.
-   *
-   * @see ThreadFactory#newThread(Runnable)
-   */
-  @Override
-  public Thread newThread(Runnable r) {
-    Thread t = new Thread(group, r, namePrefix + threadNumber.getAndIncrement(), 0);
-    t.setDaemon(isDaemon);
-    if (t.getPriority() != Thread.NORM_PRIORITY) {
-      t.setPriority(Thread.NORM_PRIORITY);
+    /**
+     * Instantiates a new Named thread factory.
+     *
+     * @param name the name
+     */
+    public NamedThreadFactory(String name) {
+        this(name, false);
     }
-    return t;
-  }
+
+    /**
+     * Instantiates a new Named thread factory.
+     *
+     * @param prefix the prefix
+     * @param daemon the daemon
+     */
+    public NamedThreadFactory(String prefix, boolean daemon) {
+        SecurityManager s = System.getSecurityManager();
+        group = (s != null) ? s.getThreadGroup() : Thread.currentThread().getThreadGroup();
+        namePrefix = prefix + "-" + POOL_NUMBER.getAndIncrement() + "-thread-";
+        isDaemon = daemon;
+    }
+
+    /**
+     * Create a thread.
+     *
+     * @see ThreadFactory#newThread(Runnable)
+     */
+    @Override
+    public Thread newThread(Runnable r) {
+        Thread t = new Thread(group, r, namePrefix + threadNumber.getAndIncrement(), 0);
+        t.setDaemon(isDaemon);
+        if (t.getPriority() != Thread.NORM_PRIORITY) {
+            t.setPriority(Thread.NORM_PRIORITY);
+        }
+        return t;
+    }
 }

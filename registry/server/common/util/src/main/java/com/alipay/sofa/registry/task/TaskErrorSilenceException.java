@@ -17,5 +17,5 @@
 package com.alipay.sofa.registry.task;
 
 public class TaskErrorSilenceException extends RuntimeException {
-  public static final TaskErrorSilenceException INSTANCE = new TaskErrorSilenceException();
+    public static final TaskErrorSilenceException INSTANCE = new TaskErrorSilenceException();
 }

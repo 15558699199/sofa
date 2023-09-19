@@ -26,11 +26,11 @@ import java.util.Map;
  */
 @Deprecated
 public class MetadataHolder {
-    static final ThreadLocal<Map<String,String>> localContext = new ThreadLocal<>();
+    static final ThreadLocal<Map<String, String>> localContext = new ThreadLocal<>();
 
     public static Map<String, String> getMetaHolder() {
         Map<String, String> stringStringMap = localContext.get();
-        if(stringStringMap == null){
+        if (stringStringMap == null) {
             HashMap<String, String> value = new HashMap<>();
             localContext.set(value);
             return value;
@@ -38,7 +38,7 @@ public class MetadataHolder {
         return stringStringMap;
     }
 
-    public static void clear(){
+    public static void clear() {
         localContext.remove();
     }
 }

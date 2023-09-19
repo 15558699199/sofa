@@ -17,26 +17,27 @@
 package com.alipay.sofa.registry.common.model.metaserver.cleaner;
 
 import com.google.common.collect.Sets;
+
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Set;
 
 public class AppRevisionSlice implements Serializable {
-  private final Set<String> revisions;
+    private final Set<String> revisions;
 
-  public AppRevisionSlice(Set<String> revisions) {
-    this.revisions = revisions;
-  }
-
-  public Set<String> getRevisions() {
-    return revisions;
-  }
-
-  public static AppRevisionSlice merge(Collection<AppRevisionSlice> slices) {
-    Set<String> revisions = Sets.newHashSet();
-    for (AppRevisionSlice slice : slices) {
-      revisions.addAll(slice.revisions);
+    public AppRevisionSlice(Set<String> revisions) {
+        this.revisions = revisions;
     }
-    return new AppRevisionSlice(revisions);
-  }
+
+    public static AppRevisionSlice merge(Collection<AppRevisionSlice> slices) {
+        Set<String> revisions = Sets.newHashSet();
+        for (AppRevisionSlice slice : slices) {
+            revisions.addAll(slice.revisions);
+        }
+        return new AppRevisionSlice(revisions);
+    }
+
+    public Set<String> getRevisions() {
+        return revisions;
+    }
 }

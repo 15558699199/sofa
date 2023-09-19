@@ -37,11 +37,11 @@ public class DubboProviderBootstrapTest {
         ApplicationConfig serverApplacation = new ApplicationConfig();
         serverApplacation.setAppName("server");
         ProviderConfig providerConfig = new ProviderConfig<DemoService>()
-            .setInterfaceId(DemoService.class.getName())
-            .setRef(new DemoServiceImpl())
-            .setBootstrap("dubbo")
-            .setParameter("version", "1.0.1")
-            .setRegister(false).setApplication(serverApplacation);
+                .setInterfaceId(DemoService.class.getName())
+                .setRef(new DemoServiceImpl())
+                .setBootstrap("dubbo")
+                .setParameter("version", "1.0.1")
+                .setRegister(false).setApplication(serverApplacation);
 
         dubboProviderBootstrap = new DubboProviderBootstrap(providerConfig);
     }

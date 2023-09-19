@@ -30,20 +30,21 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class CheckClientManagerHandler extends AbstractConsoleHandler<CheckClientManagerRequest> {
 
-  @Autowired private CheckClientManagerService checkClientManagerService;
+    @Autowired
+    private CheckClientManagerService checkClientManagerService;
 
-  @Override
-  public Class interest() {
-    return CheckClientManagerRequest.class;
-  }
+    @Override
+    public Class interest() {
+        return CheckClientManagerRequest.class;
+    }
 
-  @Override
-  public GenericResponse<CheckClientManagerResponse> doHandle(
-      Channel channel, CheckClientManagerRequest request) {
-    Tuple<Boolean, Long> ret =
-        checkClientManagerService.checkLocalCache(request.getExpectedVersion());
-    GenericResponse<CheckClientManagerResponse> response = new GenericResponse();
-    response.fillSucceed(new CheckClientManagerResponse(ret.o1, ret.o2));
-    return response;
-  }
+    @Override
+    public GenericResponse<CheckClientManagerResponse> doHandle(
+            Channel channel, CheckClientManagerRequest request) {
+        Tuple<Boolean, Long> ret =
+                checkClientManagerService.checkLocalCache(request.getExpectedVersion());
+        GenericResponse<CheckClientManagerResponse> response = new GenericResponse();
+        response.fillSucceed(new CheckClientManagerResponse(ret.o1, ret.o2));
+        return response;
+    }
 }

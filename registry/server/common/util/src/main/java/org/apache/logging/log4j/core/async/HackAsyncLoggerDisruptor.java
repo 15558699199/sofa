@@ -17,31 +17,32 @@
 package org.apache.logging.log4j.core.async;
 
 import com.alipay.sofa.registry.util.StringFormatter;
+
 import java.util.concurrent.atomic.LongAdder;
 
 public final class HackAsyncLoggerDisruptor extends AsyncLoggerDisruptor {
-  private final LongAdder fullCount = new LongAdder();
+    private final LongAdder fullCount = new LongAdder();
 
-  HackAsyncLoggerDisruptor(String contextName) {
-    super(contextName);
-  }
-
-  @Override
-  boolean tryPublish(final RingBufferLogEventTranslator translator) {
-    boolean published = super.tryPublish(translator);
-    if (!published) {
-      fullCount.increment();
+    HackAsyncLoggerDisruptor(String contextName) {
+        super(contextName);
     }
-    return published;
-  }
 
-  long fullCountAndReset() {
-    return fullCount.sumThenReset();
-  }
+    @Override
+    boolean tryPublish(final RingBufferLogEventTranslator translator) {
+        boolean published = super.tryPublish(translator);
+        if (!published) {
+            fullCount.increment();
+        }
+        return published;
+    }
 
-  @Override
-  public String toString() {
-    return StringFormatter.format(
-        "HackAsyncLoggerDisruptor{ctx={},{}}", getContextName(), super.toString());
-  }
+    long fullCountAndReset() {
+        return fullCount.sumThenReset();
+    }
+
+    @Override
+    public String toString() {
+        return StringFormatter.format(
+                "HackAsyncLoggerDisruptor{ctx={},{}}", getContextName(), super.toString());
+    }
 }

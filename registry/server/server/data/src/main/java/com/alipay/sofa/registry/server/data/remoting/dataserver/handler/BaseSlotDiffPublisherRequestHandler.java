@@ -33,167 +33,171 @@ import com.alipay.sofa.registry.server.shared.remoting.AbstractServerHandler;
 import com.alipay.sofa.registry.util.ParaCheckUtil;
 import com.alipay.sofa.registry.util.StringFormatter;
 import com.google.common.annotations.VisibleForTesting;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
-import javax.annotation.Resource;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * @author xiaojian.xj
  * @version : BaseSlotDiffPublisherRequestHandler.java, v 0.1 2022年05月16日 21:16 xiaojian.xj Exp $
  */
 public abstract class BaseSlotDiffPublisherRequestHandler
-    extends AbstractServerHandler<DataSlotDiffPublisherRequest> {
+        extends AbstractServerHandler<DataSlotDiffPublisherRequest> {
 
-  private final Logger logger;
+    private final Logger logger;
 
-  @Resource private DatumStorageDelegate datumStorageDelegate;
+    @Resource
+    private DatumStorageDelegate datumStorageDelegate;
 
-  @Autowired private DataServerConfig dataServerConfig;
+    @Autowired
+    private DataServerConfig dataServerConfig;
 
-  @Autowired private SlotManager slotManager;
+    @Autowired
+    private SlotManager slotManager;
 
-  public BaseSlotDiffPublisherRequestHandler(Logger logger) {
-    this.logger = logger;
-  }
-
-  @Override
-  public void checkParam(DataSlotDiffPublisherRequest request) {
-    ParaCheckUtil.checkNonNegative(request.getSlotId(), "request.slotId");
-    ParaCheckUtil.checkNotNull(request.getDatumSummaries(), "request.datumSummaries");
-  }
-
-  @Override
-  public Object doHandle(Channel channel, DataSlotDiffPublisherRequest request) {
-    try {
-      slotManager.triggerUpdateSlotTable(request.getSlotTableEpoch());
-      final int slotId = request.getSlotId();
-      if (!slotManager.isLeader(dataServerConfig.getLocalDataCenter(), slotId)) {
-        logger.warn(
-            "sync slot request from {}, not leader of {}", request.getLocalDataCenter(), slotId);
-        return new GenericResponse().fillFailed("not leader of " + slotId);
-      }
-
-      Map<String, Map<String, Publisher>> existingPublishers =
-          datumStorageDelegate.getPublishers(
-              dataServerConfig.getLocalDataCenter(), request.getSlotId());
-
-      DataSlotDiffPublisherResult result =
-          calcDiffResult(
-              request.getLocalDataCenter(),
-              slotId,
-              request.getDatumSummaries(),
-              existingPublishers,
-              request.getAcceptorManager());
-      result.setSlotTableEpoch(slotManager.getSlotTableEpoch());
-      return new GenericResponse().fillSucceed(result);
-    } catch (Throwable e) {
-      String msg =
-          StringFormatter.format(
-              "DiffSyncPublisher request from {} error for slot {}",
-              request.getLocalDataCenter(),
-              request.getSlotId());
-      logger.error(msg, e);
-      return new GenericResponse().fillFailed(msg);
+    public BaseSlotDiffPublisherRequestHandler(Logger logger) {
+        this.logger = logger;
     }
-  }
 
-  private DataSlotDiffPublisherResult calcDiffResult(
-      String requestDataCenter,
-      int targetSlot,
-      List<DatumSummary> datumSummaries,
-      Map<String, Map<String, Publisher>> existingPublishers,
-      SyncSlotAcceptorManager acceptorManager) {
-    DataSlotDiffPublisherResult result =
-        DataSlotDiffUtils.diffPublishersResult(
-            datumSummaries,
-            existingPublishers,
-            dataServerConfig.getSlotSyncPublisherMaxNum(),
-            acceptorManager);
-    DataSlotDiffUtils.logDiffResult(requestDataCenter, result, targetSlot, logger);
-    return result;
-  }
+    @Override
+    public void checkParam(DataSlotDiffPublisherRequest request) {
+        ParaCheckUtil.checkNonNegative(request.getSlotId(), "request.slotId");
+        ParaCheckUtil.checkNotNull(request.getDatumSummaries(), "request.datumSummaries");
+    }
 
-  @Override
-  protected Node.NodeType getConnectNodeType() {
-    return Node.NodeType.DATA;
-  }
+    @Override
+    public Object doHandle(Channel channel, DataSlotDiffPublisherRequest request) {
+        try {
+            slotManager.triggerUpdateSlotTable(request.getSlotTableEpoch());
+            final int slotId = request.getSlotId();
+            if (!slotManager.isLeader(dataServerConfig.getLocalDataCenter(), slotId)) {
+                logger.warn(
+                        "sync slot request from {}, not leader of {}", request.getLocalDataCenter(), slotId);
+                return new GenericResponse().fillFailed("not leader of " + slotId);
+            }
 
-  @Override
-  public Class interest() {
-    return DataSlotDiffPublisherRequest.class;
-  }
+            Map<String, Map<String, Publisher>> existingPublishers =
+                    datumStorageDelegate.getPublishers(
+                            dataServerConfig.getLocalDataCenter(), request.getSlotId());
 
-  @Override
-  public Object buildFailedResponse(String msg) {
-    return new GenericResponse().fillFailed(msg);
-  }
+            DataSlotDiffPublisherResult result =
+                    calcDiffResult(
+                            request.getLocalDataCenter(),
+                            slotId,
+                            request.getDatumSummaries(),
+                            existingPublishers,
+                            request.getAcceptorManager());
+            result.setSlotTableEpoch(slotManager.getSlotTableEpoch());
+            return new GenericResponse().fillSucceed(result);
+        } catch (Throwable e) {
+            String msg =
+                    StringFormatter.format(
+                            "DiffSyncPublisher request from {} error for slot {}",
+                            request.getLocalDataCenter(),
+                            request.getSlotId());
+            logger.error(msg, e);
+            return new GenericResponse().fillFailed(msg);
+        }
+    }
 
-  /**
-   * Getter method for property <tt>datumStorageDelegate</tt>.
-   *
-   * @return property value of datumStorageDelegate
-   */
-  @VisibleForTesting
-  public DatumStorageDelegate getDatumStorageDelegate() {
-    return datumStorageDelegate;
-  }
+    private DataSlotDiffPublisherResult calcDiffResult(
+            String requestDataCenter,
+            int targetSlot,
+            List<DatumSummary> datumSummaries,
+            Map<String, Map<String, Publisher>> existingPublishers,
+            SyncSlotAcceptorManager acceptorManager) {
+        DataSlotDiffPublisherResult result =
+                DataSlotDiffUtils.diffPublishersResult(
+                        datumSummaries,
+                        existingPublishers,
+                        dataServerConfig.getSlotSyncPublisherMaxNum(),
+                        acceptorManager);
+        DataSlotDiffUtils.logDiffResult(requestDataCenter, result, targetSlot, logger);
+        return result;
+    }
 
-  /**
-   * Setter method for property <tt>datumStorageDelegate</tt>.
-   *
-   * @param datumStorageDelegate value to be assigned to property datumStorageDelegate
-   * @return BaseSlotDiffPublisherRequestHandler
-   */
-  @VisibleForTesting
-  public BaseSlotDiffPublisherRequestHandler setDatumStorageDelegate(
-      DatumStorageDelegate datumStorageDelegate) {
-    this.datumStorageDelegate = datumStorageDelegate;
-    return this;
-  }
+    @Override
+    protected Node.NodeType getConnectNodeType() {
+        return Node.NodeType.DATA;
+    }
 
-  /**
-   * Getter method for property <tt>dataServerConfig</tt>.
-   *
-   * @return property value of dataServerConfig
-   */
-  @VisibleForTesting
-  public DataServerConfig getDataServerConfig() {
-    return dataServerConfig;
-  }
+    @Override
+    public Class interest() {
+        return DataSlotDiffPublisherRequest.class;
+    }
 
-  /**
-   * Setter method for property <tt>dataServerConfig</tt>.
-   *
-   * @param dataServerConfig value to be assigned to property dataServerConfig
-   * @return BaseSlotDiffPublisherRequestHandler
-   */
-  @VisibleForTesting
-  public BaseSlotDiffPublisherRequestHandler setDataServerConfig(
-      DataServerConfig dataServerConfig) {
-    this.dataServerConfig = dataServerConfig;
-    return this;
-  }
+    @Override
+    public Object buildFailedResponse(String msg) {
+        return new GenericResponse().fillFailed(msg);
+    }
 
-  /**
-   * Getter method for property <tt>slotManager</tt>.
-   *
-   * @return property value of slotManager
-   */
-  @VisibleForTesting
-  public SlotManager getSlotManager() {
-    return slotManager;
-  }
+    /**
+     * Getter method for property <tt>datumStorageDelegate</tt>.
+     *
+     * @return property value of datumStorageDelegate
+     */
+    @VisibleForTesting
+    public DatumStorageDelegate getDatumStorageDelegate() {
+        return datumStorageDelegate;
+    }
 
-  /**
-   * Setter method for property <tt>slotManager</tt>.
-   *
-   * @param slotManager value to be assigned to property slotManager
-   * @return BaseSlotDiffPublisherRequestHandler
-   */
-  @VisibleForTesting
-  public BaseSlotDiffPublisherRequestHandler setSlotManager(SlotManager slotManager) {
-    this.slotManager = slotManager;
-    return this;
-  }
+    /**
+     * Setter method for property <tt>datumStorageDelegate</tt>.
+     *
+     * @param datumStorageDelegate value to be assigned to property datumStorageDelegate
+     * @return BaseSlotDiffPublisherRequestHandler
+     */
+    @VisibleForTesting
+    public BaseSlotDiffPublisherRequestHandler setDatumStorageDelegate(
+            DatumStorageDelegate datumStorageDelegate) {
+        this.datumStorageDelegate = datumStorageDelegate;
+        return this;
+    }
+
+    /**
+     * Getter method for property <tt>dataServerConfig</tt>.
+     *
+     * @return property value of dataServerConfig
+     */
+    @VisibleForTesting
+    public DataServerConfig getDataServerConfig() {
+        return dataServerConfig;
+    }
+
+    /**
+     * Setter method for property <tt>dataServerConfig</tt>.
+     *
+     * @param dataServerConfig value to be assigned to property dataServerConfig
+     * @return BaseSlotDiffPublisherRequestHandler
+     */
+    @VisibleForTesting
+    public BaseSlotDiffPublisherRequestHandler setDataServerConfig(
+            DataServerConfig dataServerConfig) {
+        this.dataServerConfig = dataServerConfig;
+        return this;
+    }
+
+    /**
+     * Getter method for property <tt>slotManager</tt>.
+     *
+     * @return property value of slotManager
+     */
+    @VisibleForTesting
+    public SlotManager getSlotManager() {
+        return slotManager;
+    }
+
+    /**
+     * Setter method for property <tt>slotManager</tt>.
+     *
+     * @param slotManager value to be assigned to property slotManager
+     * @return BaseSlotDiffPublisherRequestHandler
+     */
+    @VisibleForTesting
+    public BaseSlotDiffPublisherRequestHandler setSlotManager(SlotManager slotManager) {
+        this.slotManager = slotManager;
+        return this;
+    }
 }

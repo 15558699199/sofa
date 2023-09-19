@@ -28,7 +28,7 @@ public interface ClientFactoryInternal extends ClientFactory {
     /**
      * Register concrete client to client factory.
      *
-     * @param clientType client type
+     * @param clientType     client type
      * @param clientInstance client instance
      */
     void registerClient(Class<?> clientType, Object clientInstance);

@@ -20,15 +20,15 @@ import java.util.Set;
 
 /**
  * @author chen.zhu
- *     <p>Jan 12, 2021
+ * <p>Jan 12, 2021
  */
 public interface Comparator<T> {
 
-  Set<T> getAdded();
+    Set<T> getAdded();
 
-  Set<T> getRemoved();
+    Set<T> getRemoved();
 
-  boolean hasAnyChange();
+    boolean hasAnyChange();
 
-  int totalChange();
+    int totalChange();
 }

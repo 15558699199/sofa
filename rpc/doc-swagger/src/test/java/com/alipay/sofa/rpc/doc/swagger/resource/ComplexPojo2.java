@@ -24,15 +24,15 @@ import java.util.List;
  */
 public class ComplexPojo2 {
 
-    private int                int0;
-    private Integer            integer0;
-    private byte               byte0;
-    private byte[]             bytes0;
-    private List<String>       stringList;
+    private int int0;
+    private Integer integer0;
+    private byte byte0;
+    private byte[] bytes0;
+    private List<String> stringList;
     private List<ComplexPojo2> complexPojoList;
-    private String[]           strings;
-    private ComplexPojo2[]     complexPojos;
-    private Date               date;
+    private String[] strings;
+    private ComplexPojo2[] complexPojos;
+    private Date date;
 
     public Date getDate() {
         return date;

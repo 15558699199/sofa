@@ -31,22 +31,13 @@ import java.util.Properties;
 public class SampleDeploymentDescriptor extends AbstractDeploymentDescriptor {
 
     private static final DeploymentDescriptorConfiguration deploymentDescriptorConfiguration = new DeploymentDescriptorConfiguration(
-                                                                                                 Collections
-                                                                                                     .singletonList(DeploymentDescriptorConfiguration.MODULE_NAME),
-                                                                                                 Collections
-                                                                                                     .singletonList(DeploymentDescriptorConfiguration.REQUIRE_MODULE));
+            Collections
+                    .singletonList(DeploymentDescriptorConfiguration.MODULE_NAME),
+            Collections
+                    .singletonList(DeploymentDescriptorConfiguration.REQUIRE_MODULE));
 
-    private static final URL                               defaultUrl                        = SampleDeploymentDescriptor.class
-                                                                                                 .getResource("");
-
-    public static SampleDeploymentDescriptor create(Properties properties) {
-        return create(defaultUrl, properties);
-    }
-
-    public static SampleDeploymentDescriptor create(URL url, Properties properties) {
-        return new SampleDeploymentDescriptor(url, properties, deploymentDescriptorConfiguration,
-            SampleDeploymentDescriptor.class.getClassLoader());
-    }
+    private static final URL defaultUrl = SampleDeploymentDescriptor.class
+            .getResource("");
 
     public SampleDeploymentDescriptor(URL url,
                                       Properties props,
@@ -56,9 +47,18 @@ public class SampleDeploymentDescriptor extends AbstractDeploymentDescriptor {
         loadSpringXMLs();
     }
 
+    public static SampleDeploymentDescriptor create(Properties properties) {
+        return create(defaultUrl, properties);
+    }
+
+    public static SampleDeploymentDescriptor create(URL url, Properties properties) {
+        return new SampleDeploymentDescriptor(url, properties, deploymentDescriptorConfiguration,
+                SampleDeploymentDescriptor.class.getClassLoader());
+    }
+
     @Override
     protected void loadSpringXMLs() {
         this.springResources.put(properties.getProperty("xmlName", "sample"),
-            new ByteArrayResource(new byte[] {}));
+                new ByteArrayResource(new byte[]{}));
     }
 }

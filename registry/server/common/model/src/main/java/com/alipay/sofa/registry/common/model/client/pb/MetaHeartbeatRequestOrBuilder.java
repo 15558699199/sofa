@@ -17,16 +17,27 @@
 package com.alipay.sofa.registry.common.model.client.pb;
 
 public interface MetaHeartbeatRequestOrBuilder
-    extends
-    // @@protoc_insertion_point(interface_extends:MetaHeartbeatRequest)
-    com.google.protobuf.MessageOrBuilder {
+        extends
+        // @@protoc_insertion_point(interface_extends:MetaHeartbeatRequest)
+        com.google.protobuf.MessageOrBuilder {
 
-  /** <code>repeated string revisions = 1;</code> */
-  java.util.List<java.lang.String> getRevisionsList();
-  /** <code>repeated string revisions = 1;</code> */
-  int getRevisionsCount();
-  /** <code>repeated string revisions = 1;</code> */
-  java.lang.String getRevisions(int index);
-  /** <code>repeated string revisions = 1;</code> */
-  com.google.protobuf.ByteString getRevisionsBytes(int index);
+    /**
+     * <code>repeated string revisions = 1;</code>
+     */
+    java.util.List<java.lang.String> getRevisionsList();
+
+    /**
+     * <code>repeated string revisions = 1;</code>
+     */
+    int getRevisionsCount();
+
+    /**
+     * <code>repeated string revisions = 1;</code>
+     */
+    java.lang.String getRevisions(int index);
+
+    /**
+     * <code>repeated string revisions = 1;</code>
+     */
+    com.google.protobuf.ByteString getRevisionsBytes(int index);
 }

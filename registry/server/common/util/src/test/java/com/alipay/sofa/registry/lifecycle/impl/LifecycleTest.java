@@ -26,54 +26,54 @@ import org.junit.Test;
 import org.mockito.Mockito;
 
 public class LifecycleTest {
-  private static final Logger LOGGER = LoggerFactory.getLogger(LifecycleTest.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(LifecycleTest.class);
 
-  @Test
-  public void testDefaultLifecycleState() {
-    Lifecycle lifecycle = Mockito.mock(Lifecycle.class);
-    LifecycleController controller = Mockito.mock(LifecycleController.class);
-    DefaultLifecycleState state = new DefaultLifecycleState(lifecycle, controller, LOGGER);
-    Assert.assertTrue(state.isEmpty());
+    @Test
+    public void testDefaultLifecycleState() {
+        Lifecycle lifecycle = Mockito.mock(Lifecycle.class);
+        LifecycleController controller = Mockito.mock(LifecycleController.class);
+        DefaultLifecycleState state = new DefaultLifecycleState(lifecycle, controller, LOGGER);
+        Assert.assertTrue(state.isEmpty());
 
-    Assert.assertFalse(state.isInitializing());
-    Assert.assertFalse(state.isInitialized());
+        Assert.assertFalse(state.isInitializing());
+        Assert.assertFalse(state.isInitialized());
 
-    Assert.assertFalse(state.isStarting());
-    Assert.assertFalse(state.isStarted());
+        Assert.assertFalse(state.isStarting());
+        Assert.assertFalse(state.isStarted());
 
-    Assert.assertFalse(state.isStopping());
-    // not init, state is stopped and disposed
-    Assert.assertTrue(state.isStopped());
+        Assert.assertFalse(state.isStopping());
+        // not init, state is stopped and disposed
+        Assert.assertTrue(state.isStopped());
 
-    Assert.assertFalse(state.isDisposing());
-    Assert.assertTrue(state.isDisposed());
+        Assert.assertFalse(state.isDisposing());
+        Assert.assertTrue(state.isDisposed());
 
-    Assert.assertFalse(state.isPositivelyDisposed());
-    Assert.assertFalse(state.isPositivelyStopped());
+        Assert.assertFalse(state.isPositivelyDisposed());
+        Assert.assertFalse(state.isPositivelyStopped());
 
-    state.setPhase(LifecycleState.LifecyclePhase.INITIALIZING);
-    Assert.assertTrue(state.isInitializing());
-    Assert.assertFalse(state.isInitialized());
+        state.setPhase(LifecycleState.LifecyclePhase.INITIALIZING);
+        Assert.assertTrue(state.isInitializing());
+        Assert.assertFalse(state.isInitialized());
 
-    state.setPhase(LifecycleState.LifecyclePhase.STARTING);
-    Assert.assertTrue(state.isStarting());
-    Assert.assertFalse(state.isStarted());
+        state.setPhase(LifecycleState.LifecyclePhase.STARTING);
+        Assert.assertTrue(state.isStarting());
+        Assert.assertFalse(state.isStarted());
 
-    state.setPhase(LifecycleState.LifecyclePhase.STOPPING);
-    Assert.assertTrue(state.isStopping());
-    Assert.assertFalse(state.isStopped());
+        state.setPhase(LifecycleState.LifecyclePhase.STOPPING);
+        Assert.assertTrue(state.isStopping());
+        Assert.assertFalse(state.isStopped());
 
-    state.setPhase(LifecycleState.LifecyclePhase.DISPOSING);
-    Assert.assertTrue(state.isDisposing());
-    Assert.assertFalse(state.isDisposed());
+        state.setPhase(LifecycleState.LifecyclePhase.DISPOSING);
+        Assert.assertTrue(state.isDisposing());
+        Assert.assertFalse(state.isDisposed());
 
-    state.setPhase(LifecycleState.LifecyclePhase.DISPOSED);
-    Assert.assertTrue(state.isPositivelyDisposed());
-    Assert.assertTrue(state.isPositivelyStopped());
+        state.setPhase(LifecycleState.LifecyclePhase.DISPOSED);
+        Assert.assertTrue(state.isPositivelyDisposed());
+        Assert.assertTrue(state.isPositivelyStopped());
 
-    Assert.assertTrue(state.toString(), state.toString().contains("DISPOSED"));
-    // rollback to DISPOSING
-    state.rollback(new RuntimeException());
-    Assert.assertTrue(state.toString(), state.toString().contains("DISPOSING"));
-  }
+        Assert.assertTrue(state.toString(), state.toString().contains("DISPOSED"));
+        // rollback to DISPOSING
+        state.rollback(new RuntimeException());
+        Assert.assertTrue(state.toString(), state.toString().contains("DISPOSING"));
+    }
 }

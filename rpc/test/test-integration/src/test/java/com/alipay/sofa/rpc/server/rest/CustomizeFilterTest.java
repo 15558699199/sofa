@@ -17,22 +17,14 @@
 package com.alipay.sofa.rpc.server.rest;
 
 import com.alipay.sofa.rpc.common.RpcConstants;
-import com.alipay.sofa.rpc.config.ApplicationConfig;
-import com.alipay.sofa.rpc.config.ConsumerConfig;
-import com.alipay.sofa.rpc.config.JAXRSProviderManager;
-import com.alipay.sofa.rpc.config.ProviderConfig;
-import com.alipay.sofa.rpc.config.ServerConfig;
+import com.alipay.sofa.rpc.config.*;
 import com.alipay.sofa.rpc.filter.Filter;
 import com.alipay.sofa.rpc.test.ActivelyDestroyTest;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -44,21 +36,21 @@ import java.util.List;
  */
 public class CustomizeFilterTest extends ActivelyDestroyTest {
 
-    private static RestService                          filterRestService;
+    private static RestService filterRestService;
 
-    private static CustomizeTestFilter                  providerFilter;
+    private static CustomizeTestFilter providerFilter;
 
-    private static CustomizeTestFilter                  clientFilter;
+    private static CustomizeTestFilter clientFilter;
 
-    private static ProviderConfig<RestService>          providerConfig;
+    private static ProviderConfig<RestService> providerConfig;
 
-    private static CustomizeContainerRequestTestFilter  customizeContainerRequestTestFilter;
+    private static CustomizeContainerRequestTestFilter customizeContainerRequestTestFilter;
 
     private static CustomizeContainerResponseTestFilter customizeContainerResponseTestFilter;
 
-    private static CustomizeClientRequestTestFilter     customizeClientRequestTestFilter;
+    private static CustomizeClientRequestTestFilter customizeClientRequestTestFilter;
 
-    private static CustomizeClientResponseTestFilter    customizeClientResponseTestFilter;
+    private static CustomizeClientResponseTestFilter customizeClientResponseTestFilter;
 
     @BeforeClass
     public static void beforeClass() {
@@ -77,17 +69,17 @@ public class CustomizeFilterTest extends ActivelyDestroyTest {
         providerFilters.add(providerFilter);
 
         ServerConfig restServer = new ServerConfig()
-            .setPort(8583)
-            .setProtocol(RpcConstants.PROTOCOL_TYPE_REST);
+                .setPort(8583)
+                .setProtocol(RpcConstants.PROTOCOL_TYPE_REST);
 
         List<ServerConfig> servers = new ArrayList<ServerConfig>(2);
         servers.add(restServer);
         providerConfig = new ProviderConfig<RestService>()
-            .setInterfaceId(RestService.class.getName())
-            .setRef(new RestServiceImpl())
-            .setRegister(false)
-            .setServer(servers)
-            .setFilterRef(providerFilters);
+                .setInterfaceId(RestService.class.getName())
+                .setRef(new RestServiceImpl())
+                .setRegister(false)
+                .setServer(servers)
+                .setFilterRef(providerFilters);
 
         providerConfig.export();
 
@@ -97,12 +89,12 @@ public class CustomizeFilterTest extends ActivelyDestroyTest {
         clientFilters.add(clientFilter);
 
         ConsumerConfig<RestService> consumerConfigRest = new ConsumerConfig<RestService>()
-            .setInterfaceId(RestService.class.getName())
-            .setProtocol(RpcConstants.PROTOCOL_TYPE_REST)
-            .setDirectUrl("rest://127.0.0.1:8583")
-            .setTimeout(1000)
-            .setFilterRef(clientFilters)
-            .setApplication(new ApplicationConfig().setAppName("TestClientRest"));
+                .setInterfaceId(RestService.class.getName())
+                .setProtocol(RpcConstants.PROTOCOL_TYPE_REST)
+                .setDirectUrl("rest://127.0.0.1:8583")
+                .setTimeout(1000)
+                .setFilterRef(clientFilters)
+                .setApplication(new ApplicationConfig().setAppName("TestClientRest"));
         filterRestService = consumerConfigRest.refer();
     }
 

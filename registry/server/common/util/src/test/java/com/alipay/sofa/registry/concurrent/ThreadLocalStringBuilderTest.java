@@ -20,21 +20,21 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class ThreadLocalStringBuilderTest {
-  @Test
-  public void test() {
-    StringBuilder sb = ThreadLocalStringBuilder.get();
-    for (int i = 0; i < 10000; i++) {
-      sb.append("1");
+    @Test
+    public void test() {
+        StringBuilder sb = ThreadLocalStringBuilder.get();
+        for (int i = 0; i < 10000; i++) {
+            sb.append("1");
+        }
+        ThreadLocalStringBuilder.get();
     }
-    ThreadLocalStringBuilder.get();
-  }
 
-  @Test
-  public void testJoin() {
-    Assert.assertEquals("12", ThreadLocalStringBuilder.join("1", "2"));
-    Assert.assertEquals("123", ThreadLocalStringBuilder.join("1", "2", "3"));
-    Assert.assertEquals("1234", ThreadLocalStringBuilder.join("1", "2", "3", "4"));
-    Assert.assertEquals("12345", ThreadLocalStringBuilder.join("1", "2", "3", "4", "5"));
-    Assert.assertEquals("123456", ThreadLocalStringBuilder.join("1", "2", "3", "4", "5", "6"));
-  }
+    @Test
+    public void testJoin() {
+        Assert.assertEquals("12", ThreadLocalStringBuilder.join("1", "2"));
+        Assert.assertEquals("123", ThreadLocalStringBuilder.join("1", "2", "3"));
+        Assert.assertEquals("1234", ThreadLocalStringBuilder.join("1", "2", "3", "4"));
+        Assert.assertEquals("12345", ThreadLocalStringBuilder.join("1", "2", "3", "4", "5"));
+        Assert.assertEquals("123456", ThreadLocalStringBuilder.join("1", "2", "3", "4", "5", "6"));
+    }
 }

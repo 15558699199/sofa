@@ -27,11 +27,7 @@ import com.alipay.sofa.rpc.core.request.SofaRequest;
 import com.alipay.sofa.rpc.filter.Filter;
 import com.alipay.sofa.rpc.filter.FilterInvoker;
 import com.alipay.sofa.rpc.test.ActivelyDestroyTest;
-import com.netflix.hystrix.HystrixCommand;
-import com.netflix.hystrix.HystrixCommandGroupKey;
-import com.netflix.hystrix.HystrixCommandKey;
-import com.netflix.hystrix.HystrixCommandProperties;
-import com.netflix.hystrix.HystrixThreadPoolProperties;
+import com.netflix.hystrix.*;
 import com.netflix.hystrix.exception.HystrixRuntimeException;
 import org.junit.After;
 import org.junit.Assert;
@@ -45,10 +41,10 @@ import java.util.concurrent.Future;
  */
 public class HystrixFilterAsyncTest extends ActivelyDestroyTest {
 
-    private static final int               HYSTRIX_DEFAULT_TIMEOUT = 1000;
+    private static final int HYSTRIX_DEFAULT_TIMEOUT = 1000;
 
     private ProviderConfig<HystrixService> providerConfig;
-    private ServerConfig                   serverConfig;
+    private ServerConfig serverConfig;
     private ConsumerConfig<HystrixService> consumerConfig;
 
     @After
@@ -93,7 +89,7 @@ public class HystrixFilterAsyncTest extends ActivelyDestroyTest {
         providerConfig.export();
 
         consumerConfig = defaultClient()
-            .setTimeout(10000);
+                .setTimeout(10000);
 
         HystrixService HystrixService = consumerConfig.refer();
 
@@ -119,7 +115,7 @@ public class HystrixFilterAsyncTest extends ActivelyDestroyTest {
         providerConfig.export();
 
         consumerConfig = defaultClient()
-            .setTimeout(10000);
+                .setTimeout(10000);
 
         SofaHystrixConfig.registerFallback(consumerConfig, new HystrixServiceFallback());
 
@@ -141,7 +137,7 @@ public class HystrixFilterAsyncTest extends ActivelyDestroyTest {
         providerConfig = defaultServer(2000);
         providerConfig.export();
         consumerConfig = defaultClient()
-            .setTimeout(10000);
+                .setTimeout(10000);
 
         SofaHystrixConfig.registerFallbackFactory(consumerConfig, new HystrixServiceFallbackFactory());
 
@@ -157,8 +153,8 @@ public class HystrixFilterAsyncTest extends ActivelyDestroyTest {
         String result = (String) SofaResponseFuture.getResponse(10000, true);
         Assert.assertTrue((System.currentTimeMillis() - start) > HYSTRIX_DEFAULT_TIMEOUT);
         Assert.assertEquals(
-            "fallback abc from server! age: 24, error: com.netflix.hystrix.exception.HystrixTimeoutException",
-            result);
+                "fallback abc from server! age: 24, error: com.netflix.hystrix.exception.HystrixTimeoutException",
+                result);
     }
 
     @Test
@@ -171,10 +167,10 @@ public class HystrixFilterAsyncTest extends ActivelyDestroyTest {
                 String groupKey = invoker.getConfig().getInterfaceId();
                 String commandKey = request.getMethodName() + "_circuit_breaker_test";
                 return HystrixCommand.Setter
-                    .withGroupKey(HystrixCommandGroupKey.Factory.asKey(groupKey))
-                    .andCommandKey(HystrixCommandKey.Factory.asKey(commandKey))
-                    .andCommandPropertiesDefaults(
-                        HystrixCommandProperties.defaultSetter().withCircuitBreakerForceOpen(true));
+                        .withGroupKey(HystrixCommandGroupKey.Factory.asKey(groupKey))
+                        .andCommandKey(HystrixCommandKey.Factory.asKey(commandKey))
+                        .andCommandPropertiesDefaults(
+                                HystrixCommandProperties.defaultSetter().withCircuitBreakerForceOpen(true));
             }
         };
 
@@ -182,7 +178,7 @@ public class HystrixFilterAsyncTest extends ActivelyDestroyTest {
         providerConfig.export();
 
         consumerConfig = defaultClient()
-            .setTimeout(10000);
+                .setTimeout(10000);
 
         SofaHystrixConfig.registerFallbackFactory(consumerConfig, new HystrixServiceFallbackFactory());
         SofaHystrixConfig.registerSetterFactory(consumerConfig, setterFactory);
@@ -196,8 +192,8 @@ public class HystrixFilterAsyncTest extends ActivelyDestroyTest {
             String result = (String) SofaResponseFuture.getResponse(10000, true);
             Assert.assertTrue((System.currentTimeMillis() - start) < HYSTRIX_DEFAULT_TIMEOUT);
             Assert.assertEquals(
-                "fallback abc from server! age: 24, error: java.lang.RuntimeException",
-                result);
+                    "fallback abc from server! age: 24, error: java.lang.RuntimeException",
+                    result);
             Assert.assertTrue((System.currentTimeMillis() - start) < HYSTRIX_DEFAULT_TIMEOUT);
         }
         // 熔断时服务端不应该接收到任何请求
@@ -215,10 +211,10 @@ public class HystrixFilterAsyncTest extends ActivelyDestroyTest {
                 String groupKey = invoker.getConfig().getInterfaceId() + "thread_pool_rejected";
                 String commandKey = request.getMethodName() + "thread_pool_rejected";
                 return HystrixCommand.Setter
-                    .withGroupKey(HystrixCommandGroupKey.Factory.asKey(groupKey))
-                    .andCommandKey(HystrixCommandKey.Factory.asKey(commandKey))
-                    .andCommandPropertiesDefaults(HystrixCommandProperties.Setter().withExecutionTimeoutEnabled(false))
-                    .andThreadPoolPropertiesDefaults(HystrixThreadPoolProperties.Setter().withCoreSize(1));
+                        .withGroupKey(HystrixCommandGroupKey.Factory.asKey(groupKey))
+                        .andCommandKey(HystrixCommandKey.Factory.asKey(commandKey))
+                        .andCommandPropertiesDefaults(HystrixCommandProperties.Setter().withExecutionTimeoutEnabled(false))
+                        .andThreadPoolPropertiesDefaults(HystrixThreadPoolProperties.Setter().withCoreSize(1));
             }
         };
 
@@ -226,7 +222,7 @@ public class HystrixFilterAsyncTest extends ActivelyDestroyTest {
         providerConfig.export();
 
         consumerConfig = defaultClient()
-            .setTimeout(10000);
+                .setTimeout(10000);
 
         SofaHystrixConfig.registerFallbackFactory(consumerConfig, new HystrixServiceFallbackFactory());
         SofaHystrixConfig.registerSetterFactory(consumerConfig, setterFactory);
@@ -243,8 +239,8 @@ public class HystrixFilterAsyncTest extends ActivelyDestroyTest {
                 Assert.assertTrue(future.isDone());
                 String result = (String) SofaResponseFuture.getResponse(10000, true);
                 Assert.assertEquals(
-                    "fallback abc from server! age: 24, error: java.util.concurrent.RejectedExecutionException",
-                    result);
+                        "fallback abc from server! age: 24, error: java.util.concurrent.RejectedExecutionException",
+                        result);
                 Assert.assertTrue((System.currentTimeMillis() - start) < HYSTRIX_DEFAULT_TIMEOUT);
             }
         }
@@ -261,8 +257,8 @@ public class HystrixFilterAsyncTest extends ActivelyDestroyTest {
         providerConfig.export();
 
         consumerConfig = defaultClient()
-            .setFilterRef(Collections.<Filter> singletonList(new MockTimeoutFilter(4000)))
-            .setTimeout(10000);
+                .setFilterRef(Collections.<Filter>singletonList(new MockTimeoutFilter(4000)))
+                .setTimeout(10000);
         HystrixService HystrixService = consumerConfig.refer();
 
         try {
@@ -273,9 +269,9 @@ public class HystrixFilterAsyncTest extends ActivelyDestroyTest {
         } catch (Exception e) {
             Assert.assertTrue(e instanceof SofaTimeOutException);
             Assert
-                .assertEquals(
-                    "Asynchronous execution timed out, please check Hystrix configuration. Events: [SofaAsyncHystrixEvent#EMIT]",
-                    e.getMessage());
+                    .assertEquals(
+                            "Asynchronous execution timed out, please check Hystrix configuration. Events: [SofaAsyncHystrixEvent#EMIT]",
+                            e.getMessage());
         }
 
     }
@@ -284,22 +280,22 @@ public class HystrixFilterAsyncTest extends ActivelyDestroyTest {
         InvokeCounterHystrixService hystrixService = new InvokeCounterHystrixService(sleep);
 
         serverConfig = new ServerConfig()
-            .setPort(22222)
-            .setDaemon(false);
+                .setPort(22222)
+                .setDaemon(false);
 
         return new ProviderConfig<HystrixService>()
-            .setInterfaceId(HystrixService.class.getName())
-            .setRef(hystrixService)
-            .setServer(serverConfig)
-            .setRepeatedExportLimit(-1);
+                .setInterfaceId(HystrixService.class.getName())
+                .setRef(hystrixService)
+                .setServer(serverConfig)
+                .setRepeatedExportLimit(-1);
     }
 
     private ConsumerConfig<HystrixService> defaultClient() {
         return new ConsumerConfig<HystrixService>()
-            .setInterfaceId(HystrixService.class.getName())
-            .setDirectUrl("bolt://127.0.0.1:22222")
-            .setInvokeType(RpcConstants.INVOKER_TYPE_FUTURE)
-            .setParameter(HystrixConstants.SOFA_HYSTRIX_ENABLED, String.valueOf(true))
-            .setRepeatedReferLimit(-1);
+                .setInterfaceId(HystrixService.class.getName())
+                .setDirectUrl("bolt://127.0.0.1:22222")
+                .setInvokeType(RpcConstants.INVOKER_TYPE_FUTURE)
+                .setParameter(HystrixConstants.SOFA_HYSTRIX_ENABLED, String.valueOf(true))
+                .setRepeatedReferLimit(-1);
     }
 }

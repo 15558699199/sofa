@@ -43,7 +43,7 @@ public class SofaBizUninstallEventHandlerTests {
     private final SofaBizUninstallEventHandler sofaBizUninstallEventHandler = new SofaBizUninstallEventHandler();
 
     @Mock
-    private SofaRuntimeManager                 sofaRuntimeManager;
+    private SofaRuntimeManager sofaRuntimeManager;
 
     @BeforeEach
     public void clear() {

@@ -36,28 +36,28 @@ public class ProtobufHelper {
     /**
      * Support multiple classloader?
      */
-    private static final boolean         MULTIPLE_CLASSLOADER = RpcConfigs
-                                                                  .getBooleanValue(RpcOptions.MULTIPLE_CLASSLOADER_ENABLE);
+    private static final boolean MULTIPLE_CLASSLOADER = RpcConfigs
+            .getBooleanValue(RpcOptions.MULTIPLE_CLASSLOADER_ENABLE);
 
     /**
      * Cache of parseFrom method
      */
-    ConcurrentMap<Class, Method>         parseFromMethodMap   = new ConcurrentHashMap<Class, Method>();
+    ConcurrentMap<Class, Method> parseFromMethodMap = new ConcurrentHashMap<Class, Method>();
 
     /**
      * Cache of toByteArray method
      */
-    ConcurrentMap<Class, Method>         toByteArrayMethodMap = new ConcurrentHashMap<Class, Method>();
+    ConcurrentMap<Class, Method> toByteArrayMethodMap = new ConcurrentHashMap<Class, Method>();
 
     /**
      * 请求参数类型缓存 {service+method:class}
      */
-    private ConcurrentMap<String, Class> requestClassCache    = new ConcurrentHashMap<String, Class>();
+    private ConcurrentMap<String, Class> requestClassCache = new ConcurrentHashMap<String, Class>();
 
     /**
      * 返回结果类型缓存 {service+method:class}
      */
-    private ConcurrentMap<String, Class> responseClassCache   = new ConcurrentHashMap<String, Class>();
+    private ConcurrentMap<String, Class> responseClassCache = new ConcurrentHashMap<String, Class>();
 
     /**
      * 从缓存中获取请求值类
@@ -127,14 +127,14 @@ public class ProtobufHelper {
         }
         if (pbMethod == null) {
             throw new SofaRpcRuntimeException(LogCodes.getLog(LogCodes.ERROR_METHOD_NOT_FOUND, clazz.getName(),
-                methodName));
+                    methodName));
         }
         Class[] parameterTypes = pbMethod.getParameterTypes();
         if (parameterTypes == null
-            || parameterTypes.length != 1
-            || isProtoBufMessageObject(parameterTypes[0])) {
+                || parameterTypes.length != 1
+                || isProtoBufMessageObject(parameterTypes[0])) {
             throw new SofaRpcRuntimeException(LogCodes.getLog(LogCodes.ERROR_ONLY_ONE_PARAM, "protobuf",
-                clazz.getName()));
+                    clazz.getName()));
         }
         Class reqClass = parameterTypes[0];
         requestClassCache.put(key, reqClass);

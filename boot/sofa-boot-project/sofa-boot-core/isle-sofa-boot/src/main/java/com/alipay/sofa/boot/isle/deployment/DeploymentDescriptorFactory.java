@@ -32,10 +32,10 @@ public class DeploymentDescriptorFactory {
     /**
      * Build a SOFABoot Module deployment descriptor.
      *
-     * @param url SOFABoot module file url
-     * @param props properties
+     * @param url                               SOFABoot module file url
+     * @param props                             properties
      * @param deploymentDescriptorConfiguration deployment descriptor configuration
-     * @param modulePropertyName moduleProperty file
+     * @param modulePropertyName                moduleProperty file
      * @return deployment descriptor
      */
     public DeploymentDescriptor build(URL url,
@@ -44,10 +44,10 @@ public class DeploymentDescriptorFactory {
                                       ClassLoader classLoader, String modulePropertyName) {
         if (ResourceUtils.isJarURL(url)) {
             return createJarDeploymentDescriptor(url, props, deploymentDescriptorConfiguration,
-                classLoader);
+                    classLoader);
         } else {
             return createFileDeploymentDescriptor(url, props, deploymentDescriptorConfiguration,
-                classLoader, modulePropertyName);
+                    classLoader, modulePropertyName);
         }
     }
 
@@ -56,7 +56,7 @@ public class DeploymentDescriptorFactory {
                                                                  DeploymentDescriptorConfiguration deploymentDescriptorConfiguration,
                                                                  ClassLoader classLoader) {
         return new JarDeploymentDescriptor(url, props, deploymentDescriptorConfiguration,
-            classLoader);
+                classLoader);
     }
 
     protected DeploymentDescriptor createFileDeploymentDescriptor(URL url,
@@ -65,6 +65,6 @@ public class DeploymentDescriptorFactory {
                                                                   ClassLoader classLoader,
                                                                   String modulePropertyName) {
         return new FileDeploymentDescriptor(url, props, deploymentDescriptorConfiguration,
-            classLoader, modulePropertyName);
+                classLoader, modulePropertyName);
     }
 }

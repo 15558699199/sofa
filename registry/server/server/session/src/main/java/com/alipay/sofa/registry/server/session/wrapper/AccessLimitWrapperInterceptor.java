@@ -27,29 +27,30 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @version 1.0: AccessLimitWrapperInterceptor.java, v 0.1 2019-08-26 20:29 shangyu.wh Exp $
  */
 public class AccessLimitWrapperInterceptor
-    implements WrapperInterceptor<RegisterInvokeData, Boolean> {
+        implements WrapperInterceptor<RegisterInvokeData, Boolean> {
 
-  @Autowired private AccessLimitService accessLimitService;
+    @Autowired
+    private AccessLimitService accessLimitService;
 
-  @Override
-  public Boolean invokeCodeWrapper(WrapperInvocation<RegisterInvokeData, Boolean> invocation)
-      throws Exception {
+    @Override
+    public Boolean invokeCodeWrapper(WrapperInvocation<RegisterInvokeData, Boolean> invocation)
+            throws Exception {
 
-    RegisterInvokeData registerInvokeData = invocation.getParameterSupplier().get();
-    BaseInfo baseInfo = (BaseInfo) registerInvokeData.getStoreData();
+        RegisterInvokeData registerInvokeData = invocation.getParameterSupplier().get();
+        BaseInfo baseInfo = (BaseInfo) registerInvokeData.getStoreData();
 
-    if (!accessLimitService.tryAcquire()) {
-      throw new RuntimeException(
-          String.format(
-              "Register access limit for session server!dataInfoId=%s,connectId=%s",
-              baseInfo.getDataInfoId(), baseInfo.getSourceAddress()));
+        if (!accessLimitService.tryAcquire()) {
+            throw new RuntimeException(
+                    String.format(
+                            "Register access limit for session server!dataInfoId=%s,connectId=%s",
+                            baseInfo.getDataInfoId(), baseInfo.getSourceAddress()));
+        }
+
+        return invocation.proceed();
     }
 
-    return invocation.proceed();
-  }
-
-  @Override
-  public int getOrder() {
-    return 0;
-  }
+    @Override
+    public int getOrder() {
+        return 0;
+    }
 }

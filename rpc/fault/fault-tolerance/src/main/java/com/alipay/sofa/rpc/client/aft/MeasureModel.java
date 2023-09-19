@@ -32,11 +32,11 @@ public class MeasureModel {
     /**
      * App name of measure model
      */
-    private final String                            appName;
+    private final String appName;
     /**
      * service name of measure model
      */
-    private final String                            service;
+    private final String service;
     /**
      * all dimension statics stats of measure model
      */

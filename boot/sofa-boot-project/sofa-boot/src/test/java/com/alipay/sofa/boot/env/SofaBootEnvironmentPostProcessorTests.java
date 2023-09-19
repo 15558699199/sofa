@@ -41,11 +41,11 @@ public class SofaBootEnvironmentPostProcessorTests {
         MockEnvironment environment = new MockEnvironment();
         sofaBootEnvironmentPostProcessor.postProcessEnvironment(environment, null);
         assertThat(
-            environment.getPropertySources().get(SofaBootConstants.SOFA_DEFAULT_PROPERTY_SOURCE))
-            .isNotNull();
+                environment.getPropertySources().get(SofaBootConstants.SOFA_DEFAULT_PROPERTY_SOURCE))
+                .isNotNull();
         assertThat(environment.containsProperty(SofaBootConstants.SOFA_BOOT_VERSION)).isTrue();
         assertThat(environment.containsProperty(SofaBootConstants.SOFA_BOOT_FORMATTED_VERSION))
-            .isTrue();
+                .isTrue();
     }
 
     @Test
@@ -53,7 +53,7 @@ public class SofaBootEnvironmentPostProcessorTests {
         MockEnvironment environment = new MockEnvironment();
         sofaBootEnvironmentPostProcessor.postProcessEnvironment(environment, null);
         assertThat(environment.getProperty(SofaBootConstants.ENDPOINTS_WEB_EXPOSURE_INCLUDE_CONFIG))
-            .isEqualTo(SofaBootConstants.SOFA_DEFAULT_ENDPOINTS_WEB_EXPOSURE_VALUE);
+                .isEqualTo(SofaBootConstants.SOFA_DEFAULT_ENDPOINTS_WEB_EXPOSURE_VALUE);
     }
 
     @Test
@@ -70,11 +70,11 @@ public class SofaBootEnvironmentPostProcessorTests {
     public void registerDuplicated() {
         MockEnvironment environment = new MockEnvironment();
         environment.getPropertySources().addLast(
-            new PropertiesPropertySource(SofaBootConstants.SOFA_DEFAULT_PROPERTY_SOURCE,
-                new Properties()));
+                new PropertiesPropertySource(SofaBootConstants.SOFA_DEFAULT_PROPERTY_SOURCE,
+                        new Properties()));
         sofaBootEnvironmentPostProcessor.postProcessEnvironment(environment, null);
         assertThat(environment.containsProperty(SofaBootConstants.SOFA_BOOT_VERSION)).isFalse();
         assertThat(environment.containsProperty(SofaBootConstants.SOFA_BOOT_FORMATTED_VERSION))
-            .isFalse();
+                .isFalse();
     }
 }

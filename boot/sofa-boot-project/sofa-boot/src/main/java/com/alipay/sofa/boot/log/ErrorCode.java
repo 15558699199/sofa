@@ -28,7 +28,7 @@ import com.alipay.sofa.common.code.LogCode2Description;
 public class ErrorCode {
 
     private static final LogCode2Description LCD = LogCode2Description
-                                                     .create(SofaBootConstants.SOFA_BOOT_SPACE_NAME);
+            .create(SofaBootConstants.SOFA_BOOT_SPACE_NAME);
 
     public static String convert(String code) {
         return LCD.convert(code);

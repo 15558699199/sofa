@@ -42,12 +42,12 @@ public final class CompressorFactory {
      * 除了托管给扩展加载器的工厂模式（保留alias：实例）外<br>
      * 还需要额外保留编码和实例的映射：{别名：编码}
      */
-    private final static ConcurrentMap<String, Byte>     TYPE_CODE_MAP       = new ConcurrentHashMap<String, Byte>();
+    private final static ConcurrentMap<String, Byte> TYPE_CODE_MAP = new ConcurrentHashMap<String, Byte>();
 
     /**
      * 扩展加载器
      */
-    private final static ExtensionLoader<Compressor>     EXTENSION_LOADER    = buildLoader();
+    private final static ExtensionLoader<Compressor> EXTENSION_LOADER = buildLoader();
 
     private static ExtensionLoader<Compressor> buildLoader() {
         ExtensionLoader<Compressor> extensionLoader = ExtensionLoaderFactory.getExtensionLoader(Compressor.class);

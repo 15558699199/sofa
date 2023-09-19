@@ -17,14 +17,14 @@
 package com.alipay.sofa.registry.server.session.push;
 
 public enum PushType {
-  Sub(false),
-  Reg(false),
-  Temp(true),
-  Empty(true);
+    Sub(false),
+    Reg(false),
+    Temp(true),
+    Empty(true);
 
-  public final boolean noDelay;
+    public final boolean noDelay;
 
-  private PushType(boolean noDelay) {
-    this.noDelay = noDelay;
-  }
+    private PushType(boolean noDelay) {
+        this.noDelay = noDelay;
+    }
 }

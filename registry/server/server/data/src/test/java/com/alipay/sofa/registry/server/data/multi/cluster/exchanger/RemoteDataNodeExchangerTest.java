@@ -16,8 +16,6 @@
  */
 package com.alipay.sofa.registry.server.data.multi.cluster.exchanger;
 
-import static org.mockito.Mockito.when;
-
 import com.alipay.sofa.registry.server.data.bootstrap.MultiClusterDataServerConfig;
 import org.junit.Assert;
 import org.junit.Test;
@@ -26,6 +24,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import static org.mockito.Mockito.when;
+
 /**
  * @author xiaojian.xj
  * @version : RemoteDataNodeExchangerTest.java, v 0.1 2023年02月09日 16:42 xiaojian.xj Exp $
@@ -33,17 +33,19 @@ import org.mockito.runners.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class RemoteDataNodeExchangerTest {
 
-  @InjectMocks private RemoteDataNodeExchanger remoteDataNodeExchanger;
+    @InjectMocks
+    private RemoteDataNodeExchanger remoteDataNodeExchanger;
 
-  @Mock private MultiClusterDataServerConfig multiClusterDataServerConfig;
+    @Mock
+    private MultiClusterDataServerConfig multiClusterDataServerConfig;
 
-  @Test
-  public void test() {
-    when(multiClusterDataServerConfig.getSyncRemoteSlotLeaderTimeoutMillis()).thenReturn(1);
-    when(multiClusterDataServerConfig.getSyncRemoteSlotLeaderPort()).thenReturn(2);
-    when(multiClusterDataServerConfig.getSyncRemoteSlotLeaderConnNum()).thenReturn(3);
-    Assert.assertEquals(1, remoteDataNodeExchanger.getRpcTimeoutMillis());
-    Assert.assertEquals(2, remoteDataNodeExchanger.getServerPort());
-    Assert.assertEquals(3, remoteDataNodeExchanger.getConnNum());
-  }
+    @Test
+    public void test() {
+        when(multiClusterDataServerConfig.getSyncRemoteSlotLeaderTimeoutMillis()).thenReturn(1);
+        when(multiClusterDataServerConfig.getSyncRemoteSlotLeaderPort()).thenReturn(2);
+        when(multiClusterDataServerConfig.getSyncRemoteSlotLeaderConnNum()).thenReturn(3);
+        Assert.assertEquals(1, remoteDataNodeExchanger.getRpcTimeoutMillis());
+        Assert.assertEquals(2, remoteDataNodeExchanger.getServerPort());
+        Assert.assertEquals(3, remoteDataNodeExchanger.getConnNum());
+    }
 }

@@ -22,45 +22,45 @@ package com.alipay.sofa.registry.log;
  */
 public class LoggerFactory {
 
-  /**
-   * get logger
-   *
-   * @param name name
-   * @return Logger
-   */
-  public static Logger getLogger(String name) {
-    return new SLF4JLogger(name);
-  }
+    /**
+     * get logger
+     *
+     * @param name name
+     * @return Logger
+     */
+    public static Logger getLogger(String name) {
+        return new SLF4JLogger(name);
+    }
 
-  /**
-   * get logger
-   *
-   * @param clazz clazz
-   * @return
-   */
-  public static Logger getLogger(Class clazz) {
-    return new SLF4JLogger(clazz);
-  }
+    /**
+     * get logger
+     *
+     * @param clazz clazz
+     * @return
+     */
+    public static Logger getLogger(Class clazz) {
+        return new SLF4JLogger(clazz);
+    }
 
-  /**
-   * get logger
-   *
-   * @param name name
-   * @param prefix prefix
-   * @return
-   */
-  public static Logger getLogger(String name, String prefix) {
-    return new SLF4JLogger(name, prefix);
-  }
+    /**
+     * get logger
+     *
+     * @param name   name
+     * @param prefix prefix
+     * @return
+     */
+    public static Logger getLogger(String name, String prefix) {
+        return new SLF4JLogger(name, prefix);
+    }
 
-  /**
-   * get logger
-   *
-   * @param clazz clazz
-   * @param prefix prefix
-   * @return Logger
-   */
-  public static Logger getLogger(Class clazz, String prefix) {
-    return new SLF4JLogger(clazz, prefix);
-  }
+    /**
+     * get logger
+     *
+     * @param clazz  clazz
+     * @param prefix prefix
+     * @return Logger
+     */
+    public static Logger getLogger(Class clazz, String prefix) {
+        return new SLF4JLogger(clazz, prefix);
+    }
 }

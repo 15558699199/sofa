@@ -43,15 +43,9 @@ public class ProviderInvoker<T> extends FilterInvoker {
     /**
      * 日志
      */
-    private static final Logger     LOGGER = LoggerFactory
-                                               .getLogger(ProviderInvoker.class);
-
-    /**
-     * The Provider config.
-     */
-    private final ProviderConfig<T> providerConfig;
-
-    private static Field            causeField;
+    private static final Logger LOGGER = LoggerFactory
+            .getLogger(ProviderInvoker.class);
+    private static Field causeField;
 
     static {
         try {
@@ -62,6 +56,11 @@ public class ProviderInvoker<T> extends FilterInvoker {
             LOGGER.warnWithApp(null, "error  fetch causeField in ProviderInvoker", e);
         }
     }
+
+    /**
+     * The Provider config.
+     */
+    private final ProviderConfig<T> providerConfig;
 
     /**
      * Instantiates a new Provider invoke filter.
@@ -98,7 +97,7 @@ public class ProviderInvoker<T> extends FilterInvoker {
             Method method = request.getMethod();
             if (method == null) {
                 throw new SofaRpcException(RpcErrorType.SERVER_FILTER,
-                    LogCodes.getLog(LogCodes.ERROR_NEED_DECODE_METHOD));
+                        LogCodes.getLog(LogCodes.ERROR_NEED_DECODE_METHOD));
             }
             Object result = method.invoke(providerConfig.getRef(), request.getMethodArgs());
 
@@ -119,13 +118,13 @@ public class ProviderInvoker<T> extends FilterInvoker {
             if (RpcInternalContext.isAttachmentEnable()) {
                 long endTime = RpcRuntimeContext.now();
                 RpcInternalContext.getContext().setAttachment(RpcConstants.INTERNAL_KEY_IMPL_ELAPSE,
-                    endTime - startTime);
+                        endTime - startTime);
             }
             RpcInvokeContext.getContext().put(RpcConstants.INTERNAL_KEY_IMPL_ELAPSE_NANO,
-                System.nanoTime() - bizStartTime);
+                    System.nanoTime() - bizStartTime);
 
             RpcInvokeContext.getContext().put(RpcConstants.INTERNAL_KEY_PROVIDER_INVOKE_END_TIME_NANO,
-                System.nanoTime());
+                    System.nanoTime());
         }
 
         return sofaResponse;

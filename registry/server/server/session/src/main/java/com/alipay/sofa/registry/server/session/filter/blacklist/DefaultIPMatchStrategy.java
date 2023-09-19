@@ -19,11 +19,12 @@ package com.alipay.sofa.registry.server.session.filter.blacklist;
 import com.alipay.sofa.registry.server.session.filter.IPMatchStrategy;
 import com.alipay.sofa.registry.server.session.providedata.FetchBlackListService;
 import com.google.common.annotations.VisibleForTesting;
+import org.apache.commons.lang.StringUtils;
+
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Supplier;
-import javax.annotation.Resource;
-import org.apache.commons.lang.StringUtils;
 
 /**
  * @author shangyu.wh
@@ -31,60 +32,61 @@ import org.apache.commons.lang.StringUtils;
  */
 public class DefaultIPMatchStrategy implements IPMatchStrategy<String> {
 
-  @Resource private FetchBlackListService fetchBlackListService;
+    @Resource
+    private FetchBlackListService fetchBlackListService;
 
-  @Override
-  public boolean match(String IP, Supplier<String> getOperatorType) {
-    return match(getOperatorType.get(), IP);
-  }
-
-  private boolean match(String type, String matchPattern) {
-
-    List<BlacklistConfig> configList = fetchBlackListService.getBlacklistConfigList();
-    for (BlacklistConfig blacklistConfig : configList) {
-
-      // 如黑名单类型不匹配则跳过
-      if (!StringUtils.equals(type, blacklistConfig.getType())) {
-        continue;
-      }
-
-      List<MatchType> matchTypeList = blacklistConfig.getMatchTypes();
-
-      // 匹配规则为空跳过
-      if (null == matchTypeList || matchTypeList.size() == 0) {
-        continue;
-      }
-
-      for (MatchType matchType : matchTypeList) {
-        if (null == matchType) {
-          continue;
-        }
-
-        if (BlacklistConstants.IP_FULL.equals(matchType.getType())) {
-          // IP 全匹配时判断当前发布者IP是否在IP列表中，如命中则拒绝发布
-          @SuppressWarnings("unchecked")
-          Set<String> patterns = matchType.getPatternSet();
-
-          if (null == patterns || patterns.size() == 0) {
-            continue;
-          }
-
-          if (patterns.contains(matchPattern)) {
-            return true;
-          }
-        }
-      }
+    @Override
+    public boolean match(String IP, Supplier<String> getOperatorType) {
+        return match(getOperatorType.get(), IP);
     }
-    return false;
-  }
 
-  /**
-   * Setter method for property <tt>fetchBlackListService</tt>.
-   *
-   * @param fetchBlackListService value to be assigned to property fetchBlackListService
-   */
-  @VisibleForTesting
-  public void setFetchBlackListService(FetchBlackListService fetchBlackListService) {
-    this.fetchBlackListService = fetchBlackListService;
-  }
+    private boolean match(String type, String matchPattern) {
+
+        List<BlacklistConfig> configList = fetchBlackListService.getBlacklistConfigList();
+        for (BlacklistConfig blacklistConfig : configList) {
+
+            // 如黑名单类型不匹配则跳过
+            if (!StringUtils.equals(type, blacklistConfig.getType())) {
+                continue;
+            }
+
+            List<MatchType> matchTypeList = blacklistConfig.getMatchTypes();
+
+            // 匹配规则为空跳过
+            if (null == matchTypeList || matchTypeList.size() == 0) {
+                continue;
+            }
+
+            for (MatchType matchType : matchTypeList) {
+                if (null == matchType) {
+                    continue;
+                }
+
+                if (BlacklistConstants.IP_FULL.equals(matchType.getType())) {
+                    // IP 全匹配时判断当前发布者IP是否在IP列表中，如命中则拒绝发布
+                    @SuppressWarnings("unchecked")
+                    Set<String> patterns = matchType.getPatternSet();
+
+                    if (null == patterns || patterns.size() == 0) {
+                        continue;
+                    }
+
+                    if (patterns.contains(matchPattern)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Setter method for property <tt>fetchBlackListService</tt>.
+     *
+     * @param fetchBlackListService value to be assigned to property fetchBlackListService
+     */
+    @VisibleForTesting
+    public void setFetchBlackListService(FetchBlackListService fetchBlackListService) {
+        this.fetchBlackListService = fetchBlackListService;
+    }
 }

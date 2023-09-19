@@ -47,10 +47,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class SofaServicePublishTests {
 
     @SofaReference(uniqueId = "beanMethod")
-    private SampleService           sampleService;
+    private SampleService sampleService;
 
     @SofaReference(uniqueId = "clientFactory")
-    private SampleService           otherService;
+    private SampleService otherService;
 
     @SofaReference(uniqueId = "serviceWithoutInterface")
     private ServiceWithoutInterface serviceWithoutInterface;

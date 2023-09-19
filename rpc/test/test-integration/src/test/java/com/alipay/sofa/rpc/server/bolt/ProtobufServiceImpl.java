@@ -26,9 +26,9 @@ public class ProtobufServiceImpl implements ProtobufService {
     @Override
     public EchoResponse echoObj(EchoRequest req) {
         EchoResponse response = EchoResponse.newBuilder()
-            .setCode(200)
-            .setMessage("protobuf works! " + req.getName())
-            .build();
+                .setCode(200)
+                .setMessage("protobuf works! " + req.getName())
+                .build();
         return response;
     }
 }

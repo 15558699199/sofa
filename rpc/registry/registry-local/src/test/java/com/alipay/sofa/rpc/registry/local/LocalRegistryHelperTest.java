@@ -30,8 +30,8 @@ import java.util.Random;
 public class LocalRegistryHelperTest {
 
     private static String filePath = System.getProperty("user.home") + File.separator
-                                       + "localFileTest"
-                                       + new Random().nextInt(1000);
+            + "localFileTest"
+            + new Random().nextInt(1000);
 
     @Test
     public void testModify() {

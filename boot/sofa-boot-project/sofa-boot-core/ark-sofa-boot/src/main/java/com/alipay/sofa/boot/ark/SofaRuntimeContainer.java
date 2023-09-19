@@ -36,15 +36,15 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class SofaRuntimeContainer implements ApplicationContextAware, DisposableBean {
 
-    private static final Map<ClassLoader, ApplicationContext> APPLICATION_CONTEXT_MAP  = new ConcurrentHashMap<>();
+    private static final Map<ClassLoader, ApplicationContext> APPLICATION_CONTEXT_MAP = new ConcurrentHashMap<>();
 
     private static final Map<ClassLoader, SofaRuntimeManager> SOFA_RUNTIME_MANAGER_MAP = new ConcurrentHashMap<>();
 
-    private static final Map<ClassLoader, Boolean>            JVM_SERVICE_CACHE_MAP    = new ConcurrentHashMap<>();
+    private static final Map<ClassLoader, Boolean> JVM_SERVICE_CACHE_MAP = new ConcurrentHashMap<>();
 
-    private static final Map<ClassLoader, Boolean>            JVM_INVOKE_SERIALIZE_MAP = new ConcurrentHashMap<>();
+    private static final Map<ClassLoader, Boolean> JVM_INVOKE_SERIALIZE_MAP = new ConcurrentHashMap<>();
 
-    private final ClassLoader                                 contextClassLoader;
+    private final ClassLoader contextClassLoader;
 
     public SofaRuntimeContainer(SofaRuntimeManager sofaRuntimeManager) {
         this(sofaRuntimeManager, Thread.currentThread().getContextClassLoader());
@@ -54,19 +54,6 @@ public class SofaRuntimeContainer implements ApplicationContextAware, Disposable
         Assert.notNull(classLoader, "classLoader must not be null");
         this.contextClassLoader = classLoader;
         SOFA_RUNTIME_MANAGER_MAP.put(contextClassLoader, sofaRuntimeManager);
-    }
-
-    public void setJvmServiceCache(boolean jvmServiceCache) {
-        JVM_SERVICE_CACHE_MAP.putIfAbsent(contextClassLoader, jvmServiceCache);
-    }
-
-    public void setJvmInvokeSerialize(boolean jvmInvokeSerialize) {
-        JVM_INVOKE_SERIALIZE_MAP.putIfAbsent(contextClassLoader, jvmInvokeSerialize);
-    }
-
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        APPLICATION_CONTEXT_MAP.put(contextClassLoader, applicationContext);
     }
 
     public static ApplicationContext getApplicationContext(ClassLoader classLoader) {
@@ -102,6 +89,19 @@ public class SofaRuntimeContainer implements ApplicationContextAware, Disposable
         SOFA_RUNTIME_MANAGER_MAP.clear();
         JVM_SERVICE_CACHE_MAP.clear();
         JVM_INVOKE_SERIALIZE_MAP.clear();
+    }
+
+    public void setJvmServiceCache(boolean jvmServiceCache) {
+        JVM_SERVICE_CACHE_MAP.putIfAbsent(contextClassLoader, jvmServiceCache);
+    }
+
+    public void setJvmInvokeSerialize(boolean jvmInvokeSerialize) {
+        JVM_INVOKE_SERIALIZE_MAP.putIfAbsent(contextClassLoader, jvmInvokeSerialize);
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        APPLICATION_CONTEXT_MAP.put(contextClassLoader, applicationContext);
     }
 
     @Override

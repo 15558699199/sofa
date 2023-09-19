@@ -22,9 +22,9 @@ package com.alipay.sofa.registry.store.api.meta;
  */
 public interface RecoverConfig {
 
-  String tableName();
+    String tableName();
 
-  default boolean afterConfigSet(String key, String recoverClusterId) {
-    return true;
-  }
+    default boolean afterConfigSet(String key, String recoverClusterId) {
+        return true;
+    }
 }

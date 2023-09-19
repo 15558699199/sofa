@@ -25,10 +25,10 @@ import com.alipay.sofa.registry.log.LoggerFactory;
  */
 public abstract class AbstractClientHandler<T> extends AbstractChannelHandler<T> {
 
-  private static final Logger LOGGER_EXCHANGE = LoggerFactory.getLogger("CLI-EXCHANGE");
-  private static final Logger LOGGER_CONNECT = LoggerFactory.getLogger("CLI-CONNECT");
+    private static final Logger LOGGER_EXCHANGE = LoggerFactory.getLogger("CLI-EXCHANGE");
+    private static final Logger LOGGER_CONNECT = LoggerFactory.getLogger("CLI-CONNECT");
 
-  public AbstractClientHandler() {
-    super(LOGGER_CONNECT, LOGGER_EXCHANGE);
-  }
+    public AbstractClientHandler() {
+        super(LOGGER_CONNECT, LOGGER_EXCHANGE);
+    }
 }

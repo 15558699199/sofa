@@ -42,12 +42,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class RpcShutdownTests extends ActivelyDestroyTests implements ApplicationContextAware {
     private static ApplicationContext applicationContext;
 
-    @Test
-    @DirtiesContext
-    public void checkPort() {
-        assertThat(TestUtils.available(SofaBootRpcConfigConstants.BOLT_PORT_DEFAULT)).isFalse();
-    }
-
     @AfterAll
     public static void rpcGracefulShutdown() {
         ((ConfigurableApplicationContext) applicationContext).close();
@@ -66,6 +60,12 @@ public class RpcShutdownTests extends ActivelyDestroyTests implements Applicatio
             }
         }
         assertThat(portAvailable).isTrue();
+    }
+
+    @Test
+    @DirtiesContext
+    public void checkPort() {
+        assertThat(TestUtils.available(SofaBootRpcConfigConstants.BOLT_PORT_DEFAULT)).isFalse();
     }
 
     @Override

@@ -39,7 +39,7 @@ import static com.alipay.sofa.rpc.common.utils.IOUtils.closeQuietly;
  */
 public class BlackListFileLoader {
 
-    private static final Logger      LOGGER                    = LoggerFactory.getLogger(BlackListFileLoader.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(BlackListFileLoader.class);
 
     public static final List<String> SOFA_SERIALIZE_BLACK_LIST = loadFile("/sofa-rpc/serialize_blacklist.txt");
 
@@ -100,8 +100,8 @@ public class BlackListFileLoader {
 
     /**
      * Override blacklist with override string.
-     * 
-     * @param originList Origin black list
+     *
+     * @param originList  Origin black list
      * @param overrideStr The override string
      */
     static void overrideBlackList(List<String> originList, String overrideStr) {

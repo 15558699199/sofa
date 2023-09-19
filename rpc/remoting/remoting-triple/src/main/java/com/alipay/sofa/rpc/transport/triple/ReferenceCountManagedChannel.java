@@ -16,11 +16,7 @@
  */
 package com.alipay.sofa.rpc.transport.triple;
 
-import io.grpc.CallOptions;
-import io.grpc.ClientCall;
-import io.grpc.ConnectivityState;
-import io.grpc.ManagedChannel;
-import io.grpc.MethodDescriptor;
+import io.grpc.*;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -32,7 +28,7 @@ public class ReferenceCountManagedChannel extends ManagedChannel {
 
     private final AtomicInteger referenceCount = new AtomicInteger(0);
 
-    private ManagedChannel      grpcChannel;
+    private ManagedChannel grpcChannel;
 
     public ReferenceCountManagedChannel(ManagedChannel delegated) {
         this.grpcChannel = delegated;

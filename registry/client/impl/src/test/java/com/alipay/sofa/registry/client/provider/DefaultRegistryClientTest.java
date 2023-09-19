@@ -16,17 +16,7 @@
  */
 package com.alipay.sofa.registry.client.provider;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-
-import com.alipay.sofa.registry.client.api.ConfigDataObserver;
-import com.alipay.sofa.registry.client.api.Configurator;
-import com.alipay.sofa.registry.client.api.Publisher;
-import com.alipay.sofa.registry.client.api.Subscriber;
-import com.alipay.sofa.registry.client.api.SubscriberDataObserver;
+import com.alipay.sofa.registry.client.api.*;
 import com.alipay.sofa.registry.client.api.model.ConfigData;
 import com.alipay.sofa.registry.client.api.model.RegistryType;
 import com.alipay.sofa.registry.client.api.model.UserData;
@@ -42,6 +32,9 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
+
 /**
  * The type Default registry client test.
  *
@@ -50,243 +43,253 @@ import org.slf4j.LoggerFactory;
  */
 public class DefaultRegistryClientTest extends BaseTest {
 
-  /** LOGGER */
-  private static final Logger LOGGER = LoggerFactory.getLogger(DefaultRegistryClientTest.class);
-
-  private String dataId = "com.alipay.sofa.registry.client.provider.DefaultRegistryClientTest";
-
-  private String appName = "registry-test";
-
-  /** Teardown. */
-  @After
-  public void teardown() {
-    mockServer.stop();
-  }
-
-  /** Register publisher. */
-  @Test
-  public void registerPublisher() throws InterruptedException {
-    PublisherRegistration registration = new PublisherRegistration(dataId);
-    Publisher publisher = registryClient.register(registration);
-    assertNotNull(publisher);
-    assertEquals(dataId, publisher.getDataId());
-
-    Thread.sleep(1000L);
-
-    RegisterCache registerCache = registryClient.getRegisterCache();
-
-    Publisher publisherCache = registerCache.getPublisherByRegistId(publisher.getRegistId());
-    assertNotNull(publisherCache);
-    assertTrue(publisher instanceof DefaultPublisher);
-    // set cache success
-    assertEquals(publisher.getRegistId(), publisherCache.getRegistId());
-    DefaultPublisher defaultPublisher = (DefaultPublisher) publisher;
-    assertTrue(defaultPublisher.isRegistered());
-
-    defaultPublisher.republish("republish test");
-
-    Thread.sleep(2000L);
-    // register success when republish
-    assertTrue(defaultPublisher.isRegistered());
-  }
-
-  /** Register subscriber. */
-  @Test
-  public void registerSubscriber() throws InterruptedException {
-    SubscriberDataObserver dataObserver =
-        new SubscriberDataObserver() {
-          @Override
-          public void handleData(String dataId, UserData data) {
-            LOGGER.info("handle data, dataId: {}, data: {}", dataId, data);
-          }
-        };
-    SubscriberRegistration registration = new SubscriberRegistration(dataId, dataObserver);
-    registration.setScopeEnum(ScopeEnum.dataCenter);
-    Subscriber subscriber = registryClient.register(registration);
-    assertNotNull(subscriber);
-    assertEquals(dataId, subscriber.getDataId());
+    /**
+     * LOGGER
+     */
+    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultRegistryClientTest.class);
+
+    private String dataId = "com.alipay.sofa.registry.client.provider.DefaultRegistryClientTest";
+
+    private String appName = "registry-test";
+
+    /**
+     * Teardown.
+     */
+    @After
+    public void teardown() {
+        mockServer.stop();
+    }
+
+    /**
+     * Register publisher.
+     */
+    @Test
+    public void registerPublisher() throws InterruptedException {
+        PublisherRegistration registration = new PublisherRegistration(dataId);
+        Publisher publisher = registryClient.register(registration);
+        assertNotNull(publisher);
+        assertEquals(dataId, publisher.getDataId());
+
+        Thread.sleep(1000L);
+
+        RegisterCache registerCache = registryClient.getRegisterCache();
+
+        Publisher publisherCache = registerCache.getPublisherByRegistId(publisher.getRegistId());
+        assertNotNull(publisherCache);
+        assertTrue(publisher instanceof DefaultPublisher);
+        // set cache success
+        assertEquals(publisher.getRegistId(), publisherCache.getRegistId());
+        DefaultPublisher defaultPublisher = (DefaultPublisher) publisher;
+        assertTrue(defaultPublisher.isRegistered());
+
+        defaultPublisher.republish("republish test");
+
+        Thread.sleep(2000L);
+        // register success when republish
+        assertTrue(defaultPublisher.isRegistered());
+    }
+
+    /**
+     * Register subscriber.
+     */
+    @Test
+    public void registerSubscriber() throws InterruptedException {
+        SubscriberDataObserver dataObserver =
+                new SubscriberDataObserver() {
+                    @Override
+                    public void handleData(String dataId, UserData data) {
+                        LOGGER.info("handle data, dataId: {}, data: {}", dataId, data);
+                    }
+                };
+        SubscriberRegistration registration = new SubscriberRegistration(dataId, dataObserver);
+        registration.setScopeEnum(ScopeEnum.dataCenter);
+        Subscriber subscriber = registryClient.register(registration);
+        assertNotNull(subscriber);
+        assertEquals(dataId, subscriber.getDataId());
+
+        Thread.sleep(2000L);
+
+        RegisterCache registerCache = registryClient.getRegisterCache();
+
+        Subscriber register = registerCache.getSubscriberByRegistId(subscriber.getRegistId());
+        assertNotNull(register);
+        // set cache success
+        assertEquals(subscriber.getRegistId(), register.getRegistId());
+        // register success
+        assertTrue(register.isRegistered());
+    }
+
+    /**
+     * Register configurator.
+     */
+    @Test
+    public void registerConfigurator() throws InterruptedException {
+        ConfigDataObserver dataObserver =
+                new ConfigDataObserver() {
+                    @Override
+                    public void handleData(String dataId, ConfigData configData) {
+                        LOGGER.info("handle data, dataId: {}, data: {}", dataId, configData);
+                    }
+                };
 
-    Thread.sleep(2000L);
+        ConfiguratorRegistration registration = new ConfiguratorRegistration(dataId, dataObserver);
 
-    RegisterCache registerCache = registryClient.getRegisterCache();
+        Configurator configurator = registryClient.register(registration);
+        assertNotNull(configurator);
+        assertEquals(dataId, configurator.getDataId());
 
-    Subscriber register = registerCache.getSubscriberByRegistId(subscriber.getRegistId());
-    assertNotNull(register);
-    // set cache success
-    assertEquals(subscriber.getRegistId(), register.getRegistId());
-    // register success
-    assertTrue(register.isRegistered());
-  }
+        Thread.sleep(2000L);
 
-  /** Register configurator. */
-  @Test
-  public void registerConfigurator() throws InterruptedException {
-    ConfigDataObserver dataObserver =
-        new ConfigDataObserver() {
-          @Override
-          public void handleData(String dataId, ConfigData configData) {
-            LOGGER.info("handle data, dataId: {}, data: {}", dataId, configData);
-          }
-        };
+        RegisterCache registerCache = registryClient.getRegisterCache();
 
-    ConfiguratorRegistration registration = new ConfiguratorRegistration(dataId, dataObserver);
+        Configurator register = registerCache.getConfiguratorByRegistId(configurator.getRegistId());
+        assertNotNull(register);
+        // set cache success
+        assertEquals(configurator.getRegistId(), register.getRegistId());
+        // register success
+        assertTrue(register.isRegistered());
+    }
 
-    Configurator configurator = registryClient.register(registration);
-    assertNotNull(configurator);
-    assertEquals(dataId, configurator.getDataId());
+    @Test
+    public void unregisterSinglePublisherTest() throws InterruptedException {
+        String dataId = "unregister-test-data-id";
 
-    Thread.sleep(2000L);
+        PublisherRegistration publisherRegistration = new PublisherRegistration(dataId);
+        Publisher publisher = registryClient.register(publisherRegistration);
 
-    RegisterCache registerCache = registryClient.getRegisterCache();
+        int unregisterCount = registryClient.unregister(dataId, null, RegistryType.PUBLISHER);
+        assertEquals(1, unregisterCount);
 
-    Configurator register = registerCache.getConfiguratorByRegistId(configurator.getRegistId());
-    assertNotNull(register);
-    // set cache success
-    assertEquals(configurator.getRegistId(), register.getRegistId());
-    // register success
-    assertTrue(register.isRegistered());
-  }
+        Thread.sleep(2000L);
 
-  @Test
-  public void unregisterSinglePublisherTest() throws InterruptedException {
-    String dataId = "unregister-test-data-id";
+        Publisher temp =
+                registryClient.getRegisterCache().getPublisherByRegistId(publisher.getRegistId());
 
-    PublisherRegistration publisherRegistration = new PublisherRegistration(dataId);
-    Publisher publisher = registryClient.register(publisherRegistration);
+        assertNull(temp);
+    }
 
-    int unregisterCount = registryClient.unregister(dataId, null, RegistryType.PUBLISHER);
-    assertEquals(1, unregisterCount);
+    @Test
+    public void unregisterSingleSubscriberTest() throws InterruptedException {
+        String dataId = "unregister-test-data-id";
 
-    Thread.sleep(2000L);
+        SubscriberDataObserver dataObserver = mock(SubscriberDataObserver.class);
+        SubscriberRegistration subscriberRegistration =
+                new SubscriberRegistration(dataId, dataObserver);
 
-    Publisher temp =
-        registryClient.getRegisterCache().getPublisherByRegistId(publisher.getRegistId());
+        Subscriber subscriber = registryClient.register(subscriberRegistration);
 
-    assertNull(temp);
-  }
+        int unregisterCount = registryClient.unregister(dataId, null, RegistryType.SUBSCRIBER);
+        assertEquals(1, unregisterCount);
 
-  @Test
-  public void unregisterSingleSubscriberTest() throws InterruptedException {
-    String dataId = "unregister-test-data-id";
+        Thread.sleep(2000L);
 
-    SubscriberDataObserver dataObserver = mock(SubscriberDataObserver.class);
-    SubscriberRegistration subscriberRegistration =
-        new SubscriberRegistration(dataId, dataObserver);
+        Subscriber temp =
+                registryClient.getRegisterCache().getSubscriberByRegistId(subscriber.getRegistId());
 
-    Subscriber subscriber = registryClient.register(subscriberRegistration);
+        assertNull(temp);
+    }
 
-    int unregisterCount = registryClient.unregister(dataId, null, RegistryType.SUBSCRIBER);
-    assertEquals(1, unregisterCount);
+    @Test
+    public void unregisterSingleConfiguratorTest() throws InterruptedException {
+        String dataId = "unregister-test-data-id";
 
-    Thread.sleep(2000L);
+        ConfigDataObserver dataObserver = mock(ConfigDataObserver.class);
 
-    Subscriber temp =
-        registryClient.getRegisterCache().getSubscriberByRegistId(subscriber.getRegistId());
+        ConfiguratorRegistration registration = new ConfiguratorRegistration(dataId, dataObserver);
 
-    assertNull(temp);
-  }
+        Configurator configurator = registryClient.register(registration);
 
-  @Test
-  public void unregisterSingleConfiguratorTest() throws InterruptedException {
-    String dataId = "unregister-test-data-id";
+        int unregisterCount = registryClient.unregister(dataId, null, RegistryType.CONFIGURATOR);
+        assertEquals(1, unregisterCount);
 
-    ConfigDataObserver dataObserver = mock(ConfigDataObserver.class);
+        Thread.sleep(2000L);
 
-    ConfiguratorRegistration registration = new ConfiguratorRegistration(dataId, dataObserver);
+        Subscriber temp =
+                registryClient.getRegisterCache().getSubscriberByRegistId(configurator.getRegistId());
 
-    Configurator configurator = registryClient.register(registration);
+        assertNull(temp);
+    }
 
-    int unregisterCount = registryClient.unregister(dataId, null, RegistryType.CONFIGURATOR);
-    assertEquals(1, unregisterCount);
+    @Test
+    public void unregisterMultiTest() throws InterruptedException {
+        String dataId = "unregister-test-data-id";
 
-    Thread.sleep(2000L);
+        // 1. register
+        PublisherRegistration publisherRegistration1 = new PublisherRegistration(dataId);
+        Publisher publisher1 = registryClient.register(publisherRegistration1);
 
-    Subscriber temp =
-        registryClient.getRegisterCache().getSubscriberByRegistId(configurator.getRegistId());
+        PublisherRegistration publisherRegistration2 = new PublisherRegistration(dataId);
+        Publisher publisher2 = registryClient.register(publisherRegistration2);
 
-    assertNull(temp);
-  }
+        SubscriberDataObserver dataObserver = mock(SubscriberDataObserver.class);
+        SubscriberRegistration subscriberRegistration1 =
+                new SubscriberRegistration(dataId, dataObserver);
 
-  @Test
-  public void unregisterMultiTest() throws InterruptedException {
-    String dataId = "unregister-test-data-id";
+        Subscriber subscriber1 = registryClient.register(subscriberRegistration1);
 
-    // 1. register
-    PublisherRegistration publisherRegistration1 = new PublisherRegistration(dataId);
-    Publisher publisher1 = registryClient.register(publisherRegistration1);
+        SubscriberRegistration subscriberRegistration2 =
+                new SubscriberRegistration(dataId, dataObserver);
 
-    PublisherRegistration publisherRegistration2 = new PublisherRegistration(dataId);
-    Publisher publisher2 = registryClient.register(publisherRegistration2);
+        Subscriber subscriber2 = registryClient.register(subscriberRegistration2);
 
-    SubscriberDataObserver dataObserver = mock(SubscriberDataObserver.class);
-    SubscriberRegistration subscriberRegistration1 =
-        new SubscriberRegistration(dataId, dataObserver);
+        Thread.sleep(2000L);
 
-    Subscriber subscriber1 = registryClient.register(subscriberRegistration1);
+        // 2. unregister publisher
+        int unregisterCount = registryClient.unregister(dataId, null, RegistryType.PUBLISHER);
+        assertEquals(2, unregisterCount);
 
-    SubscriberRegistration subscriberRegistration2 =
-        new SubscriberRegistration(dataId, dataObserver);
+        Thread.sleep(2000L);
 
-    Subscriber subscriber2 = registryClient.register(subscriberRegistration2);
+        // 3. check publisher register cache
+        RegisterCache registerCache = registryClient.getRegisterCache();
+        Publisher tempPub = registerCache.getPublisherByRegistId(publisher1.getRegistId());
+        assertNull(tempPub);
 
-    Thread.sleep(2000L);
+        tempPub = registerCache.getPublisherByRegistId(publisher2.getRegistId());
+        assertNull(tempPub);
 
-    // 2. unregister publisher
-    int unregisterCount = registryClient.unregister(dataId, null, RegistryType.PUBLISHER);
-    assertEquals(2, unregisterCount);
+        // 4. unregister subscriber
+        unregisterCount = registryClient.unregister(dataId, null, RegistryType.SUBSCRIBER);
+        assertEquals(2, unregisterCount);
 
-    Thread.sleep(2000L);
+        Thread.sleep(2000L);
 
-    // 3. check publisher register cache
-    RegisterCache registerCache = registryClient.getRegisterCache();
-    Publisher tempPub = registerCache.getPublisherByRegistId(publisher1.getRegistId());
-    assertNull(tempPub);
+        // 5. check subscriber register cache
+        Subscriber tempSub = registerCache.getSubscriberByRegistId(subscriber1.getRegistId());
+        assertNull(tempSub);
 
-    tempPub = registerCache.getPublisherByRegistId(publisher2.getRegistId());
-    assertNull(tempPub);
+        tempSub = registerCache.getSubscriberByRegistId(subscriber2.getRegistId());
+        assertNull(tempSub);
+    }
 
-    // 4. unregister subscriber
-    unregisterCount = registryClient.unregister(dataId, null, RegistryType.SUBSCRIBER);
-    assertEquals(2, unregisterCount);
+    @Test
+    public void testSetAppNameByRegistration() {
+        PublisherRegistration publisherRegistration = new PublisherRegistration(dataId);
+        final String testApp = "test-app";
+        publisherRegistration.setAppName(testApp);
 
-    Thread.sleep(2000L);
+        Publisher publisher = registryClient.register(publisherRegistration);
+        PublisherRegister register = ((DefaultPublisher) publisher).assembly();
 
-    // 5. check subscriber register cache
-    Subscriber tempSub = registerCache.getSubscriberByRegistId(subscriber1.getRegistId());
-    assertNull(tempSub);
+        assertEquals(testApp, register.getAppName());
 
-    tempSub = registerCache.getSubscriberByRegistId(subscriber2.getRegistId());
-    assertNull(tempSub);
-  }
+        SubscriberRegistration subscriberRegistration =
+                new SubscriberRegistration(dataId, mock(SubscriberDataObserver.class));
+        subscriberRegistration.setAppName(testApp);
 
-  @Test
-  public void testSetAppNameByRegistration() {
-    PublisherRegistration publisherRegistration = new PublisherRegistration(dataId);
-    final String testApp = "test-app";
-    publisherRegistration.setAppName(testApp);
+        Subscriber subscriber = registryClient.register(subscriberRegistration);
+        SubscriberRegister subscriberRegister = ((DefaultSubscriber) subscriber).assembly();
 
-    Publisher publisher = registryClient.register(publisherRegistration);
-    PublisherRegister register = ((DefaultPublisher) publisher).assembly();
+        assertEquals(testApp, subscriberRegister.getAppName());
+    }
 
-    assertEquals(testApp, register.getAppName());
+    @Test
+    public void testSetAppNameByConfig() {
+        PublisherRegistration publisherRegistration = new PublisherRegistration(dataId);
 
-    SubscriberRegistration subscriberRegistration =
-        new SubscriberRegistration(dataId, mock(SubscriberDataObserver.class));
-    subscriberRegistration.setAppName(testApp);
+        Publisher publisher = registryClient.register(publisherRegistration);
+        PublisherRegister register = ((DefaultPublisher) publisher).assembly();
 
-    Subscriber subscriber = registryClient.register(subscriberRegistration);
-    SubscriberRegister subscriberRegister = ((DefaultSubscriber) subscriber).assembly();
-
-    assertEquals(testApp, subscriberRegister.getAppName());
-  }
-
-  @Test
-  public void testSetAppNameByConfig() {
-    PublisherRegistration publisherRegistration = new PublisherRegistration(dataId);
-
-    Publisher publisher = registryClient.register(publisherRegistration);
-    PublisherRegister register = ((DefaultPublisher) publisher).assembly();
-
-    assertEquals(appName, register.getAppName());
-  }
+        assertEquals(appName, register.getAppName());
+    }
 }

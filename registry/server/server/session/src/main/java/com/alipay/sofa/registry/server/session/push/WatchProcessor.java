@@ -29,103 +29,104 @@ import com.alipay.sofa.registry.server.session.node.service.ClientNodeService;
 import com.alipay.sofa.registry.task.MetricsableThreadPoolExecutor;
 import com.alipay.sofa.registry.task.RejectedDiscardHandler;
 import com.alipay.sofa.registry.util.OsUtils;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ThreadPoolExecutor;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.concurrent.Executor;
+import java.util.concurrent.ThreadPoolExecutor;
+
 public class WatchProcessor {
-  private static final Logger LOGGER = LoggerFactory.getLogger(WatchProcessor.class);
-  private static final Logger WATCH_LOGGER = LoggerFactory.getLogger("WATCH-PUSH");
-  @Autowired protected SessionServerConfig sessionServerConfig;
+    private static final Logger LOGGER = LoggerFactory.getLogger(WatchProcessor.class);
+    private static final Logger WATCH_LOGGER = LoggerFactory.getLogger("WATCH-PUSH");
+    final RejectedDiscardHandler discardHandler = new RejectedDiscardHandler();
+    private final ThreadPoolExecutor watchCallbackExecutor =
+            MetricsableThreadPoolExecutor.newExecutor(
+                    "WatchCallback", OsUtils.getCpuCount() * 2, 8000, discardHandler);
+    @Autowired
+    protected SessionServerConfig sessionServerConfig;
+    @Autowired
+    protected PushSwitchService pushSwitchService;
+    @Autowired
+    protected PushDataGenerator pushDataGenerator;
+    @Autowired
+    protected ClientNodeService clientNodeService;
 
-  @Autowired protected PushSwitchService pushSwitchService;
-
-  @Autowired protected PushDataGenerator pushDataGenerator;
-
-  @Autowired protected ClientNodeService clientNodeService;
-
-  final RejectedDiscardHandler discardHandler = new RejectedDiscardHandler();
-  private final ThreadPoolExecutor watchCallbackExecutor =
-      MetricsableThreadPoolExecutor.newExecutor(
-          "WatchCallback", OsUtils.getCpuCount() * 2, 8000, discardHandler);
-
-  boolean doExecuteOnWatch(Watcher watcher, ReceivedConfigData data, long triggerTimestamp) {
-    if (!pushSwitchService.canIpPushLocal(watcher.getSourceAddress().getIpAddress())) {
-      return false;
-    }
-    if (watcher.getPushedVersion() >= data.getVersion()) {
-      return false;
-    }
-    PushData pushData = pushDataGenerator.createPushData(watcher, data);
-    clientNodeService.pushWithCallback(
-        pushData.getPayload(),
-        watcher.getSourceAddress(),
-        new WatchPushCallback(triggerTimestamp, watcher, data.getVersion()));
-    return true;
-  }
-
-  final class WatchPushCallback implements CallbackHandler {
-    final long triggerTimestamp;
-    final long pushStartTimestamp = System.currentTimeMillis();
-    final Watcher watcher;
-    final long version;
-
-    WatchPushCallback(long triggerTimestamp, Watcher w, long version) {
-      this.watcher = w;
-      this.version = version;
-      this.triggerTimestamp = triggerTimestamp;
-    }
-
-    @Override
-    public void onCallback(Channel channel, Object message) {
-      watcher.updatePushedVersion(version);
-      tracePush(PushTrace.PushStatus.OK);
-    }
-
-    @Override
-    public void onException(Channel channel, Throwable exception) {
-      if (exception instanceof InvokeTimeoutException) {
-        tracePush(PushTrace.PushStatus.Timeout);
-        LOGGER.error("[PushTimeout]watcher={}, ver={}", watcher.shortDesc(), version);
-      } else {
-        final boolean channelConnected = channel.isConnected();
-        if (channelConnected) {
-          tracePush(PushTrace.PushStatus.Fail);
-          LOGGER.error("[PushFailed]watcher={}, ver={}", watcher.shortDesc(), version, exception);
-        } else {
-          tracePush(PushTrace.PushStatus.ChanClosed);
-          LOGGER.error("[PushChanClosed]watcher={}, ver={}", watcher.shortDesc(), version);
+    boolean doExecuteOnWatch(Watcher watcher, ReceivedConfigData data, long triggerTimestamp) {
+        if (!pushSwitchService.canIpPushLocal(watcher.getSourceAddress().getIpAddress())) {
+            return false;
         }
-      }
+        if (watcher.getPushedVersion() >= data.getVersion()) {
+            return false;
+        }
+        PushData pushData = pushDataGenerator.createPushData(watcher, data);
+        clientNodeService.pushWithCallback(
+                pushData.getPayload(),
+                watcher.getSourceAddress(),
+                new WatchPushCallback(triggerTimestamp, watcher, data.getVersion()));
+        return true;
     }
 
-    void tracePush(PushTrace.PushStatus status) {
-      trace(triggerTimestamp, pushStartTimestamp, status, watcher, version);
+    void trace(
+            long triggerTimestamp,
+            long pushStartTimestamp,
+            PushTrace.PushStatus status,
+            Watcher w,
+            long version) {
+        final long finishTs = System.currentTimeMillis();
+        WATCH_LOGGER.info(
+                "{},{},{},{},delay={},{},regTs={},notifyTs={},addr={}",
+                status,
+                w.getDataInfoId(),
+                version,
+                w.getAppName(),
+                finishTs - triggerTimestamp,
+                finishTs - pushStartTimestamp,
+                w.getRegisterTimestamp(),
+                triggerTimestamp,
+                w.getSourceAddress().buildAddressString());
     }
 
-    @Override
-    public Executor getExecutor() {
-      return watchCallbackExecutor;
-    }
-  }
+    final class WatchPushCallback implements CallbackHandler {
+        final long triggerTimestamp;
+        final long pushStartTimestamp = System.currentTimeMillis();
+        final Watcher watcher;
+        final long version;
 
-  void trace(
-      long triggerTimestamp,
-      long pushStartTimestamp,
-      PushTrace.PushStatus status,
-      Watcher w,
-      long version) {
-    final long finishTs = System.currentTimeMillis();
-    WATCH_LOGGER.info(
-        "{},{},{},{},delay={},{},regTs={},notifyTs={},addr={}",
-        status,
-        w.getDataInfoId(),
-        version,
-        w.getAppName(),
-        finishTs - triggerTimestamp,
-        finishTs - pushStartTimestamp,
-        w.getRegisterTimestamp(),
-        triggerTimestamp,
-        w.getSourceAddress().buildAddressString());
-  }
+        WatchPushCallback(long triggerTimestamp, Watcher w, long version) {
+            this.watcher = w;
+            this.version = version;
+            this.triggerTimestamp = triggerTimestamp;
+        }
+
+        @Override
+        public void onCallback(Channel channel, Object message) {
+            watcher.updatePushedVersion(version);
+            tracePush(PushTrace.PushStatus.OK);
+        }
+
+        @Override
+        public void onException(Channel channel, Throwable exception) {
+            if (exception instanceof InvokeTimeoutException) {
+                tracePush(PushTrace.PushStatus.Timeout);
+                LOGGER.error("[PushTimeout]watcher={}, ver={}", watcher.shortDesc(), version);
+            } else {
+                final boolean channelConnected = channel.isConnected();
+                if (channelConnected) {
+                    tracePush(PushTrace.PushStatus.Fail);
+                    LOGGER.error("[PushFailed]watcher={}, ver={}", watcher.shortDesc(), version, exception);
+                } else {
+                    tracePush(PushTrace.PushStatus.ChanClosed);
+                    LOGGER.error("[PushChanClosed]watcher={}, ver={}", watcher.shortDesc(), version);
+                }
+            }
+        }
+
+        void tracePush(PushTrace.PushStatus status) {
+            trace(triggerTimestamp, pushStartTimestamp, status, watcher, version);
+        }
+
+        @Override
+        public Executor getExecutor() {
+            return watchCallbackExecutor;
+        }
+    }
 }

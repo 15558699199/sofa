@@ -24,27 +24,27 @@ import io.prometheus.client.Counter;
  */
 public class MetadataCacheMetrics {
 
-  static final class Fetch {
-    static final Counter FETCH_REVISION_COUNTER =
-        Counter.build()
-            .namespace("metadata")
-            .subsystem("revision")
-            .name("fetch_revision_total")
-            .help("fetch revision")
-            .labelNames("hit")
-            .register();
-    static final Counter.Child REVISION_CACHE_HIT_COUNTER = FETCH_REVISION_COUNTER.labels("Y");
-    static final Counter.Child REVISION_CACHE_MISS_COUNTER = FETCH_REVISION_COUNTER.labels("N");
+    static final class Fetch {
+        static final Counter FETCH_REVISION_COUNTER =
+                Counter.build()
+                        .namespace("metadata")
+                        .subsystem("revision")
+                        .name("fetch_revision_total")
+                        .help("fetch revision")
+                        .labelNames("hit")
+                        .register();
+        static final Counter.Child REVISION_CACHE_HIT_COUNTER = FETCH_REVISION_COUNTER.labels("Y");
+        static final Counter.Child REVISION_CACHE_MISS_COUNTER = FETCH_REVISION_COUNTER.labels("N");
 
-    static final Counter FETCH_APPS_COUNTER =
-        Counter.build()
-            .namespace("metadata")
-            .subsystem("apps")
-            .name("fetch_apps_total")
-            .help("query apps")
-            .labelNames("hit")
-            .register();
-    static final Counter.Child APPS_CACHE_HIT_COUNTER = FETCH_APPS_COUNTER.labels("Y");
-    static final Counter.Child APPS_CACHE_MISS_COUNTER = FETCH_APPS_COUNTER.labels("N");
-  }
+        static final Counter FETCH_APPS_COUNTER =
+                Counter.build()
+                        .namespace("metadata")
+                        .subsystem("apps")
+                        .name("fetch_apps_total")
+                        .help("query apps")
+                        .labelNames("hit")
+                        .register();
+        static final Counter.Child APPS_CACHE_HIT_COUNTER = FETCH_APPS_COUNTER.labels("Y");
+        static final Counter.Child APPS_CACHE_MISS_COUNTER = FETCH_APPS_COUNTER.labels("N");
+    }
 }

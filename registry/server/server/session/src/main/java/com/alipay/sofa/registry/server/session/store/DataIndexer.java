@@ -23,7 +23,11 @@ import com.alipay.sofa.registry.util.ConcurrentUtils;
 import com.alipay.sofa.registry.util.WakeUpLoopRunnable;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Sets;
-import java.util.*;
+
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
@@ -31,114 +35,112 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.BiConsumer;
 
 public abstract class DataIndexer<K, V> {
-  private static final Logger LOG = LoggerFactory.getLogger("SRV-CONNECT");
+    private static final Logger LOG = LoggerFactory.getLogger("SRV-CONNECT");
+    private final IndexerRefresher indexerRefresher = new IndexerRefresher();
+    private volatile Map<K, Set<V>> index = new ConcurrentHashMap<>(1024);
+    private volatile Map<K, Set<V>> tempIndex = new ConcurrentHashMap<>(1024);
+    private volatile Term lastTerm = new Term();
+    private volatile boolean doubleWrite = false;
 
-  private volatile Map<K, Set<V>> index = new ConcurrentHashMap<>(1024);
-  private volatile Map<K, Set<V>> tempIndex = new ConcurrentHashMap<>(1024);
-  private volatile Term lastTerm = new Term();
-  private volatile boolean doubleWrite = false;
-
-  private final IndexerRefresher indexerRefresher = new IndexerRefresher();
-
-  public DataIndexer(String name) {
-    ConcurrentUtils.createDaemonThread(name + "-IndexerRefresher", indexerRefresher).start();
-  }
-
-  public <R> R add(K key, V val, UnThrowableCallable<R> dataStoreCaller) {
-    Term term = lastTerm;
-    term.start.incrementAndGet();
-    try {
-      if (doubleWrite) {
-        insert(tempIndex, key, val);
-      }
-      insert(index, key, val);
-      return dataStoreCaller.call();
-    } finally {
-      term.done.incrementAndGet();
+    public DataIndexer(String name) {
+        ConcurrentUtils.createDaemonThread(name + "-IndexerRefresher", indexerRefresher).start();
     }
-  }
 
-  private void insert(Map<K, Set<V>> d, K key, V val) {
-    d.computeIfAbsent(key, k -> Sets.newConcurrentHashSet()).add(val);
-  }
-
-  public Set<V> queryByKey(K key) {
-    Set<V> s = index.get(key);
-    if (s == null) {
-      return Collections.emptySet();
-    }
-    return new HashSet<>(s);
-  }
-
-  public Set<K> getKeys() {
-    return new HashSet<>(index.keySet());
-  }
-
-  private void refresh() {
-    tempIndex = new ConcurrentHashMap<>(this.index.size());
-    Term prevTerm = lastTerm;
-    doubleWrite = true;
-    try {
-      lastTerm = new Term();
-      long startTime = System.currentTimeMillis();
-      boolean timeout = !prevTerm.waitAllDone();
-      long waitTime = System.currentTimeMillis();
-      if (timeout) {
-        LOG.error("[IndexBuildTimeout]index refresh timeout span={}ms", waitTime - startTime);
-      }
-      dataStoreForEach(
-          (key, val) -> {
-            insert(tempIndex, key, val);
-          });
-      LOG.info(
-          "index refresh finished waitSpan={}ms, buildSpan={}ms, indexSize={}",
-          waitTime - startTime,
-          System.currentTimeMillis() - waitTime,
-          tempIndex.size());
-      index = tempIndex;
-    } finally {
-      doubleWrite = false;
-    }
-  }
-
-  @VisibleForTesting
-  public void triggerRefresh() {
-    indexerRefresher.wakeup();
-  }
-
-  protected abstract void dataStoreForEach(BiConsumer<K, V> consumer);
-
-  private static final class Term {
-    private final AtomicLong start = new AtomicLong(0);
-    private final AtomicLong done = new AtomicLong(0);
-    private static final long timeoutMillis = 10000;
-
-    private boolean waitAllDone() {
-      long startTs = System.currentTimeMillis();
-      for (; ; ) {
-        long doneCount = this.done.get();
-        long startCount = this.start.get();
-        if (startCount == doneCount) {
-          return true;
+    public <R> R add(K key, V val, UnThrowableCallable<R> dataStoreCaller) {
+        Term term = lastTerm;
+        term.start.incrementAndGet();
+        try {
+            if (doubleWrite) {
+                insert(tempIndex, key, val);
+            }
+            insert(index, key, val);
+            return dataStoreCaller.call();
+        } finally {
+            term.done.incrementAndGet();
         }
-        if (System.currentTimeMillis() - startTs > timeoutMillis) {
-          return false;
+    }
+
+    private void insert(Map<K, Set<V>> d, K key, V val) {
+        d.computeIfAbsent(key, k -> Sets.newConcurrentHashSet()).add(val);
+    }
+
+    public Set<V> queryByKey(K key) {
+        Set<V> s = index.get(key);
+        if (s == null) {
+            return Collections.emptySet();
         }
-        ConcurrentUtils.sleepUninterruptibly(1, TimeUnit.MILLISECONDS);
-      }
-    }
-  }
-
-  private final class IndexerRefresher extends WakeUpLoopRunnable {
-
-    @Override
-    public void runUnthrowable() {
-      refresh();
+        return new HashSet<>(s);
     }
 
-    @Override
-    public int getWaitingMillis() {
-      return (int) ((ThreadLocalRandom.current().nextDouble() * 30 + 30) * 1000);
+    public Set<K> getKeys() {
+        return new HashSet<>(index.keySet());
     }
-  }
+
+    private void refresh() {
+        tempIndex = new ConcurrentHashMap<>(this.index.size());
+        Term prevTerm = lastTerm;
+        doubleWrite = true;
+        try {
+            lastTerm = new Term();
+            long startTime = System.currentTimeMillis();
+            boolean timeout = !prevTerm.waitAllDone();
+            long waitTime = System.currentTimeMillis();
+            if (timeout) {
+                LOG.error("[IndexBuildTimeout]index refresh timeout span={}ms", waitTime - startTime);
+            }
+            dataStoreForEach(
+                    (key, val) -> {
+                        insert(tempIndex, key, val);
+                    });
+            LOG.info(
+                    "index refresh finished waitSpan={}ms, buildSpan={}ms, indexSize={}",
+                    waitTime - startTime,
+                    System.currentTimeMillis() - waitTime,
+                    tempIndex.size());
+            index = tempIndex;
+        } finally {
+            doubleWrite = false;
+        }
+    }
+
+    @VisibleForTesting
+    public void triggerRefresh() {
+        indexerRefresher.wakeup();
+    }
+
+    protected abstract void dataStoreForEach(BiConsumer<K, V> consumer);
+
+    private static final class Term {
+        private static final long timeoutMillis = 10000;
+        private final AtomicLong start = new AtomicLong(0);
+        private final AtomicLong done = new AtomicLong(0);
+
+        private boolean waitAllDone() {
+            long startTs = System.currentTimeMillis();
+            for (; ; ) {
+                long doneCount = this.done.get();
+                long startCount = this.start.get();
+                if (startCount == doneCount) {
+                    return true;
+                }
+                if (System.currentTimeMillis() - startTs > timeoutMillis) {
+                    return false;
+                }
+                ConcurrentUtils.sleepUninterruptibly(1, TimeUnit.MILLISECONDS);
+            }
+        }
+    }
+
+    private final class IndexerRefresher extends WakeUpLoopRunnable {
+
+        @Override
+        public void runUnthrowable() {
+            refresh();
+        }
+
+        @Override
+        public int getWaitingMillis() {
+            return (int) ((ThreadLocalRandom.current().nextDouble() * 30 + 30) * 1000);
+        }
+    }
 }

@@ -22,15 +22,15 @@ package com.alipay.sofa.registry.store.api.config;
  */
 public interface DefaultCommonConfig {
 
-  String getClusterId(String table);
+    String getClusterId(String table);
 
-  String getClusterId(String table, String key);
+    String getClusterId(String table, String key);
 
-  boolean isRecoverCluster();
+    boolean isRecoverCluster();
 
-  String getRecoverClusterId();
+    String getRecoverClusterId();
 
-  String getDefaultClusterId();
+    String getDefaultClusterId();
 
-  boolean isJdbc();
+    boolean isJdbc();
 }

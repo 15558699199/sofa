@@ -35,9 +35,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class SofaArkAutoConfigurationTests {
 
     private final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
-                                                             .withConfiguration(AutoConfigurations
-                                                                 .of(SofaArkAutoConfiguration.class,
-                                                                     SofaRuntimeAutoConfiguration.class));
+            .withConfiguration(AutoConfigurations
+                    .of(SofaArkAutoConfiguration.class,
+                            SofaRuntimeAutoConfiguration.class));
 
     @Test
     public void registerArkBeans() {

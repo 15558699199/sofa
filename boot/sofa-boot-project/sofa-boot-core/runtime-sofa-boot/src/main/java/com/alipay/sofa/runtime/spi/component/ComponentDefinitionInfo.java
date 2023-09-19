@@ -29,22 +29,22 @@ import java.util.Map;
  */
 public class ComponentDefinitionInfo {
 
-    public static final String        SOURCE               = "source";
+    public static final String SOURCE = "source";
 
-    public static final String        BEAN_ID              = "beanId";
+    public static final String BEAN_ID = "beanId";
 
-    public static final String        LOCATION             = "location";
+    public static final String LOCATION = "location";
 
-    public static final String        BEAN_CLASS_NAME      = "beanClassName";
+    public static final String BEAN_CLASS_NAME = "beanClassName";
 
-    public static final String        EXTENSION_POINT_NAME = "pointName";
+    public static final String EXTENSION_POINT_NAME = "pointName";
 
-    private final Map<String, String> info                 = new HashMap<>();
+    private final Map<String, String> info = new HashMap<>();
 
     /**
      * annotation or xml
      */
-    private InterfaceMode             interfaceMode;
+    private InterfaceMode interfaceMode;
 
     public InterfaceMode getInterfaceMode() {
         return interfaceMode;

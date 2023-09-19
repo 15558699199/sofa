@@ -16,40 +16,41 @@
  */
 package com.alipay.sofa.registry.server.session.push;
 
-import static org.mockito.Mockito.*;
-
 import com.alipay.sofa.registry.common.model.store.Subscriber;
 import com.alipay.sofa.registry.server.session.TestUtils;
-import java.util.Collections;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.Collections;
+
+import static org.mockito.Mockito.*;
+
 public class RegProcessorTest {
-  @Test
-  public void test() {
-    RegProcessor processor = new RegProcessor(1, mock(RegProcessor.RegHandler.class));
-    processor.suspend();
-    RegProcessor.BufferWorker w = processor.workers[0];
+    @Test
+    public void test() {
+        RegProcessor processor = new RegProcessor(1, mock(RegProcessor.RegHandler.class));
+        processor.suspend();
+        RegProcessor.BufferWorker w = processor.workers[0];
 
-    // test base
-    Assert.assertEquals(0, w.watchBuffer());
-    Assert.assertTrue(w.getWaitingMillis() < 500);
+        // test base
+        Assert.assertEquals(0, w.watchBuffer());
+        Assert.assertTrue(w.getWaitingMillis() < 500);
 
-    Subscriber sub = TestUtils.newZoneSubscriber("testDataId", "testDc");
-    Assert.assertTrue(processor.fireOnReg(sub));
-    Assert.assertFalse(processor.fireOnReg(sub));
-    Subscriber sub2 = TestUtils.newZoneSubscriber("testDataId", "testDc");
-    sub2.setRegisterId(sub.getRegisterId());
-    sub2.setVersion(sub.getVersion() + 1);
-    Assert.assertTrue(processor.fireOnReg(sub2));
+        Subscriber sub = TestUtils.newZoneSubscriber("testDataId", "testDc");
+        Assert.assertTrue(processor.fireOnReg(sub));
+        Assert.assertFalse(processor.fireOnReg(sub));
+        Subscriber sub2 = TestUtils.newZoneSubscriber("testDataId", "testDc");
+        sub2.setRegisterId(sub.getRegisterId());
+        sub2.setVersion(sub.getVersion() + 1);
+        Assert.assertTrue(processor.fireOnReg(sub2));
 
-    Assert.assertEquals(1, w.watchBuffer());
-    verify(processor.regHandler, times(1)).onReg(anyString(), anyList());
+        Assert.assertEquals(1, w.watchBuffer());
+        verify(processor.regHandler, times(1)).onReg(anyString(), anyList());
 
-    sub2.checkAndUpdateCtx(
-        Collections.singletonMap("testDc", 100L), Collections.singletonMap("testDc", 10));
-    Assert.assertTrue(processor.fireOnReg(sub2));
-    Assert.assertEquals(0, w.watchBuffer());
-    verify(processor.regHandler, times(1)).onReg(anyString(), anyList());
-  }
+        sub2.checkAndUpdateCtx(
+                Collections.singletonMap("testDc", 100L), Collections.singletonMap("testDc", 10));
+        Assert.assertTrue(processor.fireOnReg(sub2));
+        Assert.assertEquals(0, w.watchBuffer());
+        verify(processor.regHandler, times(1)).onReg(anyString(), anyList());
+    }
 }

@@ -20,31 +20,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.function.Function;
 
-import static com.alipay.sofa.rpc.registry.consul.ConsulConstants.DEFAULT_HEALTH_CHECK_INTERVAL;
-import static com.alipay.sofa.rpc.registry.consul.ConsulConstants.DEFAULT_HEALTH_CHECK_METHOD;
-import static com.alipay.sofa.rpc.registry.consul.ConsulConstants.DEFAULT_HEALTH_CHECK_PATH;
-import static com.alipay.sofa.rpc.registry.consul.ConsulConstants.DEFAULT_HEALTH_CHECK_PROTOCOL;
-import static com.alipay.sofa.rpc.registry.consul.ConsulConstants.DEFAULT_HEALTH_CHECK_TIMEOUT;
-import static com.alipay.sofa.rpc.registry.consul.ConsulConstants.DEFAULT_HEALTH_CHECK_TTL;
-import static com.alipay.sofa.rpc.registry.consul.ConsulConstants.DEFAULT_HEALTH_CHECK_TYPE;
-import static com.alipay.sofa.rpc.registry.consul.ConsulConstants.DEFAULT_HEARTBEAT_CORE_SIZE;
-import static com.alipay.sofa.rpc.registry.consul.ConsulConstants.DEFAULT_HEARTBEAT_INTERVAL;
-import static com.alipay.sofa.rpc.registry.consul.ConsulConstants.DEFAULT_LOOKUP_INTERVAL;
-import static com.alipay.sofa.rpc.registry.consul.ConsulConstants.DEFAULT_WATCH_TIMEOUT;
-import static com.alipay.sofa.rpc.registry.consul.ConsulConstants.HEALTH_CHECK_HOST_KEY;
-import static com.alipay.sofa.rpc.registry.consul.ConsulConstants.HEALTH_CHECK_INTERVAL_KEY;
-import static com.alipay.sofa.rpc.registry.consul.ConsulConstants.HEALTH_CHECK_METHOD_KEY;
-import static com.alipay.sofa.rpc.registry.consul.ConsulConstants.HEALTH_CHECK_PATH_KEY;
-import static com.alipay.sofa.rpc.registry.consul.ConsulConstants.HEALTH_CHECK_PORT_KEY;
-import static com.alipay.sofa.rpc.registry.consul.ConsulConstants.HEALTH_CHECK_PROTOCOL_KEY;
-import static com.alipay.sofa.rpc.registry.consul.ConsulConstants.HEALTH_CHECK_TIMEOUT_KEY;
-import static com.alipay.sofa.rpc.registry.consul.ConsulConstants.HEALTH_CHECK_TTL_KEY;
-import static com.alipay.sofa.rpc.registry.consul.ConsulConstants.HEALTH_CHECK_TYPE_KEY;
-import static com.alipay.sofa.rpc.registry.consul.ConsulConstants.HEARTBEAT_CORE_SIZE_KEY;
-import static com.alipay.sofa.rpc.registry.consul.ConsulConstants.HEARTBEAT_INTERVAL_KEY;
-import static com.alipay.sofa.rpc.registry.consul.ConsulConstants.LOOKUP_INTERVAL_KEY;
-import static com.alipay.sofa.rpc.registry.consul.ConsulConstants.WATCH_TIMEOUT_KEY;
-import static com.alipay.sofa.rpc.registry.consul.ConsulConstants.TOKEN_KEY;
+import static com.alipay.sofa.rpc.registry.consul.ConsulConstants.*;
 
 /**
  * All configurations of the consul registry

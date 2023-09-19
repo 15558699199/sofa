@@ -36,12 +36,12 @@ public class DubboConvertor {
             for (RegistryConfig registryConfig : registryConfigs) {
                 // 生成并丢到缓存里
                 org.apache.dubbo.config.RegistryConfig dubboRegistryConfig = DubboSingleton.REGISTRY_MAP
-                    .get(registryConfig);
+                        .get(registryConfig);
                 if (dubboRegistryConfig == null) {
                     dubboRegistryConfig = new org.apache.dubbo.config.RegistryConfig();
                     copyRegistryFields(registryConfig, dubboRegistryConfig);
                     org.apache.dubbo.config.RegistryConfig old = DubboSingleton.REGISTRY_MAP.putIfAbsent(
-                        registryConfig, dubboRegistryConfig);
+                            registryConfig, dubboRegistryConfig);
                     if (old != null) {
                         dubboRegistryConfig = old;
                     }

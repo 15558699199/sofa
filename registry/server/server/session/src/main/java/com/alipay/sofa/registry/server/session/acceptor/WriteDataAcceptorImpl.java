@@ -27,11 +27,12 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class WriteDataAcceptorImpl implements WriteDataAcceptor {
 
-  @Autowired DataNodeService dataNodeService;
+    @Autowired
+    DataNodeService dataNodeService;
 
-  public void accept(WriteDataRequest request) {
-    ConnectId connectId = request.getConnectId();
-    WriteDataProcessor writeDataProcessor = new WriteDataProcessor(connectId, dataNodeService);
-    writeDataProcessor.process(request);
-  }
+    public void accept(WriteDataRequest request) {
+        ConnectId connectId = request.getConnectId();
+        WriteDataProcessor writeDataProcessor = new WriteDataProcessor(connectId, dataNodeService);
+        writeDataProcessor.process(request);
+    }
 }

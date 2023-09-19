@@ -17,33 +17,57 @@
 package com.alipay.sofa.registry.common.model.client.pb;
 
 public interface ServiceAppMappingResponseOrBuilder
-    extends
-    // @@protoc_insertion_point(interface_extends:ServiceAppMappingResponse)
-    com.google.protobuf.MessageOrBuilder {
+        extends
+        // @@protoc_insertion_point(interface_extends:ServiceAppMappingResponse)
+        com.google.protobuf.MessageOrBuilder {
 
-  /** <code>map&lt;string, .AppList&gt; serviceAppMapping = 1;</code> */
-  int getServiceAppMappingCount();
-  /** <code>map&lt;string, .AppList&gt; serviceAppMapping = 1;</code> */
-  boolean containsServiceAppMapping(java.lang.String key);
-  /** Use {@link #getServiceAppMappingMap()} instead. */
-  @java.lang.Deprecated
-  java.util.Map<java.lang.String, com.alipay.sofa.registry.common.model.client.pb.AppList>
-      getServiceAppMapping();
-  /** <code>map&lt;string, .AppList&gt; serviceAppMapping = 1;</code> */
-  java.util.Map<java.lang.String, com.alipay.sofa.registry.common.model.client.pb.AppList>
-      getServiceAppMappingMap();
-  /** <code>map&lt;string, .AppList&gt; serviceAppMapping = 1;</code> */
-  com.alipay.sofa.registry.common.model.client.pb.AppList getServiceAppMappingOrDefault(
-      java.lang.String key, com.alipay.sofa.registry.common.model.client.pb.AppList defaultValue);
-  /** <code>map&lt;string, .AppList&gt; serviceAppMapping = 1;</code> */
-  com.alipay.sofa.registry.common.model.client.pb.AppList getServiceAppMappingOrThrow(
-      java.lang.String key);
+    /**
+     * <code>map&lt;string, .AppList&gt; serviceAppMapping = 1;</code>
+     */
+    int getServiceAppMappingCount();
 
-  /** <code>int32 statusCode = 2;</code> */
-  int getStatusCode();
+    /**
+     * <code>map&lt;string, .AppList&gt; serviceAppMapping = 1;</code>
+     */
+    boolean containsServiceAppMapping(java.lang.String key);
 
-  /** <code>string message = 3;</code> */
-  java.lang.String getMessage();
-  /** <code>string message = 3;</code> */
-  com.google.protobuf.ByteString getMessageBytes();
+    /**
+     * Use {@link #getServiceAppMappingMap()} instead.
+     */
+    @java.lang.Deprecated
+    java.util.Map<java.lang.String, com.alipay.sofa.registry.common.model.client.pb.AppList>
+    getServiceAppMapping();
+
+    /**
+     * <code>map&lt;string, .AppList&gt; serviceAppMapping = 1;</code>
+     */
+    java.util.Map<java.lang.String, com.alipay.sofa.registry.common.model.client.pb.AppList>
+    getServiceAppMappingMap();
+
+    /**
+     * <code>map&lt;string, .AppList&gt; serviceAppMapping = 1;</code>
+     */
+    com.alipay.sofa.registry.common.model.client.pb.AppList getServiceAppMappingOrDefault(
+            java.lang.String key, com.alipay.sofa.registry.common.model.client.pb.AppList defaultValue);
+
+    /**
+     * <code>map&lt;string, .AppList&gt; serviceAppMapping = 1;</code>
+     */
+    com.alipay.sofa.registry.common.model.client.pb.AppList getServiceAppMappingOrThrow(
+            java.lang.String key);
+
+    /**
+     * <code>int32 statusCode = 2;</code>
+     */
+    int getStatusCode();
+
+    /**
+     * <code>string message = 3;</code>
+     */
+    java.lang.String getMessage();
+
+    /**
+     * <code>string message = 3;</code>
+     */
+    com.google.protobuf.ByteString getMessageBytes();
 }

@@ -25,23 +25,22 @@ import javax.ws.rs.ext.Provider;
 import java.io.IOException;
 
 /**
- *
  * @author <a href="mailto:lw111072@antfin.com">liangen</a>
  */
 @Provider
 public class ContainerRequestTestFilter implements ContainerRequestFilter {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(ContainerRequestTestFilter.class);
-    private static String       name   = "X";
+    private static String name = "X";
+
+    public static String getName() {
+        return name;
+    }
 
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
         LOGGER.info("服务端request filter生效");
         name = "B";
 
-    }
-
-    public static String getName() {
-        return name;
     }
 }

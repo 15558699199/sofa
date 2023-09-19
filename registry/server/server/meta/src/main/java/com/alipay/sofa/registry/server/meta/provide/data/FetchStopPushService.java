@@ -29,23 +29,24 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class FetchStopPushService {
 
-  @Autowired private ProvideDataService provideDataService;
+    @Autowired
+    private ProvideDataService provideDataService;
 
-  public boolean isStopPush() {
-    DBResponse<PersistenceData> stopPushResp =
-        provideDataService.queryProvideData(ValueConstants.STOP_PUSH_DATA_SWITCH_DATA_ID);
-    return PersistenceDataParser.parse2BoolIgnoreCase(stopPushResp, false);
-  }
+    public boolean isStopPush() {
+        DBResponse<PersistenceData> stopPushResp =
+                provideDataService.queryProvideData(ValueConstants.STOP_PUSH_DATA_SWITCH_DATA_ID);
+        return PersistenceDataParser.parse2BoolIgnoreCase(stopPushResp, false);
+    }
 
-  /**
-   * Setter method for property <tt>provideDataService</tt>.
-   *
-   * @param provideDataService value to be assigned to property provideDataService
-   * @return FetchStopPushService
-   */
-  @VisibleForTesting
-  public FetchStopPushService setProvideDataService(ProvideDataService provideDataService) {
-    this.provideDataService = provideDataService;
-    return this;
-  }
+    /**
+     * Setter method for property <tt>provideDataService</tt>.
+     *
+     * @param provideDataService value to be assigned to property provideDataService
+     * @return FetchStopPushService
+     */
+    @VisibleForTesting
+    public FetchStopPushService setProvideDataService(ProvideDataService provideDataService) {
+        this.provideDataService = provideDataService;
+        return this;
+    }
 }

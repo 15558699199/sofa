@@ -31,19 +31,21 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class ProtobufServiceServerMain {
 
-    /** Logger for ProtobufServiceServerMain **/
+    /**
+     * Logger for ProtobufServiceServerMain
+     **/
     private static final Logger LOGGER = LoggerFactory.getLogger(ProtobufServiceServerMain.class);
 
     public static void main(String[] args) {
         ServerConfig serverConfig = new ServerConfig()
-            .setProtocol("bolt") // 设置一个协议，默认bolt
-            .setPort(12200) // 设置一个端口，默认12200
-            .setDaemon(false); // 非守护线程
+                .setProtocol("bolt") // 设置一个协议，默认bolt
+                .setPort(12200) // 设置一个端口，默认12200
+                .setDaemon(false); // 非守护线程
 
         ProviderConfig<ProtoService> providerConfig = new ProviderConfig<ProtoService>()
-            .setInterfaceId(ProtoService.class.getName()) // 指定接口
-            .setRef(new ProtoServiceImpl()) // 指定实现
-            .setServer(serverConfig); // 指定服务端
+                .setInterfaceId(ProtoService.class.getName()) // 指定接口
+                .setRef(new ProtoServiceImpl()) // 指定实现
+                .setServer(serverConfig); // 指定服务端
 
         providerConfig.export(); // 发布服务
 

@@ -22,9 +22,10 @@ import com.alipay.sofa.registry.common.model.slot.Slot;
 import com.alipay.sofa.registry.common.model.slot.SlotTable;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import java.util.Collections;
 import org.junit.Assert;
 import org.junit.Test;
+
+import java.util.Collections;
 
 /**
  * @author xiaojian.xj
@@ -32,34 +33,34 @@ import org.junit.Test;
  */
 public class RemoteSlotTableStatusTest {
 
-  @Test
-  public void test() {
+    @Test
+    public void test() {
 
-    SlotTable slotTable =
-        new SlotTable(10, Lists.newArrayList(new Slot(1, null, 0, Collections.emptyList())));
-    DataCenterMetadata dataCenterMetadata =
-        new DataCenterMetadata("dc1", Sets.newHashSet("zone1", "zone2"));
+        SlotTable slotTable =
+                new SlotTable(10, Lists.newArrayList(new Slot(1, null, 0, Collections.emptyList())));
+        DataCenterMetadata dataCenterMetadata =
+                new DataCenterMetadata("dc1", Sets.newHashSet("zone1", "zone2"));
 
-    RemoteSlotTableStatus status = RemoteSlotTableStatus.conflict(slotTable);
-    Assert.assertEquals(slotTable.getEpoch(), status.getSlotTableEpoch());
-    Assert.assertFalse(status.isSlotTableUpgrade());
-    Assert.assertTrue(status.isSlotTableEpochConflict());
-    Assert.assertEquals(slotTable, status.getSlotTable());
-    Assert.assertNull(status.getDataCenterMetadata());
+        RemoteSlotTableStatus status = RemoteSlotTableStatus.conflict(slotTable);
+        Assert.assertEquals(slotTable.getEpoch(), status.getSlotTableEpoch());
+        Assert.assertFalse(status.isSlotTableUpgrade());
+        Assert.assertTrue(status.isSlotTableEpochConflict());
+        Assert.assertEquals(slotTable, status.getSlotTable());
+        Assert.assertNull(status.getDataCenterMetadata());
 
-    status = RemoteSlotTableStatus.notUpgrade(slotTable.getEpoch(), dataCenterMetadata);
-    Assert.assertEquals(slotTable.getEpoch(), status.getSlotTableEpoch());
-    Assert.assertFalse(status.isSlotTableUpgrade());
-    Assert.assertFalse(status.isSlotTableEpochConflict());
-    Assert.assertNull(status.getSlotTable());
-    Assert.assertEquals(dataCenterMetadata, status.getDataCenterMetadata());
+        status = RemoteSlotTableStatus.notUpgrade(slotTable.getEpoch(), dataCenterMetadata);
+        Assert.assertEquals(slotTable.getEpoch(), status.getSlotTableEpoch());
+        Assert.assertFalse(status.isSlotTableUpgrade());
+        Assert.assertFalse(status.isSlotTableEpochConflict());
+        Assert.assertNull(status.getSlotTable());
+        Assert.assertEquals(dataCenterMetadata, status.getDataCenterMetadata());
 
-    status = RemoteSlotTableStatus.upgrade(slotTable, dataCenterMetadata);
-    Assert.assertEquals(slotTable.getEpoch(), status.getSlotTableEpoch());
-    Assert.assertTrue(status.isSlotTableUpgrade());
-    Assert.assertFalse(status.isSlotTableEpochConflict());
-    Assert.assertEquals(slotTable, status.getSlotTable());
-    Assert.assertEquals(dataCenterMetadata, status.getDataCenterMetadata());
-    status.toString();
-  }
+        status = RemoteSlotTableStatus.upgrade(slotTable, dataCenterMetadata);
+        Assert.assertEquals(slotTable.getEpoch(), status.getSlotTableEpoch());
+        Assert.assertTrue(status.isSlotTableUpgrade());
+        Assert.assertFalse(status.isSlotTableEpochConflict());
+        Assert.assertEquals(slotTable, status.getSlotTable());
+        Assert.assertEquals(dataCenterMetadata, status.getDataCenterMetadata());
+        status.toString();
+    }
 }

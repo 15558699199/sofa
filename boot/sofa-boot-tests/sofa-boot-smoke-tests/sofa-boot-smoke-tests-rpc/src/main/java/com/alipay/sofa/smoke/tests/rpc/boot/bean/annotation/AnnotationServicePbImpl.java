@@ -25,7 +25,7 @@ import org.springframework.stereotype.Component;
  * @since 3.2.0
  */
 @Component
-@SofaService(bindings = { @SofaServiceBinding(bindingType = "bolt", serializeType = "protobuf") }, uniqueId = "pb")
+@SofaService(bindings = {@SofaServiceBinding(bindingType = "bolt", serializeType = "protobuf")}, uniqueId = "pb")
 public class AnnotationServicePbImpl implements AnnotationService {
     @Override
     public String hello() {

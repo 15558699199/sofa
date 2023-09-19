@@ -19,6 +19,7 @@ package com.alipay.sofa.registry.metrics;
 import io.prometheus.client.Collector;
 import io.prometheus.client.GaugeMetricFamily;
 import io.prometheus.client.SimpleCollector;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -26,62 +27,62 @@ import java.util.Map;
 
 public class GaugeFunc extends SimpleCollector<GaugeFunc.Child> implements Collector.Describable {
 
-  GaugeFunc(Builder b) {
-    super(b);
-  }
-
-  @Override
-  public List<MetricFamilySamples> collect() {
-    List<MetricFamilySamples.Sample> samples = new ArrayList<>(children.size());
-    for (Map.Entry<List<String>, GaugeFunc.Child> c : children.entrySet()) {
-      samples.add(
-          new MetricFamilySamples.Sample(fullname, labelNames, c.getKey(), c.getValue().get()));
+    GaugeFunc(Builder b) {
+        super(b);
     }
-    return familySamplesList(Type.GAUGE, samples);
-  }
 
-  @Override
-  public List<MetricFamilySamples> describe() {
-    return Collections.<MetricFamilySamples>singletonList(
-        new GaugeMetricFamily(fullname, help, labelNames));
-  }
-
-  @Override
-  protected Child newChild() {
-    return new Child();
-  }
-
-  public static class Builder extends SimpleCollector.Builder<Builder, GaugeFunc> {
+    public static Builder build() {
+        return new Builder();
+    }
 
     @Override
-    public GaugeFunc create() {
-      return new GaugeFunc(this);
-    }
-  }
-
-  public static Builder build() {
-    return new Builder();
-  }
-
-  public static class Child {
-    private GaugeFuncCallable callable;
-
-    public synchronized Child func(GaugeFuncCallable c) {
-      callable = c;
-      return this;
+    public List<MetricFamilySamples> collect() {
+        List<MetricFamilySamples.Sample> samples = new ArrayList<>(children.size());
+        for (Map.Entry<List<String>, GaugeFunc.Child> c : children.entrySet()) {
+            samples.add(
+                    new MetricFamilySamples.Sample(fullname, labelNames, c.getKey(), c.getValue().get()));
+        }
+        return familySamplesList(Type.GAUGE, samples);
     }
 
-    public double get() {
-      return callable.get();
+    @Override
+    public List<MetricFamilySamples> describe() {
+        return Collections.<MetricFamilySamples>singletonList(
+                new GaugeMetricFamily(fullname, help, labelNames));
     }
-  }
 
-  public synchronized GaugeFunc func(GaugeFuncCallable c) {
-    noLabelsChild.func(c);
-    return this;
-  }
+    @Override
+    protected Child newChild() {
+        return new Child();
+    }
 
-  public interface GaugeFuncCallable {
-    long get();
-  }
+    public synchronized GaugeFunc func(GaugeFuncCallable c) {
+        noLabelsChild.func(c);
+        return this;
+    }
+
+    public interface GaugeFuncCallable {
+        long get();
+    }
+
+    public static class Builder extends SimpleCollector.Builder<Builder, GaugeFunc> {
+
+        @Override
+        public GaugeFunc create() {
+            return new GaugeFunc(this);
+        }
+    }
+
+    public static class Child {
+        private GaugeFuncCallable callable;
+
+        public synchronized Child func(GaugeFuncCallable c) {
+            callable = c;
+            return this;
+        }
+
+        public double get() {
+            return callable.get();
+        }
+    }
 }

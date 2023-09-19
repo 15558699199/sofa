@@ -19,6 +19,7 @@ package com.alipay.sofa.registry.store.api.meta;
 import com.alipay.sofa.registry.common.model.metaserver.ClientManagerAddress;
 import com.alipay.sofa.registry.common.model.metaserver.ClientManagerAddress.AddressVersion;
 import com.alipay.sofa.registry.common.model.metaserver.ClientManagerResult;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -29,39 +30,39 @@ import java.util.Set;
  */
 public interface ClientManagerAddressRepository {
 
-  /**
-   * client open
-   *
-   * @param ipSet ipSet
-   * @return ClientManagerResult
-   */
-  ClientManagerResult clientOpen(Set<AddressVersion> ipSet);
+    /**
+     * client open
+     *
+     * @param ipSet ipSet
+     * @return ClientManagerResult
+     */
+    ClientManagerResult clientOpen(Set<AddressVersion> ipSet);
 
-  /**
-   * client off
-   *
-   * @param ipSet ipSet
-   * @return ClientManagerResult
-   */
-  ClientManagerResult clientOff(Set<AddressVersion> ipSet);
+    /**
+     * client off
+     *
+     * @param ipSet ipSet
+     * @return ClientManagerResult
+     */
+    ClientManagerResult clientOff(Set<AddressVersion> ipSet);
 
-  /**
-   * reduce
-   *
-   * @param ipSet ipSet
-   * @return ClientManagerResult
-   */
-  ClientManagerResult reduce(Set<AddressVersion> ipSet);
+    /**
+     * reduce
+     *
+     * @param ipSet ipSet
+     * @return ClientManagerResult
+     */
+    ClientManagerResult reduce(Set<AddressVersion> ipSet);
 
-  ClientManagerAddress queryClientOffData();
+    ClientManagerAddress queryClientOffData();
 
-  void waitSynced();
+    void waitSynced();
 
-  List<String> getExpireAddress(Date date, int limit);
+    List<String> getExpireAddress(Date date, int limit);
 
-  int cleanExpired(List<String> expireAddress);
+    int cleanExpired(List<String> expireAddress);
 
-  int getClientOffSizeBefore(Date date);
+    int getClientOffSizeBefore(Date date);
 
-  void wakeup();
+    void wakeup();
 }

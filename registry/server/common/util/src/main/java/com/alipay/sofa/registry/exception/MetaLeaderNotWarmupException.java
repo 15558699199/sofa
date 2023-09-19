@@ -18,35 +18,35 @@ package com.alipay.sofa.registry.exception;
 
 /**
  * @author chen.zhu
- *     <p>Mar 09, 2021
+ * <p>Mar 09, 2021
  */
 public class MetaLeaderNotWarmupException extends SofaRegistryRuntimeException {
 
-  private final String leader;
+    private final String leader;
 
-  private final long epoch;
+    private final long epoch;
 
-  public MetaLeaderNotWarmupException(String leader, long epoch) {
-    super("leader not warmup");
-    this.leader = leader;
-    this.epoch = epoch;
-  }
+    public MetaLeaderNotWarmupException(String leader, long epoch) {
+        super("leader not warmup");
+        this.leader = leader;
+        this.epoch = epoch;
+    }
 
-  /**
-   * Getter method for property <tt>leader</tt>.
-   *
-   * @return property value of leader
-   */
-  public String getLeader() {
-    return leader;
-  }
+    /**
+     * Getter method for property <tt>leader</tt>.
+     *
+     * @return property value of leader
+     */
+    public String getLeader() {
+        return leader;
+    }
 
-  /**
-   * Getter method for property <tt>epoch</tt>.
-   *
-   * @return property value of epoch
-   */
-  public long getEpoch() {
-    return epoch;
-  }
+    /**
+     * Getter method for property <tt>epoch</tt>.
+     *
+     * @return property value of epoch
+     */
+    public long getEpoch() {
+        return epoch;
+    }
 }

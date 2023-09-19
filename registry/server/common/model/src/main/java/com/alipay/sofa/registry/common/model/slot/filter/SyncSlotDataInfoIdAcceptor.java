@@ -19,10 +19,11 @@ package com.alipay.sofa.registry.common.model.slot.filter;
 import com.alipay.sofa.registry.common.model.constants.MultiValueConstants;
 import com.alipay.sofa.registry.util.ParaCheckUtil;
 import com.google.common.base.Objects;
-import java.util.Collections;
-import java.util.Set;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
+
+import java.util.Collections;
+import java.util.Set;
 
 /**
  * @author xiaojian.xj
@@ -30,67 +31,67 @@ import org.springframework.util.StringUtils;
  */
 public class SyncSlotDataInfoIdAcceptor implements SyncSlotAcceptor {
 
-  private final String NAME = MultiValueConstants.SYNC_SLOT_DATAINFOID_ACCEPTOR;
+    private final String NAME = MultiValueConstants.SYNC_SLOT_DATAINFOID_ACCEPTOR;
 
-  private final Set<String> accepts;
+    private final Set<String> accepts;
 
-  private final Set<String> filters;
+    private final Set<String> filters;
 
-  public SyncSlotDataInfoIdAcceptor(Set<String> accepts) {
-    this(accepts, Collections.EMPTY_SET);
-  }
-
-  public SyncSlotDataInfoIdAcceptor(Set<String> accepts, Set<String> filters) {
-    this.accepts = accepts;
-    this.filters = filters;
-  }
-
-  @Override
-  public boolean accept(SyncAcceptorRequest request) {
-    ParaCheckUtil.checkNotNull(request, "SyncAcceptorRequest");
-    if (CollectionUtils.isEmpty(accepts) || StringUtils.isEmpty(request.getDataInfoId())) {
-      return false;
+    public SyncSlotDataInfoIdAcceptor(Set<String> accepts) {
+        this(accepts, Collections.EMPTY_SET);
     }
 
-    return accepts.contains(MultiValueConstants.SYNC_ACCEPT_ALL)
-        || accepts.contains(request.getDataInfoId());
-  }
-
-  @Override
-  public boolean filterOut(SyncAcceptorRequest request) {
-    ParaCheckUtil.checkNotNull(request, "SyncAcceptorRequest");
-
-    if (CollectionUtils.isEmpty(filters) || StringUtils.isEmpty(request.getDataInfoId())) {
-      return false;
+    public SyncSlotDataInfoIdAcceptor(Set<String> accepts, Set<String> filters) {
+        this.accepts = accepts;
+        this.filters = filters;
     }
 
-    return filters.contains(request.getDataInfoId());
-  }
+    @Override
+    public boolean accept(SyncAcceptorRequest request) {
+        ParaCheckUtil.checkNotNull(request, "SyncAcceptorRequest");
+        if (CollectionUtils.isEmpty(accepts) || StringUtils.isEmpty(request.getDataInfoId())) {
+            return false;
+        }
 
-  @Override
-  public String name() {
-    return NAME;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
+        return accepts.contains(MultiValueConstants.SYNC_ACCEPT_ALL)
+                || accepts.contains(request.getDataInfoId());
     }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
+
+    @Override
+    public boolean filterOut(SyncAcceptorRequest request) {
+        ParaCheckUtil.checkNotNull(request, "SyncAcceptorRequest");
+
+        if (CollectionUtils.isEmpty(filters) || StringUtils.isEmpty(request.getDataInfoId())) {
+            return false;
+        }
+
+        return filters.contains(request.getDataInfoId());
     }
-    SyncSlotDataInfoIdAcceptor that = (SyncSlotDataInfoIdAcceptor) o;
-    return Objects.equal(NAME, that.NAME);
-  }
 
-  @Override
-  public int hashCode() {
-    return Objects.hashCode(NAME);
-  }
+    @Override
+    public String name() {
+        return NAME;
+    }
 
-  @Override
-  public String toString() {
-    return "SyncSlotDataInfoIdAcceptor{" + "accepts=" + accepts + ", filters=" + filters + '}';
-  }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        SyncSlotDataInfoIdAcceptor that = (SyncSlotDataInfoIdAcceptor) o;
+        return Objects.equal(NAME, that.NAME);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(NAME);
+    }
+
+    @Override
+    public String toString() {
+        return "SyncSlotDataInfoIdAcceptor{" + "accepts=" + accepts + ", filters=" + filters + '}';
+    }
 }

@@ -47,18 +47,18 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 public class ServiceComponentTests {
 
-    private Service                       service;
+    private Service service;
 
-    private ServiceComponent              serviceComponent;
-
-    @Mock
-    private Implementation                implementation;
+    private ServiceComponent serviceComponent;
 
     @Mock
-    private BindingAdapterFactory         bindingAdapterFactory;
+    private Implementation implementation;
 
     @Mock
-    private SofaRuntimeContext            sofaRuntimeContext;
+    private BindingAdapterFactory bindingAdapterFactory;
+
+    @Mock
+    private SofaRuntimeContext sofaRuntimeContext;
 
     private SofaRuntimeContext.Properties properties;
 
@@ -68,7 +68,7 @@ public class ServiceComponentTests {
         properties = new SofaRuntimeContext.Properties();
         when(sofaRuntimeContext.getProperties()).thenReturn(properties);
         serviceComponent = new ServiceComponent(implementation, service, bindingAdapterFactory,
-            sofaRuntimeContext);
+                sofaRuntimeContext);
     }
 
     @Test
@@ -122,10 +122,10 @@ public class ServiceComponentTests {
         service = new ServiceImpl("", SampleService.class, new SampleServiceImpl());
         service.addBinding(new JvmBinding());
         serviceComponent = new ServiceComponent(implementation, service, bindingAdapterFactory,
-            sofaRuntimeContext);
+                sofaRuntimeContext);
 
         when(bindingAdapterFactory.getBindingAdapter(any())).thenReturn(
-            new MockBindingAdapter(false));
+                new MockBindingAdapter(false));
         serviceComponent.resolve();
         verify(bindingAdapterFactory, times(1)).getBindingAdapter(any());
     }
@@ -140,7 +140,7 @@ public class ServiceComponentTests {
         when(properties.isServiceInterfaceTypeCheck()).thenReturn(true);
 
         assertThatThrownBy(() -> serviceComponent.register()).isInstanceOf(ServiceRuntimeException.class)
-                        .hasMessageContaining("01-00104");
+                .hasMessageContaining("01-00104");
 
         when(properties.isServiceInterfaceTypeCheck()).thenReturn(false);
         serviceComponent.register();
@@ -182,10 +182,10 @@ public class ServiceComponentTests {
         service = new ServiceImpl("", SampleService.class, new SampleServiceImpl());
         service.addBinding(new JvmBinding());
         serviceComponent = new ServiceComponent(implementation, service, bindingAdapterFactory,
-            sofaRuntimeContext);
+                sofaRuntimeContext);
 
         when(bindingAdapterFactory.getBindingAdapter(any())).thenReturn(
-            new MockBindingAdapter(false));
+                new MockBindingAdapter(false));
         serviceComponent.activate();
         verify(bindingAdapterFactory, times(1)).getBindingAdapter(any());
     }
@@ -226,10 +226,10 @@ public class ServiceComponentTests {
         service = new ServiceImpl("", SampleService.class, new SampleServiceImpl());
         service.addBinding(new JvmBinding());
         serviceComponent = new ServiceComponent(implementation, service, bindingAdapterFactory,
-            sofaRuntimeContext);
+                sofaRuntimeContext);
 
         when(bindingAdapterFactory.getBindingAdapter(any())).thenReturn(
-            new MockBindingAdapter(false));
+                new MockBindingAdapter(false));
         serviceComponent.deactivate();
         verify(bindingAdapterFactory, times(1)).getBindingAdapter(any());
     }
@@ -270,10 +270,10 @@ public class ServiceComponentTests {
         service = new ServiceImpl("", SampleService.class, new SampleServiceImpl());
         service.addBinding(new JvmBinding());
         serviceComponent = new ServiceComponent(implementation, service, bindingAdapterFactory,
-            sofaRuntimeContext);
+                sofaRuntimeContext);
 
         when(bindingAdapterFactory.getBindingAdapter(any())).thenReturn(
-            new MockBindingAdapter(false));
+                new MockBindingAdapter(false));
         serviceComponent.unregister();
         verify(bindingAdapterFactory, times(1)).getBindingAdapter(any());
     }
@@ -283,10 +283,10 @@ public class ServiceComponentTests {
         service = new ServiceImpl("", SampleService.class, new SampleServiceImpl());
         service.addBinding(new JvmBinding());
         serviceComponent = new ServiceComponent(implementation, service, bindingAdapterFactory,
-            sofaRuntimeContext);
+                sofaRuntimeContext);
 
         assertThat(serviceComponent.dump()).isEqualTo(
-            "service:com.alipay.sofa.runtime.sample.SampleService\n" + "|------>[binding]-[jvm]");
+                "service:com.alipay.sofa.runtime.sample.SampleService\n" + "|------>[binding]-[jvm]");
     }
 
     @Test
@@ -294,7 +294,7 @@ public class ServiceComponentTests {
         service = new ServiceImpl("", SampleService.class, new SampleServiceImpl());
         service.addBinding(new JvmBinding());
         serviceComponent = new ServiceComponent(implementation, service, bindingAdapterFactory,
-            sofaRuntimeContext);
+                sofaRuntimeContext);
 
         HealthResult healthResult = serviceComponent.isHealthy();
         assertThat(healthResult.isHealthy()).isTrue();
@@ -306,7 +306,7 @@ public class ServiceComponentTests {
         service = new ServiceImpl("", SampleService.class, new SampleServiceImpl());
         service.addBinding(new JvmBinding());
         serviceComponent = new ServiceComponent(implementation, service, bindingAdapterFactory,
-            sofaRuntimeContext);
+                sofaRuntimeContext);
         serviceComponent.exception(new RuntimeException("error"));
 
         HealthResult healthResult = serviceComponent.isHealthy();
@@ -318,7 +318,7 @@ public class ServiceComponentTests {
     void canBeDuplicate() {
         properties.setServiceCanBeDuplicate(true);
         serviceComponent = new ServiceComponent(implementation, service, bindingAdapterFactory,
-            sofaRuntimeContext);
+                sofaRuntimeContext);
         assertThat(serviceComponent.canBeDuplicate()).isTrue();
     }
 

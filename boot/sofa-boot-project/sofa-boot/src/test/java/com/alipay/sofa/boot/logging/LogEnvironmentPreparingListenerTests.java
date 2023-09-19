@@ -40,20 +40,20 @@ public class LogEnvironmentPreparingListenerTests {
         environment.setProperty("sofa.middleware.log.key2", "value2");
 
         assertThat(
-            CommonLoggingConfigurations.getExternalConfigurations().get("sofa.middleware.log.key1"))
-            .isEqualTo(null);
+                CommonLoggingConfigurations.getExternalConfigurations().get("sofa.middleware.log.key1"))
+                .isEqualTo(null);
         assertThat(
-            CommonLoggingConfigurations.getExternalConfigurations().get("sofa.middleware.log.key2"))
-            .isEqualTo(null);
+                CommonLoggingConfigurations.getExternalConfigurations().get("sofa.middleware.log.key2"))
+                .isEqualTo(null);
 
         logEnvironmentPostProcessor.postProcessEnvironment(environment, null);
 
         assertThat(
-            CommonLoggingConfigurations.getExternalConfigurations().get("sofa.middleware.log.key1"))
-            .isEqualTo("value1");
+                CommonLoggingConfigurations.getExternalConfigurations().get("sofa.middleware.log.key1"))
+                .isEqualTo("value1");
         assertThat(
-            CommonLoggingConfigurations.getExternalConfigurations().get("sofa.middleware.log.key2"))
-            .isEqualTo("value2");
+                CommonLoggingConfigurations.getExternalConfigurations().get("sofa.middleware.log.key2"))
+                .isEqualTo("value2");
     }
 
     @Test
@@ -65,7 +65,7 @@ public class LogEnvironmentPreparingListenerTests {
         logEnvironmentPostProcessor.postProcessEnvironment(environment, null);
 
         assertThat(System.getProperty(SofaThreadPoolConstants.SOFA_THREAD_POOL_LOGGING_CAPABILITY))
-            .isEqualTo("false");
+                .isEqualTo("false");
         System.clearProperty(SofaThreadPoolConstants.SOFA_THREAD_POOL_LOGGING_CAPABILITY);
     }
 }

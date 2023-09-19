@@ -16,8 +16,6 @@
  */
 package com.alipay.sofa.registry.server.session.remoting.handler;
 
-import static org.mockito.Mockito.*;
-
 import com.alipay.sofa.registry.common.model.Node;
 import com.alipay.sofa.registry.common.model.client.pb.PublisherRegisterPb;
 import com.alipay.sofa.registry.common.model.client.pb.RegisterResponsePb;
@@ -30,50 +28,52 @@ import com.alipay.sofa.registry.server.session.strategy.PublisherHandlerStrategy
 import org.junit.Assert;
 import org.junit.Test;
 
+import static org.mockito.Mockito.*;
+
 public class PublisherHandlerTest {
 
-  private PublisherHandler newHandler() {
-    PublisherHandler handler = new PublisherHandler();
-    handler.executorManager = new ExecutorManager(TestUtils.newSessionConfig("testDc"));
-    Assert.assertNotNull(handler.getExecutor());
-    Assert.assertEquals(handler.interest(), PublisherRegister.class);
-    Assert.assertEquals(handler.getConnectNodeType(), Node.NodeType.CLIENT);
-    Assert.assertEquals(handler.getType(), ChannelHandler.HandlerType.PROCESSER);
-    Assert.assertEquals(handler.getInvokeType(), ChannelHandler.InvokeType.SYNC);
-    handler.publisherHandlerStrategy = mock(PublisherHandlerStrategy.class);
-    return handler;
-  }
+    private static PublisherRegister request() {
+        PublisherRegister register = new PublisherRegister();
+        return register;
+    }
 
-  @Test
-  public void testHandle() {
-    PublisherHandler handler = newHandler();
+    private PublisherHandler newHandler() {
+        PublisherHandler handler = new PublisherHandler();
+        handler.executorManager = new ExecutorManager(TestUtils.newSessionConfig("testDc"));
+        Assert.assertNotNull(handler.getExecutor());
+        Assert.assertEquals(handler.interest(), PublisherRegister.class);
+        Assert.assertEquals(handler.getConnectNodeType(), Node.NodeType.CLIENT);
+        Assert.assertEquals(handler.getType(), ChannelHandler.HandlerType.PROCESSER);
+        Assert.assertEquals(handler.getInvokeType(), ChannelHandler.InvokeType.SYNC);
+        handler.publisherHandlerStrategy = mock(PublisherHandlerStrategy.class);
+        return handler;
+    }
 
-    RegisterResponse response = (RegisterResponse) handler.doHandle(null, request());
-    Assert.assertFalse(response.isSuccess());
-    verify(handler.publisherHandlerStrategy, times(1))
-        .handlePublisherRegister(anyObject(), anyObject(), any());
-  }
+    @Test
+    public void testHandle() {
+        PublisherHandler handler = newHandler();
 
-  @Test
-  public void testPb() {
-    PublisherPbHandler pbHandler = new PublisherPbHandler();
-    pbHandler.publisherHandler = newHandler();
-    Assert.assertNotNull(pbHandler.getExecutor());
-    Assert.assertEquals(pbHandler.interest(), PublisherRegisterPb.class);
-    Assert.assertEquals(pbHandler.getConnectNodeType(), Node.NodeType.CLIENT);
-    Assert.assertEquals(pbHandler.getType(), ChannelHandler.HandlerType.PROCESSER);
-    Assert.assertEquals(pbHandler.getInvokeType(), ChannelHandler.InvokeType.SYNC);
-    PublisherRegisterPb pb = PublisherRegisterPb.newBuilder().build();
-    // illegal handle
-    RegisterResponsePb responsePb = (RegisterResponsePb) pbHandler.doHandle(null, pb);
-    Assert.assertFalse(responsePb.getSuccess());
+        RegisterResponse response = (RegisterResponse) handler.doHandle(null, request());
+        Assert.assertFalse(response.isSuccess());
+        verify(handler.publisherHandlerStrategy, times(1))
+                .handlePublisherRegister(anyObject(), anyObject(), any());
+    }
 
-    verify(pbHandler.publisherHandler.publisherHandlerStrategy, times(1))
-        .handlePublisherRegister(anyObject(), anyObject(), any());
-  }
+    @Test
+    public void testPb() {
+        PublisherPbHandler pbHandler = new PublisherPbHandler();
+        pbHandler.publisherHandler = newHandler();
+        Assert.assertNotNull(pbHandler.getExecutor());
+        Assert.assertEquals(pbHandler.interest(), PublisherRegisterPb.class);
+        Assert.assertEquals(pbHandler.getConnectNodeType(), Node.NodeType.CLIENT);
+        Assert.assertEquals(pbHandler.getType(), ChannelHandler.HandlerType.PROCESSER);
+        Assert.assertEquals(pbHandler.getInvokeType(), ChannelHandler.InvokeType.SYNC);
+        PublisherRegisterPb pb = PublisherRegisterPb.newBuilder().build();
+        // illegal handle
+        RegisterResponsePb responsePb = (RegisterResponsePb) pbHandler.doHandle(null, pb);
+        Assert.assertFalse(responsePb.getSuccess());
 
-  private static PublisherRegister request() {
-    PublisherRegister register = new PublisherRegister();
-    return register;
-  }
+        verify(pbHandler.publisherHandler.publisherHandlerStrategy, times(1))
+                .handlePublisherRegister(anyObject(), anyObject(), any());
+    }
 }

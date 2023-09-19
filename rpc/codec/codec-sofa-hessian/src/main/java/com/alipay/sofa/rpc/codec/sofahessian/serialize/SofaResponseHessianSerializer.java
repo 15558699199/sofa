@@ -45,13 +45,13 @@ public class SofaResponseHessianSerializer extends AbstractCustomHessianSerializ
 
     @Override
     public void decodeObjectByTemplate(AbstractByteBuf data, Map<String, String> context, SofaResponse template)
-        throws SofaRpcException {
+            throws SofaRpcException {
         try {
             UnsafeByteArrayInputStream inputStream = new UnsafeByteArrayInputStream(data.array());
             Hessian2Input input = new Hessian2Input(inputStream);
             // 根据SerializeType信息决定序列化器
             boolean genericSerialize = context != null && isGenericResponse(
-                context.get(RemotingConstants.HEAD_GENERIC_TYPE));
+                    context.get(RemotingConstants.HEAD_GENERIC_TYPE));
             if (genericSerialize) {
                 input.setSerializerFactory(genericSerializerFactory);
                 GenericObject genericObject = (GenericObject) input.readObject();
@@ -80,14 +80,14 @@ public class SofaResponseHessianSerializer extends AbstractCustomHessianSerializ
             // 根据SerializeType信息决定序列化器
             Object object;
             boolean genericSerialize = context != null && isGenericResponse(
-                context.get(RemotingConstants.HEAD_GENERIC_TYPE));
+                    context.get(RemotingConstants.HEAD_GENERIC_TYPE));
             if (genericSerialize) {
                 input.setSerializerFactory(genericSerializerFactory);
                 GenericObject genericObject = (GenericObject) input.readObject();
                 SofaResponse sofaResponse = new SofaResponse();
                 sofaResponse.setErrorMsg((String) genericObject.getField("errorMsg"));
                 sofaResponse
-                    .setAppResponse(judgeCustomThrowableForGenericObject(genericObject.getField("appResponse")));
+                        .setAppResponse(judgeCustomThrowableForGenericObject(genericObject.getField("appResponse")));
                 sofaResponse.setResponseProps((Map<String, String>) genericObject.getField("responseProps"));
                 object = sofaResponse;
             } else {

@@ -33,10 +33,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Sets;
-import java.util.Set;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.Set;
 
 /**
  * @author shangyu.wh
@@ -46,166 +47,170 @@ import org.springframework.beans.factory.annotation.Autowired;
 @LeaderAwareRestController
 public class StopPushDataResource {
 
-  private static final Logger DB_LOGGER =
-      LoggerFactory.getLogger(StopPushDataResource.class, "[DBService]");
+    private static final Logger DB_LOGGER =
+            LoggerFactory.getLogger(StopPushDataResource.class, "[DBService]");
 
-  private static final Logger TASK_LOGGER =
-      LoggerFactory.getLogger(StopPushDataResource.class, "[Task]");
+    private static final Logger TASK_LOGGER =
+            LoggerFactory.getLogger(StopPushDataResource.class, "[Task]");
 
-  @Autowired private ProvideDataService provideDataService;
+    @Autowired
+    private ProvideDataService provideDataService;
 
-  @Autowired private DefaultProvideDataNotifier provideDataNotifier;
+    @Autowired
+    private DefaultProvideDataNotifier provideDataNotifier;
 
-  @GET
-  @Path("open")
-  @Produces(MediaType.APPLICATION_JSON)
-  public Result closePush() {
-    boolean ret;
-    Result result = new Result();
+    @GET
+    @Path("open")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Result closePush() {
+        boolean ret;
+        Result result = new Result();
 
-    ret = resetGrayOpenPushSwitch();
-    if (!ret) {
-      result.setSuccess(false);
-      return result;
+        ret = resetGrayOpenPushSwitch();
+        if (!ret) {
+            result.setSuccess(false);
+            return result;
+        }
+
+        PersistenceData persistenceData =
+                PersistenceDataBuilder.createPersistenceData(
+                        ValueConstants.STOP_PUSH_DATA_SWITCH_DATA_ID, "true");
+
+        try {
+            ret = provideDataService.saveProvideData(persistenceData);
+            DB_LOGGER.info("open stop push data switch to DB result {}!", ret);
+        } catch (Throwable e) {
+            DB_LOGGER.error("error open stop push data switch to DB!", e);
+            throw new RuntimeException("open stop push data switch to DB error!", e);
+        }
+
+        if (ret) {
+            fireDataChangeNotify(
+                    persistenceData.getVersion(), ValueConstants.STOP_PUSH_DATA_SWITCH_DATA_ID);
+        }
+
+        result.setSuccess(ret);
+        return result;
     }
 
-    PersistenceData persistenceData =
-        PersistenceDataBuilder.createPersistenceData(
-            ValueConstants.STOP_PUSH_DATA_SWITCH_DATA_ID, "true");
+    /**
+     * open push
+     */
+    @GET
+    @Path("close")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Result openPush() {
+        boolean ret;
+        Result result = new Result();
 
-    try {
-      ret = provideDataService.saveProvideData(persistenceData);
-      DB_LOGGER.info("open stop push data switch to DB result {}!", ret);
-    } catch (Throwable e) {
-      DB_LOGGER.error("error open stop push data switch to DB!", e);
-      throw new RuntimeException("open stop push data switch to DB error!", e);
+        ret = resetGrayOpenPushSwitch();
+        if (!ret) {
+            result.setSuccess(false);
+            return result;
+        }
+
+        PersistenceData persistenceData =
+                PersistenceDataBuilder.createPersistenceData(
+                        ValueConstants.STOP_PUSH_DATA_SWITCH_DATA_ID, "false");
+        persistenceData.setData("false");
+
+        try {
+            ret = provideDataService.saveProvideData(persistenceData);
+            DB_LOGGER.info("close stop push data switch to DB result {}!", ret);
+        } catch (Exception e) {
+            DB_LOGGER.error("error close stop push data switch from DB!");
+            throw new RuntimeException("Close stop push data switch from DB error!");
+        }
+
+        if (ret) {
+            fireDataChangeNotify(
+                    persistenceData.getVersion(), ValueConstants.STOP_PUSH_DATA_SWITCH_DATA_ID);
+        }
+
+        result.setSuccess(ret);
+        return result;
     }
 
-    if (ret) {
-      fireDataChangeNotify(
-          persistenceData.getVersion(), ValueConstants.STOP_PUSH_DATA_SWITCH_DATA_ID);
+    @POST
+    @Path("grayOpen")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Result grayOpenPush(GrayOpenPushSwitchRequest request) {
+        ObjectMapper mapper = JsonUtils.getJacksonObjectMapper();
+        Result result = new Result();
+        String data;
+        try {
+            data = mapper.writeValueAsString(request);
+        } catch (JsonProcessingException e) {
+            DB_LOGGER.error("encoding gray open request error", e);
+            result.setSuccess(false);
+            result.setMessage(e.getMessage());
+            return result;
+        }
+        PersistenceData persistenceData =
+                PersistenceDataBuilder.createPersistenceData(
+                        ValueConstants.PUSH_SWITCH_GRAY_OPEN_DATA_ID, data);
+        boolean ret;
+        try {
+            ret = provideDataService.saveProvideData(persistenceData);
+        } catch (Exception e) {
+            result.setSuccess(false);
+            result.setMessage(e.getMessage());
+            return result;
+        }
+        if (ret) {
+            fireDataChangeNotify(
+                    persistenceData.getVersion(), ValueConstants.PUSH_SWITCH_GRAY_OPEN_DATA_ID);
+        }
+        result.setSuccess(ret);
+        return result;
     }
 
-    result.setSuccess(ret);
-    return result;
-  }
-
-  /** open push */
-  @GET
-  @Path("close")
-  @Produces(MediaType.APPLICATION_JSON)
-  public Result openPush() {
-    boolean ret;
-    Result result = new Result();
-
-    ret = resetGrayOpenPushSwitch();
-    if (!ret) {
-      result.setSuccess(false);
-      return result;
+    private boolean resetGrayOpenPushSwitch() {
+        PersistenceData persistenceData =
+                PersistenceDataBuilder.createPersistenceData(
+                        ValueConstants.PUSH_SWITCH_GRAY_OPEN_DATA_ID, "");
+        boolean ret;
+        try {
+            ret = provideDataService.saveProvideData(persistenceData);
+            DB_LOGGER.info("reset gray open push switch to DB result {}!", ret);
+        } catch (Exception e) {
+            DB_LOGGER.error("error reset gray open push switch to DB!", e);
+            throw new RuntimeException("reset gray open push switch to DB error");
+        }
+        if (ret) {
+            fireDataChangeNotify(
+                    persistenceData.getVersion(), ValueConstants.PUSH_SWITCH_GRAY_OPEN_DATA_ID);
+        }
+        return ret;
     }
 
-    PersistenceData persistenceData =
-        PersistenceDataBuilder.createPersistenceData(
-            ValueConstants.STOP_PUSH_DATA_SWITCH_DATA_ID, "false");
-    persistenceData.setData("false");
+    private void fireDataChangeNotify(Long version, String dataInfoId) {
 
-    try {
-      ret = provideDataService.saveProvideData(persistenceData);
-      DB_LOGGER.info("close stop push data switch to DB result {}!", ret);
-    } catch (Exception e) {
-      DB_LOGGER.error("error close stop push data switch from DB!");
-      throw new RuntimeException("Close stop push data switch from DB error!");
+        ProvideDataChangeEvent provideDataChangeEvent =
+                new ProvideDataChangeEvent(dataInfoId, version, getNodeTypes());
+        if (TASK_LOGGER.isInfoEnabled()) {
+            TASK_LOGGER.info(
+                    "send PERSISTENCE_DATA_CHANGE_NOTIFY_TASK notifyProvideDataChange: {}",
+                    provideDataChangeEvent);
+        }
+        provideDataNotifier.notifyProvideDataChange(provideDataChangeEvent);
     }
 
-    if (ret) {
-      fireDataChangeNotify(
-          persistenceData.getVersion(), ValueConstants.STOP_PUSH_DATA_SWITCH_DATA_ID);
+    protected Set<NodeType> getNodeTypes() {
+        return Sets.newHashSet(NodeType.SESSION);
     }
 
-    result.setSuccess(ret);
-    return result;
-  }
-
-  @POST
-  @Path("grayOpen")
-  @Consumes(MediaType.APPLICATION_JSON)
-  @Produces(MediaType.APPLICATION_JSON)
-  public Result grayOpenPush(GrayOpenPushSwitchRequest request) {
-    ObjectMapper mapper = JsonUtils.getJacksonObjectMapper();
-    Result result = new Result();
-    String data;
-    try {
-      data = mapper.writeValueAsString(request);
-    } catch (JsonProcessingException e) {
-      DB_LOGGER.error("encoding gray open request error", e);
-      result.setSuccess(false);
-      result.setMessage(e.getMessage());
-      return result;
+    @VisibleForTesting
+    protected StopPushDataResource setProvideDataService(ProvideDataService provideDataService) {
+        this.provideDataService = provideDataService;
+        return this;
     }
-    PersistenceData persistenceData =
-        PersistenceDataBuilder.createPersistenceData(
-            ValueConstants.PUSH_SWITCH_GRAY_OPEN_DATA_ID, data);
-    boolean ret;
-    try {
-      ret = provideDataService.saveProvideData(persistenceData);
-    } catch (Exception e) {
-      result.setSuccess(false);
-      result.setMessage(e.getMessage());
-      return result;
+
+    @VisibleForTesting
+    protected StopPushDataResource setProvideDataNotifier(
+            DefaultProvideDataNotifier provideDataNotifier) {
+        this.provideDataNotifier = provideDataNotifier;
+        return this;
     }
-    if (ret) {
-      fireDataChangeNotify(
-          persistenceData.getVersion(), ValueConstants.PUSH_SWITCH_GRAY_OPEN_DATA_ID);
-    }
-    result.setSuccess(ret);
-    return result;
-  }
-
-  private boolean resetGrayOpenPushSwitch() {
-    PersistenceData persistenceData =
-        PersistenceDataBuilder.createPersistenceData(
-            ValueConstants.PUSH_SWITCH_GRAY_OPEN_DATA_ID, "");
-    boolean ret;
-    try {
-      ret = provideDataService.saveProvideData(persistenceData);
-      DB_LOGGER.info("reset gray open push switch to DB result {}!", ret);
-    } catch (Exception e) {
-      DB_LOGGER.error("error reset gray open push switch to DB!", e);
-      throw new RuntimeException("reset gray open push switch to DB error");
-    }
-    if (ret) {
-      fireDataChangeNotify(
-          persistenceData.getVersion(), ValueConstants.PUSH_SWITCH_GRAY_OPEN_DATA_ID);
-    }
-    return ret;
-  }
-
-  private void fireDataChangeNotify(Long version, String dataInfoId) {
-
-    ProvideDataChangeEvent provideDataChangeEvent =
-        new ProvideDataChangeEvent(dataInfoId, version, getNodeTypes());
-    if (TASK_LOGGER.isInfoEnabled()) {
-      TASK_LOGGER.info(
-          "send PERSISTENCE_DATA_CHANGE_NOTIFY_TASK notifyProvideDataChange: {}",
-          provideDataChangeEvent);
-    }
-    provideDataNotifier.notifyProvideDataChange(provideDataChangeEvent);
-  }
-
-  protected Set<NodeType> getNodeTypes() {
-    return Sets.newHashSet(NodeType.SESSION);
-  }
-
-  @VisibleForTesting
-  protected StopPushDataResource setProvideDataService(ProvideDataService provideDataService) {
-    this.provideDataService = provideDataService;
-    return this;
-  }
-
-  @VisibleForTesting
-  protected StopPushDataResource setProvideDataNotifier(
-      DefaultProvideDataNotifier provideDataNotifier) {
-    this.provideDataNotifier = provideDataNotifier;
-    return this;
-  }
 }

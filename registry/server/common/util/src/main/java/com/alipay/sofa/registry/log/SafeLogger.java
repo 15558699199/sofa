@@ -20,37 +20,36 @@ import com.alipay.sofa.registry.metrics.CounterFunc;
 
 public class SafeLogger {
 
-  final CounterFunc COUNTER =
-      CounterFunc.build()
-          .namespace("safelogger")
-          .name("critical")
-          .labelNames("type")
-          .help("sofa logger critical error")
-          .create()
-          .register();
+    private static final SafeLogger instance = new SafeLogger();
+    final CounterFunc COUNTER =
+            CounterFunc.build()
+                    .namespace("safelogger")
+                    .name("critical")
+                    .labelNames("type")
+                    .help("sofa logger critical error")
+                    .create()
+                    .register();
+    long oom_count = 0;
+    long unknown_count = 0;
 
-  long oom_count = 0;
-  long unknown_count = 0;
-  private static final SafeLogger instance = new SafeLogger();
-
-  private SafeLogger() {
-    COUNTER.labels("oom").func(() -> this.oom_count);
-    COUNTER.labels("unknown").func(() -> this.unknown_count);
-  }
-
-  public static SafeLogger getInstance() {
-    return instance;
-  }
-
-  public void handleExp(Throwable e) {
-    try {
-      if (e instanceof OutOfMemoryError) {
-        oom_count++;
-        return;
-      }
-      unknown_count++;
-    } catch (Throwable ignored) {
-      // do nothing to avoid cause exception
+    private SafeLogger() {
+        COUNTER.labels("oom").func(() -> this.oom_count);
+        COUNTER.labels("unknown").func(() -> this.unknown_count);
     }
-  }
+
+    public static SafeLogger getInstance() {
+        return instance;
+    }
+
+    public void handleExp(Throwable e) {
+        try {
+            if (e instanceof OutOfMemoryError) {
+                oom_count++;
+                return;
+            }
+            unknown_count++;
+        } catch (Throwable ignored) {
+            // do nothing to avoid cause exception
+        }
+    }
 }

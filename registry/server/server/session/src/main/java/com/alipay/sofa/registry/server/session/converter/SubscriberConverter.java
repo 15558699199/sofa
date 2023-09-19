@@ -32,82 +32,85 @@ import com.alipay.sofa.registry.core.model.SubscriberRegister;
  * @version $Id : SubscriberConverter.java, v 0.1 2017-12-05 11:00 shangyu.wh Exp $
  */
 public final class SubscriberConverter {
-  private SubscriberConverter() {}
-  /**
-   * Convert subscriber.
-   *
-   * @param subscriberRegister the subscriber register
-   * @return the subscriber
-   */
-  public static Subscriber convert(SubscriberRegister subscriberRegister) {
+    private SubscriberConverter() {
+    }
 
-    Converter<SubscriberRegister, Subscriber> converter =
-        source -> {
-          Subscriber subscriber = new Subscriber();
+    /**
+     * Convert subscriber.
+     *
+     * @param subscriberRegister the subscriber register
+     * @return the subscriber
+     */
+    public static Subscriber convert(SubscriberRegister subscriberRegister) {
 
-          subscriber.setAppName(source.getAppName());
-          subscriber.setCell(source.getZone());
-          subscriber.setClientId(source.getClientId());
-          subscriber.setDataId(source.getDataId());
-          subscriber.setGroup(source.getGroup());
-          subscriber.setInstanceId(source.getInstanceId());
-          subscriber.setRegisterId(source.getRegistId());
-          subscriber.setProcessId(source.getProcessId());
-          subscriber.setVersion(source.getVersion());
-          subscriber.setRegisterTimestamp(System.currentTimeMillis());
-          subscriber.setClientRegisterTimestamp(source.getTimestamp());
-          subscriber.setScope(ScopeEnumConverter.convertToScope(source.getScope()));
-          subscriber.setSourceAddress(new URL(source.getIp(), source.getPort()));
-          subscriber.setAttributes(source.getAttributes());
-          subscriber.setClientVersion(ClientVersion.StoreData);
-          subscriber.internAcceptEncoding(source.getAcceptEncoding());
-          subscriber.setAcceptMulti(source.acceptMulti());
+        Converter<SubscriberRegister, Subscriber> converter =
+                source -> {
+                    Subscriber subscriber = new Subscriber();
 
-          DataInfo dataInfo =
-              new DataInfo(source.getInstanceId(), source.getDataId(), source.getGroup());
+                    subscriber.setAppName(source.getAppName());
+                    subscriber.setCell(source.getZone());
+                    subscriber.setClientId(source.getClientId());
+                    subscriber.setDataId(source.getDataId());
+                    subscriber.setGroup(source.getGroup());
+                    subscriber.setInstanceId(source.getInstanceId());
+                    subscriber.setRegisterId(source.getRegistId());
+                    subscriber.setProcessId(source.getProcessId());
+                    subscriber.setVersion(source.getVersion());
+                    subscriber.setRegisterTimestamp(System.currentTimeMillis());
+                    subscriber.setClientRegisterTimestamp(source.getTimestamp());
+                    subscriber.setScope(ScopeEnumConverter.convertToScope(source.getScope()));
+                    subscriber.setSourceAddress(new URL(source.getIp(), source.getPort()));
+                    subscriber.setAttributes(source.getAttributes());
+                    subscriber.setClientVersion(ClientVersion.StoreData);
+                    subscriber.internAcceptEncoding(source.getAcceptEncoding());
+                    subscriber.setAcceptMulti(source.acceptMulti());
 
-          subscriber.setDataInfoId(dataInfo.getDataInfoId());
+                    DataInfo dataInfo =
+                            new DataInfo(source.getInstanceId(), source.getDataId(), source.getGroup());
 
-          return subscriber;
-        };
-    return converter.convert(subscriberRegister);
-  }
-  /**
-   * Convert watcher.
-   *
-   * @param configuratorRegister configuratorRegister
-   * @return Watcher
-   */
-  public static Watcher convert(ConfiguratorRegister configuratorRegister) {
-    Converter<ConfiguratorRegister, Watcher> converter =
-        source -> {
-          Watcher watcher = new Watcher();
+                    subscriber.setDataInfoId(dataInfo.getDataInfoId());
 
-          watcher.setAppName(source.getAppName());
-          watcher.setCell(source.getZone());
-          watcher.setClientId(source.getClientId());
-          watcher.setDataId(source.getDataId());
-          watcher.setGroup(source.getGroup());
-          watcher.setInstanceId(source.getInstanceId());
-          watcher.setRegisterId(source.getRegistId());
-          watcher.setProcessId(source.getProcessId());
-          watcher.setVersion(source.getVersion());
-          watcher.setAttributes(source.getAttributes());
-          if (source.getTimestamp() != null) {
-            watcher.setClientRegisterTimestamp(source.getTimestamp());
-          }
-          watcher.setRegisterTimestamp(source.getTimestamp());
-          watcher.setSourceAddress(new URL(source.getIp(), source.getPort()));
+                    return subscriber;
+                };
+        return converter.convert(subscriberRegister);
+    }
 
-          watcher.setClientVersion(ClientVersion.StoreData);
+    /**
+     * Convert watcher.
+     *
+     * @param configuratorRegister configuratorRegister
+     * @return Watcher
+     */
+    public static Watcher convert(ConfiguratorRegister configuratorRegister) {
+        Converter<ConfiguratorRegister, Watcher> converter =
+                source -> {
+                    Watcher watcher = new Watcher();
 
-          DataInfo dataInfo =
-              new DataInfo(source.getInstanceId(), source.getDataId(), source.getGroup());
+                    watcher.setAppName(source.getAppName());
+                    watcher.setCell(source.getZone());
+                    watcher.setClientId(source.getClientId());
+                    watcher.setDataId(source.getDataId());
+                    watcher.setGroup(source.getGroup());
+                    watcher.setInstanceId(source.getInstanceId());
+                    watcher.setRegisterId(source.getRegistId());
+                    watcher.setProcessId(source.getProcessId());
+                    watcher.setVersion(source.getVersion());
+                    watcher.setAttributes(source.getAttributes());
+                    if (source.getTimestamp() != null) {
+                        watcher.setClientRegisterTimestamp(source.getTimestamp());
+                    }
+                    watcher.setRegisterTimestamp(source.getTimestamp());
+                    watcher.setSourceAddress(new URL(source.getIp(), source.getPort()));
 
-          watcher.setDataInfoId(dataInfo.getDataInfoId());
+                    watcher.setClientVersion(ClientVersion.StoreData);
 
-          return watcher;
-        };
-    return converter.convert(configuratorRegister);
-  }
+                    DataInfo dataInfo =
+                            new DataInfo(source.getInstanceId(), source.getDataId(), source.getGroup());
+
+                    watcher.setDataInfoId(dataInfo.getDataInfoId());
+
+                    return watcher;
+                };
+        return converter.convert(configuratorRegister);
+    }
 }

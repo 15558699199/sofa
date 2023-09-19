@@ -21,12 +21,11 @@ import com.alipay.sofa.rpc.config.ServerConfig;
 import java.util.concurrent.ThreadPoolExecutor;
 
 /**
- *
  * @author <a href="mailto:lw111072@antfin.com">LiWei.Liangen</a>
  */
 public class ServerStartedEvent implements Event {
 
-    private final ServerConfig       serverConfig;
+    private final ServerConfig serverConfig;
 
     private final ThreadPoolExecutor threadPoolExecutor;
 

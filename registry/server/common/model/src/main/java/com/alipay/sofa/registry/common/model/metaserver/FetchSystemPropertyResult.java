@@ -24,42 +24,42 @@ import java.io.Serializable;
  */
 public class FetchSystemPropertyResult implements Serializable {
 
-  private static final ProvideData INIT = null;
+    private static final ProvideData INIT = null;
 
-  private final boolean versionUpgrade;
+    private final boolean versionUpgrade;
 
-  private final ProvideData provideData;
+    private final ProvideData provideData;
 
-  public FetchSystemPropertyResult(boolean versionUpgrade) {
-    this.versionUpgrade = versionUpgrade;
-    this.provideData = INIT;
-  }
+    public FetchSystemPropertyResult(boolean versionUpgrade) {
+        this.versionUpgrade = versionUpgrade;
+        this.provideData = INIT;
+    }
 
-  public FetchSystemPropertyResult(boolean versionUpgrade, ProvideData provideData) {
-    this.versionUpgrade = versionUpgrade;
-    this.provideData = provideData;
-  }
+    public FetchSystemPropertyResult(boolean versionUpgrade, ProvideData provideData) {
+        this.versionUpgrade = versionUpgrade;
+        this.provideData = provideData;
+    }
 
-  public boolean isVersionUpgrade() {
-    return versionUpgrade;
-  }
+    public boolean isVersionUpgrade() {
+        return versionUpgrade;
+    }
 
-  /**
-   * Getter method for property <tt>provideData</tt>.
-   *
-   * @return property value of provideData
-   */
-  public ProvideData getProvideData() {
-    return provideData;
-  }
+    /**
+     * Getter method for property <tt>provideData</tt>.
+     *
+     * @return property value of provideData
+     */
+    public ProvideData getProvideData() {
+        return provideData;
+    }
 
-  @Override
-  public String toString() {
-    return "FetchSystemPropertyResult{"
-        + "versionUpgrade="
-        + versionUpgrade
-        + ", provideData="
-        + provideData
-        + '}';
-  }
+    @Override
+    public String toString() {
+        return "FetchSystemPropertyResult{"
+                + "versionUpgrade="
+                + versionUpgrade
+                + ", provideData="
+                + provideData
+                + '}';
+    }
 }

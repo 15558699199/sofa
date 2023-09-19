@@ -28,21 +28,21 @@ import org.junit.Test;
  */
 public class FetchStopPushServiceTest extends FetchStopPushService {
 
-  @Before
-  public void beforeFetchStopPushServiceTest() {
-    SessionServerConfig sessionServerConfig = TestUtils.newSessionConfig("testdc");
+    @Before
+    public void beforeFetchStopPushServiceTest() {
+        SessionServerConfig sessionServerConfig = TestUtils.newSessionConfig("testdc");
 
-    this.setSessionServerConfig(sessionServerConfig);
-  }
+        this.setSessionServerConfig(sessionServerConfig);
+    }
 
-  @Test
-  public void test() {
-    Assert.assertTrue(isStopPushSwitch());
+    @Test
+    public void test() {
+        Assert.assertTrue(isStopPushSwitch());
 
-    Assert.assertTrue(doProcess(storage.get(), new StopPushStorage(2L, false)));
-    Assert.assertEquals(isStopPushSwitch(), false);
+        Assert.assertTrue(doProcess(storage.get(), new StopPushStorage(2L, false)));
+        Assert.assertEquals(isStopPushSwitch(), false);
 
-    Assert.assertTrue(doProcess(storage.get(), new StopPushStorage(1L, true)));
-    Assert.assertEquals(isStopPushSwitch(), true);
-  }
+        Assert.assertTrue(doProcess(storage.get(), new StopPushStorage(1L, true)));
+        Assert.assertEquals(isStopPushSwitch(), true);
+    }
 }

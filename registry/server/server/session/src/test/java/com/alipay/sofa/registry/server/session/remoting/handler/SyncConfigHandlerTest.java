@@ -30,49 +30,49 @@ import org.junit.Test;
 
 public class SyncConfigHandlerTest {
 
-  private SyncConfigHandler newHandler() {
-    SyncConfigHandler handler = new SyncConfigHandler();
-    handler.executorManager = new ExecutorManager(TestUtils.newSessionConfig("testDc"));
-    Assert.assertNotNull(handler.getExecutor());
-    Assert.assertEquals(handler.interest(), SyncConfigRequest.class);
-    Assert.assertEquals(handler.getConnectNodeType(), Node.NodeType.CLIENT);
-    Assert.assertEquals(handler.getType(), ChannelHandler.HandlerType.PROCESSER);
-    Assert.assertEquals(handler.getInvokeType(), ChannelHandler.InvokeType.SYNC);
-    handler.syncConfigHandlerStrategy = new DefaultSyncConfigHandlerStrategy();
-    return handler;
-  }
+    private static SyncConfigRequest request() {
+        SyncConfigRequest register = new SyncConfigRequest();
+        return register;
+    }
 
-  @Test
-  public void testHandle() {
-    SyncConfigHandler handler = newHandler();
-    // always true
-    SyncConfigResponse response = (SyncConfigResponse) handler.doHandle(null, request());
-    Assert.assertTrue(response.isSuccess());
-  }
+    private SyncConfigHandler newHandler() {
+        SyncConfigHandler handler = new SyncConfigHandler();
+        handler.executorManager = new ExecutorManager(TestUtils.newSessionConfig("testDc"));
+        Assert.assertNotNull(handler.getExecutor());
+        Assert.assertEquals(handler.interest(), SyncConfigRequest.class);
+        Assert.assertEquals(handler.getConnectNodeType(), Node.NodeType.CLIENT);
+        Assert.assertEquals(handler.getType(), ChannelHandler.HandlerType.PROCESSER);
+        Assert.assertEquals(handler.getInvokeType(), ChannelHandler.InvokeType.SYNC);
+        handler.syncConfigHandlerStrategy = new DefaultSyncConfigHandlerStrategy();
+        return handler;
+    }
 
-  @Test
-  public void testPbFail() {
-    SyncConfigResponsePb pb = SyncConfigPbHandler.fail();
-    Assert.assertFalse(pb.getResult().getSuccess());
-  }
+    @Test
+    public void testHandle() {
+        SyncConfigHandler handler = newHandler();
+        // always true
+        SyncConfigResponse response = (SyncConfigResponse) handler.doHandle(null, request());
+        Assert.assertTrue(response.isSuccess());
+    }
 
-  @Test
-  public void testPb() {
-    SyncConfigPbHandler pbHandler = new SyncConfigPbHandler();
-    pbHandler.syncConfigHandler = newHandler();
-    Assert.assertNotNull(pbHandler.getExecutor());
-    Assert.assertEquals(pbHandler.interest(), SyncConfigRequestPb.class);
-    Assert.assertEquals(pbHandler.getConnectNodeType(), Node.NodeType.CLIENT);
-    Assert.assertEquals(pbHandler.getType(), ChannelHandler.HandlerType.PROCESSER);
-    Assert.assertEquals(pbHandler.getInvokeType(), ChannelHandler.InvokeType.SYNC);
-    SyncConfigRequestPb pb = SyncConfigRequestPb.newBuilder().build();
-    // always true
-    SyncConfigResponsePb responsePb = (SyncConfigResponsePb) pbHandler.doHandle(null, pb);
-    Assert.assertTrue(responsePb.getResult().getSuccess());
-  }
+    @Test
+    public void testPbFail() {
+        SyncConfigResponsePb pb = SyncConfigPbHandler.fail();
+        Assert.assertFalse(pb.getResult().getSuccess());
+    }
 
-  private static SyncConfigRequest request() {
-    SyncConfigRequest register = new SyncConfigRequest();
-    return register;
-  }
+    @Test
+    public void testPb() {
+        SyncConfigPbHandler pbHandler = new SyncConfigPbHandler();
+        pbHandler.syncConfigHandler = newHandler();
+        Assert.assertNotNull(pbHandler.getExecutor());
+        Assert.assertEquals(pbHandler.interest(), SyncConfigRequestPb.class);
+        Assert.assertEquals(pbHandler.getConnectNodeType(), Node.NodeType.CLIENT);
+        Assert.assertEquals(pbHandler.getType(), ChannelHandler.HandlerType.PROCESSER);
+        Assert.assertEquals(pbHandler.getInvokeType(), ChannelHandler.InvokeType.SYNC);
+        SyncConfigRequestPb pb = SyncConfigRequestPb.newBuilder().build();
+        // always true
+        SyncConfigResponsePb responsePb = (SyncConfigResponsePb) pbHandler.doHandle(null, pb);
+        Assert.assertTrue(responsePb.getResult().getSuccess());
+    }
 }

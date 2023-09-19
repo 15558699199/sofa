@@ -63,7 +63,7 @@ public class RestTracerAdapter {
     /**
      * slf4j for this class
      */
-    private static final Logger LOGGER             = LoggerFactory.getLogger(RestTracerAdapter.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(RestTracerAdapter.class);
 
     private static final String METHOD_TYPE_STRING = "_method_type_string";
 
@@ -80,7 +80,7 @@ public class RestTracerAdapter {
         RpcInternalContext context = RpcInternalContext.getContext();
         if (clientSpan != null) {
             requestContext.getHeaders().add(RemotingConstants.NEW_RPC_TRACE_NAME,
-                clientSpan.getSofaTracerSpanContext().serializeSpanContext());
+                    clientSpan.getSofaTracerSpanContext().serializeSpanContext());
         }
         // 客户端发送自己的应用名
         String appName = (String) context.getAttachment(INTERNAL_KEY_APP_NAME);
@@ -148,7 +148,7 @@ public class RestTracerAdapter {
 
                 SofaResourceMethodInvoker resourceMethodInvoker = (SofaResourceMethodInvoker)
                         ((PostMatchContainerRequestContext) requestContext)
-                            .getResourceMethod();
+                                .getResourceMethod();
 
                 SofaResourceFactory factory = resourceMethodInvoker.getResource();
                 String serviceName = factory.getServiceName();
@@ -219,7 +219,7 @@ public class RestTracerAdapter {
 
             if (serverSpan != null) {
                 serverSpan.setTag(RpcSpanTags.SERVER_BIZ_TIME,
-                    (Number) context.getAttachment(RpcConstants.INTERNAL_KEY_IMPL_ELAPSE));
+                        (Number) context.getAttachment(RpcConstants.INTERNAL_KEY_IMPL_ELAPSE));
             }
 
             RestBaggageItemsHandler.encodeBaggageItemsToResponse(response, sofaResponse);
@@ -234,7 +234,7 @@ public class RestTracerAdapter {
     /**
      * Handle response callback from server handler
      *
-     * @param responseContext   response instance
+     * @param responseContext response instance
      */
     public static void clientReceived(ClientResponseContext responseContext) {
         RestBaggageItemsHandler.decodeBaggageItemsFromResponse(responseContext.getHeaders());
@@ -242,13 +242,13 @@ public class RestTracerAdapter {
 
     private static class RestBaggageItemsHandler {
 
-        private static final String RPC_REQUEST_BAGGAGE_PREFIX      = RemotingConstants.RPC_REQUEST_BAGGAGE + ".";
+        private static final String RPC_REQUEST_BAGGAGE_PREFIX = RemotingConstants.RPC_REQUEST_BAGGAGE + ".";
 
-        private static final int    RPC_REQUEST_BAGGAGE_PREFIX_LEN  = RPC_REQUEST_BAGGAGE_PREFIX.length();
+        private static final int RPC_REQUEST_BAGGAGE_PREFIX_LEN = RPC_REQUEST_BAGGAGE_PREFIX.length();
 
-        private static final String RPC_RESPONSE_BAGGAGE_PREFIX     = RemotingConstants.RPC_RESPONSE_BAGGAGE + ".";
+        private static final String RPC_RESPONSE_BAGGAGE_PREFIX = RemotingConstants.RPC_RESPONSE_BAGGAGE + ".";
 
-        private static final int    RPC_RESPONSE_BAGGAGE_PREFIX_LEN = RPC_RESPONSE_BAGGAGE_PREFIX.length();
+        private static final int RPC_RESPONSE_BAGGAGE_PREFIX_LEN = RPC_RESPONSE_BAGGAGE_PREFIX.length();
 
         /**
          * Encode baggage items from invoke context to request headers
@@ -259,8 +259,8 @@ public class RestTracerAdapter {
             // Attach baggage items
             RpcInvokeContext rpcInvokeContext = RpcInvokeContext.peekContext();
             if (rpcInvokeContext == null || !RpcInvokeContext.isBaggageEnable() ||
-                rpcInvokeContext.getAllRequestBaggage() == null ||
-                rpcInvokeContext.getAllRequestBaggage().isEmpty()) {
+                    rpcInvokeContext.getAllRequestBaggage() == null ||
+                    rpcInvokeContext.getAllRequestBaggage().isEmpty()) {
                 return;
             }
 
@@ -274,8 +274,8 @@ public class RestTracerAdapter {
         /**
          * Decode baggage items from netty request to sofa request context
          *
-         * @param request       netty http request
-         * @param sofaRequest   rpc request holder
+         * @param request     netty http request
+         * @param sofaRequest rpc request holder
          */
         private static void decodeBaggageItemsFromRequest(NettyHttpRequest request,
                                                           SofaRequest sofaRequest) {
@@ -289,8 +289,8 @@ public class RestTracerAdapter {
             Map<String, String> baggageItems = new HashMap<String, String>();
             for (Map.Entry<String, List<String>> entry : headerMaps.entrySet()) {
                 if (!entry.getKey().startsWith(RPC_REQUEST_BAGGAGE_PREFIX) ||
-                    entry.getValue() == null ||
-                    entry.getValue().isEmpty()) {
+                        entry.getValue() == null ||
+                        entry.getValue().isEmpty()) {
                     continue;
                 }
 
@@ -313,8 +313,8 @@ public class RestTracerAdapter {
                                                          SofaResponse sofaResponse) {
             RpcInvokeContext context = RpcInvokeContext.peekContext();
             if (response == null || context == null ||
-                context.getAllResponseBaggage() == null ||
-                context.getAllResponseBaggage().isEmpty()) {
+                    context.getAllResponseBaggage() == null ||
+                    context.getAllResponseBaggage().isEmpty()) {
                 return;
             }
 
@@ -340,8 +340,8 @@ public class RestTracerAdapter {
             Map<String, String> baggageItems = new HashMap<String, String>();
             for (Map.Entry<String, List<String>> entry : headers.entrySet()) {
                 if (!entry.getKey().startsWith(RPC_RESPONSE_BAGGAGE_PREFIX) ||
-                    entry.getValue() == null ||
-                    entry.getValue().isEmpty()) {
+                        entry.getValue() == null ||
+                        entry.getValue().isEmpty()) {
                     continue;
                 }
 

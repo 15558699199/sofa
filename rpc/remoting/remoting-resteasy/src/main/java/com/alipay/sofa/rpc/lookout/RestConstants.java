@@ -22,6 +22,6 @@ package com.alipay.sofa.rpc.lookout;
  */
 public class RestConstants {
 
-    public static final String REST_SERVICE_KEY    = "rest_service";
+    public static final String REST_SERVICE_KEY = "rest_service";
     public static final String REST_METHODNAME_KEY = "rest_methodname";
 }

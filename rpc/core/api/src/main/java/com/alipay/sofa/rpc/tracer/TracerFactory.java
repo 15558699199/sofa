@@ -36,7 +36,7 @@ public final class TracerFactory {
     public synchronized static Tracer getTracer(String tracerName) {
         try {
             ExtensionClass<Tracer> ext = ExtensionLoaderFactory.getExtensionLoader(Tracer.class)
-                .getExtensionClass(tracerName);
+                    .getExtensionClass(tracerName);
             if (ext == null) {
                 throw new SofaRpcRuntimeException(LogCodes.getLog(LogCodes.ERROR_FAIL_LOAD_TRACER_EXT, tracerName));
             }

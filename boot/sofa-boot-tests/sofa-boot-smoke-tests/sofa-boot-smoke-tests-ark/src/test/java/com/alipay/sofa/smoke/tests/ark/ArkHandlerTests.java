@@ -50,15 +50,15 @@ public class ArkHandlerTests extends ArkTestBase {
     private DynamicJvmServiceProxyFinder dynamicJvmServiceProxyFinder;
 
     @Autowired
-    private SofaRuntimeManager           sofaRuntimeManager;
+    private SofaRuntimeManager sofaRuntimeManager;
 
     @Autowired
-    private MockRuntimeShutdownAware     mockRuntimeShutdownAware;
+    private MockRuntimeShutdownAware mockRuntimeShutdownAware;
 
     @Autowired
-    private GenericApplicationContext    applicationContext;
+    private GenericApplicationContext applicationContext;
 
-    private Biz                          biz;
+    private Biz biz;
 
     @Test
     public void checkDynamicJvmServiceProxyFinder() {
@@ -67,7 +67,7 @@ public class ArkHandlerTests extends ArkTestBase {
         biz = bizList.get(0);
 
         assertThat(dynamicJvmServiceProxyFinder).isEqualTo(
-            DynamicJvmServiceProxyFinder.getInstance());
+                DynamicJvmServiceProxyFinder.getInstance());
         assertThat(biz).isEqualTo(DynamicJvmServiceProxyFinder.getBiz(sofaRuntimeManager));
         assertThat(dynamicJvmServiceProxyFinder.isHasFinishStartup()).isTrue();
 

@@ -4,8 +4,8 @@ option java_multiple_files = true;
 option go_package = "pb";
 
 enum ScopeEnumPb {
-    zone = 0;
-    dataCenter = 1;
-    global = 2;
+  zone = 0;
+  dataCenter = 1;
+  global = 2;
 }
 

@@ -42,11 +42,11 @@ public class SofaPostProcessorShareManagerTests {
         context.registerBean("beanFactoryPostProcessor", NormalBeanFactoryPostProcessor.class);
         context.refresh();
         SofaPostProcessorShareManager manager = context
-            .getBean(SofaPostProcessorShareManager.class);
+                .getBean(SofaPostProcessorShareManager.class);
         assertThat(manager).isNotNull();
         assertThat(manager.getRegisterBeanDefinitionMap().get("beanPostProcessor")).isNotNull();
         assertThat(manager.getRegisterBeanDefinitionMap().get("beanFactoryPostProcessor"))
-            .isNotNull();
+                .isNotNull();
         assertThat(manager.getRegisterSingletonMap().get("beanPostProcessor")).isNull();
         assertThat(manager.getRegisterSingletonMap().get("beanFactoryPostProcessor")).isNull();
     }
@@ -59,7 +59,7 @@ public class SofaPostProcessorShareManagerTests {
         context.registerBean("beanFactoryPostProcessor", NoShareBeanFactoryPostProcessor.class);
         context.refresh();
         SofaPostProcessorShareManager manager = context
-            .getBean(SofaPostProcessorShareManager.class);
+                .getBean(SofaPostProcessorShareManager.class);
         assertThat(manager).isNotNull();
         assertThat(manager.getRegisterBeanDefinitionMap().get("beanPostProcessor")).isNull();
         assertThat(manager.getRegisterBeanDefinitionMap().get("beanFactoryPostProcessor")).isNull();
@@ -75,7 +75,7 @@ public class SofaPostProcessorShareManagerTests {
         context.registerBean("beanFactoryPostProcessor", SingletonBeanFactoryPostProcessor.class);
         context.refresh();
         SofaPostProcessorShareManager manager = context
-            .getBean(SofaPostProcessorShareManager.class);
+                .getBean(SofaPostProcessorShareManager.class);
         assertThat(manager).isNotNull();
         assertThat(manager.getRegisterBeanDefinitionMap().get("beanPostProcessor")).isNull();
         assertThat(manager.getRegisterBeanDefinitionMap().get("beanFactoryPostProcessor")).isNull();
@@ -87,16 +87,16 @@ public class SofaPostProcessorShareManagerTests {
     public void unShareContextPostProcessorsWithFilter() {
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
         RootBeanDefinition beanDefinition = new RootBeanDefinition(
-            SofaPostProcessorShareManager.class);
+                SofaPostProcessorShareManager.class);
         beanDefinition.setAutowireMode(2);
         context.registerBeanDefinition("manager", beanDefinition);
         context.registerBean("sofaPostProcessorShareFilters",
-            UnShareSofaPostProcessorShareFilter.class);
+                UnShareSofaPostProcessorShareFilter.class);
         context.registerBean("beanPostProcessor", NormalBeanPostProcessor.class);
         context.registerBean("beanFactoryPostProcessor", NormalBeanFactoryPostProcessor.class);
         context.refresh();
         SofaPostProcessorShareManager manager = context
-            .getBean(SofaPostProcessorShareManager.class);
+                .getBean(SofaPostProcessorShareManager.class);
         assertThat(manager).isNotNull();
         assertThat(manager.getRegisterBeanDefinitionMap().get("beanPostProcessor")).isNull();
         assertThat(manager.getRegisterBeanDefinitionMap().get("beanFactoryPostProcessor")).isNull();
@@ -108,16 +108,16 @@ public class SofaPostProcessorShareManagerTests {
     public void singletonContextPostProcessorsWithFilter() {
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
         RootBeanDefinition beanDefinition = new RootBeanDefinition(
-            SofaPostProcessorShareManager.class);
+                SofaPostProcessorShareManager.class);
         beanDefinition.setAutowireMode(2);
         context.registerBeanDefinition("manager", beanDefinition);
         context.registerBean("sofaPostProcessorShareFilters",
-            SingletonSofaPostProcessorShareFilter.class);
+                SingletonSofaPostProcessorShareFilter.class);
         context.registerBean("beanPostProcessor", NormalBeanPostProcessor.class);
         context.registerBean("beanFactoryPostProcessor", NormalBeanFactoryPostProcessor.class);
         context.refresh();
         SofaPostProcessorShareManager manager = context
-            .getBean(SofaPostProcessorShareManager.class);
+                .getBean(SofaPostProcessorShareManager.class);
         assertThat(manager).isNotNull();
         assertThat(manager.getRegisterBeanDefinitionMap().get("beanPostProcessor")).isNull();
         assertThat(manager.getRegisterBeanDefinitionMap().get("beanFactoryPostProcessor")).isNull();
@@ -131,7 +131,7 @@ public class SofaPostProcessorShareManagerTests {
     static class NormalBeanFactoryPostProcessor implements BeanFactoryPostProcessor {
         @Override
         public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory)
-                                                                                       throws BeansException {
+                throws BeansException {
 
         }
     }
@@ -144,7 +144,7 @@ public class SofaPostProcessorShareManagerTests {
     static class NoShareBeanFactoryPostProcessor implements BeanFactoryPostProcessor {
         @Override
         public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory)
-                                                                                       throws BeansException {
+                throws BeansException {
 
         }
     }
@@ -157,7 +157,7 @@ public class SofaPostProcessorShareManagerTests {
     static class SingletonBeanFactoryPostProcessor implements BeanFactoryPostProcessor {
         @Override
         public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory)
-                                                                                       throws BeansException {
+                throws BeansException {
 
         }
     }

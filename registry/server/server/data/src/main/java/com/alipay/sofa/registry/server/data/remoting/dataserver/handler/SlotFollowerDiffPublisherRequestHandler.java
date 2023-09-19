@@ -18,9 +18,10 @@ package com.alipay.sofa.registry.server.data.remoting.dataserver.handler;
 
 import com.alipay.sofa.registry.log.Logger;
 import com.alipay.sofa.registry.log.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.util.concurrent.Executor;
 import java.util.concurrent.ThreadPoolExecutor;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * @author yuzhi.lyz
@@ -28,17 +29,18 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class SlotFollowerDiffPublisherRequestHandler extends BaseSlotDiffPublisherRequestHandler {
 
-  private static final Logger LOGGER =
-      LoggerFactory.getLogger(SlotFollowerDiffPublisherRequestHandler.class);
+    private static final Logger LOGGER =
+            LoggerFactory.getLogger(SlotFollowerDiffPublisherRequestHandler.class);
 
-  @Autowired private ThreadPoolExecutor slotSyncRequestProcessorExecutor;
+    @Autowired
+    private ThreadPoolExecutor slotSyncRequestProcessorExecutor;
 
-  public SlotFollowerDiffPublisherRequestHandler() {
-    super(LOGGER);
-  }
+    public SlotFollowerDiffPublisherRequestHandler() {
+        super(LOGGER);
+    }
 
-  @Override
-  public Executor getExecutor() {
-    return slotSyncRequestProcessorExecutor;
-  }
+    @Override
+    public Executor getExecutor() {
+        return slotSyncRequestProcessorExecutor;
+    }
 }

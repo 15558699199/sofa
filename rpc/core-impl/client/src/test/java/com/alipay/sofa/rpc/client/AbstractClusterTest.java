@@ -41,7 +41,7 @@ public class AbstractClusterTest {
     @BeforeClass
     public static void beforeClass() {
         ConsumerConfig consumerConfig = new ConsumerConfig().setProtocol("test")
-            .setBootstrap("test");
+                .setBootstrap("test");
         ConsumerBootstrap consumerBootstrap = new ConsumerBootstrap(consumerConfig) {
             @Override
             public Object refer() {
@@ -104,29 +104,29 @@ public class AbstractClusterTest {
     @Test
     public void testResolveTimeout() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         Method resolveTimeoutMethod = AbstractCluster.class.getDeclaredMethod("resolveTimeout", SofaRequest.class,
-            ConsumerConfig.class, ProviderInfo.class);
+                ConsumerConfig.class, ProviderInfo.class);
         resolveTimeoutMethod.setAccessible(true);
 
         SofaRequest sofaRequest = new SofaRequest();
         ConsumerConfig consumerConfig = new ConsumerConfig();
         ProviderInfo providerInfo = new ProviderInfo();
         Integer defaultTimeout = (Integer) resolveTimeoutMethod.invoke(abstractCluster, sofaRequest, consumerConfig,
-            providerInfo);
+                providerInfo);
         Assert.assertTrue(defaultTimeout == 3000);
 
         providerInfo.setStaticAttr(ProviderInfoAttrs.ATTR_TIMEOUT, "5000");
         Integer providerTimeout = (Integer) resolveTimeoutMethod.invoke(abstractCluster, sofaRequest, consumerConfig,
-            providerInfo);
+                providerInfo);
         Assert.assertTrue(providerTimeout == 5000);
 
         consumerConfig.setTimeout(2000);
         Integer consumerTimeout = (Integer) resolveTimeoutMethod.invoke(abstractCluster, sofaRequest, consumerConfig,
-            providerInfo);
+                providerInfo);
         Assert.assertTrue(consumerTimeout == 2000);
 
         sofaRequest.setTimeout(1000);
         Integer invokeTimeout = (Integer) resolveTimeoutMethod.invoke(abstractCluster, sofaRequest, consumerConfig,
-            providerInfo);
+                providerInfo);
         Assert.assertTrue(invokeTimeout == 1000);
 
     }

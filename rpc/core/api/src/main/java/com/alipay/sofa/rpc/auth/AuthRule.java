@@ -19,15 +19,14 @@ package com.alipay.sofa.rpc.auth;
 import java.util.List;
 
 /**
- *
  * @author lepdou
  * @version $Id: AuthRule.java, v 0.1 2019年04月11日 下午7:53 lepdou Exp $
  */
 public class AuthRule {
 
-    private String             name;
-    private String             mode;
-    private int                enabled;
+    private String name;
+    private String mode;
+    private int enabled;
 
     private List<AuthRuleItem> ruleItems;
 

@@ -37,9 +37,7 @@ import org.junit.Test;
 import java.lang.reflect.Field;
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * SofaTracer Tester.
@@ -50,7 +48,7 @@ public class RpcSofaTracerTest extends AbstractTracerBase {
 
     private RpcSofaTracer rpcSofaTracer = new RpcSofaTracer();
 
-    private SofaRequest   sofaRequest;
+    private SofaRequest sofaRequest;
 
     @Before
     public void before() throws Exception {
@@ -74,7 +72,7 @@ public class RpcSofaTracerTest extends AbstractTracerBase {
         try {
             //注册 digest
             AsyncCommonDigestAppenderManager asyncDigestManager = SofaTracerDigestReporterAsyncManager
-                .getSofaTracerDigestReporterAsyncManager();
+                    .getSofaTracerDigestReporterAsyncManager();
 
             Field tracerField = RpcSofaTracer.class.getDeclaredField("sofaTracer");
             tracerField.setAccessible(true);

@@ -21,6 +21,7 @@ import com.alipay.sofa.registry.common.model.dataserver.DatumVersion;
 import com.alipay.sofa.registry.common.model.store.MultiSubDatum;
 import com.alipay.sofa.registry.common.model.store.Publisher;
 import com.alipay.sofa.registry.remoting.exchange.ExchangeCallback;
+
 import java.util.Map;
 import java.util.Set;
 
@@ -30,39 +31,40 @@ import java.util.Set;
  */
 public interface DataNodeService {
 
-  /**
-   * new publisher data transform to data server
-   *
-   * @param publisher publisher
-   */
-  void register(Publisher publisher);
+    /**
+     * new publisher data transform to data server
+     *
+     * @param publisher publisher
+     */
+    void register(Publisher publisher);
 
-  /**
-   * remove publisher data from data server
-   *
-   * @param publisher publisher
-   */
-  void unregister(Publisher publisher);
+    /**
+     * remove publisher data from data server
+     *
+     * @param publisher publisher
+     */
+    void unregister(Publisher publisher);
 
-  /**
-   * session server support api to stop some client node,all register data on data server will be
-   * removed data on session server will be remove too
-   *
-   * @param clientOffPublishers clientOffPublishers
-   */
-  void clientOff(ClientOffPublishers clientOffPublishers);
+    /**
+     * session server support api to stop some client node,all register data on data server will be
+     * removed data on session server will be remove too
+     *
+     * @param clientOffPublishers clientOffPublishers
+     */
+    void clientOff(ClientOffPublishers clientOffPublishers);
 
-  void fetchDataVersion(
-      String dataCenter,
-      int slotId,
-      Map<String, DatumVersion> interests,
-      ExchangeCallback<Map<String /*datainfoid*/, DatumVersion>> callback);
-  /**
-   * fetch one dataCenter publisher data from data server
-   *
-   * @param dataInfoId dataInfoId
-   * @param dataCenters dataCenters
-   * @return MultiSubDatum
-   */
-  MultiSubDatum fetch(String dataInfoId, Set<String> dataCenters);
+    void fetchDataVersion(
+            String dataCenter,
+            int slotId,
+            Map<String, DatumVersion> interests,
+            ExchangeCallback<Map<String /*datainfoid*/, DatumVersion>> callback);
+
+    /**
+     * fetch one dataCenter publisher data from data server
+     *
+     * @param dataInfoId  dataInfoId
+     * @param dataCenters dataCenters
+     * @return MultiSubDatum
+     */
+    MultiSubDatum fetch(String dataInfoId, Set<String> dataCenters);
 }

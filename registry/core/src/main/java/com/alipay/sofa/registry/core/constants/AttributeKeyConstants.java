@@ -22,12 +22,20 @@ package com.alipay.sofa.registry.core.constants;
  */
 public class AttributeKeyConstants {
 
-  /** Access Key */
-  public static final String ATTRIBUTE_ACCESS_KEY = "!AccessKey";
-  /** Algorithm Key */
-  public static final String ATTRIBUTE_ALGORITHM = "!Algorithm";
-  /** Signature Key */
-  public static final String ATTRIBUTE_SIGNATURE = "!Signature";
-  /** Timestamp Key */
-  public static final String ATTRIBUTE_TIMESTAMP = "!Timestamp";
+    /**
+     * Access Key
+     */
+    public static final String ATTRIBUTE_ACCESS_KEY = "!AccessKey";
+    /**
+     * Algorithm Key
+     */
+    public static final String ATTRIBUTE_ALGORITHM = "!Algorithm";
+    /**
+     * Signature Key
+     */
+    public static final String ATTRIBUTE_SIGNATURE = "!Signature";
+    /**
+     * Timestamp Key
+     */
+    public static final String ATTRIBUTE_TIMESTAMP = "!Timestamp";
 }

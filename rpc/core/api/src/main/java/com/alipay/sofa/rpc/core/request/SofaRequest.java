@@ -33,18 +33,48 @@ import java.util.Map;
  */
 public class SofaRequest extends RequestBase {
 
-    private static final long   serialVersionUID = 7329530374415722876L;
+    private static final long serialVersionUID = 7329530374415722876L;
 
     /**
      * Target app name. If progress of 'AppA' want to call the progress which contains two apps('AppB1' and 'AppB2'),
      * You need specified the target app name here. such as 'AppB2'
      */
-    private String              targetAppName;
+    private String targetAppName;
 
     /**
      * Extensional properties of request
      */
     private Map<String, Object> requestProps;
+    /**
+     * 方法对象(为了减少反射缓存）
+     */
+    private transient Method method;
+    /**
+     * 接口名
+     */
+    private transient String interfaceName;
+    /**
+     * 序列化类型
+     */
+    private transient byte serializeType;
+    /**
+     * 请求数据
+     */
+    private transient AbstractByteBuf data;
+    /**
+     * 调用类型（客户端使用）
+     */
+    private transient String invokeType;
+    /**
+     * 用户层服务回调类，调用级别（客户端使用）
+     */
+    private transient SofaResponseCallback sofaResponseCallback;
+    /**
+     * 用户层请求超时，调用级别（客户端使用）
+     */
+    private transient Integer timeout;
+
+    //====================== 下面是非传递属性 ===============
 
     /**
      * Gets request prop.
@@ -127,42 +157,6 @@ public class SofaRequest extends RequestBase {
     public void setTargetAppName(String targetAppName) {
         this.targetAppName = targetAppName;
     }
-
-    //====================== 下面是非传递属性 ===============
-    /**
-     * 方法对象(为了减少反射缓存）
-     */
-    private transient Method               method;
-
-    /**
-     * 接口名
-     */
-    private transient String               interfaceName;
-
-    /**
-     * 序列化类型
-     */
-    private transient byte                 serializeType;
-
-    /**
-     * 请求数据
-     */
-    private transient AbstractByteBuf      data;
-
-    /**
-     * 调用类型（客户端使用）
-     */
-    private transient String               invokeType;
-
-    /**
-     * 用户层服务回调类，调用级别（客户端使用）
-     */
-    private transient SofaResponseCallback sofaResponseCallback;
-
-    /**
-     * 用户层请求超时，调用级别（客户端使用）
-     */
-    private transient Integer              timeout;
 
     /**
      * Gets method.
@@ -307,6 +301,6 @@ public class SofaRequest extends RequestBase {
      */
     public boolean isAsync() {
         return invokeType != null && (RpcConstants.INVOKER_TYPE_CALLBACK.equals(invokeType)
-            || RpcConstants.INVOKER_TYPE_FUTURE.equals(invokeType));
+                || RpcConstants.INVOKER_TYPE_FUTURE.equals(invokeType));
     }
 }

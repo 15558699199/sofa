@@ -38,19 +38,16 @@ import com.alipay.sofa.registry.server.session.registry.SessionRegistry;
 import com.alipay.sofa.registry.server.shared.env.ServerEnv;
 import com.alipay.sofa.registry.server.shared.meta.MetaServerService;
 import com.google.common.collect.Maps;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.annotation.Resource;
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import javax.annotation.Resource;
-import javax.ws.rs.FormParam;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * The type Clients open resource.
@@ -62,180 +59,182 @@ import org.springframework.beans.factory.annotation.Autowired;
 @Produces(MediaType.APPLICATION_JSON)
 public class ClientManagerResource {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(ClientManagerResource.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ClientManagerResource.class);
+    @Autowired
+    protected ExecutorManager executorManager;
+    @Autowired
+    private SessionRegistry sessionRegistry;
+    @Autowired
+    private SessionServerConfig sessionServerConfig;
+    @Autowired
+    private MetaServerService metaServerService;
+    @Autowired
+    private ConnectionsService connectionsService;
+    @Autowired
+    private ConnectionMapper connectionMapper;
+    @Autowired
+    private NodeExchanger sessionConsoleExchanger;
+    @Resource
+    private FetchClientOffAddressService fetchClientOffAddressService;
 
-  @Autowired private SessionRegistry sessionRegistry;
-
-  @Autowired private SessionServerConfig sessionServerConfig;
-  @Autowired private MetaServerService metaServerService;
-  @Autowired private ConnectionsService connectionsService;
-
-  @Autowired private ConnectionMapper connectionMapper;
-
-  @Autowired private NodeExchanger sessionConsoleExchanger;
-
-  @Resource private FetchClientOffAddressService fetchClientOffAddressService;
-
-  @Autowired protected ExecutorManager executorManager;
-
-  /**
-   * Client off
-   *
-   * @param ips ips
-   * @return CommonResponse
-   */
-  @POST
-  @Path("/clientOff")
-  public CommonResponse clientOff(@FormParam("ips") String ips) {
-    if (StringUtils.isEmpty(ips)) {
-      return CommonResponse.buildFailedResponse("ips is empty");
-    }
-    final Set<String> ipSet = CollectionSdks.toIpSet(ips);
-    List<ConnectId> conIds = connectionsService.getIpConnects(ipSet);
-    sessionRegistry.clientOff(conIds);
-    LOGGER.info("clientOff ips={}, conIds={}", ips, conIds);
-    return CommonResponse.buildSuccessResponse();
-  }
-
-  /**
-   * Client on
-   *
-   * @param ips ips
-   * @return CommonResponse
-   */
-  @POST
-  @Path("/clientOpen")
-  public CommonResponse clientOn(@FormParam("ips") String ips) {
-    if (StringUtils.isEmpty(ips)) {
-      return CommonResponse.buildFailedResponse("ips is empty");
-    }
-    final List<String> ipList = CollectionSdks.toIpList(ips);
-    List<String> conIds = connectionsService.closeIpConnects(ipList);
-    LOGGER.info("clientOn ips={}, conIds={}", ips, conIds);
-
-    return CommonResponse.buildSuccessResponse();
-  }
-
-  /**
-   * Client off
-   *
-   * @param ips ips
-   * @return CommonResponse
-   */
-  @POST
-  @Path("/zone/clientOff")
-  public CommonResponse clientOffInZone(@FormParam("ips") String ips) {
-    if (StringUtils.isEmpty(ips)) {
-      return CommonResponse.buildFailedResponse("ips is empty");
-    }
-    CommonResponse resp = clientOff(ips);
-    if (!resp.isSuccess()) {
-      return resp;
-    }
-
-    final List<String> ipList = CollectionSdks.toIpList(ips);
-    List<URL> servers = getOtherConsoleServersCurrentZone();
-    LOGGER.info("clientOffInZone, others={}", servers);
-    if (servers.size() > 0) {
-      Map<URL, CommonResponse> map =
-          Sdks.concurrentSdkSend(
-              executorManager.getZoneSdkExecutor(),
-              servers,
-              (URL url) -> {
-                final ClientOffRequest req = new ClientOffRequest(ipList);
-                return (CommonResponse)
-                    sessionConsoleExchanger.request(new SimpleRequest(req, url)).getResult();
-              },
-              3000);
-      return Sdks.getFailedResponseIfAbsent(map.values());
-    }
-    return CommonResponse.buildSuccessResponse();
-  }
-
-  /**
-   * Client on
-   *
-   * @param ips ips
-   * @return CommonResponse
-   */
-  @POST
-  @Path("/zone/clientOpen")
-  public CommonResponse clientOnInZone(@FormParam("ips") String ips) {
-    if (StringUtils.isEmpty(ips)) {
-      return CommonResponse.buildFailedResponse("ips is empty");
-    }
-    CommonResponse resp = clientOn(ips);
-    if (!resp.isSuccess()) {
-      return resp;
-    }
-    final List<String> ipList = CollectionSdks.toIpList(ips);
-    List<URL> servers = getOtherConsoleServersCurrentZone();
-    LOGGER.info("clientOnInZone, others={}", servers);
-    if (servers.size() > 0) {
-      Map<URL, CommonResponse> map =
-          Sdks.concurrentSdkSend(
-              executorManager.getZoneSdkExecutor(),
-              servers,
-              (URL url) -> {
-                final ClientOnRequest req = new ClientOnRequest(ipList);
-                return (CommonResponse)
-                    sessionConsoleExchanger.request(new SimpleRequest(req, url)).getResult();
-              },
-              3000);
-      return Sdks.getFailedResponseIfAbsent(map.values());
-    }
-    return CommonResponse.buildSuccessResponse();
-  }
-
-  /**
-   * Client on
-   *
-   * @return GenericResponse
-   */
-  @POST
-  @Path("/zone/queryClientOff")
-  public GenericResponse<Map<String, ClientManagerResp>> queryClientOff() {
-    Set<String> clientOffAddress = fetchClientOffAddressService.getClientOffAddress();
-    List<URL> servers = getOtherConsoleServersCurrentZone();
-
-    Map<String, ClientManagerResp> resp = Maps.newHashMapWithExpectedSize(servers.size() + 1);
-
-    resp.put(ServerEnv.IP, new ClientManagerResp(true, clientOffAddress));
-    if (servers.size() > 0) {
-      Map<URL, CommonResponse> map =
-          Sdks.concurrentSdkSend(
-              executorManager.getZoneSdkExecutor(),
-              servers,
-              (URL url) -> {
-                final ClientManagerQueryRequest req = new ClientManagerQueryRequest();
-                return (CommonResponse)
-                    sessionConsoleExchanger.request(new SimpleRequest(req, url)).getResult();
-              },
-              3000);
-
-      for (Entry<URL, CommonResponse> entry : map.entrySet()) {
-        if (entry.getValue() instanceof GenericResponse) {
-          GenericResponse response = (GenericResponse) entry.getValue();
-          if (response.isSuccess()) {
-            resp.put(entry.getKey().getIpAddress(), (ClientManagerResp) response.getData());
-            continue;
-          }
+    /**
+     * Client off
+     *
+     * @param ips ips
+     * @return CommonResponse
+     */
+    @POST
+    @Path("/clientOff")
+    public CommonResponse clientOff(@FormParam("ips") String ips) {
+        if (StringUtils.isEmpty(ips)) {
+            return CommonResponse.buildFailedResponse("ips is empty");
         }
-        LOGGER.error(
-            "url={} queryClientOff fail, msg:{}.", entry.getKey().getIpAddress(), entry.getValue());
-        resp.put(entry.getKey().getIpAddress(), new ClientManagerResp(false));
-      }
+        final Set<String> ipSet = CollectionSdks.toIpSet(ips);
+        List<ConnectId> conIds = connectionsService.getIpConnects(ipSet);
+        sessionRegistry.clientOff(conIds);
+        LOGGER.info("clientOff ips={}, conIds={}", ips, conIds);
+        return CommonResponse.buildSuccessResponse();
     }
-    return new GenericResponse().fillSucceed(resp);
-  }
 
-  @GET
-  @Path("/connectionMapper.json")
-  public Map<String, String> connectionMapper() {
-    return connectionMapper.get();
-  }
+    /**
+     * Client on
+     *
+     * @param ips ips
+     * @return CommonResponse
+     */
+    @POST
+    @Path("/clientOpen")
+    public CommonResponse clientOn(@FormParam("ips") String ips) {
+        if (StringUtils.isEmpty(ips)) {
+            return CommonResponse.buildFailedResponse("ips is empty");
+        }
+        final List<String> ipList = CollectionSdks.toIpList(ips);
+        List<String> conIds = connectionsService.closeIpConnects(ipList);
+        LOGGER.info("clientOn ips={}, conIds={}", ips, conIds);
 
-  public List<URL> getOtherConsoleServersCurrentZone() {
-    return Sdks.getOtherConsoleServers(null, sessionServerConfig, metaServerService);
-  }
+        return CommonResponse.buildSuccessResponse();
+    }
+
+    /**
+     * Client off
+     *
+     * @param ips ips
+     * @return CommonResponse
+     */
+    @POST
+    @Path("/zone/clientOff")
+    public CommonResponse clientOffInZone(@FormParam("ips") String ips) {
+        if (StringUtils.isEmpty(ips)) {
+            return CommonResponse.buildFailedResponse("ips is empty");
+        }
+        CommonResponse resp = clientOff(ips);
+        if (!resp.isSuccess()) {
+            return resp;
+        }
+
+        final List<String> ipList = CollectionSdks.toIpList(ips);
+        List<URL> servers = getOtherConsoleServersCurrentZone();
+        LOGGER.info("clientOffInZone, others={}", servers);
+        if (servers.size() > 0) {
+            Map<URL, CommonResponse> map =
+                    Sdks.concurrentSdkSend(
+                            executorManager.getZoneSdkExecutor(),
+                            servers,
+                            (URL url) -> {
+                                final ClientOffRequest req = new ClientOffRequest(ipList);
+                                return (CommonResponse)
+                                        sessionConsoleExchanger.request(new SimpleRequest(req, url)).getResult();
+                            },
+                            3000);
+            return Sdks.getFailedResponseIfAbsent(map.values());
+        }
+        return CommonResponse.buildSuccessResponse();
+    }
+
+    /**
+     * Client on
+     *
+     * @param ips ips
+     * @return CommonResponse
+     */
+    @POST
+    @Path("/zone/clientOpen")
+    public CommonResponse clientOnInZone(@FormParam("ips") String ips) {
+        if (StringUtils.isEmpty(ips)) {
+            return CommonResponse.buildFailedResponse("ips is empty");
+        }
+        CommonResponse resp = clientOn(ips);
+        if (!resp.isSuccess()) {
+            return resp;
+        }
+        final List<String> ipList = CollectionSdks.toIpList(ips);
+        List<URL> servers = getOtherConsoleServersCurrentZone();
+        LOGGER.info("clientOnInZone, others={}", servers);
+        if (servers.size() > 0) {
+            Map<URL, CommonResponse> map =
+                    Sdks.concurrentSdkSend(
+                            executorManager.getZoneSdkExecutor(),
+                            servers,
+                            (URL url) -> {
+                                final ClientOnRequest req = new ClientOnRequest(ipList);
+                                return (CommonResponse)
+                                        sessionConsoleExchanger.request(new SimpleRequest(req, url)).getResult();
+                            },
+                            3000);
+            return Sdks.getFailedResponseIfAbsent(map.values());
+        }
+        return CommonResponse.buildSuccessResponse();
+    }
+
+    /**
+     * Client on
+     *
+     * @return GenericResponse
+     */
+    @POST
+    @Path("/zone/queryClientOff")
+    public GenericResponse<Map<String, ClientManagerResp>> queryClientOff() {
+        Set<String> clientOffAddress = fetchClientOffAddressService.getClientOffAddress();
+        List<URL> servers = getOtherConsoleServersCurrentZone();
+
+        Map<String, ClientManagerResp> resp = Maps.newHashMapWithExpectedSize(servers.size() + 1);
+
+        resp.put(ServerEnv.IP, new ClientManagerResp(true, clientOffAddress));
+        if (servers.size() > 0) {
+            Map<URL, CommonResponse> map =
+                    Sdks.concurrentSdkSend(
+                            executorManager.getZoneSdkExecutor(),
+                            servers,
+                            (URL url) -> {
+                                final ClientManagerQueryRequest req = new ClientManagerQueryRequest();
+                                return (CommonResponse)
+                                        sessionConsoleExchanger.request(new SimpleRequest(req, url)).getResult();
+                            },
+                            3000);
+
+            for (Entry<URL, CommonResponse> entry : map.entrySet()) {
+                if (entry.getValue() instanceof GenericResponse) {
+                    GenericResponse response = (GenericResponse) entry.getValue();
+                    if (response.isSuccess()) {
+                        resp.put(entry.getKey().getIpAddress(), (ClientManagerResp) response.getData());
+                        continue;
+                    }
+                }
+                LOGGER.error(
+                        "url={} queryClientOff fail, msg:{}.", entry.getKey().getIpAddress(), entry.getValue());
+                resp.put(entry.getKey().getIpAddress(), new ClientManagerResp(false));
+            }
+        }
+        return new GenericResponse().fillSucceed(resp);
+    }
+
+    @GET
+    @Path("/connectionMapper.json")
+    public Map<String, String> connectionMapper() {
+        return connectionMapper.get();
+    }
+
+    public List<URL> getOtherConsoleServersCurrentZone() {
+        return Sdks.getOtherConsoleServers(null, sessionServerConfig, metaServerService);
+    }
 }

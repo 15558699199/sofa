@@ -17,27 +17,28 @@
 package com.alipay.sofa.registry.server.session.push;
 
 import com.alipay.sofa.registry.server.session.TestUtils;
-import java.util.Arrays;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.Arrays;
+
 public class PushSwitchServiceTest {
 
-  private long init = -1L;
+    private long init = -1L;
 
-  @Test
-  public void testGlobalOpen() throws Exception {
-    PushSwitchService service = TestUtils.newPushSwitchService("testdc");
-    service.getFetchStopPushService().setStopPushSwitch(System.currentTimeMillis(), true);
-    Assert.assertFalse(service.canLocalDataCenterPush());
+    @Test
+    public void testGlobalOpen() throws Exception {
+        PushSwitchService service = TestUtils.newPushSwitchService("testdc");
+        service.getFetchStopPushService().setStopPushSwitch(System.currentTimeMillis(), true);
+        Assert.assertFalse(service.canLocalDataCenterPush());
 
-    service.getFetchGrayPushSwitchService().setOpenIps(init, Arrays.asList("127.0.0.1"));
-    Assert.assertTrue(service.canLocalDataCenterPush());
-    Assert.assertFalse(service.canIpPushLocal("127.0.0.2"));
-    Assert.assertTrue(service.canIpPushLocal("127.0.0.1"));
+        service.getFetchGrayPushSwitchService().setOpenIps(init, Arrays.asList("127.0.0.1"));
+        Assert.assertTrue(service.canLocalDataCenterPush());
+        Assert.assertFalse(service.canIpPushLocal("127.0.0.2"));
+        Assert.assertTrue(service.canIpPushLocal("127.0.0.1"));
 
-    service.getFetchStopPushService().setStopPushSwitch(System.currentTimeMillis(), false);
-    Assert.assertTrue(service.canIpPushLocal("127.0.0.2"));
-    Assert.assertTrue(service.canIpPushLocal("127.0.0.1"));
-  }
+        service.getFetchStopPushService().setStopPushSwitch(System.currentTimeMillis(), false);
+        Assert.assertTrue(service.canIpPushLocal("127.0.0.2"));
+        Assert.assertTrue(service.canIpPushLocal("127.0.0.1"));
+    }
 }

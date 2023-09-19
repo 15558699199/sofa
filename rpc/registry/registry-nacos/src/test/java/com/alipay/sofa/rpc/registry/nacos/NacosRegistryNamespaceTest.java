@@ -33,10 +33,10 @@ public class NacosRegistryNamespaceTest {
     @Test
     public void testWithNamespace() {
         RegistryConfig registryConfig = new RegistryConfig()
-            .setProtocol("nacos")
-            .setSubscribe(true)
-            .setAddress("127.0.0.1:8848/namespace")
-            .setRegister(true);
+                .setProtocol("nacos")
+                .setSubscribe(true)
+                .setAddress("127.0.0.1:8848/namespace")
+                .setRegister(true);
 
         NacosRegistry registry = (NacosRegistry) RegistryFactory.getRegistry(registryConfig);
         registry.init();
@@ -54,10 +54,10 @@ public class NacosRegistryNamespaceTest {
     @Test
     public void testWithoutNamespace() {
         RegistryConfig registryConfig = new RegistryConfig()
-            .setProtocol("nacos")
-            .setSubscribe(true)
-            .setAddress("127.0.0.1:8848/")
-            .setRegister(true);
+                .setProtocol("nacos")
+                .setSubscribe(true)
+                .setAddress("127.0.0.1:8848/")
+                .setRegister(true);
 
         NacosRegistry registry = (NacosRegistry) RegistryFactory.getRegistry(registryConfig);
         registry.init();
@@ -75,10 +75,10 @@ public class NacosRegistryNamespaceTest {
     @Test
     public void testWithoutSlashNamespace() {
         RegistryConfig registryConfig = new RegistryConfig()
-            .setProtocol("nacos")
-            .setSubscribe(true)
-            .setAddress("127.0.0.1:8848")
-            .setRegister(true);
+                .setProtocol("nacos")
+                .setSubscribe(true)
+                .setAddress("127.0.0.1:8848")
+                .setRegister(true);
 
         NacosRegistry registry = (NacosRegistry) RegistryFactory.getRegistry(registryConfig);
         registry.init();

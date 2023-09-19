@@ -36,20 +36,20 @@ import org.springframework.context.annotation.Import;
 @Import({StoreApiConfiguration.class})
 @EnableConfigurationProperties
 @ConditionalOnProperty(
-    value = SpringContext.PERSISTENCE_PROFILE_ACTIVE,
-    havingValue = SpringContext.META_STORE_API_RAFT)
+        value = SpringContext.PERSISTENCE_PROFILE_ACTIVE,
+        havingValue = SpringContext.META_STORE_API_RAFT)
 public class RaftConfiguration {
 
-  @Configuration
-  public static class RepositoryBeanConfiguration {
-    @Bean
-    public AppRevisionRepository appRevisionRaftRepository() {
-      return new AppRevisionRaftRepository();
-    }
+    @Configuration
+    public static class RepositoryBeanConfiguration {
+        @Bean
+        public AppRevisionRepository appRevisionRaftRepository() {
+            return new AppRevisionRaftRepository();
+        }
 
-    @Bean
-    public InterfaceAppsRepository interfaceAppsRaftRepository() {
-      return new InterfaceAppsRaftRepository();
+        @Bean
+        public InterfaceAppsRepository interfaceAppsRaftRepository() {
+            return new InterfaceAppsRaftRepository();
+        }
     }
-  }
 }

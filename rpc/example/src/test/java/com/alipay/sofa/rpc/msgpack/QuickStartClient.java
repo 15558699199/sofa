@@ -31,10 +31,10 @@ public class QuickStartClient {
     public static void main(String[] args) {
 
         ConsumerConfig<HelloService> consumerConfig = new ConsumerConfig<HelloService>()
-            .setInterfaceId(HelloService.class.getName()) // 指定接口
-            .setProtocol(RpcConstants.PROTOCOL_TYPE_BOLT) // 指定协议
-            .setDirectUrl("bolt://127.0.0.1:12200") // 指定直连地址
-            .setConnectTimeout(10 * 1000);
+                .setInterfaceId(HelloService.class.getName()) // 指定接口
+                .setProtocol(RpcConstants.PROTOCOL_TYPE_BOLT) // 指定协议
+                .setDirectUrl("bolt://127.0.0.1:12200") // 指定直连地址
+                .setConnectTimeout(10 * 1000);
 
         HelloService helloService = consumerConfig.refer();
 

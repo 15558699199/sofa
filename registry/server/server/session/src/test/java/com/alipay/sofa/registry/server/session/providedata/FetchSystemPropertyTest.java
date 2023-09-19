@@ -16,16 +16,13 @@
  */
 package com.alipay.sofa.registry.server.session.providedata;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import com.alipay.sofa.registry.common.model.constants.ValueConstants;
 import com.alipay.sofa.registry.server.shared.providedata.SystemPropertyProcessorManager;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.mockito.Mockito.*;
 
 /**
  * @author xiaojian.xj
@@ -33,52 +30,52 @@ import org.junit.Test;
  */
 public class FetchSystemPropertyTest {
 
-  FetchStopPushService fetchStopPushService;
-  FetchGrayPushSwitchService fetchGrayPushSwitchService;
-  FetchBlackListService fetchBlackListService;
-  FetchClientOffAddressService fetchClientOffAddressService;
+    FetchStopPushService fetchStopPushService;
+    FetchGrayPushSwitchService fetchGrayPushSwitchService;
+    FetchBlackListService fetchBlackListService;
+    FetchClientOffAddressService fetchClientOffAddressService;
 
-  @Before
-  public void beforeTest() {
-    fetchStopPushService = mock(FetchStopPushService.class);
-    fetchGrayPushSwitchService = mock(FetchGrayPushSwitchService.class);
-    fetchBlackListService = mock(FetchBlackListService.class);
-    fetchClientOffAddressService = mock(FetchClientOffAddressService.class);
+    @Before
+    public void beforeTest() {
+        fetchStopPushService = mock(FetchStopPushService.class);
+        fetchGrayPushSwitchService = mock(FetchGrayPushSwitchService.class);
+        fetchBlackListService = mock(FetchBlackListService.class);
+        fetchClientOffAddressService = mock(FetchClientOffAddressService.class);
 
-    when(fetchStopPushService.start()).thenReturn(true);
-    when(fetchGrayPushSwitchService.start()).thenReturn(true);
-    when(fetchBlackListService.start()).thenReturn(true);
-    when(fetchClientOffAddressService.start()).thenReturn(true);
+        when(fetchStopPushService.start()).thenReturn(true);
+        when(fetchGrayPushSwitchService.start()).thenReturn(true);
+        when(fetchBlackListService.start()).thenReturn(true);
+        when(fetchClientOffAddressService.start()).thenReturn(true);
 
-    when(fetchStopPushService.support(ValueConstants.STOP_PUSH_DATA_SWITCH_DATA_ID))
-        .thenReturn(true);
-    when(fetchGrayPushSwitchService.support(ValueConstants.PUSH_SWITCH_GRAY_OPEN_DATA_ID))
-        .thenReturn(true);
-    when(fetchBlackListService.support(ValueConstants.BLACK_LIST_DATA_ID)).thenReturn(true);
-    when(fetchClientOffAddressService.support(ValueConstants.CLIENT_OFF_ADDRESS_DATA_ID))
-        .thenReturn(true);
+        when(fetchStopPushService.support(ValueConstants.STOP_PUSH_DATA_SWITCH_DATA_ID))
+                .thenReturn(true);
+        when(fetchGrayPushSwitchService.support(ValueConstants.PUSH_SWITCH_GRAY_OPEN_DATA_ID))
+                .thenReturn(true);
+        when(fetchBlackListService.support(ValueConstants.BLACK_LIST_DATA_ID)).thenReturn(true);
+        when(fetchClientOffAddressService.support(ValueConstants.CLIENT_OFF_ADDRESS_DATA_ID))
+                .thenReturn(true);
 
-    when(fetchStopPushService.doFetch()).thenReturn(true);
-    when(fetchGrayPushSwitchService.doFetch()).thenReturn(true);
-    when(fetchBlackListService.doFetch()).thenReturn(true);
-    when(fetchClientOffAddressService.doFetch()).thenReturn(true);
-  }
+        when(fetchStopPushService.doFetch()).thenReturn(true);
+        when(fetchGrayPushSwitchService.doFetch()).thenReturn(true);
+        when(fetchBlackListService.doFetch()).thenReturn(true);
+        when(fetchClientOffAddressService.doFetch()).thenReturn(true);
+    }
 
-  @Test
-  public void systemPropertyProcessorManagerTest() {
-    SystemPropertyProcessorManager provideDataProcessorManager =
-        new SystemPropertyProcessorManager();
+    @Test
+    public void systemPropertyProcessorManagerTest() {
+        SystemPropertyProcessorManager provideDataProcessorManager =
+                new SystemPropertyProcessorManager();
 
-    provideDataProcessorManager.addSystemDataProcessor(fetchGrayPushSwitchService);
-    provideDataProcessorManager.addSystemDataProcessor(fetchBlackListService);
-    provideDataProcessorManager.addSystemDataPersistenceProcessor(fetchStopPushService);
-    provideDataProcessorManager.addSystemDataPersistenceProcessor(fetchClientOffAddressService);
-    Assert.assertTrue(provideDataProcessorManager.startFetchMetaSystemProperty());
-    Assert.assertTrue(provideDataProcessorManager.startFetchPersistenceSystemProperty());
+        provideDataProcessorManager.addSystemDataProcessor(fetchGrayPushSwitchService);
+        provideDataProcessorManager.addSystemDataProcessor(fetchBlackListService);
+        provideDataProcessorManager.addSystemDataPersistenceProcessor(fetchStopPushService);
+        provideDataProcessorManager.addSystemDataPersistenceProcessor(fetchClientOffAddressService);
+        Assert.assertTrue(provideDataProcessorManager.startFetchMetaSystemProperty());
+        Assert.assertTrue(provideDataProcessorManager.startFetchPersistenceSystemProperty());
 
-    Assert.assertTrue(
-        provideDataProcessorManager.doFetch(ValueConstants.CLIENT_OFF_ADDRESS_DATA_ID));
+        Assert.assertTrue(
+                provideDataProcessorManager.doFetch(ValueConstants.CLIENT_OFF_ADDRESS_DATA_ID));
 
-    verify(fetchClientOffAddressService, times(1)).doFetch();
-  }
+        verify(fetchClientOffAddressService, times(1)).doFetch();
+    }
 }

@@ -54,6 +54,7 @@ public abstract class BoltClientConnectionManager {
 
     /**
      * get connection
+     *
      * @param rpcClient
      * @param transportConfig
      * @param url
@@ -63,6 +64,7 @@ public abstract class BoltClientConnectionManager {
 
     /**
      * close connection
+     *
      * @param rpcClient
      * @param transportConfig
      * @param url
@@ -71,6 +73,7 @@ public abstract class BoltClientConnectionManager {
 
     /**
      * judge connection status
+     *
      * @param rpcClient
      * @param transportConfig
      * @param url

@@ -24,16 +24,16 @@ import com.alipay.sofa.registry.core.model.ScopeEnum;
  */
 public class ScopeEnumConverter {
 
-  /**
-   * scope convert func
-   *
-   * @param name name
-   * @return ScopeEnum
-   */
-  public static ScopeEnum convertToScope(String name) {
-    if (ScopeEnum.contains(name)) {
-      return ScopeEnum.valueOf(name);
+    /**
+     * scope convert func
+     *
+     * @param name name
+     * @return ScopeEnum
+     */
+    public static ScopeEnum convertToScope(String name) {
+        if (ScopeEnum.contains(name)) {
+            return ScopeEnum.valueOf(name);
+        }
+        return ScopeEnum.zone;
     }
-    return ScopeEnum.zone;
-  }
 }

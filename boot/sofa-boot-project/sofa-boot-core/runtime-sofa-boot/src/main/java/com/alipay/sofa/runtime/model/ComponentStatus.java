@@ -43,7 +43,7 @@ public enum ComponentStatus {
      */
     ACTIVATED(3, "activated");
 
-    private final int    code;
+    private final int code;
 
     private final String desc;
 

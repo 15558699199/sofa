@@ -49,27 +49,27 @@ public class OnSwitchCondition extends SpringBootCondition {
         Boolean userDefinedEnabled = environment.getProperty(key, Boolean.class);
         if (userDefinedEnabled != null) {
             return new ConditionOutcome(userDefinedEnabled, message.because("found property " + key
-                                                                            + " with value "
-                                                                            + userDefinedEnabled));
+                    + " with value "
+                    + userDefinedEnabled));
         }
 
         MergedAnnotation<ConditionalOnSwitch> conditionAnnotation = metadata.getAnnotations().get(
-            ConditionalOnSwitch.class);
+                ConditionalOnSwitch.class);
         Boolean matchIfMissing = conditionAnnotation.getBoolean("matchIfMissing");
         return new ConditionOutcome(matchIfMissing, message.because("matchIfMissing " + key
-                                                                    + " with value "
-                                                                    + matchIfMissing));
+                + " with value "
+                + matchIfMissing));
     }
 
     private String getKey(AnnotatedTypeMetadata metadata) {
         MergedAnnotation<ConditionalOnSwitch> conditionAnnotation = metadata.getAnnotations().get(
-            ConditionalOnSwitch.class);
+                ConditionalOnSwitch.class);
         String key = conditionAnnotation.getString("value");
         if (StringUtils.hasText(key)) {
             return CONFIG_KEY_PREFIX.concat(".").concat(key).concat(".enabled");
         } else {
             return CONFIG_KEY_PREFIX.concat(".").concat(getClassOrMethodName(metadata))
-                .concat(".enabled");
+                    .concat(".enabled");
         }
     }
 

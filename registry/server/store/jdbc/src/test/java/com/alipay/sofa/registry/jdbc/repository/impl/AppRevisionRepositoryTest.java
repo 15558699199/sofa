@@ -31,10 +31,6 @@ import com.alipay.sofa.registry.util.ConcurrentUtils;
 import com.alipay.sofa.registry.util.LoopRunnable;
 import com.google.common.cache.LoadingCache;
 import com.google.common.util.concurrent.UncheckedExecutionException;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
 import org.glassfish.jersey.internal.guava.Sets;
 import org.junit.Assert;
 import org.junit.Before;
@@ -42,168 +38,172 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+
 /**
  * @author xiaojian.xj
  * @version $Id: AppRevisionRepositoryTest.java, v 0.1 2021年04月16日 17:18 xiaojian.xj Exp $
  */
 public class AppRevisionRepositoryTest extends AbstractH2DbTestBase {
 
-  @Autowired private AppRevisionRepository appRevisionJdbcRepository;
+    private static final int APP_REVISION_SIZE = 100;
+    @Autowired
+    private AppRevisionRepository appRevisionJdbcRepository;
+    @Autowired
+    private InterfaceAppsRepository interfaceAppsJdbcRepository;
+    @Autowired
+    private AppRevisionMapper appRevisionMapper;
+    @Autowired
+    private DefaultCommonConfig defaultCommonConfig;
+    private List<AppRevision> appRevisionList;
+    private Set<String> dataCenters = Sets.newHashSet();
 
-  @Autowired private InterfaceAppsRepository interfaceAppsJdbcRepository;
+    @Before
+    public void buildAppRevision() {
+        ((AppRevisionJdbcRepository) appRevisionJdbcRepository).init();
+        appRevisionList = buildAppRevisions(APP_REVISION_SIZE);
 
-  @Autowired private AppRevisionMapper appRevisionMapper;
+        dataCenters.add(defaultCommonConfig.getDefaultClusterId());
+        appRevisionJdbcRepository.setDataCenters(dataCenters);
+        interfaceAppsJdbcRepository.setDataCenters(dataCenters);
 
-  @Autowired private DefaultCommonConfig defaultCommonConfig;
-
-  private List<AppRevision> appRevisionList;
-
-  private static final int APP_REVISION_SIZE = 100;
-  private Set<String> dataCenters = Sets.newHashSet();
-
-  @Before
-  public void buildAppRevision() {
-    ((AppRevisionJdbcRepository) appRevisionJdbcRepository).init();
-    appRevisionList = buildAppRevisions(APP_REVISION_SIZE);
-
-    dataCenters.add(defaultCommonConfig.getDefaultClusterId());
-    appRevisionJdbcRepository.setDataCenters(dataCenters);
-    interfaceAppsJdbcRepository.setDataCenters(dataCenters);
-
-    appRevisionJdbcRepository.startSynced();
-    interfaceAppsJdbcRepository.startSynced();
-  }
-
-  private void register() throws Exception {
-    // register
-    for (AppRevision appRevisionRegister : appRevisionList) {
-      appRevisionJdbcRepository.register(appRevisionRegister);
-    }
-  }
-
-  private void queryAndCheck() {
-    // query app_revision
-    for (AppRevision appRevisionRegister : appRevisionList) {
-      AppRevision revision =
-          appRevisionJdbcRepository.queryRevision(appRevisionRegister.getRevision());
-      Assert.assertEquals(appRevisionRegister.getAppName(), revision.getAppName());
-    }
-    interfaceAppsJdbcRepository.waitSynced();
-    // query by interface
-    for (AppRevision appRevisionRegister : appRevisionList) {
-      for (Map.Entry<String, AppRevisionInterface> entry :
-          appRevisionRegister.getInterfaceMap().entrySet()) {
-        String dataInfoId = entry.getKey();
-        InterfaceMapping appNames = interfaceAppsJdbcRepository.getAppNames(dataInfoId);
-        Assert.assertTrue(appNames.getNanosVersion() > 0);
-        Assert.assertTrue(appNames.getApps().size() == 1);
-        Assert.assertTrue(appNames.getApps().contains(appRevisionRegister.getAppName()));
-      }
-    }
-  }
-
-  @Test
-  public void registerAndQuery() throws Exception {
-    register();
-    queryAndCheck();
-  }
-
-  @Test
-  public void revisionLoad() throws Exception {
-    AppRevisionJdbcRepository repository = (AppRevisionJdbcRepository) appRevisionJdbcRepository;
-
-    register();
-    queryAndCheck();
-
-    LoadingCache<String, AppRevision> cache = repository.getRevisions();
-    Assert.assertEquals(cache.asMap().size(), APP_REVISION_SIZE);
-
-    for (AppRevision appRevisionRegister : appRevisionList) {
-      cache.invalidate(appRevisionRegister.getRevision());
-    }
-    Assert.assertEquals(cache.asMap().size(), 0);
-
-    // query app_revision
-    for (AppRevision appRevisionRegister : appRevisionList) {
-      AppRevision revision =
-          appRevisionJdbcRepository.queryRevision(appRevisionRegister.getRevision());
-      Assert.assertEquals(appRevisionRegister.getAppName(), revision.getAppName());
+        appRevisionJdbcRepository.startSynced();
+        interfaceAppsJdbcRepository.startSynced();
     }
 
-    Assert.assertEquals(cache.asMap().size(), APP_REVISION_SIZE);
-  }
-
-  class HeartbeatRunner extends LoopRunnable {
-
-    @Override
-    public void runUnthrowable() {
-      for (AppRevision appRevision : appRevisionList) {
-        boolean success = appRevisionJdbcRepository.heartbeat(appRevision.getRevision());
-        if (!success) {
-          try {
-            appRevisionJdbcRepository.register(appRevision);
-          } catch (Exception e) {
-            e.printStackTrace();
-          }
+    private void register() throws Exception {
+        // register
+        for (AppRevision appRevisionRegister : appRevisionList) {
+            appRevisionJdbcRepository.register(appRevisionRegister);
         }
-      }
     }
 
-    @Override
-    public void waitingUnthrowable() {
-      ConcurrentUtils.sleepUninterruptibly(1, TimeUnit.SECONDS);
+    private void queryAndCheck() {
+        // query app_revision
+        for (AppRevision appRevisionRegister : appRevisionList) {
+            AppRevision revision =
+                    appRevisionJdbcRepository.queryRevision(appRevisionRegister.getRevision());
+            Assert.assertEquals(appRevisionRegister.getAppName(), revision.getAppName());
+        }
+        interfaceAppsJdbcRepository.waitSynced();
+        // query by interface
+        for (AppRevision appRevisionRegister : appRevisionList) {
+            for (Map.Entry<String, AppRevisionInterface> entry :
+                    appRevisionRegister.getInterfaceMap().entrySet()) {
+                String dataInfoId = entry.getKey();
+                InterfaceMapping appNames = interfaceAppsJdbcRepository.getAppNames(dataInfoId);
+                Assert.assertTrue(appNames.getNanosVersion() > 0);
+                Assert.assertTrue(appNames.getApps().size() == 1);
+                Assert.assertTrue(appNames.getApps().contains(appRevisionRegister.getAppName()));
+            }
+        }
     }
-  }
 
-  @Test
-  public void heartbeatClean() throws Exception {
-
-    registerAndQuery();
-    appRevisionJdbcRepository.waitSynced();
-    ((AppRevisionJdbcRepository) appRevisionJdbcRepository).cleanCache();
-
-    for (AppRevision appRevision : appRevisionList) {
-      boolean before = appRevisionJdbcRepository.heartbeat(appRevision.getRevision());
-      Assert.assertTrue(before);
-      List<AppRevisionDomain> querys =
-          appRevisionMapper.queryRevision(dataCenters, appRevision.getRevision());
-      Assert.assertTrue(!CollectionUtils.isEmpty(querys));
+    @Test
+    public void registerAndQuery() throws Exception {
+        register();
+        queryAndCheck();
     }
 
-    for (AppRevision appRevision : appRevisionList) {
-      AppRevisionDomain domain =
-          AppRevisionDomainConvertor.convert2Domain(
-              defaultCommonConfig.getDefaultClusterId(), appRevision);
-      domain.setDeleted(true);
-      appRevisionMapper.replace(domain);
-    }
-    appRevisionJdbcRepository.waitSynced();
-    for (AppRevision appRevision : appRevisionList) {
-      boolean after = appRevisionJdbcRepository.heartbeat(appRevision.getRevision());
-      Assert.assertFalse(after);
-      TestUtils.assertException(
-          UncheckedExecutionException.class,
-          () -> appRevisionJdbcRepository.queryRevision(appRevision.getRevision()));
-    }
-    ConcurrentUtils.createDaemonThread("heartbeatClean-test", new HeartbeatRunner()).start();
-    ((AppRevisionJdbcRepository) appRevisionJdbcRepository).cleanCache();
-    Thread.sleep(3000);
-    for (AppRevision appRevision : appRevisionList) {
-      boolean success = appRevisionJdbcRepository.heartbeat(appRevision.getRevision());
-      Assert.assertTrue(success);
-      AppRevisionDomain domain =
-          AppRevisionDomainConvertor.convert2Domain(
-              defaultCommonConfig.getDefaultClusterId(), appRevision);
-      domain.setDeleted(true);
-      appRevisionMapper.replace(domain);
-    }
-  }
+    @Test
+    public void revisionLoad() throws Exception {
+        AppRevisionJdbcRepository repository = (AppRevisionJdbcRepository) appRevisionJdbcRepository;
 
-  @Test
-  public void testCountByApp() throws Exception {
-    register();
-    appRevisionJdbcRepository.waitSynced();
-    Map<String, Integer> counts = appRevisionJdbcRepository.countByApp();
-    Assert.assertEquals(APP_REVISION_SIZE, counts.size());
-  }
+        register();
+        queryAndCheck();
+
+        LoadingCache<String, AppRevision> cache = repository.getRevisions();
+        Assert.assertEquals(cache.asMap().size(), APP_REVISION_SIZE);
+
+        for (AppRevision appRevisionRegister : appRevisionList) {
+            cache.invalidate(appRevisionRegister.getRevision());
+        }
+        Assert.assertEquals(cache.asMap().size(), 0);
+
+        // query app_revision
+        for (AppRevision appRevisionRegister : appRevisionList) {
+            AppRevision revision =
+                    appRevisionJdbcRepository.queryRevision(appRevisionRegister.getRevision());
+            Assert.assertEquals(appRevisionRegister.getAppName(), revision.getAppName());
+        }
+
+        Assert.assertEquals(cache.asMap().size(), APP_REVISION_SIZE);
+    }
+
+    @Test
+    public void heartbeatClean() throws Exception {
+
+        registerAndQuery();
+        appRevisionJdbcRepository.waitSynced();
+        ((AppRevisionJdbcRepository) appRevisionJdbcRepository).cleanCache();
+
+        for (AppRevision appRevision : appRevisionList) {
+            boolean before = appRevisionJdbcRepository.heartbeat(appRevision.getRevision());
+            Assert.assertTrue(before);
+            List<AppRevisionDomain> querys =
+                    appRevisionMapper.queryRevision(dataCenters, appRevision.getRevision());
+            Assert.assertTrue(!CollectionUtils.isEmpty(querys));
+        }
+
+        for (AppRevision appRevision : appRevisionList) {
+            AppRevisionDomain domain =
+                    AppRevisionDomainConvertor.convert2Domain(
+                            defaultCommonConfig.getDefaultClusterId(), appRevision);
+            domain.setDeleted(true);
+            appRevisionMapper.replace(domain);
+        }
+        appRevisionJdbcRepository.waitSynced();
+        for (AppRevision appRevision : appRevisionList) {
+            boolean after = appRevisionJdbcRepository.heartbeat(appRevision.getRevision());
+            Assert.assertFalse(after);
+            TestUtils.assertException(
+                    UncheckedExecutionException.class,
+                    () -> appRevisionJdbcRepository.queryRevision(appRevision.getRevision()));
+        }
+        ConcurrentUtils.createDaemonThread("heartbeatClean-test", new HeartbeatRunner()).start();
+        ((AppRevisionJdbcRepository) appRevisionJdbcRepository).cleanCache();
+        Thread.sleep(3000);
+        for (AppRevision appRevision : appRevisionList) {
+            boolean success = appRevisionJdbcRepository.heartbeat(appRevision.getRevision());
+            Assert.assertTrue(success);
+            AppRevisionDomain domain =
+                    AppRevisionDomainConvertor.convert2Domain(
+                            defaultCommonConfig.getDefaultClusterId(), appRevision);
+            domain.setDeleted(true);
+            appRevisionMapper.replace(domain);
+        }
+    }
+
+    @Test
+    public void testCountByApp() throws Exception {
+        register();
+        appRevisionJdbcRepository.waitSynced();
+        Map<String, Integer> counts = appRevisionJdbcRepository.countByApp();
+        Assert.assertEquals(APP_REVISION_SIZE, counts.size());
+    }
+
+    class HeartbeatRunner extends LoopRunnable {
+
+        @Override
+        public void runUnthrowable() {
+            for (AppRevision appRevision : appRevisionList) {
+                boolean success = appRevisionJdbcRepository.heartbeat(appRevision.getRevision());
+                if (!success) {
+                    try {
+                        appRevisionJdbcRepository.register(appRevision);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+
+        @Override
+        public void waitingUnthrowable() {
+            ConcurrentUtils.sleepUninterruptibly(1, TimeUnit.SECONDS);
+        }
+    }
 }

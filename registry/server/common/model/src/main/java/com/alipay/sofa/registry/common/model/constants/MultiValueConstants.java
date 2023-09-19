@@ -27,16 +27,13 @@ import com.google.common.collect.Sets;
  */
 public final class MultiValueConstants {
 
-  private MultiValueConstants() {}
+    public static final String SYNC_ACCEPT_ALL = "ACCEPT_ALL";
+    public static final SyncSlotAcceptor DATUM_SYNCER_SOURCE_FILTER =
+            new SyncPublishSourceAcceptor(Sets.newHashSet(PublishSource.DATUM_SYNCER));
+    public static final String SYNC_SLOT_DATAINFOID_ACCEPTOR = "SyncSlotDataInfoIdAcceptor";
+    public static final String SYNC_PUBLISH_SOURCE_ACCEPTOR = "SyncPublishSourceAcceptor";
+    public static final String SYNC_PUBLISHER_GROUP_ACCEPTOR = "SyncPublisherGroupAcceptor";
 
-  public static final String SYNC_ACCEPT_ALL = "ACCEPT_ALL";
-
-  public static final SyncSlotAcceptor DATUM_SYNCER_SOURCE_FILTER =
-      new SyncPublishSourceAcceptor(Sets.newHashSet(PublishSource.DATUM_SYNCER));
-
-  public static final String SYNC_SLOT_DATAINFOID_ACCEPTOR = "SyncSlotDataInfoIdAcceptor";
-
-  public static final String SYNC_PUBLISH_SOURCE_ACCEPTOR = "SyncPublishSourceAcceptor";
-
-  public static final String SYNC_PUBLISHER_GROUP_ACCEPTOR = "SyncPublisherGroupAcceptor";
+    private MultiValueConstants() {
+    }
 }

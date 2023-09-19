@@ -17,11 +17,7 @@
 package com.alipay.sofa.rpc.common.json;
 
 import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * <p>只关心JSON格式的解析，不关心java的具体类型</p>
@@ -29,6 +25,14 @@ import java.util.Map;
  * @author <a href=mailto:zhanggeng.zg@antfin.com>GengZhang</a>
  */
 public class JSONSerializer {
+
+    private final char[] buffer;
+    private int position;
+
+    protected JSONSerializer(String string) {
+        this.buffer = string.toCharArray();
+        this.position = -1;
+    }
 
     /**
      * 序列化json基本类型（自定义对象需要先转换成Map）
@@ -53,8 +57,8 @@ public class JSONSerializer {
         } else if (object instanceof CharSequence || object instanceof Character) { //TODO 去除特殊字符
             String tmp = object.toString();
             return '\"' + tmp.replace("\"", "\\\"").replace("\b", "\\b")
-                .replace("\t", "\\t").replace("\r", "\\r")
-                .replace("\f", "\\f").replace("\n", "\\n") + '\"';
+                    .replace("\t", "\\t").replace("\r", "\\r")
+                    .replace("\f", "\\f").replace("\n", "\\n") + '\"';
         } else if (object instanceof Number || object instanceof Boolean) {
             return object.toString();
         } else if (object instanceof Map) {
@@ -65,7 +69,7 @@ public class JSONSerializer {
             while (itr.hasNext()) {
                 Map.Entry entry = (Map.Entry) itr.next();
                 sb.append(serialize(entry.getKey(), addType)).append(':').append(serialize(entry.getValue(), addType))
-                    .append(',');
+                        .append(',');
             }
             int last = sb.length() - 1;
             if (sb.charAt(last) == ',') {
@@ -108,14 +112,6 @@ public class JSONSerializer {
         return new JSONSerializer(json).nextValue();
     }
 
-    private int          position;
-    private final char[] buffer;
-
-    protected JSONSerializer(String string) {
-        this.buffer = string.toCharArray();
-        this.position = -1;
-    }
-
     /**
      * 只返回JSON的标准类型：String，Number，True/False/Null，Map，Array
      *
@@ -135,7 +131,7 @@ public class JSONSerializer {
                                 String key = nextValue().toString();
                                 if (nextToken() != ':') {
                                     throw new ParseException(new String(this.buffer), this.position,
-                                        "Expected a ':' after a key");
+                                            "Expected a ':' after a key");
                                 }
                                 map.put(key, nextValue());
                                 switch (nextToken()) {
@@ -150,7 +146,7 @@ public class JSONSerializer {
                                         return map;
                                     default:
                                         throw new ParseException(new String(this.buffer), this.position,
-                                            "Expected a ',' or '}'");
+                                                "Expected a ',' or '}'");
                                 }
                             }
                         } else {
@@ -184,7 +180,7 @@ public class JSONSerializer {
                                         return list;
                                     default:
                                         throw new ParseException(new String(this.buffer), this.position,
-                                            "Expected a ',' or ']'");
+                                                "Expected a ',' or ']'");
                                 }
                             }
                         } else {
@@ -233,7 +229,7 @@ public class JSONSerializer {
                                                 tmp = tmp - ('a' - 10);
                                             } else {
                                                 throw new ParseException(new String(this.buffer), this.position,
-                                                    "Illegal hex code");
+                                                        "Illegal hex code");
                                             }
                                             num += tmp << (i * 4);
                                         }
@@ -247,7 +243,7 @@ public class JSONSerializer {
                                         break;
                                     default:
                                         throw new ParseException(new String(this.buffer), this.position,
-                                            "Illegal escape.");
+                                                "Illegal escape.");
                                 }
                                 break;
                             default:

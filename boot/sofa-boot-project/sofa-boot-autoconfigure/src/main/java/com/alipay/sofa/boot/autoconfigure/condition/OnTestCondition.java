@@ -38,10 +38,10 @@ public class OnTestCondition extends SpringBootCondition {
         if (metadata.isAnnotated(ConditionalOnNotTest.class.getName())) {
             if (SofaBootEnvUtils.isSpringTestEnv()) {
                 return ConditionOutcome.noMatch(ConditionMessage.forCondition(
-                    ConditionalOnNotTest.class).notAvailable("spring test environment"));
+                        ConditionalOnNotTest.class).notAvailable("spring test environment"));
             }
             matchMessage = matchMessage.andCondition(ConditionalOnNotTest.class).available(
-                "none spring test environment");
+                    "none spring test environment");
         }
         return ConditionOutcome.match(matchMessage);
     }

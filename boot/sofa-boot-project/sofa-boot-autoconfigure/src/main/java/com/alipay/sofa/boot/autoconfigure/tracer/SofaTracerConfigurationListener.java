@@ -17,8 +17,8 @@
 package com.alipay.sofa.boot.autoconfigure.tracer;
 
 import com.alipay.common.tracer.core.configuration.SofaTracerConfiguration;
-import com.alipay.sofa.boot.constant.SofaBootConstants;
 import com.alipay.sofa.boot.constant.ApplicationListenerOrderConstants;
+import com.alipay.sofa.boot.constant.SofaBootConstants;
 import com.alipay.sofa.boot.util.SofaBootEnvUtils;
 import org.springframework.boot.context.event.ApplicationEnvironmentPreparedEvent;
 import org.springframework.boot.context.properties.bind.Bindable;
@@ -37,9 +37,9 @@ import org.springframework.util.StringUtils;
  * @since 2.2.2
  */
 public class SofaTracerConfigurationListener
-                                            implements
-                                            ApplicationListener<ApplicationEnvironmentPreparedEvent>,
-                                            Ordered {
+        implements
+        ApplicationListener<ApplicationEnvironmentPreparedEvent>,
+        Ordered {
 
     @Override
     public void onApplicationEvent(ApplicationEnvironmentPreparedEvent event) {
@@ -52,53 +52,53 @@ public class SofaTracerConfigurationListener
         // check spring.application.name
         String applicationName = environment.getProperty(SofaBootConstants.APP_NAME_KEY);
         Assert.isTrue(StringUtils.hasText(applicationName), SofaBootConstants.APP_NAME_KEY
-                                                            + " must be configured!");
+                + " must be configured!");
         SofaTracerConfiguration.setProperty(SofaTracerConfiguration.TRACER_APPNAME_KEY,
-            applicationName);
+                applicationName);
 
         Binder binder = Binder.get(environment);
         SofaTracerProperties sofaTracerProperties = new SofaTracerProperties();
         Bindable<SofaTracerProperties> bindable = Bindable.of(SofaTracerProperties.class)
-            .withExistingValue(sofaTracerProperties);
+                .withExistingValue(sofaTracerProperties);
         binder.bind("sofa.boot.tracer", bindable);
 
         //properties convert to tracer
         SofaTracerConfiguration.setProperty(
-            SofaTracerConfiguration.DISABLE_MIDDLEWARE_DIGEST_LOG_KEY,
-            sofaTracerProperties.getDisableDigestLog());
+                SofaTracerConfiguration.DISABLE_MIDDLEWARE_DIGEST_LOG_KEY,
+                sofaTracerProperties.getDisableDigestLog());
         SofaTracerConfiguration.setProperty(SofaTracerConfiguration.DISABLE_DIGEST_LOG_KEY,
-            sofaTracerProperties.getDisableConfiguration());
+                sofaTracerProperties.getDisableConfiguration());
         SofaTracerConfiguration.setProperty(SofaTracerConfiguration.TRACER_GLOBAL_ROLLING_KEY,
-            sofaTracerProperties.getTracerGlobalRollingPolicy());
+                sofaTracerProperties.getTracerGlobalRollingPolicy());
         SofaTracerConfiguration.setProperty(SofaTracerConfiguration.TRACER_GLOBAL_LOG_RESERVE_DAY,
-            sofaTracerProperties.getTracerGlobalLogReserveDay());
+                sofaTracerProperties.getTracerGlobalLogReserveDay());
         //stat log interval
         SofaTracerConfiguration.setProperty(SofaTracerConfiguration.STAT_LOG_INTERVAL,
-            sofaTracerProperties.getStatLogInterval());
+                sofaTracerProperties.getStatLogInterval());
         //baggage length
         SofaTracerConfiguration.setProperty(
-            SofaTracerConfiguration.TRACER_PENETRATE_ATTRIBUTE_MAX_LENGTH,
-            sofaTracerProperties.getBaggageMaxLength());
+                SofaTracerConfiguration.TRACER_PENETRATE_ATTRIBUTE_MAX_LENGTH,
+                sofaTracerProperties.getBaggageMaxLength());
         SofaTracerConfiguration.setProperty(
-            SofaTracerConfiguration.TRACER_SYSTEM_PENETRATE_ATTRIBUTE_MAX_LENGTH,
-            sofaTracerProperties.getBaggageMaxLength());
+                SofaTracerConfiguration.TRACER_SYSTEM_PENETRATE_ATTRIBUTE_MAX_LENGTH,
+                sofaTracerProperties.getBaggageMaxLength());
 
         //sampler config
         if (sofaTracerProperties.getSamplerName() != null) {
             SofaTracerConfiguration.setProperty(SofaTracerConfiguration.SAMPLER_STRATEGY_NAME_KEY,
-                sofaTracerProperties.getSamplerName());
+                    sofaTracerProperties.getSamplerName());
         }
         if (StringUtils.hasText(sofaTracerProperties.getSamplerCustomRuleClassName())) {
             SofaTracerConfiguration.setProperty(
-                SofaTracerConfiguration.SAMPLER_STRATEGY_CUSTOM_RULE_CLASS_NAME,
-                sofaTracerProperties.getSamplerCustomRuleClassName());
+                    SofaTracerConfiguration.SAMPLER_STRATEGY_CUSTOM_RULE_CLASS_NAME,
+                    sofaTracerProperties.getSamplerCustomRuleClassName());
         }
         SofaTracerConfiguration.setProperty(
-            SofaTracerConfiguration.SAMPLER_STRATEGY_PERCENTAGE_KEY,
-            String.valueOf(sofaTracerProperties.getSamplerPercentage()));
+                SofaTracerConfiguration.SAMPLER_STRATEGY_PERCENTAGE_KEY,
+                String.valueOf(sofaTracerProperties.getSamplerPercentage()));
 
         SofaTracerConfiguration.setProperty(SofaTracerConfiguration.JSON_FORMAT_OUTPUT,
-            String.valueOf(sofaTracerProperties.isJsonOutput()));
+                String.valueOf(sofaTracerProperties.isJsonOutput()));
     }
 
     @Override

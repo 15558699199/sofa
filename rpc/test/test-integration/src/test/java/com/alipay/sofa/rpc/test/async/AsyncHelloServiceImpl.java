@@ -26,15 +26,13 @@ import com.alipay.sofa.rpc.message.bolt.BoltSendableResponseCallback;
 import com.alipay.sofa.rpc.test.HelloService;
 
 /**
- *
- *
  * @author <a href="mailto:zhanggeng.zg@antfin.com">GengZhang</a>
  */
 public class AsyncHelloServiceImpl implements AsyncHelloService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AsyncHelloServiceImpl.class);
 
-    private HelloService        helloService;
+    private HelloService helloService;
 
     public AsyncHelloServiceImpl(HelloService helloService) {
         this.helloService = helloService;

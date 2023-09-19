@@ -19,6 +19,7 @@ package com.alipay.sofa.rpc.config;
 import com.alipay.sofa.rpc.server.UserThreadPool;
 import org.junit.Assert;
 import org.junit.Test;
+
 import java.util.Set;
 
 public class UserThreadPoolManagerTest {

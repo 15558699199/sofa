@@ -16,8 +16,6 @@
  */
 package com.alipay.sofa.registry.server.session.remoting.handler;
 
-import static org.mockito.Mockito.*;
-
 import com.alipay.sofa.registry.common.model.Node;
 import com.alipay.sofa.registry.common.model.client.pb.MetaRegister;
 import com.alipay.sofa.registry.remoting.ChannelHandler;
@@ -27,32 +25,34 @@ import com.alipay.sofa.registry.server.session.strategy.AppRevisionHandlerStrate
 import org.junit.Assert;
 import org.junit.Test;
 
+import static org.mockito.Mockito.*;
+
 public class MetadataRegisterPbHandlerTest {
 
-  private MetadataRegisterPbHandler newHandler() {
-    MetadataRegisterPbHandler handler = new MetadataRegisterPbHandler();
-    handler.executorManager = new ExecutorManager(TestUtils.newSessionConfig("testDc"));
-    Assert.assertNotNull(handler.getExecutor());
-    Assert.assertEquals(handler.interest(), MetaRegister.class);
-    Assert.assertEquals(handler.getConnectNodeType(), Node.NodeType.CLIENT);
-    Assert.assertEquals(handler.getType(), ChannelHandler.HandlerType.PROCESSER);
-    Assert.assertEquals(handler.getInvokeType(), ChannelHandler.InvokeType.SYNC);
-    handler.appRevisionHandlerStrategy = mock(AppRevisionHandlerStrategy.class);
-    return handler;
-  }
+    private static MetaRegister request() {
+        MetaRegister.Builder builder = MetaRegister.newBuilder();
+        builder.setApplication("testApplication");
+        return builder.build();
+    }
 
-  @Test
-  public void testHandle() {
-    MetadataRegisterPbHandler handler = newHandler();
+    private MetadataRegisterPbHandler newHandler() {
+        MetadataRegisterPbHandler handler = new MetadataRegisterPbHandler();
+        handler.executorManager = new ExecutorManager(TestUtils.newSessionConfig("testDc"));
+        Assert.assertNotNull(handler.getExecutor());
+        Assert.assertEquals(handler.interest(), MetaRegister.class);
+        Assert.assertEquals(handler.getConnectNodeType(), Node.NodeType.CLIENT);
+        Assert.assertEquals(handler.getType(), ChannelHandler.HandlerType.PROCESSER);
+        Assert.assertEquals(handler.getInvokeType(), ChannelHandler.InvokeType.SYNC);
+        handler.appRevisionHandlerStrategy = mock(AppRevisionHandlerStrategy.class);
+        return handler;
+    }
 
-    handler.doHandle(null, request());
-    verify(handler.appRevisionHandlerStrategy, times(1))
-        .handleAppRevisionRegister(anyObject(), anyObject(), anyString());
-  }
+    @Test
+    public void testHandle() {
+        MetadataRegisterPbHandler handler = newHandler();
 
-  private static MetaRegister request() {
-    MetaRegister.Builder builder = MetaRegister.newBuilder();
-    builder.setApplication("testApplication");
-    return builder.build();
-  }
+        handler.doHandle(null, request());
+        verify(handler.appRevisionHandlerStrategy, times(1))
+                .handleAppRevisionRegister(anyObject(), anyObject(), anyString());
+    }
 }

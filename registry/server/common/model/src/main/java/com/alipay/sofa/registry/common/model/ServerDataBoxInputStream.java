@@ -29,26 +29,28 @@ import java.io.ObjectStreamClass;
  */
 public class ServerDataBoxInputStream extends ObjectInputStream {
 
-  /**
-   * Instantiates a new DataBox input stream.
-   *
-   * @param in the in
-   * @throws IOException the io exception
-   */
-  public ServerDataBoxInputStream(InputStream in) throws IOException {
-    super(in);
-  }
-
-  /** @see ObjectInputStream#resolveClass(ObjectStreamClass) */
-  @Override
-  protected Class<?> resolveClass(ObjectStreamClass desc)
-      throws IOException, ClassNotFoundException {
-    String name = desc.getName();
-    try {
-      ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-      return Class.forName(name, false, classLoader);
-    } catch (ClassNotFoundException ex) {
-      return super.resolveClass(desc);
+    /**
+     * Instantiates a new DataBox input stream.
+     *
+     * @param in the in
+     * @throws IOException the io exception
+     */
+    public ServerDataBoxInputStream(InputStream in) throws IOException {
+        super(in);
     }
-  }
+
+    /**
+     * @see ObjectInputStream#resolveClass(ObjectStreamClass)
+     */
+    @Override
+    protected Class<?> resolveClass(ObjectStreamClass desc)
+            throws IOException, ClassNotFoundException {
+        String name = desc.getName();
+        try {
+            ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+            return Class.forName(name, false, classLoader);
+        } catch (ClassNotFoundException ex) {
+            return super.resolveClass(desc);
+        }
+    }
 }

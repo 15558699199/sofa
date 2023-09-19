@@ -55,9 +55,27 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class DefaultProviderBootstrap<T> extends ProviderBootstrap<T> {
 
     /**
+     * 发布的服务配置
+     */
+    protected final static ConcurrentMap<String, AtomicInteger> EXPORTED_KEYS = new ConcurrentHashMap<String, AtomicInteger>();
+    /**
      * slf4j Logger for this class
      */
     private final static Logger LOGGER = LoggerFactory.getLogger(DefaultProviderBootstrap.class);
+    /**
+     * 延迟加载的线程名工厂
+     */
+    private final ThreadFactory factory = new NamedThreadFactory(
+            "DELAY-EXPORT",
+            true);
+    /**
+     * 是否已发布
+     */
+    protected transient volatile boolean exported;
+    /**
+     * 服务端Invoker对象
+     */
+    protected transient Invoker providerProxyInvoker;
 
     /**
      * 构造函数
@@ -67,28 +85,6 @@ public class DefaultProviderBootstrap<T> extends ProviderBootstrap<T> {
     protected DefaultProviderBootstrap(ProviderConfig<T> providerConfig) {
         super(providerConfig);
     }
-
-    /**
-     * 是否已发布
-     */
-    protected transient volatile boolean                        exported;
-
-    /**
-     * 服务端Invoker对象
-     */
-    protected transient Invoker                                 providerProxyInvoker;
-
-    /**
-     * 发布的服务配置
-     */
-    protected final static ConcurrentMap<String, AtomicInteger> EXPORTED_KEYS = new ConcurrentHashMap<String, AtomicInteger>();
-
-    /**
-     * 延迟加载的线程名工厂
-     */
-    private final ThreadFactory                                 factory       = new NamedThreadFactory(
-                                                                                  "DELAY-EXPORT",
-                                                                                  true);
 
     @Override
     public void export() {
@@ -145,7 +141,7 @@ public class DefaultProviderBootstrap<T> extends ProviderBootstrap<T> {
                     decrementCounter(hasExportedInCurrent);
                     // 超过最大数量，直接抛出异常
                     throw new SofaRpcRuntimeException(LogCodes.getLog(LogCodes.ERROR_DUPLICATE_PROVIDER_CONFIG, key,
-                        maxProxyCount));
+                            maxProxyCount));
                 } else if (c > 1) {
                     if (LOGGER.isInfoEnabled(appName)) {
                         LOGGER.infoWithApp(appName, LogCodes.getLog(LogCodes.WARN_DUPLICATE_PROVIDER_CONFIG, key, c));
@@ -183,7 +179,7 @@ public class DefaultProviderBootstrap<T> extends ProviderBootstrap<T> {
                     throw e;
                 } catch (Exception e) {
                     LOGGER.errorWithApp(appName,
-                        LogCodes.getLog(LogCodes.ERROR_REGISTER_PROCESSOR_TO_SERVER, serverConfig.getId()), e);
+                            LogCodes.getLog(LogCodes.ERROR_REGISTER_PROCESSOR_TO_SERVER, serverConfig.getId()), e);
                 }
             }
 
@@ -237,7 +233,7 @@ public class DefaultProviderBootstrap<T> extends ProviderBootstrap<T> {
         if (!proxyClass.isInstance(ref)) {
             String name = ref == null ? "null" : ref.getClass().getName();
             throw new SofaRpcRuntimeException(LogCodes.getLog(LogCodes.ERROR_REFERENCE_AND_INTERFACE, name,
-                providerConfig.getInterfaceId(), key));
+                    providerConfig.getInterfaceId(), key));
         }
         // server 不能为空
         if (CommonUtils.isEmpty(providerConfig.getServer())) {
@@ -260,7 +256,7 @@ public class DefaultProviderBootstrap<T> extends ProviderBootstrap<T> {
                 if (LOGGER.isWarnEnabled(providerConfig.getAppName())) {
                     // TODO WARN
                     LOGGER.warnWithApp(providerConfig.getAppName(), "Method with same name \"" + itfClass.getName()
-                        + "." + methodName + "\" exists ! The usage of overloading method in rpc is deprecated.");
+                            + "." + methodName + "\" exists ! The usage of overloading method in rpc is deprecated.");
                 }
             }
             // 判断服务下方法的黑白名单
@@ -290,7 +286,7 @@ public class DefaultProviderBootstrap<T> extends ProviderBootstrap<T> {
                 String key = providerConfig.buildKey() + ":" + protocol;
                 if (LOGGER.isInfoEnabled(appName)) {
                     LOGGER.infoWithApp(appName, "Unexport provider config : {} {}", key, providerConfig.getId() != null
-                        ? "with bean id " + providerConfig.getId() : "");
+                            ? "with bean id " + providerConfig.getId() : "");
                 }
             }
 
@@ -310,8 +306,8 @@ public class DefaultProviderBootstrap<T> extends ProviderBootstrap<T> {
                             if (LOGGER.isWarnEnabled(appName)) {
                                 // TODO WARN
                                 LOGGER.warnWithApp(appName, "Catch exception when unRegister processor to server: " +
-                                    serverConfig.getId()
-                                    + ", but you can ignore if it's called by JVM shutdown hook", e);
+                                        serverConfig.getId()
+                                        + ", but you can ignore if it's called by JVM shutdown hook", e);
                             }
                         }
                     }
@@ -354,7 +350,7 @@ public class DefaultProviderBootstrap<T> extends ProviderBootstrap<T> {
                         String appName = providerConfig.getAppName();
                         if (LOGGER.isWarnEnabled(appName)) {
                             LOGGER.errorWithApp(appName,
-                                LogCodes.getLog(LogCodes.ERROR_REGISTER_TO_REGISTRY, registryConfig.getId()), e);
+                                    LogCodes.getLog(LogCodes.ERROR_REGISTER_TO_REGISTRY, registryConfig.getId()), e);
                         }
                     }
                 }
@@ -378,71 +374,12 @@ public class DefaultProviderBootstrap<T> extends ProviderBootstrap<T> {
                         if (LOGGER.isWarnEnabled(appName)) {
                             // TODO WARN
                             LOGGER.warnWithApp(appName, "Catch exception when unRegister from registry: " +
-                                registryConfig.getId()
-                                + ", but you can ignore if it's called by JVM shutdown hook", e);
+                                    registryConfig.getId()
+                                    + ", but you can ignore if it's called by JVM shutdown hook", e);
                         }
                     }
                 }
             }
-        }
-    }
-
-    /**
-     * Provider配置发生变化监听器
-     */
-    private class ProviderAttributeListener implements ConfigListener {
-
-        @Override
-        public void configChanged(Map newValue) {
-        }
-
-        @Override
-        public synchronized void attrUpdated(Map newValueMap) {
-            String appName = providerConfig.getAppName();
-            // 可以改变的配置 例如tag concurrents等
-            Map<String, String> newValues = (Map<String, String>) newValueMap;
-            Map<String, String> oldValues = new HashMap<String, String>();
-            boolean reexport = false;
-
-            // TODO 可能需要处理ServerConfig的配置变化
-            try { // 检查是否有变化
-                  // 是否过滤map?
-                for (Map.Entry<String, String> entry : newValues.entrySet()) {
-                    String newValue = entry.getValue();
-                    String oldValue = providerConfig.queryAttribute(entry.getKey());
-                    boolean changed = oldValue == null ? newValue != null : !oldValue.equals(newValue);
-                    if (changed) {
-                        oldValues.put(entry.getKey(), oldValue);
-                    }
-                    reexport = reexport || changed;
-                }
-            } catch (Exception e) {
-                LOGGER.errorWithApp(appName, LogCodes.getLog(LogCodes.ERROR_PROVIDER_ATTRIBUTE_COMPARE), e);
-                return;
-            }
-
-            // 需要重新发布
-            if (reexport) {
-                try {
-                    if (LOGGER.isInfoEnabled(appName)) {
-                        LOGGER.infoWithApp(appName, "Reexport service {}", providerConfig.buildKey());
-                    }
-                    unExport();
-                    // change attrs
-                    for (Map.Entry<String, String> entry : newValues.entrySet()) {
-                        providerConfig.updateAttribute(entry.getKey(), entry.getValue(), true);
-                    }
-                    export();
-                } catch (Exception e) {
-                    LOGGER.errorWithApp(appName, LogCodes.getLog(LogCodes.ERROR_PROVIDER_ATTRIBUTE_CHANGE), e);
-                    //rollback old attrs
-                    for (Map.Entry<String, String> entry : oldValues.entrySet()) {
-                        providerConfig.updateAttribute(entry.getKey(), entry.getValue(), true);
-                    }
-                    export();
-                }
-            }
-
         }
     }
 
@@ -490,8 +427,68 @@ public class DefaultProviderBootstrap<T> extends ProviderBootstrap<T> {
 
     /**
      * make other provider bootstrap can do extra work
+     *
      * @param providerConfig
      */
     protected void preProcessProviderTarget(ProviderConfig providerConfig, ProviderProxyInvoker providerProxyInvoker) {
+    }
+
+    /**
+     * Provider配置发生变化监听器
+     */
+    private class ProviderAttributeListener implements ConfigListener {
+
+        @Override
+        public void configChanged(Map newValue) {
+        }
+
+        @Override
+        public synchronized void attrUpdated(Map newValueMap) {
+            String appName = providerConfig.getAppName();
+            // 可以改变的配置 例如tag concurrents等
+            Map<String, String> newValues = (Map<String, String>) newValueMap;
+            Map<String, String> oldValues = new HashMap<String, String>();
+            boolean reexport = false;
+
+            // TODO 可能需要处理ServerConfig的配置变化
+            try { // 检查是否有变化
+                // 是否过滤map?
+                for (Map.Entry<String, String> entry : newValues.entrySet()) {
+                    String newValue = entry.getValue();
+                    String oldValue = providerConfig.queryAttribute(entry.getKey());
+                    boolean changed = oldValue == null ? newValue != null : !oldValue.equals(newValue);
+                    if (changed) {
+                        oldValues.put(entry.getKey(), oldValue);
+                    }
+                    reexport = reexport || changed;
+                }
+            } catch (Exception e) {
+                LOGGER.errorWithApp(appName, LogCodes.getLog(LogCodes.ERROR_PROVIDER_ATTRIBUTE_COMPARE), e);
+                return;
+            }
+
+            // 需要重新发布
+            if (reexport) {
+                try {
+                    if (LOGGER.isInfoEnabled(appName)) {
+                        LOGGER.infoWithApp(appName, "Reexport service {}", providerConfig.buildKey());
+                    }
+                    unExport();
+                    // change attrs
+                    for (Map.Entry<String, String> entry : newValues.entrySet()) {
+                        providerConfig.updateAttribute(entry.getKey(), entry.getValue(), true);
+                    }
+                    export();
+                } catch (Exception e) {
+                    LOGGER.errorWithApp(appName, LogCodes.getLog(LogCodes.ERROR_PROVIDER_ATTRIBUTE_CHANGE), e);
+                    //rollback old attrs
+                    for (Map.Entry<String, String> entry : oldValues.entrySet()) {
+                        providerConfig.updateAttribute(entry.getKey(), entry.getValue(), true);
+                    }
+                    export();
+                }
+            }
+
+        }
     }
 }

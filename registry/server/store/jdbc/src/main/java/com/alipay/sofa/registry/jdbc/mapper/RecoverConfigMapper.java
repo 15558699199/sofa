@@ -17,8 +17,9 @@
 package com.alipay.sofa.registry.jdbc.mapper;
 
 import com.alipay.sofa.registry.jdbc.domain.RecoverConfigDomain;
-import java.util.List;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * @author xiaojian.xj
@@ -26,34 +27,34 @@ import org.apache.ibatis.annotations.Param;
  */
 public interface RecoverConfigMapper {
 
-  /**
-   * query recoverConfig
-   *
-   * @param propertyTable propertyTable
-   * @return List
-   */
-  public List<RecoverConfigDomain> query(@Param("propertyTable") String propertyTable);
+    /**
+     * query recoverConfig
+     *
+     * @param propertyTable propertyTable
+     * @return List
+     */
+    public List<RecoverConfigDomain> query(@Param("propertyTable") String propertyTable);
 
-  /**
-   * query recoverConfig
-   *
-   * @return List
-   */
-  public List<RecoverConfigDomain> queryAll();
+    /**
+     * query recoverConfig
+     *
+     * @return List
+     */
+    public List<RecoverConfigDomain> queryAll();
 
-  /**
-   * insert data
-   *
-   * @param data data
-   */
-  public void save(RecoverConfigDomain data);
+    /**
+     * insert data
+     *
+     * @param data data
+     */
+    public void save(RecoverConfigDomain data);
 
-  /**
-   * delete data
-   *
-   * @param propertyTable propertyTable
-   * @param propertyKey propertyKey
-   */
-  public void remove(
-      @Param("propertyTable") String propertyTable, @Param("propertyKey") String propertyKey);
+    /**
+     * delete data
+     *
+     * @param propertyTable propertyTable
+     * @param propertyKey   propertyKey
+     */
+    public void remove(
+            @Param("propertyTable") String propertyTable, @Param("propertyKey") String propertyKey);
 }

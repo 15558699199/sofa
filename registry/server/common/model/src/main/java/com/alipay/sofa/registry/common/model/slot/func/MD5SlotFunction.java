@@ -23,29 +23,29 @@ import com.alipay.sofa.registry.common.model.slot.SlotConfig;
  * @version v 0.1 2020-11-02 15:43 yuzhi.lyz Exp $
  */
 public final class MD5SlotFunction implements SlotFunction {
-  public static final MD5SlotFunction INSTANCE = new MD5SlotFunction();
+    public static final MD5SlotFunction INSTANCE = new MD5SlotFunction();
 
-  private final int maxSlots;
-  private final MD5HashFunction md5HashFunction = new MD5HashFunction();
+    private final int maxSlots;
+    private final MD5HashFunction md5HashFunction = new MD5HashFunction();
 
-  private MD5SlotFunction() {
-    this.maxSlots = SlotConfig.SLOT_NUM;
-  }
+    private MD5SlotFunction() {
+        this.maxSlots = SlotConfig.SLOT_NUM;
+    }
 
-  @Override
-  public String name() {
-    return "md5";
-  }
+    @Override
+    public String name() {
+        return "md5";
+    }
 
-  @Override
-  public int maxSlots() {
-    return maxSlots;
-  }
+    @Override
+    public int maxSlots() {
+        return maxSlots;
+    }
 
-  @Override
-  public int slotOf(Object o) {
-    // make sure >=0
-    final int hash = Math.abs(md5HashFunction.hash(o));
-    return hash % maxSlots;
-  }
+    @Override
+    public int slotOf(Object o) {
+        // make sure >=0
+        final int hash = Math.abs(md5HashFunction.hash(o));
+        return hash % maxSlots;
+    }
 }

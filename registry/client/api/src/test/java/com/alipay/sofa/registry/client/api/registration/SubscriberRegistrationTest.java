@@ -22,22 +22,25 @@ import com.alipay.sofa.registry.core.model.ScopeEnum;
 import org.junit.Assert;
 import org.junit.Test;
 
-/** @author <a href="mailto:zhanggeng.zg@antfin.com">GengZhang</a> */
+/**
+ * @author <a href="mailto:zhanggeng.zg@antfin.com">GengZhang</a>
+ */
 public class SubscriberRegistrationTest {
 
-  @Test
-  public void testAll() {
-    SubscriberRegistration registration = new SubscriberRegistration("xxx", null);
-    Assert.assertEquals("xxx", registration.getDataId());
-    Assert.assertNull(registration.getSubscriberDataObserver());
-    registration.setSubscriberDataObserver(
-        new SubscriberDataObserver() {
-          @Override
-          public void handleData(String dataId, UserData data) {}
-        });
-    Assert.assertNotNull(registration.getSubscriberDataObserver());
-    registration.setScopeEnum(ScopeEnum.dataCenter);
-    Assert.assertEquals(ScopeEnum.dataCenter, registration.getScopeEnum());
-    Assert.assertTrue(registration.toString().contains("xxx"));
-  }
+    @Test
+    public void testAll() {
+        SubscriberRegistration registration = new SubscriberRegistration("xxx", null);
+        Assert.assertEquals("xxx", registration.getDataId());
+        Assert.assertNull(registration.getSubscriberDataObserver());
+        registration.setSubscriberDataObserver(
+                new SubscriberDataObserver() {
+                    @Override
+                    public void handleData(String dataId, UserData data) {
+                    }
+                });
+        Assert.assertNotNull(registration.getSubscriberDataObserver());
+        registration.setScopeEnum(ScopeEnum.dataCenter);
+        Assert.assertEquals(ScopeEnum.dataCenter, registration.getScopeEnum());
+        Assert.assertTrue(registration.toString().contains("xxx"));
+    }
 }

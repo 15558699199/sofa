@@ -33,7 +33,7 @@ public class SofaRpcSerializationRegister extends AbstractSerializationRegister 
 
     private final SofaRpcSerialization sofaRpcSerialization = new SofaRpcSerialization();
 
-    private volatile AtomicBoolean     registered           = new AtomicBoolean(false);
+    private volatile AtomicBoolean registered = new AtomicBoolean(false);
 
     @Override
     public void doRegisterCustomSerializer() {
@@ -49,11 +49,11 @@ public class SofaRpcSerializationRegister extends AbstractSerializationRegister 
         // 注册序列化器到bolt
         if (CustomSerializerManager.getCustomSerializer(SofaRequest.class.getName()) == null) {
             CustomSerializerManager.registerCustomSerializer(SofaRequest.class.getName(),
-                sofaRpcSerialization);
+                    sofaRpcSerialization);
         }
         if (CustomSerializerManager.getCustomSerializer(SofaResponse.class.getName()) == null) {
             CustomSerializerManager.registerCustomSerializer(SofaResponse.class.getName(),
-                sofaRpcSerialization);
+                    sofaRpcSerialization);
         }
     }
 }

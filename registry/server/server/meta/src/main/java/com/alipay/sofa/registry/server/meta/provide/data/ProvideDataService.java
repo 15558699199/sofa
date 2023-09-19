@@ -26,35 +26,35 @@ import com.alipay.sofa.registry.store.api.DBResponse;
  */
 public interface ProvideDataService extends MetaLeaderElectorListener {
 
-  /**
-   * save or update provideData
-   *
-   * @param persistenceData persistenceData
-   * @return boolean
-   */
-  boolean saveProvideData(PersistenceData persistenceData);
+    /**
+     * save or update provideData
+     *
+     * @param persistenceData persistenceData
+     * @return boolean
+     */
+    boolean saveProvideData(PersistenceData persistenceData);
 
-  /**
-   * save or update provideData with expectVersion
-   *
-   * @param persistenceData persistenceData
-   * @return boolean
-   */
-  boolean saveProvideData(PersistenceData persistenceData, long expectVersion);
+    /**
+     * save or update provideData with expectVersion
+     *
+     * @param persistenceData persistenceData
+     * @return boolean
+     */
+    boolean saveProvideData(PersistenceData persistenceData, long expectVersion);
 
-  /**
-   * query provideData by key
-   *
-   * @param key key
-   * @return DBResponse
-   */
-  DBResponse<PersistenceData> queryProvideData(String key);
+    /**
+     * query provideData by key
+     *
+     * @param key key
+     * @return DBResponse
+     */
+    DBResponse<PersistenceData> queryProvideData(String key);
 
-  /**
-   * delete provideData
-   *
-   * @param key key
-   * @return boolean
-   */
-  boolean removeProvideData(String key);
+    /**
+     * delete provideData
+     *
+     * @param key key
+     * @return boolean
+     */
+    boolean removeProvideData(String key);
 }

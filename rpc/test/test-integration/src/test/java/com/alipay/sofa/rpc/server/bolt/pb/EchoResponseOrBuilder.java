@@ -20,8 +20,8 @@
 package com.alipay.sofa.rpc.server.bolt.pb;
 
 public interface EchoResponseOrBuilder extends
-                                      // @@protoc_insertion_point(interface_extends:com.alipay.sofa.rpc.server.bolt.pb.EchoResponse)
-                                      com.google.protobuf.MessageOrBuilder {
+        // @@protoc_insertion_point(interface_extends:com.alipay.sofa.rpc.server.bolt.pb.EchoResponse)
+        com.google.protobuf.MessageOrBuilder {
 
     /**
      * <code>int32 code = 1;</code>
@@ -37,5 +37,5 @@ public interface EchoResponseOrBuilder extends
      * <code>string message = 2;</code>
      */
     com.google.protobuf.ByteString
-            getMessageBytes();
+    getMessageBytes();
 }

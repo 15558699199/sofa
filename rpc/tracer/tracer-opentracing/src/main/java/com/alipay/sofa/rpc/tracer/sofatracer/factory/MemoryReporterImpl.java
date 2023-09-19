@@ -48,25 +48,41 @@ public class MemoryReporterImpl extends AbstractReporter {
     /**
      * Logger for this class
      */
-    private static final Logger         LOGGER              = LoggerFactory.getLogger(MemoryReporterImpl.class);
-
-    private SofaTracerStatisticReporter statReporter;
-
-    private Map<StatKey, StatValues>    storeDatas          = new HashMap<StatKey, StatValues>();
-
-    private SpanEncoder                 clientDigestEncoder = new RpcClientDigestSpanJsonEncoder();
-
-    private SpanEncoder                 serverDigestEncoder = new RpcServerDigestSpanJsonEncoder();
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(MemoryReporterImpl.class);
     //客户端和服务端一起本地进行测试的时候,是两个当前类对象,所以这里用静态方法
-    private static List<String>         clientDigestHolder  = new ArrayList<String>();
-    private static List<String>         serverDigestHolder  = new ArrayList<String>();
-
-    private static Lock                 lock                = new ReentrantLock();
+    private static List<String> clientDigestHolder = new ArrayList<String>();
+    private static List<String> serverDigestHolder = new ArrayList<String>();
+    private static Lock lock = new ReentrantLock();
+    private SofaTracerStatisticReporter statReporter;
+    private Map<StatKey, StatValues> storeDatas = new HashMap<StatKey, StatValues>();
+    private SpanEncoder clientDigestEncoder = new RpcClientDigestSpanJsonEncoder();
+    private SpanEncoder serverDigestEncoder = new RpcServerDigestSpanJsonEncoder();
 
     public MemoryReporterImpl(String digestLog, String digestRollingPolicy, String digestLogReserveConfig,
                               SpanEncoder<SofaTracerSpan> spanEncoder, SofaTracerStatisticReporter statReporter) {
         this.statReporter = statReporter;
+    }
+
+    /**
+     * 循环向上转型, 获取对象的 DeclaredField
+     *
+     * @param object    : 子类对象
+     * @param fieldName : 父类中的属性名
+     * @return 父类中的属性对象
+     */
+    public static Field getDeclaredField(Object object, String fieldName) {
+        Field field = null;
+        Class<?> clazz = object.getClass();
+        for (; clazz != Object.class; clazz = clazz.getSuperclass()) {
+            try {
+                field = clazz.getDeclaredField(fieldName);
+                return field;
+            } catch (Exception e) {
+                //这里甚么都不要做！并且这里的异常必须这样写，不能抛出去。
+                //如果这里的异常打印或者往外抛，则就不会执行clazz = clazz.getSuperclass(),最后就不会进入到父类中了
+            }
+        }
+        return null;
     }
 
     @Override
@@ -129,28 +145,6 @@ public class MemoryReporterImpl extends AbstractReporter {
 
     public Map<StatKey, StatValues> getStoreDatas() {
         return storeDatas;
-    }
-
-    /**
-     * 循环向上转型, 获取对象的 DeclaredField
-     *
-     * @param object    : 子类对象
-     * @param fieldName : 父类中的属性名
-     * @return 父类中的属性对象
-     */
-    public static Field getDeclaredField(Object object, String fieldName) {
-        Field field = null;
-        Class<?> clazz = object.getClass();
-        for (; clazz != Object.class; clazz = clazz.getSuperclass()) {
-            try {
-                field = clazz.getDeclaredField(fieldName);
-                return field;
-            } catch (Exception e) {
-                //这里甚么都不要做！并且这里的异常必须这样写，不能抛出去。
-                //如果这里的异常打印或者往外抛，则就不会执行clazz = clazz.getSuperclass(),最后就不会进入到父类中了
-            }
-        }
-        return null;
     }
 
     public boolean clearAll() {

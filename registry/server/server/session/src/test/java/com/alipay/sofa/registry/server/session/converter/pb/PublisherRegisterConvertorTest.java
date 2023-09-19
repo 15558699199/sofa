@@ -25,22 +25,22 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class PublisherRegisterConvertorTest {
-  @Test
-  public void test() {
-    Assert.assertNull(PublisherRegisterConvertor.convert2Pb(null));
-    Assert.assertNull(PublisherRegisterConvertor.convert2Java(null));
-    PublisherRegister registerJava = new PublisherRegister();
-    TestUtils.setField(registerJava);
-    registerJava.setDataList(Lists.newArrayList(new DataBox("testDataBox")));
+    @Test
+    public void test() {
+        Assert.assertNull(PublisherRegisterConvertor.convert2Pb(null));
+        Assert.assertNull(PublisherRegisterConvertor.convert2Java(null));
+        PublisherRegister registerJava = new PublisherRegister();
+        TestUtils.setField(registerJava);
+        registerJava.setDataList(Lists.newArrayList(new DataBox("testDataBox")));
 
-    PublisherRegisterPb pb = PublisherRegisterConvertor.convert2Pb(registerJava);
-    PublisherRegister convertJava = PublisherRegisterConvertor.convert2Java(pb);
-    TestUtils.assertEquals(registerJava, convertJava);
-    Assert.assertEquals(registerJava.toString(), convertJava.toString());
+        PublisherRegisterPb pb = PublisherRegisterConvertor.convert2Pb(registerJava);
+        PublisherRegister convertJava = PublisherRegisterConvertor.convert2Java(pb);
+        TestUtils.assertEquals(registerJava, convertJava);
+        Assert.assertEquals(registerJava.toString(), convertJava.toString());
 
-    Assert.assertEquals(registerJava.getDataList().size(), 1);
-    Assert.assertEquals(registerJava.getDataList().size(), convertJava.getDataList().size());
-    Assert.assertEquals(
-        registerJava.getDataList().get(0).getData(), convertJava.getDataList().get(0).getData());
-  }
+        Assert.assertEquals(registerJava.getDataList().size(), 1);
+        Assert.assertEquals(registerJava.getDataList().size(), convertJava.getDataList().size());
+        Assert.assertEquals(
+                registerJava.getDataList().get(0).getData(), convertJava.getDataList().get(0).getData());
+    }
 }

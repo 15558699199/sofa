@@ -18,28 +18,29 @@ package com.alipay.sofa.registry.concurrent;
 
 import com.alipay.sofa.registry.util.ConcurrentUtils;
 import com.google.common.collect.Sets;
+import org.junit.Assert;
+import org.junit.Test;
+
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
-import org.junit.Assert;
-import org.junit.Test;
 
 public class CachedExecutorTest {
-  @Test
-  public void testExecute() {
-    AtomicInteger i = new AtomicInteger();
+    @Test
+    public void testExecute() {
+        AtomicInteger i = new AtomicInteger();
 
-    CachedExecutor cachedExecutor = new CachedExecutor(100);
-    ThreadPoolExecutor e =
-        new ThreadPoolExecutor(5, 5, 10, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
-    new ConcurrentUtils.SafeParaLoop(e, Sets.newHashSet("1", "1", "1", "1", "1")) {
-      @Override
-      protected void doRun0(Object o) throws Exception {
-        cachedExecutor.execute("1", i::incrementAndGet);
-      }
-    }.runAndWait(1000);
+        CachedExecutor cachedExecutor = new CachedExecutor(100);
+        ThreadPoolExecutor e =
+                new ThreadPoolExecutor(5, 5, 10, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
+        new ConcurrentUtils.SafeParaLoop(e, Sets.newHashSet("1", "1", "1", "1", "1")) {
+            @Override
+            protected void doRun0(Object o) throws Exception {
+                cachedExecutor.execute("1", i::incrementAndGet);
+            }
+        }.runAndWait(1000);
 
-    Assert.assertEquals(1, i.get());
-  }
+        Assert.assertEquals(1, i.get());
+    }
 }

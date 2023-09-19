@@ -23,8 +23,6 @@ import com.alipay.sofa.rpc.core.response.SofaResponse;
 import com.alipay.sofa.rpc.ext.Extension;
 
 /**
- *
- *
  * @author <a href="mailto:zhanggeng.zg@antfin.com">GengZhang</a>
  */
 @Extension(value = "testChainFilter1", order = 1)
@@ -47,7 +45,7 @@ public class TestChainFilter1 extends Filter {
 
     @Override
     public void onAsyncResponse(ConsumerConfig config, SofaRequest request, SofaResponse response, Throwable throwable)
-        throws SofaRpcException {
+            throws SofaRpcException {
         response.setAppResponse(response.getAppResponse() + "_a1");
     }
 }

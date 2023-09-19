@@ -39,8 +39,8 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @SpringBootTest(classes = RuntimeSofaBootApplication.class)
 @Import(AsyncInitTests.AsyncInitTestConfiguration.class)
-@TestPropertySource(properties = { "sofa.boot.runtime.asyncInitExecutorCoreSize=20",
-                                  "sofa.boot.runtime.asyncInitExecutorMaxSize=20" })
+@TestPropertySource(properties = {"sofa.boot.runtime.asyncInitExecutorCoreSize=20",
+        "sofa.boot.runtime.asyncInitExecutorMaxSize=20"})
 public class AsyncInitTests {
 
     @Autowired

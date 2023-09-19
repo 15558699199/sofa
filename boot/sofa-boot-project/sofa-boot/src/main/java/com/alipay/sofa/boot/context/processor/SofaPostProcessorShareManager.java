@@ -29,13 +29,7 @@ import org.springframework.context.annotation.ConfigurationClassPostProcessor;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.util.Assert;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Manager to found share PostProcessors.
@@ -45,20 +39,20 @@ import java.util.Set;
  */
 public class SofaPostProcessorShareManager implements BeanFactoryAware, InitializingBean {
 
-    private static final String[]              WHITE_NAME_LIST                    = new String[] {
+    private static final String[] WHITE_NAME_LIST = new String[]{
             ConfigurationClassPostProcessor.class.getName() + ".importAwareProcessor",
             ConfigurationClassPostProcessor.class.getName() + ".importRegistry",
-            ConfigurationClassPostProcessor.class.getName() + ".enhancedConfigurationProcessor" };
+            ConfigurationClassPostProcessor.class.getName() + ".enhancedConfigurationProcessor"};
 
-    private final Map<String, Object>          registerSingletonMap               = new HashMap<>();
+    private final Map<String, Object> registerSingletonMap = new HashMap<>();
 
-    private final Map<String, BeanDefinition>  registerBeanDefinitionMap          = new HashMap<>();
+    private final Map<String, BeanDefinition> registerBeanDefinitionMap = new HashMap<>();
 
-    private ConfigurableListableBeanFactory    beanFactory;
+    private ConfigurableListableBeanFactory beanFactory;
 
-    private boolean                            isShareParentContextPostProcessors = true;
+    private boolean isShareParentContextPostProcessors = true;
 
-    private List<SofaPostProcessorShareFilter> sofaPostProcessorShareFilters      = new ArrayList<>();
+    private List<SofaPostProcessorShareFilter> sofaPostProcessorShareFilters = new ArrayList<>();
 
     @Override
     public void afterPropertiesSet() throws Exception {
@@ -69,19 +63,19 @@ public class SofaPostProcessorShareManager implements BeanFactoryAware, Initiali
         Assert.notNull(registerSingletonMap, "registerSingletonMap must not be null");
         Assert.notNull(registerBeanDefinitionMap, "registerBeanDefinitionMap must not be null");
         Assert.notNull(sofaPostProcessorShareFilters,
-            "sofaPostProcessorShareFilters must not be null");
+                "sofaPostProcessorShareFilters must not be null");
         initShareSofaPostProcessors();
     }
 
     private void initShareSofaPostProcessors() {
         Set<String> beanNames = new HashSet<>();
         Set<String> allBeanDefinitionNames = new HashSet<>(Arrays.asList(beanFactory
-            .getBeanDefinitionNames()));
+                .getBeanDefinitionNames()));
 
         String[] eanFactoryPostProcessors = beanFactory.getBeanNamesForType(
-            BeanFactoryPostProcessor.class, true, false);
+                BeanFactoryPostProcessor.class, true, false);
         String[] beanPostProcessors = beanFactory.getBeanNamesForType(BeanPostProcessor.class,
-            true, false);
+                true, false);
         beanNames.addAll(Arrays.asList(eanFactoryPostProcessors));
         beanNames.addAll(Arrays.asList(beanPostProcessors));
 
@@ -163,7 +157,7 @@ public class SofaPostProcessorShareManager implements BeanFactoryAware, Initiali
     @Override
     public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
         Assert.isInstanceOf(ConfigurableListableBeanFactory.class, beanFactory,
-            "beanFactory must be ConfigurableListableBeanFactory");
+                "beanFactory must be ConfigurableListableBeanFactory");
         this.beanFactory = (ConfigurableListableBeanFactory) beanFactory;
     }
 }

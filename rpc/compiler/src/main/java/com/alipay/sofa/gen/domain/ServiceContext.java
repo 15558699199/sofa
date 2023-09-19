@@ -25,15 +25,15 @@ import java.util.Set;
  * Template class for proto Service objects.
  */
 public class ServiceContext {
-    private String              fileName;
-    private String              protoName;
-    private String              packageName;
-    private String              className;
-    private String              serviceName;
-    private boolean             deprecated;
-    private String              javaDoc;
-    private List<MethodContext> methods     = new ArrayList<>();
-    private  Set<String>         methodTypes = new HashSet<>();
+    private String fileName;
+    private String protoName;
+    private String packageName;
+    private String className;
+    private String serviceName;
+    private boolean deprecated;
+    private String javaDoc;
+    private List<MethodContext> methods = new ArrayList<>();
+    private Set<String> methodTypes = new HashSet<>();
 
     public List<MethodContext> unaryRequestMethods() {
         List<MethodContext> list = new ArrayList<>();

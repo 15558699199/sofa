@@ -20,60 +20,60 @@ import com.alipay.sofa.registry.store.api.elector.AbstractLeaderElector.LeaderIn
 
 /**
  * @author chen.zhu
- *     <p>Mar 10, 2021
+ * <p>Mar 10, 2021
  */
 public interface MetaLeaderService {
 
-  /**
-   * Am i elector boolean.
-   *
-   * @return the boolean
-   */
-  boolean amILeader();
+    /**
+     * Am i elector boolean.
+     *
+     * @return the boolean
+     */
+    boolean amILeader();
 
-  /**
-   * Gets get elector.
-   *
-   * @return the get elector
-   */
-  String getLeader();
+    /**
+     * Gets get elector.
+     *
+     * @return the get elector
+     */
+    String getLeader();
 
-  /**
-   * Gets get elector epoch.
-   *
-   * @return the get elector epoch
-   */
-  long getLeaderEpoch();
+    /**
+     * Gets get elector epoch.
+     *
+     * @return the get elector epoch
+     */
+    long getLeaderEpoch();
 
-  /**
-   * get leader info
-   *
-   * @return LeaderInfo
-   */
-  LeaderInfo getLeaderInfo();
+    /**
+     * get leader info
+     *
+     * @return LeaderInfo
+     */
+    LeaderInfo getLeaderInfo();
 
-  /**
-   * Gets get meta server elector state.
-   *
-   * @return the get meta server elector state
-   */
-  boolean isWarmuped();
+    /**
+     * Gets get meta server elector state.
+     *
+     * @return the get meta server elector state
+     */
+    boolean isWarmuped();
 
-  /**
-   * Am i stable as elector boolean.
-   *
-   * @return the boolean
-   */
-  default boolean amIStableAsLeader() {
-    return amILeader() && isWarmuped();
-  }
+    /**
+     * Am i stable as elector boolean.
+     *
+     * @return the boolean
+     */
+    default boolean amIStableAsLeader() {
+        return amILeader() && isWarmuped();
+    }
 
-  void registerListener(MetaLeaderElectorListener listener);
+    void registerListener(MetaLeaderElectorListener listener);
 
-  interface MetaLeaderElectorListener {
+    interface MetaLeaderElectorListener {
 
-    void becomeLeader();
+        void becomeLeader();
 
-    void loseLeader();
-  }
+        void loseLeader();
+    }
 }

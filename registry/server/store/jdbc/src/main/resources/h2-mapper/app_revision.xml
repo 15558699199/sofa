@@ -11,7 +11,8 @@
         <result property="clientVersion" column="client_version" javaType="java.lang.String" jdbcType="VARCHAR"/>
         <result property="baseParams" column="base_params" javaType="java.lang.String" jdbcType="LONGVARCHAR"/>
         <result property="serviceParams" column="service_params" javaType="java.lang.String" jdbcType="LONGVARCHAR"/>
-        <result property="serviceParamsLarge" column="service_params_large" javaType="java.lang.String" jdbcType="LONGVARCHAR"/>
+        <result property="serviceParamsLarge" column="service_params_large" javaType="java.lang.String"
+                jdbcType="LONGVARCHAR"/>
         <result property="gmtCreate" column="gmt_create" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
         <result property="gmtModify" column="gmt_modified" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
     </resultMap>
@@ -28,55 +29,69 @@
 
     <select id="listRevisions" resultMap="appRevisionResultMap">
     <![CDATA[
-        select * from app_revision where data_center = #{dataCenter} and id > #{afterId} order by id limit #{limit}
-    ]]>
+        select *
+        from app_revision
+        where data_center = #{dataCenter}
+          and id > #{afterId}
+        order by id limit #{limit}
+        ]]>
     </select>
 
     <update id="heartbeat">
-        update app_revision set gmt_modified=CURRENT_TIMESTAMP  where data_center = #{dataCenter}
-        and revision=#{revision}
-        and deleted = '0'
+        update app_revision
+        set gmt_modified=CURRENT_TIMESTAMP
+        where data_center = #{dataCenter}
+          and revision = #{revision}
+          and deleted = '0'
     </update>
 
     <insert id="replace" parameterType="com.alipay.sofa.registry.jdbc.domain.AppRevisionDomain">
-        delete from app_revision where data_center=#{dataCenter} and revision=#{revision};
-        insert into app_revision (
-               data_center,
-               revision,
-               app_name,
-               client_version,
-               base_params,
-               service_params,
-               service_params_large,
-               deleted,
-               gmt_create,
-               gmt_modified
-        )
-        values (
-               #{dataCenter},
-               #{revision},
-               #{appName},
-               #{clientVersion},
-               #{baseParams},
-               #{serviceParams},
-               #{serviceParamsLarge},
-               #{deleted},
-               CURRENT_TIMESTAMP,
-               CURRENT_TIMESTAMP
-        ) on duplicate key update deleted = #{deleted};
+        delete
+        from app_revision
+        where data_center = #{dataCenter}
+          and revision = #{revision};
+        insert into app_revision (data_center,
+                                  revision,
+                                  app_name,
+                                  client_version,
+                                  base_params,
+                                  service_params,
+                                  service_params_large,
+                                  deleted,
+                                  gmt_create,
+                                  gmt_modified)
+        values (#{dataCenter},
+                #{revision},
+                #{appName},
+                #{clientVersion},
+                #{baseParams},
+                #{serviceParams},
+                #{serviceParamsLarge},
+                #{deleted},
+                CURRENT_TIMESTAMP,
+                CURRENT_TIMESTAMP) on duplicate key
+        update deleted = #{deleted};
     </insert>
 
     <select id="getExpired" resultMap="appRevisionResultMap">
     <![CDATA[
-        select * from app_revision where data_center=#{dataCenter} and gmt_modified < #{beforeTime} and deleted='0'
-        limit #{limit}
-    ]]>
+        select *
+        from app_revision
+        where data_center = #{dataCenter}
+          and gmt_modified < #{beforeTime}
+          and deleted = '0'
+            limit #{limit}
+        ]]>
     </select>
 
     <delete id="cleanDeleted">
         <![CDATA[
-        delete from app_revision where data_center=#{dataCenter} and gmt_modified < #{beforeTime} and deleted='1'
-        limit #{limit}
+        delete
+        from app_revision
+        where data_center = #{dataCenter}
+          and gmt_modified < #{beforeTime}
+          and deleted = '1'
+            limit #{limit}
         ]]>
     </delete>
 

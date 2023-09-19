@@ -16,8 +16,10 @@
  */
 package com.alipay.sofa.registry.observer;
 
-/** @author zhuchen */
+/**
+ * @author zhuchen
+ */
 public interface UnblockingObserver {
 
-  void update(Observable source, Object message);
+    void update(Observable source, Object message);
 }

@@ -40,8 +40,8 @@ public class DynamicConfigManagerFactory {
     /**
      * slf4j Logger for this class
      */
-    private final static Logger                                      LOGGER       = LoggerFactory
-                                                                                      .getLogger(DynamicConfigManagerFactory.class);
+    private final static Logger LOGGER = LoggerFactory
+            .getLogger(DynamicConfigManagerFactory.class);
 
     /**
      * 得到动态配置管理
@@ -60,19 +60,19 @@ public class DynamicConfigManagerFactory {
             DynamicConfigManager registry = ALL_DYNAMICS.get(alias);
             if (registry == null) {
                 ExtensionClass<DynamicConfigManager> ext = ExtensionLoaderFactory.getExtensionLoader(
-                    DynamicConfigManager.class)
-                    .getExtensionClass(alias);
+                                DynamicConfigManager.class)
+                        .getExtensionClass(alias);
                 if (ext == null) {
                     throw new SofaRpcRuntimeException(LogCodes.getLog(LogCodes.ERROR_LOAD_EXT, "DynamicConfigManager",
-                        alias));
+                            alias));
                 }
-                registry = ext.getExtInstance(new Class[] { String.class }, new Object[] { appName });
+                registry = ext.getExtInstance(new Class[]{String.class}, new Object[]{appName});
                 ALL_DYNAMICS.put(alias, registry);
             }
             return registry;
         } catch (Throwable e) {
             throw new SofaRpcRuntimeException(LogCodes.getLog(LogCodes.ERROR_LOAD_EXT, "DynamicConfigManager", alias),
-                e);
+                    e);
         }
     }
 

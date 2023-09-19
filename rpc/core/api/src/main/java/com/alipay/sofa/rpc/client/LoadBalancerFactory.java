@@ -48,11 +48,11 @@ public class LoadBalancerFactory {
     public static LoadBalancer getLoadBalancer(ConsumerBootstrap consumerBootstrap, String loadBalancer) {
         try {
             ExtensionClass<LoadBalancer> ext = ExtensionLoaderFactory
-                .getExtensionLoader(LoadBalancer.class).getExtensionClass(loadBalancer);
+                    .getExtensionLoader(LoadBalancer.class).getExtensionClass(loadBalancer);
             if (ext == null) {
                 throw new SofaRpcRuntimeException(LogCodes.getLog(LogCodes.ERROR_LOAD_LOAD_BALANCER, loadBalancer));
             }
-            return ext.getExtInstance(new Class[] { ConsumerBootstrap.class }, new Object[] { consumerBootstrap });
+            return ext.getExtInstance(new Class[]{ConsumerBootstrap.class}, new Object[]{consumerBootstrap});
         } catch (SofaRpcRuntimeException e) {
             throw e;
         } catch (Throwable e) {

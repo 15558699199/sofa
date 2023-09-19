@@ -54,4 +54,4 @@ spec:
           configMap:
             name: sofa-registry-config
         - name: log-volume
-          emptyDir: {}
+          emptyDir: { }

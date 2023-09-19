@@ -44,13 +44,13 @@ import static org.mockito.Mockito.when;
 public class ExtensionClientImplTests {
 
     @Mock
-    private ComponentManager    componentManager;
+    private ComponentManager componentManager;
 
     @Mock
-    private SofaRuntimeContext  sofaRuntimeContext;
+    private SofaRuntimeContext sofaRuntimeContext;
 
     @Mock
-    private Element             element;
+    private Element element;
 
     @InjectMocks
     private ExtensionClientImpl extensionClient;

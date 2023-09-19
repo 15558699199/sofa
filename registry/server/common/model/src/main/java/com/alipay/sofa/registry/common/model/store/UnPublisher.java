@@ -25,46 +25,46 @@ import com.alipay.sofa.registry.common.model.RegisterVersion;
  */
 public class UnPublisher extends Publisher {
 
-  /**
-   * @param dataInfoId
-   * @param registerId
-   * @param registerTimeStamp
-   */
-  public UnPublisher(
-      String dataInfoId,
-      ProcessId sessionProcessId,
-      String registerId,
-      long registerTimeStamp,
-      long version) {
-    setDataInfoId(dataInfoId);
-    setRegisterId(registerId);
-    setRegisterTimestamp(registerTimeStamp);
-    setVersion(version);
-    // avoid new datum dataId is null
-    DataInfo dataInfo = DataInfo.valueOf(dataInfoId);
-    setDataId(dataInfo.getDataId());
-    setGroup(dataInfo.getGroup());
-    setInstanceId(dataInfo.getInstanceId());
+    /**
+     * @param dataInfoId
+     * @param registerId
+     * @param registerTimeStamp
+     */
+    public UnPublisher(
+            String dataInfoId,
+            ProcessId sessionProcessId,
+            String registerId,
+            long registerTimeStamp,
+            long version) {
+        setDataInfoId(dataInfoId);
+        setRegisterId(registerId);
+        setRegisterTimestamp(registerTimeStamp);
+        setVersion(version);
+        // avoid new datum dataId is null
+        DataInfo dataInfo = DataInfo.valueOf(dataInfoId);
+        setDataId(dataInfo.getDataId());
+        setGroup(dataInfo.getGroup());
+        setInstanceId(dataInfo.getInstanceId());
 
-    setSessionProcessId(sessionProcessId);
-  }
+        setSessionProcessId(sessionProcessId);
+    }
 
-  @Override
-  public DataType getDataType() {
-    return DataType.UN_PUBLISHER;
-  }
+    public static UnPublisher of(Publisher publisher) {
+        return new UnPublisher(
+                publisher.getDataInfoId(),
+                publisher.getSessionProcessId(),
+                publisher.getRegisterId(),
+                publisher.getRegisterTimestamp(),
+                publisher.getVersion());
+    }
 
-  public static UnPublisher of(Publisher publisher) {
-    return new UnPublisher(
-        publisher.getDataInfoId(),
-        publisher.getSessionProcessId(),
-        publisher.getRegisterId(),
-        publisher.getRegisterTimestamp(),
-        publisher.getVersion());
-  }
+    public static UnPublisher of(String dataInfoId, String registerId, RegisterVersion version) {
+        return new UnPublisher(
+                dataInfoId, null, registerId, version.getRegisterTimestamp(), version.getVersion());
+    }
 
-  public static UnPublisher of(String dataInfoId, String registerId, RegisterVersion version) {
-    return new UnPublisher(
-        dataInfoId, null, registerId, version.getRegisterTimestamp(), version.getVersion());
-  }
+    @Override
+    public DataType getDataType() {
+        return DataType.UN_PUBLISHER;
+    }
 }

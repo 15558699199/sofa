@@ -21,7 +21,7 @@ import com.alipay.sofa.rpc.transport.ServerTransportConfig;
 
 /**
  * Http2ClearText Server Transport
- * 
+ *
  * @author <a href="mailto:zhanggeng.zg@antfin.com">GengZhang</a>
  * @since 5.4.0
  */

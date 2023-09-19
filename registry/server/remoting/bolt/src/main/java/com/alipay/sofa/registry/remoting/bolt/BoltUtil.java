@@ -26,6 +26,7 @@ import com.alipay.sofa.registry.remoting.ChannelOverflowException;
 import com.alipay.sofa.registry.remoting.exchange.RequestChannelClosedException;
 import com.alipay.sofa.registry.remoting.exchange.RequestException;
 import com.alipay.sofa.registry.util.StringFormatter;
+
 import java.util.List;
 
 /**
@@ -33,86 +34,87 @@ import java.util.List;
  * @since 2019/2/15
  */
 public final class BoltUtil {
-  private BoltUtil() {}
+    private BoltUtil() {
+    }
 
-  public static Byte getBoltCustomSerializer(Channel channel) {
-    if (channel instanceof BoltChannel) {
-      BoltChannel boltChannel = (BoltChannel) channel;
+    public static Byte getBoltCustomSerializer(Channel channel) {
+        if (channel instanceof BoltChannel) {
+            BoltChannel boltChannel = (BoltChannel) channel;
 
-      // set client custom codec for request command if not null
-      Object clientCustomCodec = boltChannel.getConnAttribute(InvokeContext.BOLT_CUSTOM_SERIALIZER);
-      if (null != clientCustomCodec) {
-        try {
-          return (Byte) clientCustomCodec;
-        } catch (ClassCastException e) {
-          throw new IllegalArgumentException(
-              "Illegal custom codec ["
-                  + clientCustomCodec
-                  + "], the type of value should be [byte], but now is ["
-                  + clientCustomCodec.getClass().getName()
-                  + "].");
+            // set client custom codec for request command if not null
+            Object clientCustomCodec = boltChannel.getConnAttribute(InvokeContext.BOLT_CUSTOM_SERIALIZER);
+            if (null != clientCustomCodec) {
+                try {
+                    return (Byte) clientCustomCodec;
+                } catch (ClassCastException e) {
+                    throw new IllegalArgumentException(
+                            "Illegal custom codec ["
+                                    + clientCustomCodec
+                                    + "], the type of value should be [byte], but now is ["
+                                    + clientCustomCodec.getClass().getName()
+                                    + "].");
+                }
+            }
         }
-      }
+        return null;
     }
-    return null;
-  }
 
-  public static RuntimeException handleException(
-      String role, Object target, Throwable e, String op) {
-    if (e instanceof RemotingException) {
-      final String format =
-          StringFormatter.format("{} {} RemotingException! target url:{}", role, op, target);
-      final String msg = e.getMessage();
-      // see RpcClientRemoting.connectionManager.check
-      if (msg != null) {
-        if (msg.contains("write overflow")) {
-          return new ChannelOverflowException(format, e);
+    public static RuntimeException handleException(
+            String role, Object target, Throwable e, String op) {
+        if (e instanceof RemotingException) {
+            final String format =
+                    StringFormatter.format("{} {} RemotingException! target url:{}", role, op, target);
+            final String msg = e.getMessage();
+            // see RpcClientRemoting.connectionManager.check
+            if (msg != null) {
+                if (msg.contains("write overflow")) {
+                    return new ChannelOverflowException(format, e);
+                }
+                if (msg.contains("Connection is null when do check")
+                        || msg.contains("Check connection failed for address")) {
+                    return new ChannelConnectException(format, e);
+                }
+            }
+            return new RuntimeException(format, e);
         }
-        if (msg.contains("Connection is null when do check")
-            || msg.contains("Check connection failed for address")) {
-          return new ChannelConnectException(format, e);
+        if (e instanceof InterruptedException) {
+            String msg =
+                    StringFormatter.format("{} {} InterruptedException! target url:{}", role, op, target);
+            return new RuntimeException(msg, e);
         }
-      }
-      return new RuntimeException(format, e);
+        String msg = StringFormatter.format("{} {} Exception! target url:{}", role, op, target);
+        return new RuntimeException(msg, e);
     }
-    if (e instanceof InterruptedException) {
-      String msg =
-          StringFormatter.format("{} {} InterruptedException! target url:{}", role, op, target);
-      return new RuntimeException(msg, e);
-    }
-    String msg = StringFormatter.format("{} {} Exception! target url:{}", role, op, target);
-    return new RuntimeException(msg, e);
-  }
 
-  public static void checkChannelConnected(Channel channel) {
-    if (channel == null) {
-      throw new RequestException("channel is null");
-    }
-    if (!channel.isConnected()) {
-      throw new RequestChannelClosedException("channel is not connect:" + channel);
-    }
-  }
-
-  public static Url createTargetUrl(Channel channel) {
-    return new Url(
-        channel.getRemoteAddress().getAddress().getHostAddress(),
-        channel.getRemoteAddress().getPort());
-  }
-
-  public static ChannelHandler getListenerHandlers(List<ChannelHandler> channelHandlers) {
-    ChannelHandler connectionEventHandler = null;
-    for (ChannelHandler channelHandler : channelHandlers) {
-      if (ChannelHandler.HandlerType.LISTENER.equals(channelHandler.getType())) {
-        if (connectionEventHandler != null) {
-          throw new IllegalArgumentException(
-              StringFormatter.format(
-                  "only support one listener handler, {} conflict {}",
-                  connectionEventHandler,
-                  channelHandler));
+    public static void checkChannelConnected(Channel channel) {
+        if (channel == null) {
+            throw new RequestException("channel is null");
         }
-        connectionEventHandler = channelHandler;
-      }
+        if (!channel.isConnected()) {
+            throw new RequestChannelClosedException("channel is not connect:" + channel);
+        }
     }
-    return connectionEventHandler;
-  }
+
+    public static Url createTargetUrl(Channel channel) {
+        return new Url(
+                channel.getRemoteAddress().getAddress().getHostAddress(),
+                channel.getRemoteAddress().getPort());
+    }
+
+    public static ChannelHandler getListenerHandlers(List<ChannelHandler> channelHandlers) {
+        ChannelHandler connectionEventHandler = null;
+        for (ChannelHandler channelHandler : channelHandlers) {
+            if (ChannelHandler.HandlerType.LISTENER.equals(channelHandler.getType())) {
+                if (connectionEventHandler != null) {
+                    throw new IllegalArgumentException(
+                            StringFormatter.format(
+                                    "only support one listener handler, {} conflict {}",
+                                    connectionEventHandler,
+                                    channelHandler));
+                }
+                connectionEventHandler = channelHandler;
+            }
+        }
+        return connectionEventHandler;
+    }
 }

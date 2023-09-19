@@ -19,70 +19,71 @@ package com.alipay.sofa.registry.metrics;
 import io.prometheus.client.Collector;
 import io.prometheus.client.CounterMetricFamily;
 import io.prometheus.client.SimpleCollector;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 public class CounterFunc extends SimpleCollector<CounterFunc.Child>
-    implements Collector.Describable {
+        implements Collector.Describable {
 
-  CounterFunc(Builder b) {
-    super(b);
-  }
-
-  @Override
-  public List<MetricFamilySamples> collect() {
-    List<MetricFamilySamples.Sample> samples = new ArrayList<>(children.size());
-    for (Map.Entry<List<String>, CounterFunc.Child> c : children.entrySet()) {
-      samples.add(
-          new MetricFamilySamples.Sample(fullname, labelNames, c.getKey(), c.getValue().get()));
+    CounterFunc(Builder b) {
+        super(b);
     }
-    return familySamplesList(Type.COUNTER, samples);
-  }
 
-  @Override
-  public List<MetricFamilySamples> describe() {
-    return Collections.<MetricFamilySamples>singletonList(
-        new CounterMetricFamily(fullname, help, labelNames));
-  }
-
-  @Override
-  protected Child newChild() {
-    return new Child();
-  }
-
-  public static class Builder extends SimpleCollector.Builder<Builder, CounterFunc> {
+    public static Builder build() {
+        return new Builder();
+    }
 
     @Override
-    public CounterFunc create() {
-      return new CounterFunc(this);
-    }
-  }
-
-  public static Builder build() {
-    return new Builder();
-  }
-
-  public static class Child {
-    private CounterFuncCallable callable;
-
-    public synchronized Child func(CounterFuncCallable c) {
-      callable = c;
-      return this;
+    public List<MetricFamilySamples> collect() {
+        List<MetricFamilySamples.Sample> samples = new ArrayList<>(children.size());
+        for (Map.Entry<List<String>, CounterFunc.Child> c : children.entrySet()) {
+            samples.add(
+                    new MetricFamilySamples.Sample(fullname, labelNames, c.getKey(), c.getValue().get()));
+        }
+        return familySamplesList(Type.COUNTER, samples);
     }
 
-    public double get() {
-      return callable.get();
+    @Override
+    public List<MetricFamilySamples> describe() {
+        return Collections.<MetricFamilySamples>singletonList(
+                new CounterMetricFamily(fullname, help, labelNames));
     }
-  }
 
-  public synchronized CounterFunc func(CounterFuncCallable c) {
-    noLabelsChild.func(c);
-    return this;
-  }
+    @Override
+    protected Child newChild() {
+        return new Child();
+    }
 
-  public interface CounterFuncCallable {
-    long get();
-  }
+    public synchronized CounterFunc func(CounterFuncCallable c) {
+        noLabelsChild.func(c);
+        return this;
+    }
+
+    public interface CounterFuncCallable {
+        long get();
+    }
+
+    public static class Builder extends SimpleCollector.Builder<Builder, CounterFunc> {
+
+        @Override
+        public CounterFunc create() {
+            return new CounterFunc(this);
+        }
+    }
+
+    public static class Child {
+        private CounterFuncCallable callable;
+
+        public synchronized Child func(CounterFuncCallable c) {
+            callable = c;
+            return this;
+        }
+
+        public double get() {
+            return callable.get();
+        }
+    }
 }

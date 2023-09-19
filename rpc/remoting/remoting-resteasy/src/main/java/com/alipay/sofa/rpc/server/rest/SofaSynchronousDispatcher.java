@@ -19,11 +19,7 @@ package com.alipay.sofa.rpc.server.rest;
 import org.jboss.resteasy.core.Dispatcher;
 import org.jboss.resteasy.core.ResourceInvoker;
 import org.jboss.resteasy.core.SynchronousDispatcher;
-import org.jboss.resteasy.spi.HttpRequest;
-import org.jboss.resteasy.spi.HttpResponse;
-import org.jboss.resteasy.spi.InternalDispatcher;
-import org.jboss.resteasy.spi.Registry;
-import org.jboss.resteasy.spi.ResteasyProviderFactory;
+import org.jboss.resteasy.spi.*;
 
 import javax.ws.rs.ext.Providers;
 

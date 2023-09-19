@@ -17,11 +17,7 @@
 package com.alipay.sofa.rpc.transport.http;
 
 import com.alipay.sofa.rpc.server.http.HttpServerHandler;
-import io.netty.handler.codec.http2.AbstractHttp2ConnectionHandlerBuilder;
-import io.netty.handler.codec.http2.Http2ConnectionDecoder;
-import io.netty.handler.codec.http2.Http2ConnectionEncoder;
-import io.netty.handler.codec.http2.Http2FrameLogger;
-import io.netty.handler.codec.http2.Http2Settings;
+import io.netty.handler.codec.http2.*;
 import io.netty.handler.logging.LogLevel;
 
 /**
@@ -29,12 +25,12 @@ import io.netty.handler.logging.LogLevel;
  * @since 5.4.0
  */
 public final class Http2ChannelHandlerBuilder
-                                             extends
-                                             AbstractHttp2ConnectionHandlerBuilder<Http2ServerChannelHandler, Http2ChannelHandlerBuilder> {
+        extends
+        AbstractHttp2ConnectionHandlerBuilder<Http2ServerChannelHandler, Http2ChannelHandlerBuilder> {
 
     private static final Http2FrameLogger LOGGER = new Http2FrameLogger(LogLevel.DEBUG, HttpServerHandler.class);
 
-    private final HttpServerHandler       serverHandler;
+    private final HttpServerHandler serverHandler;
 
     public Http2ChannelHandlerBuilder(HttpServerHandler serverHandler) {
         frameLogger(LOGGER);
@@ -50,7 +46,7 @@ public final class Http2ChannelHandlerBuilder
     protected Http2ServerChannelHandler build(Http2ConnectionDecoder decoder, Http2ConnectionEncoder encoder,
                                               Http2Settings initialSettings) {
         Http2ServerChannelHandler handler = new Http2ServerChannelHandler(serverHandler, decoder, encoder,
-            initialSettings);
+                initialSettings);
         frameListener(handler);
         return handler;
     }

@@ -22,12 +22,7 @@ import com.alipay.sofa.boot.log.ErrorCode;
 import com.alipay.sofa.boot.log.SofaBootLoggerFactory;
 import com.alipay.sofa.runtime.api.ServiceRuntimeException;
 import com.alipay.sofa.runtime.api.component.ComponentName;
-import com.alipay.sofa.runtime.spi.component.ComponentInfo;
-import com.alipay.sofa.runtime.spi.component.ComponentManager;
-import com.alipay.sofa.runtime.spi.component.ComponentNameFactory;
-import com.alipay.sofa.runtime.spi.component.Implementation;
-import com.alipay.sofa.runtime.spi.component.SofaRuntimeContext;
-import com.alipay.sofa.runtime.spi.component.SofaRuntimeManager;
+import com.alipay.sofa.runtime.spi.component.*;
 import org.slf4j.Logger;
 
 import java.util.Collection;
@@ -40,12 +35,13 @@ import java.util.Collection;
  */
 public class ComponentContextRefreshInterceptor implements ContextRefreshInterceptor {
 
-    private static final Logger      LOGGER = SofaBootLoggerFactory
-                                                .getLogger(ComponentContextRefreshInterceptor.class);
+    private static final Logger LOGGER = SofaBootLoggerFactory
+            .getLogger(ComponentContextRefreshInterceptor.class);
 
-    private final ComponentManager   componentManager;
+    private final ComponentManager componentManager;
 
-    private final SofaRuntimeContext sofaRuntimeContext;                                              ;
+    private final SofaRuntimeContext sofaRuntimeContext;
+    ;
 
     public ComponentContextRefreshInterceptor(SofaRuntimeManager sofaRuntimeManager) {
         this.componentManager = sofaRuntimeManager.getComponentManager();
@@ -56,14 +52,14 @@ public class ComponentContextRefreshInterceptor implements ContextRefreshInterce
     public void afterRefresh(SofaGenericApplicationContext context, Throwable throwable) {
         if (throwable == null) {
             ComponentName componentName = ComponentNameFactory.createComponentName(
-                SpringContextComponent.SPRING_COMPONENT_TYPE, context.getId());
+                    SpringContextComponent.SPRING_COMPONENT_TYPE, context.getId());
             Implementation implementation = new SpringContextImplementation(context);
             ComponentInfo componentInfo = new SpringContextComponent(componentName, implementation,
-                sofaRuntimeContext);
+                    sofaRuntimeContext);
             componentManager.register(componentInfo);
         } else {
             Collection<ComponentInfo> componentInfos = componentManager
-                .getComponentInfosByApplicationContext(context);
+                    .getComponentInfosByApplicationContext(context);
             for (ComponentInfo componentInfo : componentInfos) {
                 try {
                     componentManager.unregister(componentInfo);

@@ -25,7 +25,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- *
  * @author junyuan
  * @version BoltSerializationInitTest.java, v 0.1 2022年12月23日 16:26 junyuan Exp $
  */
@@ -37,14 +36,14 @@ public class BoltSerializationInitTest {
     @Test
     public void testSerializerRegisterOverride() {
         AbstractSerializationRegister abstractSerializationRegister = ExtensionLoaderFactory.getExtensionLoader(
-            AbstractSerializationRegister.class).getExtension("sofaRpcSerializationRegister");
+                AbstractSerializationRegister.class).getExtension("sofaRpcSerializationRegister");
         abstractSerializationRegister.doRegisterCustomSerializer();
 
         Assert.assertNull("testRegister未能覆盖原版register",
-            CustomSerializerManager.getCustomSerializer(SofaResponse.class.getName()));
+                CustomSerializerManager.getCustomSerializer(SofaResponse.class.getName()));
 
         Assert.assertNotNull("testRegister未能覆盖原版register", CustomSerializerManager.getCustomSerializer(
-            TestSofaRpcSerializationRegister.class.getName()));
+                TestSofaRpcSerializationRegister.class.getName()));
     }
 
     @After

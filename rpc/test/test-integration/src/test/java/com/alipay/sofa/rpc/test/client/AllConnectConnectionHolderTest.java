@@ -16,14 +16,7 @@
  */
 package com.alipay.sofa.rpc.test.client;
 
-import java.util.Set;
-
-import com.alipay.sofa.rpc.client.AllConnectConnectionHolder;
-import com.alipay.sofa.rpc.client.ClientProxyInvoker;
-import com.alipay.sofa.rpc.client.Cluster;
-import com.alipay.sofa.rpc.client.ProviderGroup;
-import com.alipay.sofa.rpc.client.ProviderHelper;
-import com.alipay.sofa.rpc.client.ProviderInfo;
+import com.alipay.sofa.rpc.client.*;
 import com.alipay.sofa.rpc.common.RpcConstants;
 import com.alipay.sofa.rpc.config.ConsumerConfig;
 import com.alipay.sofa.rpc.config.ProviderConfig;
@@ -37,9 +30,9 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.util.Set;
+
 /**
- *
- *
  * @author <a href="mailto:zhanggeng.zg@antfin.com">GengZhang</a>
  */
 public class AllConnectConnectionHolderTest extends ActivelyDestroyTest {
@@ -54,91 +47,91 @@ public class AllConnectConnectionHolderTest extends ActivelyDestroyTest {
 
         // 发布一个服务，每个请求要执行2秒
         serverConfig1 = new ServerConfig()
-            .setStopTimeout(0)
-            .setPort(22223)
-            .setProtocol(RpcConstants.PROTOCOL_TYPE_BOLT)
-            .setQueues(100).setCoreThreads(5).setMaxThreads(5);
+                .setStopTimeout(0)
+                .setPort(22223)
+                .setProtocol(RpcConstants.PROTOCOL_TYPE_BOLT)
+                .setQueues(100).setCoreThreads(5).setMaxThreads(5);
         ProviderConfig<HelloService> providerConfig = new ProviderConfig<HelloService>()
-            .setInterfaceId(HelloService.class.getName())
-            .setRef(new HelloServiceImpl(2000))
-            .setServer(serverConfig1)
-            .setRepeatedExportLimit(-1)
-            .setRegister(false);
+                .setInterfaceId(HelloService.class.getName())
+                .setRef(new HelloServiceImpl(2000))
+                .setServer(serverConfig1)
+                .setRepeatedExportLimit(-1)
+                .setRegister(false);
         providerConfig.export();
 
         // 再发布一个服务，不等待
         serverConfig2 = new ServerConfig()
-            .setStopTimeout(0)
-            .setPort(22224)
-            .setProtocol(RpcConstants.PROTOCOL_TYPE_BOLT)
-            .setQueues(100).setCoreThreads(5).setMaxThreads(5);
+                .setStopTimeout(0)
+                .setPort(22224)
+                .setProtocol(RpcConstants.PROTOCOL_TYPE_BOLT)
+                .setQueues(100).setCoreThreads(5).setMaxThreads(5);
         ProviderConfig<HelloService> providerConfig2 = new ProviderConfig<HelloService>()
-            .setInterfaceId(HelloService.class.getName())
-            .setRef(new HelloServiceImpl())
-            .setServer(serverConfig2)
-            .setRepeatedExportLimit(-1)
-            .setRegister(false);
+                .setInterfaceId(HelloService.class.getName())
+                .setRef(new HelloServiceImpl())
+                .setServer(serverConfig2)
+                .setRepeatedExportLimit(-1)
+                .setRegister(false);
         providerConfig2.export();
     }
 
     @Test
     public void getAvailableClientTransport1() throws Exception {
         ConsumerConfig<HelloService> consumerConfig = new ConsumerConfig<HelloService>()
-            .setInterfaceId(HelloService.class.getName())
-            .setDirectUrl("bolt://127.0.0.1:22221")
-            .setConnectionHolder("all")
-            .setRegister(false)
-            .setLazy(true)
-            .setTimeout(3000);
+                .setInterfaceId(HelloService.class.getName())
+                .setDirectUrl("bolt://127.0.0.1:22221")
+                .setConnectionHolder("all")
+                .setRegister(false)
+                .setLazy(true)
+                .setTimeout(3000);
         HelloService helloService = consumerConfig.refer();
         ClientProxyInvoker invoker = (ClientProxyInvoker) ProxyFactory.getInvoker(helloService,
-            consumerConfig.getProxy());
+                consumerConfig.getProxy());
         Cluster cluster = invoker.getCluster();
         Assert.assertTrue(cluster.getConnectionHolder() instanceof AllConnectConnectionHolder);
         AllConnectConnectionHolder holder = (AllConnectConnectionHolder) cluster.getConnectionHolder();
 
         Assert.assertTrue(holder.isAvailableEmpty());
         Assert.assertNull(holder.getAvailableClientTransport(
-            ProviderHelper.toProviderInfo("bolt://127.0.0.1:22221?serialization=hessian2")));
+                ProviderHelper.toProviderInfo("bolt://127.0.0.1:22221?serialization=hessian2")));
 
     }
 
     @Test
     public void getAvailableClientTransport2() throws Exception {
         ConsumerConfig<HelloService> consumerConfig = new ConsumerConfig<HelloService>()
-            .setInterfaceId(HelloService.class.getName())
-            .setDirectUrl("bolt://127.0.0.1:22223,bolt://127.0.0.1:22224")
-            .setConnectionHolder("all")
-            .setRegister(false)
-            .setLazy(true)
-            .setTimeout(3000);
+                .setInterfaceId(HelloService.class.getName())
+                .setDirectUrl("bolt://127.0.0.1:22223,bolt://127.0.0.1:22224")
+                .setConnectionHolder("all")
+                .setRegister(false)
+                .setLazy(true)
+                .setTimeout(3000);
         HelloService helloService = consumerConfig.refer();
         ClientProxyInvoker invoker = (ClientProxyInvoker) ProxyFactory.getInvoker(helloService,
-            consumerConfig.getProxy());
+                consumerConfig.getProxy());
         Cluster cluster = invoker.getCluster();
         Assert.assertTrue(cluster.getConnectionHolder() instanceof AllConnectConnectionHolder);
         AllConnectConnectionHolder holder = (AllConnectConnectionHolder) cluster.getConnectionHolder();
 
         Assert.assertTrue(holder.isAvailableEmpty());
         Assert.assertNotNull(holder.getAvailableClientTransport(
-            ProviderHelper.toProviderInfo("bolt://127.0.0.1:22223")));
+                ProviderHelper.toProviderInfo("bolt://127.0.0.1:22223")));
         Assert.assertNotNull(holder.getAvailableClientTransport(
-            ProviderHelper.toProviderInfo("bolt://127.0.0.1:22224")));
+                ProviderHelper.toProviderInfo("bolt://127.0.0.1:22224")));
         consumerConfig.unRefer();
     }
 
     @Test
     public void getAvailableClientTransport3() throws Exception {
         ConsumerConfig<HelloService> consumerConfig = new ConsumerConfig<HelloService>()
-            .setInterfaceId(HelloService.class.getName())
-            .setDirectUrl("bolt://127.0.0.1:22223,bolt://127.0.0.1:22224")
-            .setConnectionHolder("all")
-            .setRegister(false)
-            .setLazy(true)
-            .setTimeout(3000);
+                .setInterfaceId(HelloService.class.getName())
+                .setDirectUrl("bolt://127.0.0.1:22223,bolt://127.0.0.1:22224")
+                .setConnectionHolder("all")
+                .setRegister(false)
+                .setLazy(true)
+                .setTimeout(3000);
         HelloService helloService = consumerConfig.refer();
         ClientProxyInvoker invoker = (ClientProxyInvoker) ProxyFactory.getInvoker(helloService,
-            consumerConfig.getProxy());
+                consumerConfig.getProxy());
         Cluster cluster = invoker.getCluster();
         Assert.assertTrue(cluster.getConnectionHolder() instanceof AllConnectConnectionHolder);
         AllConnectConnectionHolder holder = (AllConnectConnectionHolder) cluster.getConnectionHolder();
@@ -165,15 +158,15 @@ public class AllConnectConnectionHolderTest extends ActivelyDestroyTest {
     @Test
     public void getAvailableClientTransport4() throws Exception {
         ConsumerConfig<HelloService> consumerConfig = new ConsumerConfig<HelloService>()
-            .setInterfaceId(HelloService.class.getName())
-            .setDirectUrl("bolt://127.0.0.1:22223,bolt://127.0.0.1:22224")
-            .setConnectionHolder("all")
-            .setRegister(false)
-            .setLazy(true)
-            .setTimeout(3000);
+                .setInterfaceId(HelloService.class.getName())
+                .setDirectUrl("bolt://127.0.0.1:22223,bolt://127.0.0.1:22224")
+                .setConnectionHolder("all")
+                .setRegister(false)
+                .setLazy(true)
+                .setTimeout(3000);
         HelloService helloService = consumerConfig.refer();
         ClientProxyInvoker invoker = (ClientProxyInvoker) ProxyFactory.getInvoker(helloService,
-            consumerConfig.getProxy());
+                consumerConfig.getProxy());
         Cluster cluster = invoker.getCluster();
         Assert.assertTrue(cluster.getConnectionHolder() instanceof AllConnectConnectionHolder);
         AllConnectConnectionHolder holder = (AllConnectConnectionHolder) cluster.getConnectionHolder();

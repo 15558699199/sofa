@@ -17,47 +17,48 @@
 package com.alipay.sofa.registry.util;
 
 import com.alipay.sofa.registry.concurrent.SingleFlight;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 public class SingleFlightTest {
-  @Test
-  public void test() throws Exception {
-    final SingleFlight single = new SingleFlight();
-    MockFlight f1 = new MockFlight();
-    MockFlight f2 = new MockFlight();
-    ExecutorService executors = Executors.newFixedThreadPool(2);
-    executors.submit(() -> single.execute("test", f1));
-    Thread.sleep(50);
-    executors.submit(() -> single.execute("test", f2));
-    Thread.sleep(50);
-    Assert.assertFalse(f1.run);
-    Assert.assertFalse(f2.run);
+    @Test
+    public void test() throws Exception {
+        final SingleFlight single = new SingleFlight();
+        MockFlight f1 = new MockFlight();
+        MockFlight f2 = new MockFlight();
+        ExecutorService executors = Executors.newFixedThreadPool(2);
+        executors.submit(() -> single.execute("test", f1));
+        Thread.sleep(50);
+        executors.submit(() -> single.execute("test", f2));
+        Thread.sleep(50);
+        Assert.assertFalse(f1.run);
+        Assert.assertFalse(f2.run);
 
-    f2.sleep = false;
-    Thread.sleep(50);
-    f1.sleep = false;
+        f2.sleep = false;
+        Thread.sleep(50);
+        f1.sleep = false;
 
-    Thread.sleep(50);
-    Assert.assertTrue(f1.run);
-    Assert.assertFalse(f2.run);
-    executors.shutdown();
-  }
-
-  private final class MockFlight implements Callable {
-    volatile boolean sleep = true;
-    volatile boolean run;
-
-    @Override
-    public Object call() throws Exception {
-      while (sleep) {
-        Thread.sleep(10);
-      }
-      run = true;
-      return null;
+        Thread.sleep(50);
+        Assert.assertTrue(f1.run);
+        Assert.assertFalse(f2.run);
+        executors.shutdown();
     }
-  }
+
+    private final class MockFlight implements Callable {
+        volatile boolean sleep = true;
+        volatile boolean run;
+
+        @Override
+        public Object call() throws Exception {
+            while (sleep) {
+                Thread.sleep(10);
+            }
+            run = true;
+            return null;
+        }
+    }
 }

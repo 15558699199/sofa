@@ -19,29 +19,30 @@ package com.alipay.sofa.registry.remoting.bolt;
 import com.alipay.remoting.InvokeCallback;
 import com.alipay.sofa.registry.remoting.CallbackHandler;
 import com.alipay.sofa.registry.remoting.Channel;
+
 import java.util.concurrent.Executor;
 
 public final class InvokeCallbackHandler implements InvokeCallback {
-  private final Channel channel;
-  private final CallbackHandler callbackHandler;
+    private final Channel channel;
+    private final CallbackHandler callbackHandler;
 
-  public InvokeCallbackHandler(Channel channel, CallbackHandler callbackHandler) {
-    this.channel = channel;
-    this.callbackHandler = callbackHandler;
-  }
+    public InvokeCallbackHandler(Channel channel, CallbackHandler callbackHandler) {
+        this.channel = channel;
+        this.callbackHandler = callbackHandler;
+    }
 
-  @Override
-  public void onResponse(Object result) {
-    callbackHandler.onCallback(channel, result);
-  }
+    @Override
+    public void onResponse(Object result) {
+        callbackHandler.onCallback(channel, result);
+    }
 
-  @Override
-  public void onException(Throwable e) {
-    callbackHandler.onException(channel, e);
-  }
+    @Override
+    public void onException(Throwable e) {
+        callbackHandler.onException(channel, e);
+    }
 
-  @Override
-  public Executor getExecutor() {
-    return callbackHandler.getExecutor();
-  }
+    @Override
+    public Executor getExecutor() {
+        return callbackHandler.getExecutor();
+    }
 }

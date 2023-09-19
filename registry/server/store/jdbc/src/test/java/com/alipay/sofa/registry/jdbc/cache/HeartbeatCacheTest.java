@@ -21,12 +21,13 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.cache.RemovalListener;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author xiaojian.xj
@@ -34,39 +35,37 @@ import org.mockito.Mockito;
  */
 public class HeartbeatCacheTest {
 
-  @SuppressWarnings({"unchecked"})
-  private RemovalListener<String, String> removalListener = Mockito.mock(RemovalListener.class);
+    Ticker ticker = Mockito.mock(Ticker.class);
+    @SuppressWarnings({"unchecked"})
+    private RemovalListener<String, String> removalListener = Mockito.mock(RemovalListener.class);
+    private LoadingCache<String, String> cache =
+            CacheBuilder.newBuilder()
+                    .expireAfterAccess(3, TimeUnit.SECONDS)
+                    // .removalListener(removalListener)
+                    // .ticker(ticker)
+                    .build(
+                            new CacheLoader<String, String>() {
+                                @Override
+                                public String load(String revision) {
+                                    return "";
+                                }
+                            });
 
-  Ticker ticker = Mockito.mock(Ticker.class);
+    @Test
+    public void heartbeatCacheClean() throws InterruptedException {
 
-  private LoadingCache<String, String> cache =
-      CacheBuilder.newBuilder()
-          .expireAfterAccess(3, TimeUnit.SECONDS)
-          // .removalListener(removalListener)
-          // .ticker(ticker)
-          .build(
-              new CacheLoader<String, String>() {
-                @Override
-                public String load(String revision) {
-                  return "";
-                }
-              });
+        cache.put("foo", "bar");
+        Thread.sleep(1000);
+        Map<String, String> map = new HashMap<>(cache.asMap());
+        map.forEach(
+                (key, value) -> {
+                    Assert.assertEquals(key, "foo");
+                });
+        map.get("foo");
 
-  @Test
-  public void heartbeatCacheClean() throws InterruptedException {
-
-    cache.put("foo", "bar");
-    Thread.sleep(1000);
-    Map<String, String> map = new HashMap<>(cache.asMap());
-    map.forEach(
-        (key, value) -> {
-          Assert.assertEquals(key, "foo");
-        });
-    map.get("foo");
-
-    Thread.sleep(2500);
-    String val = cache.getIfPresent("foo");
-    Assert.assertTrue(val == null);
-    Assert.assertEquals(cache.asMap().size(), 0);
-  }
+        Thread.sleep(2500);
+        String val = cache.getIfPresent("foo");
+        Assert.assertTrue(val == null);
+        Assert.assertEquals(cache.asMap().size(), 0);
+    }
 }

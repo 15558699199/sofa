@@ -18,11 +18,7 @@ package com.alipay.sofa.smoke.tests.actuator.startup;
 
 import com.alipay.sofa.boot.isle.stage.ModelCreatingStage;
 import com.alipay.sofa.boot.isle.stage.SpringContextInstallStage;
-import com.alipay.sofa.boot.startup.BaseStat;
-import com.alipay.sofa.boot.startup.BeanStat;
-import com.alipay.sofa.boot.startup.ChildrenStat;
-import com.alipay.sofa.boot.startup.ModuleStat;
-import com.alipay.sofa.boot.startup.StartupReporter;
+import com.alipay.sofa.boot.startup.*;
 import com.alipay.sofa.runtime.ext.spring.ExtensionFactoryBean;
 import com.alipay.sofa.runtime.ext.spring.ExtensionPointFactoryBean;
 import com.alipay.sofa.runtime.spring.factory.ReferenceFactoryBean;
@@ -43,13 +39,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Integration tests for isle startup reporter.
- * 
+ *
  * @author huzijie
  * @version IsleStageStartupReporterTests.java, v 0.1 2021年01月04日 8:31 下午 huzijie Exp $
  */
 @SpringBootTest(classes = ActuatorSofaBootApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@TestPropertySource(properties = { "management.endpoints.web.exposure.include=startup",
-                                  "sofa.boot.startup.costThreshold=0" })
+@TestPropertySource(properties = {"management.endpoints.web.exposure.include=startup",
+        "sofa.boot.startup.costThreshold=0"})
 @Import(InitCostBean.class)
 public class IsleStageStartupReporterTests {
 

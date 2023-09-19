@@ -21,29 +21,32 @@ import com.alipay.sofa.registry.remoting.Server;
 import com.alipay.sofa.registry.remoting.exchange.Exchange;
 import com.alipay.sofa.registry.server.meta.bootstrap.config.MetaServerConfig;
 import com.google.common.collect.Lists;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.net.InetSocketAddress;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
 
 public abstract class AbstractNodeConnectManager implements NodeConnectManager {
-  @Autowired protected Exchange boltExchange;
-  @Autowired protected MetaServerConfig metaServerConfig;
+    @Autowired
+    protected Exchange boltExchange;
+    @Autowired
+    protected MetaServerConfig metaServerConfig;
 
-  @Override
-  public Collection<InetSocketAddress> getConnections(String dataCenter) {
-    Server server = boltExchange.getServer(getServerPort());
-    if (server == null) {
-      return Collections.emptyList();
+    @Override
+    public Collection<InetSocketAddress> getConnections(String dataCenter) {
+        Server server = boltExchange.getServer(getServerPort());
+        if (server == null) {
+            return Collections.emptyList();
+        }
+        List<Channel> channels = server.getChannels();
+        List<InetSocketAddress> ret = Lists.newArrayListWithCapacity(channels.size());
+        for (Channel channel : channels) {
+            ret.add(channel.getRemoteAddress());
+        }
+        return ret;
     }
-    List<Channel> channels = server.getChannels();
-    List<InetSocketAddress> ret = Lists.newArrayListWithCapacity(channels.size());
-    for (Channel channel : channels) {
-      ret.add(channel.getRemoteAddress());
-    }
-    return ret;
-  }
 
-  protected abstract int getServerPort();
+    protected abstract int getServerPort();
 }

@@ -34,8 +34,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
- *
- *
  * @author <a href=ailto:zhanggeng.zg@antfin.com>GengZhang</a>
  */
 public class Http2ClientMultipleMain {
@@ -50,12 +48,12 @@ public class Http2ClientMultipleMain {
         ApplicationConfig application = new ApplicationConfig().setAppName("test-client");
 
         ConsumerConfig<ProtoService> consumerConfig = new ConsumerConfig<ProtoService>()
-            .setApplication(application)
-            .setInterfaceId(ProtoService.class.getName())
-            .setProtocol("h2c")
-            .setDirectUrl("h2c://127.0.0.1:12300")
-            .setSerialization("protobuf")
-            .setTimeout(3000);
+                .setApplication(application)
+                .setInterfaceId(ProtoService.class.getName())
+                .setProtocol("h2c")
+                .setDirectUrl("h2c://127.0.0.1:12300")
+                .setSerialization("protobuf")
+                .setTimeout(3000);
         final ProtoService protoService = consumerConfig.refer();
 
         LOGGER.warn("started at pid {}", RpcRuntimeContext.PID);
@@ -63,7 +61,7 @@ public class Http2ClientMultipleMain {
         final int threads = 50;
         final AtomicLong cnt = new AtomicLong(0);
         final ThreadPoolExecutor service1 = new ThreadPoolExecutor(threads, threads, 0L, TimeUnit.MILLISECONDS,
-            new SynchronousQueue<Runnable>(), new NamedThreadFactory("client-"));// 无队列
+                new SynchronousQueue<Runnable>(), new NamedThreadFactory("client-"));// 无队列
         for (int i = 0; i < threads; i++) {
             service1.execute(new Runnable() {
                 @Override
@@ -71,7 +69,7 @@ public class Http2ClientMultipleMain {
                     while (true) {
                         try {
                             EchoRequest request = EchoRequest.newBuilder().setGroup(Group.A).setName("12345678")
-                                .build();
+                                    .build();
                             EchoResponse s = protoService.echoObj(request);
                             cnt.incrementAndGet();
                         } catch (Throwable e) {

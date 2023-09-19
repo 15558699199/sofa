@@ -17,10 +17,10 @@
 package com.alipay.sofa.registry.compress;
 
 public class CompressConstants {
-  public static final String encodingGzip = "gzip";
-  public static final String encodingZstd = "zstd";
-  public static final int defaultCompressPushMinSize = 1024 * 4; // 4KB
-  public static final int defaultCompressDatumMinSize = 1024 * 12; // 12KB
+    public static final String encodingGzip = "gzip";
+    public static final String encodingZstd = "zstd";
+    public static final int defaultCompressPushMinSize = 1024 * 4; // 4KB
+    public static final int defaultCompressDatumMinSize = 1024 * 12; // 12KB
 
-  public static final String[] defaultCompressEncodes = new String[] {encodingZstd};
+    public static final String[] defaultCompressEncodes = new String[]{encodingZstd};
 }

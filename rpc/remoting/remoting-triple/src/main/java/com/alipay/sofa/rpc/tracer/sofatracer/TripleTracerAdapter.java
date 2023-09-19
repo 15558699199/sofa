@@ -64,7 +64,7 @@ public class TripleTracerAdapter {
     /**
      * slf4j for this class
      */
-    private static final Logger LOGGER     = LoggerFactory.getLogger(TripleTracerAdapter.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TripleTracerAdapter.class);
     private static final String USERID_KEY = "userid";
 
     /**
@@ -148,14 +148,14 @@ public class TripleTracerAdapter {
         }
 
         // set custom headers
-        try{
+        try {
             Set<Map.Entry<String, String>> customHeader = RpcInvokeContext.getContext().getCustomHeader().entrySet();
             for (Map.Entry<String, String> entry : customHeader) {
                 if (StringUtils.isNotBlank(entry.getValue())) {
                     requestHeader.put(TripleHeadKeys.getKey(entry.getKey()), entry.getValue());
                 }
             }
-        }finally {
+        } finally {
             RpcInvokeContext.getContext().clearCustomHeader();
         }
 
@@ -176,9 +176,9 @@ public class TripleTracerAdapter {
 
             if (requestHeaders.containsKey(TripleHeadKeys.HEAD_KEY_TARGET_SERVICE)) {
                 sofaRequest.setTargetServiceUniqueName(requestHeaders
-                    .get(TripleHeadKeys.HEAD_KEY_TARGET_SERVICE));
+                        .get(TripleHeadKeys.HEAD_KEY_TARGET_SERVICE));
                 sofaRequest.setInterfaceName(requestHeaders
-                    .get(TripleHeadKeys.HEAD_KEY_TARGET_SERVICE));
+                        .get(TripleHeadKeys.HEAD_KEY_TARGET_SERVICE));
             } else {
                 String serviceName = serverServiceDefinition.getServiceDescriptor().getName();
                 sofaRequest.setTargetServiceUniqueName(serviceName);
@@ -191,23 +191,23 @@ public class TripleTracerAdapter {
 
             if (requestHeaders.containsKey(TripleHeadKeys.HEAD_KEY_TARGET_APP)) {
                 sofaRequest.setTargetAppName(requestHeaders
-                    .get(TripleHeadKeys.HEAD_KEY_TARGET_APP));
+                        .get(TripleHeadKeys.HEAD_KEY_TARGET_APP));
             }
 
             //先取兼容的
             if (requestHeaders.containsKey(TripleHeadKeys.HEAD_KEY_OLD_TRACE_ID)) {
                 traceMap.put(TracerCompatibleConstants.TRACE_ID_KEY,
-                    requestHeaders.get(TripleHeadKeys.HEAD_KEY_OLD_TRACE_ID));
+                        requestHeaders.get(TripleHeadKeys.HEAD_KEY_OLD_TRACE_ID));
             } else if (requestHeaders.containsKey(TripleHeadKeys.HEAD_KEY_TRACE_ID)) {
                 traceMap.put(TracerCompatibleConstants.TRACE_ID_KEY,
-                    requestHeaders.get(TripleHeadKeys.HEAD_KEY_TRACE_ID));
+                        requestHeaders.get(TripleHeadKeys.HEAD_KEY_TRACE_ID));
             }
             if (requestHeaders.containsKey(TripleHeadKeys.HEAD_KEY_OLD_RPC_ID)) {
                 traceMap
-                    .put(TracerCompatibleConstants.RPC_ID_KEY, requestHeaders.get(TripleHeadKeys.HEAD_KEY_OLD_RPC_ID));
+                        .put(TracerCompatibleConstants.RPC_ID_KEY, requestHeaders.get(TripleHeadKeys.HEAD_KEY_OLD_RPC_ID));
             } else if (requestHeaders.containsKey(TripleHeadKeys.HEAD_KEY_RPC_ID)) {
                 traceMap
-                    .put(TracerCompatibleConstants.RPC_ID_KEY, requestHeaders.get(TripleHeadKeys.HEAD_KEY_RPC_ID));
+                        .put(TracerCompatibleConstants.RPC_ID_KEY, requestHeaders.get(TripleHeadKeys.HEAD_KEY_RPC_ID));
             }
 
             String uniqueId = "";
@@ -220,7 +220,7 @@ public class TripleTracerAdapter {
 
             if (requestHeaders.containsKey(TripleHeadKeys.HEAD_KEY_SAMP_TYPE)) {
                 traceMap.put(TracerCompatibleConstants.SAMPLING_MARK,
-                    requestHeaders.get(TripleHeadKeys.HEAD_KEY_SAMP_TYPE));
+                        requestHeaders.get(TripleHeadKeys.HEAD_KEY_SAMP_TYPE));
             }
 
             if (requestHeaders.containsKey(TripleHeadKeys.HEAD_KEY_CURRENT_APP)) {
@@ -229,21 +229,21 @@ public class TripleTracerAdapter {
 
             if (requestHeaders.containsKey(TripleHeadKeys.HEAD_KEY_PROTOCOL_TYPE)) {
                 sofaRequest.addRequestProp(RemotingConstants.HEAD_PROTOCOL,
-                    requestHeaders.get(TripleHeadKeys.HEAD_KEY_PROTOCOL_TYPE));
+                        requestHeaders.get(TripleHeadKeys.HEAD_KEY_PROTOCOL_TYPE));
             }
             if (requestHeaders.containsKey(TripleHeadKeys.HEAD_KEY_INVOKE_TYPE)) {
                 sofaRequest.addRequestProp(RemotingConstants.HEAD_INVOKE_TYPE,
-                    requestHeaders.get(TripleHeadKeys.HEAD_KEY_INVOKE_TYPE));
+                        requestHeaders.get(TripleHeadKeys.HEAD_KEY_INVOKE_TYPE));
             }
 
             if (requestHeaders.containsKey(TripleHeadKeys.HEAD_KEY_BIZ_BAGGAGE_TYPE)) {
                 traceMap.put(TracerCompatibleConstants.PEN_ATTRS_KEY,
-                    requestHeaders.get(TripleHeadKeys.HEAD_KEY_BIZ_BAGGAGE_TYPE));
+                        requestHeaders.get(TripleHeadKeys.HEAD_KEY_BIZ_BAGGAGE_TYPE));
             }
 
             if (requestHeaders.containsKey(TripleHeadKeys.HEAD_KEY_SYS_BAGGAGE_TYPE)) {
                 traceMap.put(TracerCompatibleConstants.PEN_SYS_ATTRS_KEY,
-                    requestHeaders.get(TripleHeadKeys.HEAD_KEY_SYS_BAGGAGE_TYPE));
+                        requestHeaders.get(TripleHeadKeys.HEAD_KEY_SYS_BAGGAGE_TYPE));
             }
 
             if (!traceMap.isEmpty()) {
@@ -256,7 +256,7 @@ public class TripleTracerAdapter {
 
             String remoteIp = "";
             SocketAddress socketAddress = call.getAttributes().get(
-                Grpc.TRANSPORT_ATTR_REMOTE_ADDR);
+                    Grpc.TRANSPORT_ATTR_REMOTE_ADDR);
             if (socketAddress instanceof InetSocketAddress) {
                 remoteIp = ((InetSocketAddress) socketAddress).getHostName();
             }
@@ -270,7 +270,7 @@ public class TripleTracerAdapter {
             if (serverSpan != null) {
                 //FIXME modify the dep relation
                 serverSpan.setTag("service",
-                    ConfigUniqueNameGenerator.getUniqueName(sofaRequest.getInterfaceName(), null, uniqueId));
+                        ConfigUniqueNameGenerator.getUniqueName(sofaRequest.getInterfaceName(), null, uniqueId));
                 serverSpan.setTag("method", methodName);
                 // 从请求里获取ConsumerTracerFilter额外传递的信息
                 serverSpan.setTag("remote.app", (String) sofaRequest.getRequestProp(HEAD_APP_NAME));

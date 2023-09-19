@@ -20,11 +20,7 @@ import com.alipay.sofa.rpc.client.ProviderGroup;
 import com.alipay.sofa.rpc.client.ProviderInfo;
 import com.alipay.sofa.rpc.common.RpcConstants;
 import com.alipay.sofa.rpc.common.utils.FileUtils;
-import com.alipay.sofa.rpc.config.ApplicationConfig;
-import com.alipay.sofa.rpc.config.ConsumerConfig;
-import com.alipay.sofa.rpc.config.ProviderConfig;
-import com.alipay.sofa.rpc.config.RegistryConfig;
-import com.alipay.sofa.rpc.config.ServerConfig;
+import com.alipay.sofa.rpc.config.*;
 import com.alipay.sofa.rpc.core.exception.SofaRpcRuntimeException;
 import com.alipay.sofa.rpc.listener.ProviderInfoListener;
 import com.alipay.sofa.rpc.log.Logger;
@@ -36,11 +32,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -49,27 +41,27 @@ import java.util.concurrent.TimeUnit;
  */
 public class LocalRegistryTest {
 
-    private final static Logger   LOGGER   = LoggerFactory.getLogger(LocalRegistryTest.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(LocalRegistryTest.class);
 
-    private static String         filePath = System.getProperty("user.home") + File.separator
-                                               + "localFileTest"
-                                               + new Random().nextInt(1000);
+    private static String filePath = System.getProperty("user.home") + File.separator
+            + "localFileTest"
+            + new Random().nextInt(1000);
 
-    private static String         file     = filePath + File.separator + "localRegistry.reg";
+    private static String file = filePath + File.separator + "localRegistry.reg";
 
     private static RegistryConfig registryConfig;
 
-    private static LocalRegistry  registry;
+    private static LocalRegistry registry;
 
     @BeforeClass
     public static void setUp() {
         FileUtils.cleanDirectory(new File(filePath));
 
         registryConfig = new RegistryConfig()
-            .setProtocol("local")
-            //.setParameter("registry.local.scan.period", "1000")
-            .setSubscribe(true)
-            .setRegister(true);
+                .setProtocol("local")
+                //.setParameter("registry.local.scan.period", "1000")
+                .setSubscribe(true)
+                .setRegister(true);
         //        registryConfig.setAddress()
         //                .setConnectTimeout(5000)
         //                .setHeartbeatPeriod(60000)
@@ -113,16 +105,16 @@ public class LocalRegistryTest {
     @Test
     public void testLoadFile() {
         ServerConfig serverConfig = new ServerConfig()
-            .setProtocol("bolt")
-            .setHost("0.0.0.0")
-            .setPort(12200);
+                .setProtocol("bolt")
+                .setHost("0.0.0.0")
+                .setPort(12200);
 
         ProviderConfig<?> provider = new ProviderConfig();
         provider.setInterfaceId("com.alipay.xxx.TestService")
-            .setUniqueId("unique123Id")
-            .setRegister(true)
-            .setRegistry(registryConfig)
-            .setServer(serverConfig);
+                .setUniqueId("unique123Id")
+                .setRegister(true)
+                .setRegistry(registryConfig)
+                .setServer(serverConfig);
 
         registry.register(provider);
         registry.destroy();
@@ -132,11 +124,11 @@ public class LocalRegistryTest {
 
         // 创建一个新的 localRegistry，会立即加载到缓存
         RegistryConfig newRegistryConfig = new RegistryConfig()
-            .setProtocol("local")
-            //.setParameter("registry.local.scan.period", "1000")
-            .setSubscribe(true)
-            .setFile(file)
-            .setRegister(true);
+                .setProtocol("local")
+                //.setParameter("registry.local.scan.period", "1000")
+                .setSubscribe(true)
+                .setFile(file)
+                .setRegister(true);
 
         LocalRegistry newRegistry = (LocalRegistry) RegistryFactory.getRegistry(newRegistryConfig);
 
@@ -146,9 +138,9 @@ public class LocalRegistryTest {
         // consumer 订阅时应该能立刻读到数据
         ConsumerConfig<?> consumer = new ConsumerConfig();
         consumer.setInterfaceId("com.alipay.xxx.TestService")
-            .setUniqueId("unique123Id")
-            .setRegistry(registryConfig)
-            .setSubscribe(true);
+                .setUniqueId("unique123Id")
+                .setRegistry(registryConfig)
+                .setSubscribe(true);
 
         List<ProviderGroup> subscribe = newRegistry.subscribe(consumer);
         Assert.assertFalse(subscribe.isEmpty());
@@ -163,34 +155,34 @@ public class LocalRegistryTest {
         int timeoutPerSub = 5000;
 
         ServerConfig serverConfig = new ServerConfig()
-            .setProtocol("bolt")
-            .setHost("0.0.0.0")
-            .setPort(12200);
+                .setProtocol("bolt")
+                .setHost("0.0.0.0")
+                .setPort(12200);
 
         ProviderConfig<?> provider = new ProviderConfig();
         provider.setInterfaceId("com.alipay.xxx.TestService")
-            .setUniqueId("unique123Id")
-            .setApplication(new ApplicationConfig().setAppName("test-server"))
-            .setProxy("javassist")
-            .setRegister(true)
-            .setRegistry(registryConfig)
-            .setSerialization("hessian2")
-            .setServer(serverConfig)
-            .setWeight(222)
-            .setTimeout(3000);
+                .setUniqueId("unique123Id")
+                .setApplication(new ApplicationConfig().setAppName("test-server"))
+                .setProxy("javassist")
+                .setRegister(true)
+                .setRegistry(registryConfig)
+                .setSerialization("hessian2")
+                .setServer(serverConfig)
+                .setWeight(222)
+                .setTimeout(3000);
 
         // 注册
         registry.register(provider);
 
         ConsumerConfig<?> consumer = new ConsumerConfig();
         consumer.setInterfaceId("com.alipay.xxx.TestService")
-            .setUniqueId("unique123Id")
-            .setApplication(new ApplicationConfig().setAppName("test-server"))
-            .setProxy("javassist")
-            .setSubscribe(true)
-            .setSerialization("java")
-            .setInvokeType("sync")
-            .setTimeout(4444);
+                .setUniqueId("unique123Id")
+                .setApplication(new ApplicationConfig().setAppName("test-server"))
+                .setProxy("javassist")
+                .setSubscribe(true)
+                .setSerialization("java")
+                .setInvokeType("sync")
+                .setTimeout(4444);
 
         String tag0 = LocalRegistryHelper.buildListDataId(provider, serverConfig.getProtocol());
         String tag1 = LocalRegistryHelper.buildListDataId(consumer, consumer.getProtocol());
@@ -222,9 +214,9 @@ public class LocalRegistryTest {
         latch = new CountDownLatch(1);
         providerInfoListener.setCountDownLatch(latch);
         provider.getServer().add(new ServerConfig()
-            .setProtocol("bolt")
-            .setHost("0.0.0.0")
-            .setPort(12201));
+                .setProtocol("bolt")
+                .setHost("0.0.0.0")
+                .setPort(12201));
         registry.register(provider);
         latch.await(timeoutPerSub * 2, TimeUnit.MILLISECONDS);
         Assert.assertTrue(ps.size() > 0);
@@ -234,13 +226,13 @@ public class LocalRegistryTest {
         // 重复订阅
         ConsumerConfig<?> consumer2 = new ConsumerConfig();
         consumer2.setInterfaceId("com.alipay.xxx.TestService")
-            .setUniqueId("unique123Id")
-            .setApplication(new ApplicationConfig().setAppName("test-server"))
-            .setProxy("javassist")
-            .setSubscribe(true)
-            .setSerialization("java")
-            .setInvokeType("sync")
-            .setTimeout(4444);
+                .setUniqueId("unique123Id")
+                .setApplication(new ApplicationConfig().setAppName("test-server"))
+                .setProxy("javassist")
+                .setSubscribe(true)
+                .setSerialization("java")
+                .setInvokeType("sync")
+                .setTimeout(4444);
         CountDownLatch latch2 = new CountDownLatch(1);
         LocalRegistryTest.MockProviderInfoListener providerInfoListener2 = new LocalRegistryTest.MockProviderInfoListener();
         providerInfoListener2.setCountDownLatch(latch2);
@@ -310,7 +302,7 @@ public class LocalRegistryTest {
 
         Map<String, ProviderGroup> ps = new HashMap<String, ProviderGroup>();
 
-        private CountDownLatch     countDownLatch;
+        private CountDownLatch countDownLatch;
 
         public void setCountDownLatch(CountDownLatch countDownLatch) {
             this.countDownLatch = countDownLatch;

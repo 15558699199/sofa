@@ -25,78 +25,17 @@ import java.util.Set;
  */
 public class ClientManagerAddress {
 
-  private final long version;
+    private final long version;
 
-  private final Map<String, AddressVersion> clientOffAddress;
+    private final Map<String, AddressVersion> clientOffAddress;
 
-  private final Set<String> reduces;
+    private final Set<String> reduces;
 
-  public ClientManagerAddress(
-      long version, Map<String, AddressVersion> clientOffAddress, Set<String> reduces) {
-    this.version = version;
-    this.clientOffAddress = clientOffAddress;
-    this.reduces = reduces;
-  }
-
-  /**
-   * Getter method for property <tt>version</tt>.
-   *
-   * @return property value of version
-   */
-  public long getVersion() {
-    return version;
-  }
-
-  /**
-   * Getter method for property <tt>clientOffAddress</tt>.
-   *
-   * @return property value of clientOffAddress
-   */
-  public Map<String, AddressVersion> getClientOffAddress() {
-    return clientOffAddress;
-  }
-
-  /**
-   * Getter method for property <tt>reduces</tt>.
-   *
-   * @return property value of reduces
-   */
-  public Set<String> getReduces() {
-    return reduces;
-  }
-
-  @Override
-  public String toString() {
-    return "ClientManagerAddress{"
-        + "version="
-        + version
-        + ", clientOffAddress="
-        + clientOffAddress
-        + '}';
-  }
-
-  public static class AddressVersion {
-    private long version;
-
-    private String address;
-
-    /** true:持久化关流pub false:临时关流pub */
-    private boolean pub = true;
-
-    /** true:持久化关流sub false:临时关流sub */
-    private boolean sub;
-
-    public AddressVersion() {}
-
-    public AddressVersion(String address, boolean sub) {
-      this.address = address;
-      this.sub = sub;
-    }
-
-    public AddressVersion(long version, String address, boolean sub) {
-      this.version = version;
-      this.address = address;
-      this.sub = sub;
+    public ClientManagerAddress(
+            long version, Map<String, AddressVersion> clientOffAddress, Set<String> reduces) {
+        this.version = version;
+        this.clientOffAddress = clientOffAddress;
+        this.reduces = reduces;
     }
 
     /**
@@ -105,39 +44,105 @@ public class ClientManagerAddress {
      * @return property value of version
      */
     public long getVersion() {
-      return version;
+        return version;
     }
 
     /**
-     * Getter method for property <tt>address</tt>.
+     * Getter method for property <tt>clientOffAddress</tt>.
      *
-     * @return property value of address
+     * @return property value of clientOffAddress
      */
-    public String getAddress() {
-      return address;
+    public Map<String, AddressVersion> getClientOffAddress() {
+        return clientOffAddress;
     }
 
-    public boolean isPub() {
-      return pub;
-    }
-
-    public boolean isSub() {
-      return sub;
+    /**
+     * Getter method for property <tt>reduces</tt>.
+     *
+     * @return property value of reduces
+     */
+    public Set<String> getReduces() {
+        return reduces;
     }
 
     @Override
     public String toString() {
-      return "AddressVersion{"
-          + "version="
-          + version
-          + ", address='"
-          + address
-          + '\''
-          + ", pub="
-          + pub
-          + ", sub="
-          + sub
-          + '}';
+        return "ClientManagerAddress{"
+                + "version="
+                + version
+                + ", clientOffAddress="
+                + clientOffAddress
+                + '}';
     }
-  }
+
+    public static class AddressVersion {
+        private long version;
+
+        private String address;
+
+        /**
+         * true:持久化关流pub false:临时关流pub
+         */
+        private boolean pub = true;
+
+        /**
+         * true:持久化关流sub false:临时关流sub
+         */
+        private boolean sub;
+
+        public AddressVersion() {
+        }
+
+        public AddressVersion(String address, boolean sub) {
+            this.address = address;
+            this.sub = sub;
+        }
+
+        public AddressVersion(long version, String address, boolean sub) {
+            this.version = version;
+            this.address = address;
+            this.sub = sub;
+        }
+
+        /**
+         * Getter method for property <tt>version</tt>.
+         *
+         * @return property value of version
+         */
+        public long getVersion() {
+            return version;
+        }
+
+        /**
+         * Getter method for property <tt>address</tt>.
+         *
+         * @return property value of address
+         */
+        public String getAddress() {
+            return address;
+        }
+
+        public boolean isPub() {
+            return pub;
+        }
+
+        public boolean isSub() {
+            return sub;
+        }
+
+        @Override
+        public String toString() {
+            return "AddressVersion{"
+                    + "version="
+                    + version
+                    + ", address='"
+                    + address
+                    + '\''
+                    + ", pub="
+                    + pub
+                    + ", sub="
+                    + sub
+                    + '}';
+        }
+    }
 }

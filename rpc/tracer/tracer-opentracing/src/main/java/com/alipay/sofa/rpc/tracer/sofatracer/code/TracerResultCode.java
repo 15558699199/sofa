@@ -27,29 +27,29 @@ public class TracerResultCode {
     /**
      * 返回成功
      */
-    public static final String RPC_RESULT_SUCCESS                 = "00";
+    public static final String RPC_RESULT_SUCCESS = "00";
     /**
      * 业务失败
      */
-    public static final String RPC_RESULT_BIZ_FAILED              = "01";
+    public static final String RPC_RESULT_BIZ_FAILED = "01";
     /**
      * RPC逻辑失败
      */
-    public static final String RPC_RESULT_RPC_FAILED              = "02";
+    public static final String RPC_RESULT_RPC_FAILED = "02";
     /**
      * 超时失败
      */
-    public static final String RPC_RESULT_TIMEOUT_FAILED          = "03";
+    public static final String RPC_RESULT_TIMEOUT_FAILED = "03";
     /**
      * 路由失败
      */
-    public static final String RPC_RESULT_ROUTE_FAILED            = "04";
+    public static final String RPC_RESULT_ROUTE_FAILED = "04";
 
     /* ==================== Tracer异常日志里的异常类型 ==================== */
     /**
      * 业务异常
      */
-    public static final String RPC_ERROR_TYPE_BIZ_ERROR           = "biz_error";
+    public static final String RPC_ERROR_TYPE_BIZ_ERROR = "biz_error";
     /**
      * 地址路由异常
      */
@@ -57,13 +57,13 @@ public class TracerResultCode {
     /**
      * 序列化异常
      */
-    public static final String RPC_ERROR_TYPE_SERIALIZE_ERROR     = "serialize_error";
+    public static final String RPC_ERROR_TYPE_SERIALIZE_ERROR = "serialize_error";
     /**
      * 超时异常
      */
-    public static final String RPC_ERROR_TYPE_TIMEOUT_ERROR       = "timeout_error";
+    public static final String RPC_ERROR_TYPE_TIMEOUT_ERROR = "timeout_error";
     /**
      * 未知异常
      */
-    public static final String RPC_ERROR_TYPE_UNKNOWN_ERROR       = "unknown_error";
+    public static final String RPC_ERROR_TYPE_UNKNOWN_ERROR = "unknown_error";
 }

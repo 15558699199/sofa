@@ -16,51 +16,51 @@
  */
 package com.alipay.sofa.registry.client.provider;
 
-import static org.mockito.Mockito.times;
-
 import com.alipay.sofa.registry.client.api.*;
 import com.alipay.sofa.registry.client.event.DefaultEventBus;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import static org.mockito.Mockito.times;
+
 public class DefaultObserverHandlerTest {
-  private RegistryClientConfig config;
-  private EventBus eventBus;
-  private DefaultObserverHandler handler;
+    private RegistryClientConfig config;
+    private EventBus eventBus;
+    private DefaultObserverHandler handler;
 
-  void init() {
-    config = DefaultRegistryClientConfigBuilder.start().build();
-    eventBus = new DefaultEventBus(config);
-    handler = new DefaultObserverHandler(config, eventBus);
-  }
+    void init() {
+        config = DefaultRegistryClientConfigBuilder.start().build();
+        eventBus = new DefaultEventBus(config);
+        handler = new DefaultObserverHandler(config, eventBus);
+    }
 
-  @Test
-  public void testSubscriber() throws Exception {
-    init();
-    handler.notify((Subscriber) null);
-    Subscriber exceptionSubscriber = Mockito.mock(Subscriber.class);
-    Mockito.when(exceptionSubscriber.getDataObserver()).thenThrow(new RuntimeException());
-    handler.notify(exceptionSubscriber);
-    Subscriber mockSubscriber = Mockito.mock(Subscriber.class);
-    Mockito.when(mockSubscriber.getDataObserver())
-        .thenReturn(Mockito.mock(SubscriberDataObserver.class));
-    handler.notify(mockSubscriber);
-    Thread.sleep(100);
-    Mockito.verify(mockSubscriber, times(1)).getDataObserver();
-  }
+    @Test
+    public void testSubscriber() throws Exception {
+        init();
+        handler.notify((Subscriber) null);
+        Subscriber exceptionSubscriber = Mockito.mock(Subscriber.class);
+        Mockito.when(exceptionSubscriber.getDataObserver()).thenThrow(new RuntimeException());
+        handler.notify(exceptionSubscriber);
+        Subscriber mockSubscriber = Mockito.mock(Subscriber.class);
+        Mockito.when(mockSubscriber.getDataObserver())
+                .thenReturn(Mockito.mock(SubscriberDataObserver.class));
+        handler.notify(mockSubscriber);
+        Thread.sleep(100);
+        Mockito.verify(mockSubscriber, times(1)).getDataObserver();
+    }
 
-  @Test
-  public void testConfigurator() throws Exception {
-    init();
-    handler.notify((Configurator) null);
-    Configurator exceptionConfigurator = Mockito.mock(Configurator.class);
-    Mockito.when(exceptionConfigurator.getDataObserver()).thenThrow(new RuntimeException());
-    handler.notify(exceptionConfigurator);
-    Configurator mockConfigurator = Mockito.mock(Configurator.class);
-    Mockito.when(mockConfigurator.getDataObserver())
-        .thenReturn(Mockito.mock(ConfigDataObserver.class));
-    handler.notify(mockConfigurator);
-    Thread.sleep(100);
-    Mockito.verify(mockConfigurator, times(1)).getDataObserver();
-  }
+    @Test
+    public void testConfigurator() throws Exception {
+        init();
+        handler.notify((Configurator) null);
+        Configurator exceptionConfigurator = Mockito.mock(Configurator.class);
+        Mockito.when(exceptionConfigurator.getDataObserver()).thenThrow(new RuntimeException());
+        handler.notify(exceptionConfigurator);
+        Configurator mockConfigurator = Mockito.mock(Configurator.class);
+        Mockito.when(mockConfigurator.getDataObserver())
+                .thenReturn(Mockito.mock(ConfigDataObserver.class));
+        handler.notify(mockConfigurator);
+        Thread.sleep(100);
+        Mockito.verify(mockConfigurator, times(1)).getDataObserver();
+    }
 }

@@ -41,56 +41,56 @@ public class ZookeeperSubscribeObserverTest extends BaseZkTest {
     @Test
     public void testAll() throws Exception {
         RegistryConfig registryConfig = new RegistryConfig().setProtocol(RpcConstants.REGISTRY_PROTOCOL_ZK)
-            .setAddress("127.0.0.1:2181");
+                .setAddress("127.0.0.1:2181");
         ZookeeperRegistry registry = (ZookeeperRegistry) RegistryFactory
-            .getRegistry(registryConfig);
+                .getRegistry(registryConfig);
         registry.start();
 
         ServerConfig serverConfig = new ServerConfig().setPort(22222)
-            .setProtocol(RpcConstants.PROTOCOL_TYPE_BOLT);
+                .setProtocol(RpcConstants.PROTOCOL_TYPE_BOLT);
         ProviderConfig<HelloService> providerConfig = new ProviderConfig<HelloService>()
-            .setInterfaceId(HelloService.class.getName()).setRef(new HelloServiceImpl(22222))
-            .setServer(serverConfig).setRegistry(registryConfig)
-            .setParameter(ProviderInfoAttrs.ATTR_WARMUP_TIME, "2000")
-            .setParameter(ProviderInfoAttrs.ATTR_WARMUP_WEIGHT, "100").setUniqueId("uniqueIdA")
-            .setRepeatedExportLimit(-1).setWeight(0);
+                .setInterfaceId(HelloService.class.getName()).setRef(new HelloServiceImpl(22222))
+                .setServer(serverConfig).setRegistry(registryConfig)
+                .setParameter(ProviderInfoAttrs.ATTR_WARMUP_TIME, "2000")
+                .setParameter(ProviderInfoAttrs.ATTR_WARMUP_WEIGHT, "100").setUniqueId("uniqueIdA")
+                .setRepeatedExportLimit(-1).setWeight(0);
 
         ServerConfig serverConfig2 = new ServerConfig().setPort(22111)
-            .setProtocol(RpcConstants.PROTOCOL_TYPE_BOLT);
+                .setProtocol(RpcConstants.PROTOCOL_TYPE_BOLT);
         ProviderConfig<HelloService> providerConfig2 = new ProviderConfig<HelloService>()
-            .setInterfaceId(HelloService.class.getName()).setRef(new HelloServiceImpl(22111))
-            .setServer(serverConfig2).setRegistry(registryConfig)
-            .setUniqueId("uniqueIdB").setRepeatedExportLimit(-1).setWeight(0);
+                .setInterfaceId(HelloService.class.getName()).setRef(new HelloServiceImpl(22111))
+                .setServer(serverConfig2).setRegistry(registryConfig)
+                .setUniqueId("uniqueIdB").setRepeatedExportLimit(-1).setWeight(0);
 
         providerConfig.export();
         providerConfig2.export();
 
         ConsumerConfig<HelloService> consumerConfig = new ConsumerConfig<HelloService>()
-            .setInterfaceId(HelloService.class.getName()).setRegistry(registryConfig)
-            .setTimeout(3333).setUniqueId("uniqueIdA").setProtocol(RpcConstants.PROTOCOL_TYPE_BOLT);
+                .setInterfaceId(HelloService.class.getName()).setRegistry(registryConfig)
+                .setTimeout(3333).setUniqueId("uniqueIdA").setProtocol(RpcConstants.PROTOCOL_TYPE_BOLT);
         HelloService helloService = consumerConfig.refer();
 
         AddressHolder addressHolder = consumerConfig.getConsumerBootstrap().getCluster()
-            .getAddressHolder();
+                .getAddressHolder();
         Assert.assertTrue(addressHolder.getAllProviderSize() == 1);
 
         ServerConfig serverConfig3 = new ServerConfig().setPort(22133)
-            .setProtocol(RpcConstants.PROTOCOL_TYPE_BOLT);
+                .setProtocol(RpcConstants.PROTOCOL_TYPE_BOLT);
         ProviderConfig<HelloService> providerConfig3 = new ProviderConfig<HelloService>()
-            .setInterfaceId(HelloService.class.getName()).setRef(new HelloServiceImpl(22133))
-            .setServer(serverConfig3).setRegistry(registryConfig).setRepeatedExportLimit(-1)
-            .setUniqueId("uniqueIdB").setRepeatedExportLimit(-1).setWeight(0);
+                .setInterfaceId(HelloService.class.getName()).setRef(new HelloServiceImpl(22133))
+                .setServer(serverConfig3).setRegistry(registryConfig).setRepeatedExportLimit(-1)
+                .setUniqueId("uniqueIdB").setRepeatedExportLimit(-1).setWeight(0);
 
         providerConfig3.export();
 
         Assert.assertTrue(delayGetSize(addressHolder, 1, 100) == 1);
 
         ServerConfig serverConfig4 = new ServerConfig().setPort(22244)
-            .setProtocol(RpcConstants.PROTOCOL_TYPE_BOLT);
+                .setProtocol(RpcConstants.PROTOCOL_TYPE_BOLT);
         ProviderConfig<HelloService> providerConfig4 = new ProviderConfig<HelloService>()
-            .setInterfaceId(HelloService.class.getName()).setRef(new HelloServiceImpl(22244))
-            .setServer(serverConfig4).setRegistry(registryConfig).setUniqueId("uniqueIdA")
-            .setRepeatedExportLimit(-1).setWeight(0);
+                .setInterfaceId(HelloService.class.getName()).setRef(new HelloServiceImpl(22244))
+                .setServer(serverConfig4).setRegistry(registryConfig).setUniqueId("uniqueIdA")
+                .setRepeatedExportLimit(-1).setWeight(0);
 
         providerConfig4.export();
 

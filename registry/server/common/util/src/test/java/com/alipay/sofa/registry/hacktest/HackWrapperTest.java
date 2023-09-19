@@ -20,10 +20,10 @@ import org.apache.logging.log4j.core.async.HackTest;
 import org.junit.Test;
 
 public class HackWrapperTest {
-  @Test
-  public void test() throws Exception {
-    HackTest hack = new HackTest();
-    hack.testSLF4jLogger();
-    hack.test();
-  }
+    @Test
+    public void test() throws Exception {
+        HackTest hack = new HackTest();
+        hack.testSLF4jLogger();
+        hack.test();
+    }
 }

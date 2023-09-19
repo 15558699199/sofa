@@ -26,8 +26,6 @@ import java.util.List;
 import java.util.Map;
 
 /**
- *
- *
  * @author <a href="mailto:zhanggeng.zg@antfin.com">GengZhang</a>
  */
 public class RandomLoadBalancerTest extends BaseLoadBalancerTest {
@@ -58,7 +56,7 @@ public class RandomLoadBalancerTest extends BaseLoadBalancerTest {
             int avg = total / size;
             for (int i = 0; i < size; i++) {
                 Assert.assertTrue(avg * 0.9 < cnt.get(9000 + i)
-                    && avg * 1.1 > cnt.get(9000 + i)); // 随机偏差不会太大，应该不超过10%
+                        && avg * 1.1 > cnt.get(9000 + i)); // 随机偏差不会太大，应该不超过10%
             }
         }
 
@@ -86,7 +84,7 @@ public class RandomLoadBalancerTest extends BaseLoadBalancerTest {
             int per = total / count;
             for (int i = 1; i < size; i++) {
                 Assert.assertTrue(per * i * 0.85 < cnt.get(9000 + i)
-                    && per * i * 1.15 > cnt.get(9000 + i)); // 随机偏差不会太大，应该不超过15%
+                        && per * i * 1.15 > cnt.get(9000 + i)); // 随机偏差不会太大，应该不超过15%
             }
         }
     }

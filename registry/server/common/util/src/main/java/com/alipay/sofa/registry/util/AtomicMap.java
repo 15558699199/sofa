@@ -17,34 +17,34 @@
 package com.alipay.sofa.registry.util;
 
 import com.google.common.collect.Maps;
+
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class AtomicMap<K, V> {
 
-  private Map<K, V> data = Maps.newConcurrentMap();
+    private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
+    private final ReentrantReadWriteLock.ReadLock readLock = lock.readLock();
+    private final ReentrantReadWriteLock.WriteLock writeLock = lock.writeLock();
+    private Map<K, V> data = Maps.newConcurrentMap();
 
-  private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
-  private final ReentrantReadWriteLock.ReadLock readLock = lock.readLock();
-  private final ReentrantReadWriteLock.WriteLock writeLock = lock.writeLock();
-
-  public V put(K key, V value) {
-    readLock.lock();
-    try {
-      return data.put(key, value);
-    } finally {
-      readLock.unlock();
+    public V put(K key, V value) {
+        readLock.lock();
+        try {
+            return data.put(key, value);
+        } finally {
+            readLock.unlock();
+        }
     }
-  }
 
-  public Map<K, V> getAndReset() {
-    writeLock.lock();
-    try {
-      Map<K, V> ret = data;
-      data = Maps.newConcurrentMap();
-      return ret;
-    } finally {
-      writeLock.unlock();
+    public Map<K, V> getAndReset() {
+        writeLock.lock();
+        try {
+            Map<K, V> ret = data;
+            data = Maps.newConcurrentMap();
+            return ret;
+        } finally {
+            writeLock.unlock();
+        }
     }
-  }
 }

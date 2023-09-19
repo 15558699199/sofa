@@ -41,7 +41,7 @@ import static org.mockito.Mockito.when;
 public class InjectSpyToAopProxyBeanTests {
 
     @SpyBeanInjector(field = "service", type = ExampleServiceCaller.class)
-    private ExampleService     exampleService;
+    private ExampleService exampleService;
 
     @Autowired
     private ApplicationContext applicationContext;
@@ -50,7 +50,7 @@ public class InjectSpyToAopProxyBeanTests {
     public void checkSpy() {
         when(exampleService.greeting()).thenReturn("aspy");
         ExampleServiceCallerInterface bean = this.applicationContext
-            .getBean(ExampleServiceCallerInterface.class);
+                .getBean(ExampleServiceCallerInterface.class);
         assertThat(bean.sayGreeting()).isEqualTo("aspy");
         assertThat(bean.sayHello()).isEqualTo("hello");
     }

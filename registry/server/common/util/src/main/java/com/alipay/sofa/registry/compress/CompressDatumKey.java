@@ -18,61 +18,62 @@ package com.alipay.sofa.registry.compress;
 
 import com.alipay.sofa.registry.util.StringFormatter;
 import com.alipay.sofa.registry.util.StringUtils;
+
 import java.util.Objects;
 
 public class CompressDatumKey implements CompressKey {
-  private final String encode;
-  private final String dataInfoId;
-  private final String dataCenter;
-  private final long version;
-  private final int pubNum;
-  private final int byteSize;
+    private final String encode;
+    private final String dataInfoId;
+    private final String dataCenter;
+    private final long version;
+    private final int pubNum;
+    private final int byteSize;
 
-  public CompressDatumKey(
-      String encode, String dataInfoId, String dataCenter, long version, int pubNum) {
-    this.encode = encode;
-    this.dataInfoId = dataInfoId;
-    this.dataCenter = dataCenter;
-    this.version = version;
-    this.pubNum = pubNum;
-    this.byteSize = calcSize();
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
+    public CompressDatumKey(
+            String encode, String dataInfoId, String dataCenter, long version, int pubNum) {
+        this.encode = encode;
+        this.dataInfoId = dataInfoId;
+        this.dataCenter = dataCenter;
+        this.version = version;
+        this.pubNum = pubNum;
+        this.byteSize = calcSize();
     }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        CompressDatumKey that = (CompressDatumKey) o;
+        return version == that.version
+                && pubNum == that.pubNum
+                && Objects.equals(encode, that.encode)
+                && Objects.equals(dataInfoId, that.dataInfoId)
+                && Objects.equals(dataCenter, that.dataCenter);
     }
-    CompressDatumKey that = (CompressDatumKey) o;
-    return version == that.version
-        && pubNum == that.pubNum
-        && Objects.equals(encode, that.encode)
-        && Objects.equals(dataInfoId, that.dataInfoId)
-        && Objects.equals(dataCenter, that.dataCenter);
-  }
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(encode, dataInfoId, dataCenter, version, pubNum);
-  }
+    @Override
+    public int hashCode() {
+        return Objects.hash(encode, dataInfoId, dataCenter, version, pubNum);
+    }
 
-  @Override
-  public int size() {
-    return byteSize;
-  }
+    @Override
+    public int size() {
+        return byteSize;
+    }
 
-  private int calcSize() {
-    return StringUtils.sizeof(encode)
-        + StringUtils.sizeof(dataCenter)
-        + StringUtils.sizeof(dataCenter)
-        + 16;
-  }
+    private int calcSize() {
+        return StringUtils.sizeof(encode)
+                + StringUtils.sizeof(dataCenter)
+                + StringUtils.sizeof(dataCenter)
+                + 16;
+    }
 
-  @Override
-  public String toString() {
-    return StringFormatter.format("dataInfoId={}, ver={}, encode={}", dataInfoId, version, encode);
-  }
+    @Override
+    public String toString() {
+        return StringFormatter.format("dataInfoId={}, ver={}, encode={}", dataInfoId, version, encode);
+    }
 }

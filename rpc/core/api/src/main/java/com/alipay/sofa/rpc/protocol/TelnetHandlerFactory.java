@@ -38,13 +38,13 @@ public class TelnetHandlerFactory {
     /**
      * slf4j Logger for this class
      */
-    private final static Logger                         LOGGER           = LoggerFactory
-                                                                             .getLogger(TelnetHandlerFactory.class);
+    private final static Logger LOGGER = LoggerFactory
+            .getLogger(TelnetHandlerFactory.class);
 
     /**
      * 保存支持的全部命令，{命令：解析器}
      */
-    private static Map<String, TelnetHandler>           supportedCmds    = new ConcurrentHashMap<String, TelnetHandler>();
+    private static Map<String, TelnetHandler> supportedCmds = new ConcurrentHashMap<String, TelnetHandler>();
 
     /**
      * 扩展器

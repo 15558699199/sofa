@@ -28,9 +28,10 @@ import com.alipay.sofa.registry.server.data.slot.SlotChangeListener;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import org.apache.commons.lang.StringUtils;
+
 import java.util.*;
 import java.util.function.BiConsumer;
-import org.apache.commons.lang.StringUtils;
 
 /**
  * cache of datum, providing query function to the upper module
@@ -41,226 +42,226 @@ import org.apache.commons.lang.StringUtils;
  */
 public class DatumStorageDelegate implements DatumStorage {
 
-  private final String localDataCenter;
-  private final DatumStorage localDatumStorage;
+    private final String localDataCenter;
+    private final DatumStorage localDatumStorage;
 
-  private final DatumStorage multiClusterDatumStorage;
+    private final DatumStorage multiClusterDatumStorage;
 
-  public DatumStorageDelegate(DataServerConfig dataServerConfig) {
-    this.localDataCenter = dataServerConfig.getLocalDataCenter();
-    this.localDatumStorage = new LocalDatumStorage(localDataCenter);
-    this.multiClusterDatumStorage = new MultiClusterDatumStorage();
-  }
-
-  @Override
-  public Set<String> allDataCenters() {
-    Set<String> allDataCenters = Sets.newLinkedHashSetWithExpectedSize(6);
-    allDataCenters.add(localDataCenter);
-    allDataCenters.addAll(multiClusterDatumStorage.allDataCenters());
-    return allDataCenters;
-  }
-
-  /**
-   * get datum by specific dataCenter and dataInfoId
-   *
-   * @param dataCenter dataCenter
-   * @param dataInfoId dataInfoId
-   * @return Datum
-   */
-  @Override
-  public Datum get(String dataCenter, String dataInfoId) {
-    return storageOf(dataCenter).get(dataCenter, dataInfoId);
-  }
-
-  public void cleanLocal(String dataCenter, String dataInfoId) {
-    localDatumStorage.removePublishers(dataCenter, dataInfoId, null);
-  }
-
-  @Override
-  public DatumVersion getVersion(String dataCenter, String dataInfoId) {
-    DatumVersion version = storageOf(dataCenter).getVersion(dataCenter, dataInfoId);
-    return version;
-  }
-
-  @Override
-  public Map<String, DatumVersion> getVersions(
-      String dataCenter, int slotId, Collection<String> targetDataInfoIds) {
-    return storageOf(dataCenter).getVersions(dataCenter, slotId, targetDataInfoIds);
-  }
-
-  @Override
-  public DatumVersion updateVersion(String dataCenter, String dataInfoId) {
-    return storageOf(dataCenter).updateVersion(dataCenter, dataInfoId);
-  }
-
-  /**
-   * get all datum
-   *
-   * @return Map
-   */
-  public Map<String, Map<String, Datum>> getLocalAll() {
-    Map<String, Map<String, Datum>> datumMap = new HashMap<>();
-    datumMap.put(localDataCenter, localDatumStorage.getAll(localDataCenter));
-    return datumMap;
-  }
-
-  // get without datum.version, it's more efficient than getDatum
-  public Map<String, Map<String, List<Publisher>>> getAllPublisher() {
-    Map<String, Map<String, List<Publisher>>> datumMap = new HashMap<>();
-    datumMap.put(localDataCenter, localDatumStorage.getAllPublisher(localDataCenter));
-
-    for (String dataCenter : multiClusterDatumStorage.allDataCenters()) {
-      datumMap.put(dataCenter, multiClusterDatumStorage.getAllPublisher(dataCenter));
+    public DatumStorageDelegate(DataServerConfig dataServerConfig) {
+        this.localDataCenter = dataServerConfig.getLocalDataCenter();
+        this.localDatumStorage = new LocalDatumStorage(localDataCenter);
+        this.multiClusterDatumStorage = new MultiClusterDatumStorage();
     }
-    return datumMap;
-  }
 
-  public Map<String, Map<String, Integer>> getLocalPubCount() {
-    Map<String, Map<String, Integer>> map = Maps.newHashMap();
-    map.put(localDataCenter, localDatumStorage.getPubCount(localDataCenter));
-    return map;
-  }
+    @Override
+    public Set<String> allDataCenters() {
+        Set<String> allDataCenters = Sets.newLinkedHashSetWithExpectedSize(6);
+        allDataCenters.add(localDataCenter);
+        allDataCenters.addAll(multiClusterDatumStorage.allDataCenters());
+        return allDataCenters;
+    }
 
-  @Override
-  public Map<String, Publisher> getByConnectId(ConnectId connectId) {
-    return localDatumStorage.getByConnectId(connectId);
-  }
+    /**
+     * get datum by specific dataCenter and dataInfoId
+     *
+     * @param dataCenter dataCenter
+     * @param dataInfoId dataInfoId
+     * @return Datum
+     */
+    @Override
+    public Datum get(String dataCenter, String dataInfoId) {
+        return storageOf(dataCenter).get(dataCenter, dataInfoId);
+    }
 
-  @Override
-  public Map<String, Map<String, Publisher>> getPublishers(String dataCenter, int slot) {
-    return storageOf(dataCenter).getPublishers(dataCenter, slot);
-  }
+    public void cleanLocal(String dataCenter, String dataInfoId) {
+        localDatumStorage.removePublishers(dataCenter, dataInfoId, null);
+    }
 
-  /**
-   * get all datum
-   *
-   * @return Map
-   * @param dataCenter dataCenter
-   */
-  @Override
-  public Map<String, Datum> getAll(String dataCenter) {
-    return storageOf(dataCenter).getAll(dataCenter);
-  }
+    @Override
+    public DatumVersion getVersion(String dataCenter, String dataInfoId) {
+        DatumVersion version = storageOf(dataCenter).getVersion(dataCenter, dataInfoId);
+        return version;
+    }
 
-  @Override
-  public Map<String, List<Publisher>> getAllPublisher(String dataCenter) {
-    return storageOf(dataCenter).getAllPublisher(dataCenter);
-  }
+    @Override
+    public Map<String, DatumVersion> getVersions(
+            String dataCenter, int slotId, Collection<String> targetDataInfoIds) {
+        return storageOf(dataCenter).getVersions(dataCenter, slotId, targetDataInfoIds);
+    }
 
-  @Override
-  public Map<String, Integer> getPubCount(String dataCenter) {
-    return storageOf(dataCenter).getPubCount(dataCenter);
-  }
+    @Override
+    public DatumVersion updateVersion(String dataCenter, String dataInfoId) {
+        return storageOf(dataCenter).updateVersion(dataCenter, dataInfoId);
+    }
 
-  @Override
-  public void putPublisherGroups(String dataCenter, int slotId) {
-    storageOf(dataCenter).putPublisherGroups(dataCenter, slotId);
-  }
+    /**
+     * get all datum
+     *
+     * @return Map
+     */
+    public Map<String, Map<String, Datum>> getLocalAll() {
+        Map<String, Map<String, Datum>> datumMap = new HashMap<>();
+        datumMap.put(localDataCenter, localDatumStorage.getAll(localDataCenter));
+        return datumMap;
+    }
 
-  @Override
-  public DatumVersion putPublisher(String dataCenter, Publisher publisher) {
-    return storageOf(dataCenter).putPublisher(dataCenter, publisher);
-  }
+    // get without datum.version, it's more efficient than getDatum
+    public Map<String, Map<String, List<Publisher>>> getAllPublisher() {
+        Map<String, Map<String, List<Publisher>>> datumMap = new HashMap<>();
+        datumMap.put(localDataCenter, localDatumStorage.getAllPublisher(localDataCenter));
 
-  @Override
-  public DatumVersion putPublisher(
-      String dataCenter, String dataInfoId, List<Publisher> updatedPublishers) {
-    return storageOf(dataCenter).putPublisher(dataCenter, dataInfoId, updatedPublishers);
-  }
+        for (String dataCenter : multiClusterDatumStorage.allDataCenters()) {
+            datumMap.put(dataCenter, multiClusterDatumStorage.getAllPublisher(dataCenter));
+        }
+        return datumMap;
+    }
 
-  @Override
-  public DatumVersion createEmptyDatumIfAbsent(String dataCenter, String dataInfoId) {
-    return storageOf(dataCenter).createEmptyDatumIfAbsent(dataCenter, dataInfoId);
-  }
+    public Map<String, Map<String, Integer>> getLocalPubCount() {
+        Map<String, Map<String, Integer>> map = Maps.newHashMap();
+        map.put(localDataCenter, localDatumStorage.getPubCount(localDataCenter));
+        return map;
+    }
 
-  @Override
-  public Map<String, DatumVersion> cleanBySessionId(
-      String dataCenter, int slotId, ProcessId sessionProcessId, CleanContinues cleanContinues) {
-    return storageOf(dataCenter)
-        .cleanBySessionId(dataCenter, slotId, sessionProcessId, cleanContinues);
-  }
+    @Override
+    public Map<String, Publisher> getByConnectId(ConnectId connectId) {
+        return localDatumStorage.getByConnectId(connectId);
+    }
 
-  @Override
-  public boolean removePublisherGroups(String dataCenter, int slotId) {
-    return storageOf(dataCenter).removePublisherGroups(dataCenter, slotId);
-  }
+    @Override
+    public Map<String, Map<String, Publisher>> getPublishers(String dataCenter, int slot) {
+        return storageOf(dataCenter).getPublishers(dataCenter, slot);
+    }
 
-  @Override
-  public DatumVersion removePublishers(
-      String dataCenter, String dataInfoId, ProcessId sessionProcessId) {
-    return storageOf(dataCenter).removePublishers(dataCenter, dataInfoId, sessionProcessId);
-  }
+    /**
+     * get all datum
+     *
+     * @param dataCenter dataCenter
+     * @return Map
+     */
+    @Override
+    public Map<String, Datum> getAll(String dataCenter) {
+        return storageOf(dataCenter).getAll(dataCenter);
+    }
 
-  @Override
-  public DatumVersion removePublishers(
-      String dataCenter,
-      String dataInfoId,
-      ProcessId sessionProcessId,
-      Map<String, RegisterVersion> removedPublishers) {
-    return storageOf(dataCenter)
-        .removePublishers(dataCenter, dataInfoId, sessionProcessId, removedPublishers);
-  }
+    @Override
+    public Map<String, List<Publisher>> getAllPublisher(String dataCenter) {
+        return storageOf(dataCenter).getAllPublisher(dataCenter);
+    }
 
-  @Override
-  public void foreach(String dataCenter, int slotId, BiConsumer<String, PublisherGroup> f) {
-    storageOf(dataCenter).foreach(dataCenter, slotId, f);
-  }
+    @Override
+    public Map<String, Integer> getPubCount(String dataCenter) {
+        return storageOf(dataCenter).getPubCount(dataCenter);
+    }
 
-  @Override
-  public boolean removeStorage(String dataCenter) {
-    return storageOf(dataCenter).removeStorage(dataCenter);
-  }
+    @Override
+    public void putPublisherGroups(String dataCenter, int slotId) {
+        storageOf(dataCenter).putPublisherGroups(dataCenter, slotId);
+    }
 
-  @Override
-  public DatumVersion clearPublishers(String dataCenter, String dataInfoId) {
-    return storageOf(dataCenter).clearPublishers(dataCenter, dataInfoId);
-  }
+    @Override
+    public DatumVersion putPublisher(String dataCenter, Publisher publisher) {
+        return storageOf(dataCenter).putPublisher(dataCenter, publisher);
+    }
 
-  @Override
-  public Map<String, DatumVersion> clearGroupPublishers(String dataCenter, String group) {
-    return storageOf(dataCenter).clearGroupPublishers(dataCenter, group);
-  }
+    @Override
+    public DatumVersion putPublisher(
+            String dataCenter, String dataInfoId, List<Publisher> updatedPublishers) {
+        return storageOf(dataCenter).putPublisher(dataCenter, dataInfoId, updatedPublishers);
+    }
 
-  @Override
-  public SlotChangeListener getSlotChangeListener(boolean localDataCenter) {
-    return localDataCenter
-        ? localDatumStorage.getSlotChangeListener(true)
-        : multiClusterDatumStorage.getSlotChangeListener(false);
-  }
+    @Override
+    public DatumVersion createEmptyDatumIfAbsent(String dataCenter, String dataInfoId) {
+        return storageOf(dataCenter).createEmptyDatumIfAbsent(dataCenter, dataInfoId);
+    }
 
-  @Override
-  public Set<ProcessId> getSessionProcessIds(String dataCenter) {
-    return storageOf(dataCenter).getSessionProcessIds(dataCenter);
-  }
+    @Override
+    public Map<String, DatumVersion> cleanBySessionId(
+            String dataCenter, int slotId, ProcessId sessionProcessId, CleanContinues cleanContinues) {
+        return storageOf(dataCenter)
+                .cleanBySessionId(dataCenter, slotId, sessionProcessId, cleanContinues);
+    }
 
-  @Override
-  public Map<String, Integer> compact(String dataCenter, long tombstoneTimestamp) {
-    return storageOf(dataCenter).compact(dataCenter, tombstoneTimestamp);
-  }
+    @Override
+    public boolean removePublisherGroups(String dataCenter, int slotId) {
+        return storageOf(dataCenter).removePublisherGroups(dataCenter, slotId);
+    }
 
-  @Override
-  public int tombstoneNum(String dataCenter) {
-    return storageOf(dataCenter).tombstoneNum(dataCenter);
-  }
+    @Override
+    public DatumVersion removePublishers(
+            String dataCenter, String dataInfoId, ProcessId sessionProcessId) {
+        return storageOf(dataCenter).removePublishers(dataCenter, dataInfoId, sessionProcessId);
+    }
 
-  @Override
-  public Map<String, DatumVersion> updateVersion(String dataCenter, int slotId) {
-    return storageOf(dataCenter).updateVersion(dataCenter, slotId);
-  }
+    @Override
+    public DatumVersion removePublishers(
+            String dataCenter,
+            String dataInfoId,
+            ProcessId sessionProcessId,
+            Map<String, RegisterVersion> removedPublishers) {
+        return storageOf(dataCenter)
+                .removePublishers(dataCenter, dataInfoId, sessionProcessId, removedPublishers);
+    }
 
-  private DatumStorage storageOf(String dataCenter) {
-    return StringUtils.equalsIgnoreCase(localDataCenter, dataCenter)
-        ? localDatumStorage
-        : multiClusterDatumStorage;
-  }
+    @Override
+    public void foreach(String dataCenter, int slotId, BiConsumer<String, PublisherGroup> f) {
+        storageOf(dataCenter).foreach(dataCenter, slotId, f);
+    }
 
-  @VisibleForTesting
-  public DatumStorage getLocalDatumStorage() {
-    return localDatumStorage;
-  }
+    @Override
+    public boolean removeStorage(String dataCenter) {
+        return storageOf(dataCenter).removeStorage(dataCenter);
+    }
 
-  @VisibleForTesting
-  public DatumStorage getMultiClusterDatumStorage() {
-    return multiClusterDatumStorage;
-  }
+    @Override
+    public DatumVersion clearPublishers(String dataCenter, String dataInfoId) {
+        return storageOf(dataCenter).clearPublishers(dataCenter, dataInfoId);
+    }
+
+    @Override
+    public Map<String, DatumVersion> clearGroupPublishers(String dataCenter, String group) {
+        return storageOf(dataCenter).clearGroupPublishers(dataCenter, group);
+    }
+
+    @Override
+    public SlotChangeListener getSlotChangeListener(boolean localDataCenter) {
+        return localDataCenter
+                ? localDatumStorage.getSlotChangeListener(true)
+                : multiClusterDatumStorage.getSlotChangeListener(false);
+    }
+
+    @Override
+    public Set<ProcessId> getSessionProcessIds(String dataCenter) {
+        return storageOf(dataCenter).getSessionProcessIds(dataCenter);
+    }
+
+    @Override
+    public Map<String, Integer> compact(String dataCenter, long tombstoneTimestamp) {
+        return storageOf(dataCenter).compact(dataCenter, tombstoneTimestamp);
+    }
+
+    @Override
+    public int tombstoneNum(String dataCenter) {
+        return storageOf(dataCenter).tombstoneNum(dataCenter);
+    }
+
+    @Override
+    public Map<String, DatumVersion> updateVersion(String dataCenter, int slotId) {
+        return storageOf(dataCenter).updateVersion(dataCenter, slotId);
+    }
+
+    private DatumStorage storageOf(String dataCenter) {
+        return StringUtils.equalsIgnoreCase(localDataCenter, dataCenter)
+                ? localDatumStorage
+                : multiClusterDatumStorage;
+    }
+
+    @VisibleForTesting
+    public DatumStorage getLocalDatumStorage() {
+        return localDatumStorage;
+    }
+
+    @VisibleForTesting
+    public DatumStorage getMultiClusterDatumStorage() {
+        return multiClusterDatumStorage;
+    }
 }

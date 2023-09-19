@@ -27,6 +27,7 @@ public interface SofaBootTagNameSupport {
 
     /**
      * get supported tag name
+     *
      * @return tag name
      */
     String supportTagName();

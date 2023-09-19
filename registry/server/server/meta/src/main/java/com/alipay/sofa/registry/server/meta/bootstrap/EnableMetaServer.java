@@ -16,8 +16,9 @@
  */
 package com.alipay.sofa.registry.server.meta.bootstrap;
 
-import java.lang.annotation.*;
 import org.springframework.context.annotation.Import;
+
+import java.lang.annotation.*;
 
 /**
  * @author shangyu.wh
@@ -27,4 +28,5 @@ import org.springframework.context.annotation.Import;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Import({MetaServerConfiguration.class, MultiClusterMetaServerConfiguration.class})
-public @interface EnableMetaServer {}
+public @interface EnableMetaServer {
+}

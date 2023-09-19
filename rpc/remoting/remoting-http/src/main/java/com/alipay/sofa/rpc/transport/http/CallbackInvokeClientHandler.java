@@ -74,7 +74,7 @@ public class CallbackInvokeClientHandler extends AbstractHttpClientHandler {
 
             if (EventBus.isEnable(ClientAsyncReceiveEvent.class)) {
                 EventBus.post(new ClientAsyncReceiveEvent(consumerConfig, providerInfo,
-                    request, response, null));
+                        request, response, null));
             }
 
             pickupBaggage(response);
@@ -95,7 +95,7 @@ public class CallbackInvokeClientHandler extends AbstractHttpClientHandler {
             Object appResp = response.getAppResponse();
             if (response.isError()) { // rpc层异常
                 SofaRpcException sofaRpcException = new SofaRpcException(
-                    RpcErrorType.SERVER_UNDECLARED_ERROR, response.getErrorMsg());
+                        RpcErrorType.SERVER_UNDECLARED_ERROR, response.getErrorMsg());
                 callback.onSofaException(sofaRpcException, request.getMethodName(), request);
             } else if (appResp instanceof Throwable) { // 业务层异常
                 throwable = (Throwable) appResp;
@@ -122,7 +122,7 @@ public class CallbackInvokeClientHandler extends AbstractHttpClientHandler {
 
             if (EventBus.isEnable(ClientAsyncReceiveEvent.class)) {
                 EventBus.post(new ClientAsyncReceiveEvent(consumerConfig, providerInfo,
-                    request, null, e));
+                        request, null, e));
             }
 
             // do async filter after respond server
@@ -137,7 +137,7 @@ public class CallbackInvokeClientHandler extends AbstractHttpClientHandler {
             }
 
             SofaRpcException sofaRpcException = e instanceof SofaRpcException ? (SofaRpcException) e :
-                new SofaRpcException(RpcErrorType.SERVER_UNDECLARED_ERROR, e.getMessage(), e);
+                    new SofaRpcException(RpcErrorType.SERVER_UNDECLARED_ERROR, e.getMessage(), e);
             callback.onSofaException(sofaRpcException, request.getMethodName(), request);
         } finally {
             Thread.currentThread().setContextClassLoader(cl);

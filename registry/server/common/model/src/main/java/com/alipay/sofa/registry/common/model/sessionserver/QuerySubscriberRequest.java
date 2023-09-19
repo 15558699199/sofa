@@ -17,23 +17,24 @@
 package com.alipay.sofa.registry.common.model.sessionserver;
 
 import com.alipay.sofa.registry.util.StringFormatter;
+
 import java.io.Serializable;
 
 public final class QuerySubscriberRequest implements Serializable {
-  private static final long serialVersionUID = -8913725014328394409L;
+    private static final long serialVersionUID = -8913725014328394409L;
 
-  private final String dataInfoId;
+    private final String dataInfoId;
 
-  public QuerySubscriberRequest(String dataInfoId) {
-    this.dataInfoId = dataInfoId;
-  }
+    public QuerySubscriberRequest(String dataInfoId) {
+        this.dataInfoId = dataInfoId;
+    }
 
-  public String getDataInfoId() {
-    return dataInfoId;
-  }
+    public String getDataInfoId() {
+        return dataInfoId;
+    }
 
-  @Override
-  public String toString() {
-    return StringFormatter.format("QuerySubscriberRequest={}}", dataInfoId);
-  }
+    @Override
+    public String toString() {
+        return StringFormatter.format("QuerySubscriberRequest={}}", dataInfoId);
+    }
 }

@@ -17,6 +17,7 @@
 package com.alipay.sofa.registry.server.meta.remoting.connection;
 
 import com.alipay.sofa.registry.common.model.Node.NodeType;
+
 import java.net.InetSocketAddress;
 import java.util.Collection;
 
@@ -26,7 +27,7 @@ import java.util.Collection;
  */
 public interface NodeConnectManager {
 
-  Collection<InetSocketAddress> getConnections(String dataCenter);
+    Collection<InetSocketAddress> getConnections(String dataCenter);
 
-  NodeType getConnectNodeType();
+    NodeType getConnectNodeType();
 }

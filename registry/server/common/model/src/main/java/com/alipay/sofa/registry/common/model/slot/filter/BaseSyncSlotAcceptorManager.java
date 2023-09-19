@@ -26,26 +26,26 @@ import java.util.Set;
  */
 public class BaseSyncSlotAcceptorManager implements SyncSlotAcceptorManager {
 
-  protected final Set<SyncSlotAcceptor> acceptors;
+    protected final Set<SyncSlotAcceptor> acceptors;
 
-  public BaseSyncSlotAcceptorManager(Set<SyncSlotAcceptor> acceptors) {
-    this.acceptors = acceptors;
-  }
+    public BaseSyncSlotAcceptorManager(Set<SyncSlotAcceptor> acceptors) {
+        this.acceptors = acceptors;
+    }
 
-  public boolean accept(SyncAcceptorRequest request) {
+    public boolean accept(SyncAcceptorRequest request) {
 
-    for (SyncSlotAcceptor acceptor :
-        Optional.ofNullable(acceptors).orElse(Collections.emptySet())) {
-      if (acceptor.filterOut(request)) {
+        for (SyncSlotAcceptor acceptor :
+                Optional.ofNullable(acceptors).orElse(Collections.emptySet())) {
+            if (acceptor.filterOut(request)) {
+                return false;
+            }
+        }
+        for (SyncSlotAcceptor acceptor :
+                Optional.ofNullable(acceptors).orElse(Collections.emptySet())) {
+            if (acceptor.accept(request)) {
+                return true;
+            }
+        }
         return false;
-      }
     }
-    for (SyncSlotAcceptor acceptor :
-        Optional.ofNullable(acceptors).orElse(Collections.emptySet())) {
-      if (acceptor.accept(request)) {
-        return true;
-      }
-    }
-    return false;
-  }
 }

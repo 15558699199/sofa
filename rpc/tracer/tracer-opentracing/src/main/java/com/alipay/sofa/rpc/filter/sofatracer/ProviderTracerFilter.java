@@ -32,9 +32,7 @@ import com.alipay.sofa.rpc.filter.FilterInvoker;
 import com.alipay.sofa.rpc.module.SofaTracerModule;
 import com.alipay.sofa.rpc.tracer.sofatracer.log.tags.RpcSpanTags;
 
-import static com.alipay.sofa.rpc.common.RemotingConstants.HEAD_APP_NAME;
-import static com.alipay.sofa.rpc.common.RemotingConstants.HEAD_INVOKE_TYPE;
-import static com.alipay.sofa.rpc.common.RemotingConstants.HEAD_PROTOCOL;
+import static com.alipay.sofa.rpc.common.RemotingConstants.*;
 
 /**
  * @author <a href="mailto:zhanggeng.zg@antfin.com">zhanggeng</a>
@@ -69,13 +67,13 @@ public class ProviderTracerFilter extends Filter {
                 serverSpan.setTag(RpcSpanTags.LOCAL_APP, providerConfig.getAppName());
 
                 serverSpan.setTag(RpcSpanTags.SERVER_THREAD_POOL_WAIT_TIME,
-                    (Number) context.getAttachment(RpcConstants.INTERNAL_KEY_PROCESS_WAIT_TIME));
+                        (Number) context.getAttachment(RpcConstants.INTERNAL_KEY_PROCESS_WAIT_TIME));
             }
             return invoker.invoke(request);
         } finally {
             if (serverSpan != null) {
                 serverSpan.setTag(RpcSpanTags.SERVER_BIZ_TIME,
-                    (Number) RpcInternalContext.getContext().getAttachment(RpcConstants.INTERNAL_KEY_IMPL_ELAPSE));
+                        (Number) RpcInternalContext.getContext().getAttachment(RpcConstants.INTERNAL_KEY_IMPL_ELAPSE));
             }
         }
     }

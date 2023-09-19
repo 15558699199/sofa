@@ -20,11 +20,12 @@ import com.alipay.sofa.registry.common.model.metaserver.MultiClusterSyncInfo;
 import com.alipay.sofa.registry.jdbc.domain.MultiClusterSyncDomain;
 import com.alipay.sofa.registry.util.JsonUtils;
 import com.fasterxml.jackson.core.type.TypeReference;
+import org.springframework.util.CollectionUtils;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-import org.springframework.util.CollectionUtils;
 
 /**
  * @author xiaojian.xj
@@ -32,46 +33,47 @@ import org.springframework.util.CollectionUtils;
  */
 public class MultiClusterSyncConvertor {
 
-  public static final TypeReference<Set<String>> FORMAT = new TypeReference<Set<String>>() {};
+    public static final TypeReference<Set<String>> FORMAT = new TypeReference<Set<String>>() {
+    };
 
-  public static MultiClusterSyncDomain convert2Domain(MultiClusterSyncInfo info, String clusterId) {
-    if (info == null) {
-      return null;
+    public static MultiClusterSyncDomain convert2Domain(MultiClusterSyncInfo info, String clusterId) {
+        if (info == null) {
+            return null;
+        }
+        return new MultiClusterSyncDomain(
+                clusterId,
+                info.getRemoteDataCenter(),
+                info.getRemoteMetaAddress(),
+                info.isEnableSyncDatum() ? "true" : "false",
+                info.isEnablePush() ? "true" : "false",
+                JsonUtils.writeValueAsString(info.getSyncDataInfoIds()),
+                JsonUtils.writeValueAsString(info.getSynPublisherGroups()),
+                JsonUtils.writeValueAsString(info.getIgnoreDataInfoIds()),
+                info.getDataVersion());
     }
-    return new MultiClusterSyncDomain(
-        clusterId,
-        info.getRemoteDataCenter(),
-        info.getRemoteMetaAddress(),
-        info.isEnableSyncDatum() ? "true" : "false",
-        info.isEnablePush() ? "true" : "false",
-        JsonUtils.writeValueAsString(info.getSyncDataInfoIds()),
-        JsonUtils.writeValueAsString(info.getSynPublisherGroups()),
-        JsonUtils.writeValueAsString(info.getIgnoreDataInfoIds()),
-        info.getDataVersion());
-  }
 
-  public static MultiClusterSyncInfo convert2Info(MultiClusterSyncDomain domain) {
-    if (domain == null) {
-      return null;
+    public static MultiClusterSyncInfo convert2Info(MultiClusterSyncDomain domain) {
+        if (domain == null) {
+            return null;
+        }
+        return new MultiClusterSyncInfo(
+                domain.getDataCenter(),
+                domain.getRemoteDataCenter(),
+                domain.getRemoteMetaAddress(),
+                Boolean.parseBoolean(domain.getEnableSyncDatum()),
+                Boolean.parseBoolean(domain.getEnablePush()),
+                JsonUtils.read(domain.getSyncDataInfoIds(), FORMAT),
+                JsonUtils.read(domain.getSynPublisherGroups(), FORMAT),
+                JsonUtils.read(domain.getIgnoreDataInfoIds(), FORMAT),
+                domain.getDataVersion());
     }
-    return new MultiClusterSyncInfo(
-        domain.getDataCenter(),
-        domain.getRemoteDataCenter(),
-        domain.getRemoteMetaAddress(),
-        Boolean.parseBoolean(domain.getEnableSyncDatum()),
-        Boolean.parseBoolean(domain.getEnablePush()),
-        JsonUtils.read(domain.getSyncDataInfoIds(), FORMAT),
-        JsonUtils.read(domain.getSynPublisherGroups(), FORMAT),
-        JsonUtils.read(domain.getIgnoreDataInfoIds(), FORMAT),
-        domain.getDataVersion());
-  }
 
-  public static Set<MultiClusterSyncInfo> convert2Infos(List<MultiClusterSyncDomain> domains) {
-    if (CollectionUtils.isEmpty(domains)) {
-      return Collections.emptySet();
+    public static Set<MultiClusterSyncInfo> convert2Infos(List<MultiClusterSyncDomain> domains) {
+        if (CollectionUtils.isEmpty(domains)) {
+            return Collections.emptySet();
+        }
+        return domains.stream()
+                .map(MultiClusterSyncConvertor::convert2Info)
+                .collect(Collectors.toSet());
     }
-    return domains.stream()
-        .map(MultiClusterSyncConvertor::convert2Info)
-        .collect(Collectors.toSet());
-  }
 }

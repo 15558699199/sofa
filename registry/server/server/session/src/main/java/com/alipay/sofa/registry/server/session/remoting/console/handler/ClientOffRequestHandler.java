@@ -25,30 +25,33 @@ import com.alipay.sofa.registry.remoting.Channel;
 import com.alipay.sofa.registry.server.session.connections.ConnectionsService;
 import com.alipay.sofa.registry.server.session.registry.SessionRegistry;
 import com.google.common.collect.Sets;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.List;
+
 public final class ClientOffRequestHandler extends AbstractConsoleHandler<ClientOffRequest> {
-  private static final Logger LOGGER = LoggerFactory.getLogger(ClientOffRequestHandler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ClientOffRequestHandler.class);
 
-  @Autowired protected ConnectionsService connectionsService;
-  @Autowired protected SessionRegistry sessionRegistry;
+    @Autowired
+    protected ConnectionsService connectionsService;
+    @Autowired
+    protected SessionRegistry sessionRegistry;
 
-  @Override
-  public Object doHandle(Channel channel, ClientOffRequest request) {
-    List<ConnectId> conIds = connectionsService.getIpConnects(Sets.newHashSet(request.getIps()));
-    sessionRegistry.clientOff(conIds);
-    LOGGER.info("clientOff conIds: {}", conIds);
-    return CommonResponse.buildSuccessResponse();
-  }
+    @Override
+    public Object doHandle(Channel channel, ClientOffRequest request) {
+        List<ConnectId> conIds = connectionsService.getIpConnects(Sets.newHashSet(request.getIps()));
+        sessionRegistry.clientOff(conIds);
+        LOGGER.info("clientOff conIds: {}", conIds);
+        return CommonResponse.buildSuccessResponse();
+    }
 
-  @Override
-  public Class interest() {
-    return ClientOffRequest.class;
-  }
+    @Override
+    public Class interest() {
+        return ClientOffRequest.class;
+    }
 
-  @Override
-  public Object buildFailedResponse(String msg) {
-    return CommonResponse.buildFailedResponse(msg);
-  }
+    @Override
+    public Object buildFailedResponse(String msg) {
+        return CommonResponse.buildFailedResponse(msg);
+    }
 }

@@ -22,7 +22,7 @@ package com.alipay.sofa.rpc.registry.mesh.model;
  */
 public class UnPublishServiceResult {
 
-    private String  errorMessage;
+    private String errorMessage;
 
     private boolean success;
 

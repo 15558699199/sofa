@@ -36,8 +36,6 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 /**
- *
- *
  * @author <a href="mailto:zhanggeng.zg@antfin.com">GengZhang</a>
  */
 public class AsyncChainTest extends ActivelyDestroyTest {
@@ -48,41 +46,41 @@ public class AsyncChainTest extends ActivelyDestroyTest {
     public void testAll() {
 
         ServerConfig serverConfig2 = new ServerConfig()
-            .setPort(22222)
-            .setDaemon(false);
+                .setPort(22222)
+                .setDaemon(false);
 
         // C服务的服务端
         ProviderConfig<HelloService> CProvider = new ProviderConfig<HelloService>()
-            .setInterfaceId(HelloService.class.getName())
-            .setRef(new HelloServiceImpl(1000))
-            .setServer(serverConfig2);
+                .setInterfaceId(HelloService.class.getName())
+                .setRef(new HelloServiceImpl(1000))
+                .setServer(serverConfig2);
         CProvider.export();
 
         // B调C的客户端
         ConsumerConfig<HelloService> BConsumer = new ConsumerConfig<HelloService>()
-            .setInterfaceId(HelloService.class.getName())
-            .setInvokeType(RpcConstants.INVOKER_TYPE_CALLBACK)
-            // .setOnReturn() // 不设置 调用级别设置
-            .setTimeout(3000)
-            .setDirectUrl("bolt://127.0.0.1:22222");
+                .setInterfaceId(HelloService.class.getName())
+                .setInvokeType(RpcConstants.INVOKER_TYPE_CALLBACK)
+                // .setOnReturn() // 不设置 调用级别设置
+                .setTimeout(3000)
+                .setDirectUrl("bolt://127.0.0.1:22222");
         HelloService helloService = BConsumer.refer();
 
         // B服务的服务端
         ServerConfig serverConfig3 = new ServerConfig()
-            .setPort(22223)
-            .setDaemon(false);
+                .setPort(22223)
+                .setDaemon(false);
         ProviderConfig<AsyncHelloService> BProvider = new ProviderConfig<AsyncHelloService>()
-            .setInterfaceId(AsyncHelloService.class.getName())
-            .setRef(new AsyncHelloServiceImpl(helloService))
-            .setServer(serverConfig3);
+                .setInterfaceId(AsyncHelloService.class.getName())
+                .setRef(new AsyncHelloServiceImpl(helloService))
+                .setServer(serverConfig3);
         BProvider.export();
 
         // A调B的客户端
         ConsumerConfig<AsyncHelloService> AConsumer = new ConsumerConfig<AsyncHelloService>()
-            .setInterfaceId(AsyncHelloService.class.getName())
-            .setInvokeType(RpcConstants.INVOKER_TYPE_CALLBACK)
-            .setTimeout(3000)
-            .setDirectUrl("bolt://127.0.0.1:22223");
+                .setInterfaceId(AsyncHelloService.class.getName())
+                .setInvokeType(RpcConstants.INVOKER_TYPE_CALLBACK)
+                .setTimeout(3000)
+                .setDirectUrl("bolt://127.0.0.1:22223");
         AsyncHelloService asyncHelloService = AConsumer.refer();
 
         final CountDownLatch[] latch = new CountDownLatch[1];
@@ -126,9 +124,9 @@ public class AsyncChainTest extends ActivelyDestroyTest {
 
         // 非链路异步化调用--普通
         ConsumerConfig<AsyncHelloService> AConsumer2 = new ConsumerConfig<AsyncHelloService>()
-            .setInterfaceId(AsyncHelloService.class.getName())
-            .setTimeout(3000)
-            .setDirectUrl("bolt://127.0.0.1:22223");
+                .setInterfaceId(AsyncHelloService.class.getName())
+                .setTimeout(3000)
+                .setDirectUrl("bolt://127.0.0.1:22223");
         AsyncHelloService syncHelloService = AConsumer2.refer();
 
         String s2 = syncHelloService.sayHello("yyy", 22);

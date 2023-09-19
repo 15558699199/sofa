@@ -35,10 +35,10 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
  */
 public class ClientFactoryAnnotationBeanPostProcessorTests {
 
-    private final ClientFactoryInternal                    clientFactoryInternal                    = new ClientFactoryImpl();
+    private final ClientFactoryInternal clientFactoryInternal = new ClientFactoryImpl();
 
     private final ClientFactoryAnnotationBeanPostProcessor clientFactoryAnnotationBeanPostProcessor = new ClientFactoryAnnotationBeanPostProcessor(
-                                                                                                        clientFactoryInternal);
+            clientFactoryInternal);
 
     @Test
     public void checkInjectClientFactory() {
@@ -69,7 +69,7 @@ public class ClientFactoryAnnotationBeanPostProcessorTests {
     static class ClientFactoryAnnotationBean {
 
         @SofaClientFactory
-        private ClientFactory         clientFactory;
+        private ClientFactory clientFactory;
 
         @SofaClientFactory
         private ClientFactoryInternal clientFactoryInternal;

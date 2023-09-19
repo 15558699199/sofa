@@ -46,11 +46,11 @@ public class ConsumerConfigHelper {
 
     private final RegistryConfigContainer registryConfigContainer;
 
-    private final String                  appName;
+    private final String appName;
 
-    private String                        referenceLimit;
+    private String referenceLimit;
 
-    private String                        hystrixEnable;
+    private String hystrixEnable;
 
     public ConsumerConfigHelper(RegistryConfigContainer registryConfigContainer, String appName) {
         this.registryConfigContainer = registryConfigContainer;
@@ -136,8 +136,8 @@ public class ConsumerConfigHelper {
                 consumerConfig.setOnReturn((SofaResponseCallback) callbackHandler);
             } else {
                 throw new SofaBootRpcRuntimeException(
-                    "callback handler must implement SofaResponseCallback [" + callbackHandler
-                            + "]");
+                        "callback handler must implement SofaResponseCallback [" + callbackHandler
+                                + "]");
             }
         }
         if (!CollectionUtils.isEmpty(filters)) {
@@ -167,12 +167,12 @@ public class ConsumerConfigHelper {
             List<String> registrys = param.getRegistrys();
             for (String registryAlias : registrys) {
                 RegistryConfig registryConfig = registryConfigContainer
-                    .getRegistryConfig(registryAlias);
+                        .getRegistryConfig(registryAlias);
                 consumerConfig.setRegistry(registryConfig);
             }
         } else if (registryConfigContainer.isMeshEnabled(protocol)) {
             RegistryConfig registryConfig = registryConfigContainer
-                .getRegistryConfig(SofaBootRpcConfigConstants.REGISTRY_PROTOCOL_MESH);
+                    .getRegistryConfig(SofaBootRpcConfigConstants.REGISTRY_PROTOCOL_MESH);
             consumerConfig.setRegistry(registryConfig);
         } else {
             RegistryConfig registryConfig = registryConfigContainer.getRegistryConfig();
@@ -187,7 +187,7 @@ public class ConsumerConfigHelper {
 
         if (Boolean.TRUE.toString().equals(hystrixEnable)) {
             consumerConfig.setParameter(HystrixConstants.SOFA_HYSTRIX_ENABLED,
-                Boolean.TRUE.toString());
+                    Boolean.TRUE.toString());
         }
 
         // after sofaBootRpcProperties#getHystrixEnable for override global config
@@ -227,8 +227,8 @@ public class ConsumerConfigHelper {
                         methodConfig.setOnReturn((SofaResponseCallback) callbackHandler);
                     } else {
                         throw new SofaBootRpcRuntimeException(
-                            "callback handler must implement SofaResponseCallback ["
-                                    + callbackHandler + "]");
+                                "callback handler must implement SofaResponseCallback ["
+                                        + callbackHandler + "]");
                     }
                 }
 

@@ -25,28 +25,28 @@ import org.junit.Test;
 
 public class CacheCountTaskTest {
 
-  @Test
-  public void test() throws Exception {
-    CacheCountTask task = new CacheCountTask();
-    DataServerConfig cfg = TestBaseUtils.newDataConfig("testDc");
-    task.setDataServerConfig(cfg);
+    @Test
+    public void test() throws Exception {
+        CacheCountTask task = new CacheCountTask();
+        DataServerConfig cfg = TestBaseUtils.newDataConfig("testDc");
+        task.setDataServerConfig(cfg);
 
-    // npe
-    Assert.assertFalse(task.count());
+        // npe
+        Assert.assertFalse(task.count());
 
-    DatumStorageDelegate datumStorageDelegate = TestBaseUtils.newLocalDatumDelegate("testDc", true);
-    task.setDatumCache(datumStorageDelegate);
+        DatumStorageDelegate datumStorageDelegate = TestBaseUtils.newLocalDatumDelegate("testDc", true);
+        task.setDatumCache(datumStorageDelegate);
 
-    cfg.setCacheCountIntervalSecs(0);
-    Assert.assertFalse(task.init());
-    // empty
-    Assert.assertTrue(task.count());
+        cfg.setCacheCountIntervalSecs(0);
+        Assert.assertFalse(task.init());
+        // empty
+        Assert.assertTrue(task.count());
 
-    cfg.setCacheCountIntervalSecs(1);
-    Publisher pub = TestBaseUtils.createTestPublisher("testDataId");
-    datumStorageDelegate.getLocalDatumStorage().putPublisher("testDc", pub);
-    // has item
-    Assert.assertTrue(task.count());
-    Assert.assertTrue(task.init());
-  }
+        cfg.setCacheCountIntervalSecs(1);
+        Publisher pub = TestBaseUtils.createTestPublisher("testDataId");
+        datumStorageDelegate.getLocalDatumStorage().putPublisher("testDc", pub);
+        // has item
+        Assert.assertTrue(task.count());
+        Assert.assertTrue(task.init());
+    }
 }

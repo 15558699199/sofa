@@ -22,5 +22,5 @@ package com.alipay.sofa.registry.jdbc.version.config;
  */
 public interface ConfigEntry {
 
-  public long getDataVersion();
+    public long getDataVersion();
 }

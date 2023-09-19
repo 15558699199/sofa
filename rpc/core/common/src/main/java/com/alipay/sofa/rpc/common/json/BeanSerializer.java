@@ -24,16 +24,7 @@ import com.alipay.sofa.rpc.common.utils.StringUtils;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static com.alipay.sofa.rpc.common.json.JSON.getSerializeFields;
 
@@ -128,14 +119,14 @@ public class BeanSerializer {
                 map.put(key, value);
             } catch (Exception e) {
                 throw new RuntimeException("Read bean filed " + beanClass.getName()
-                    + "." + field.getName() + " error! ", e);
+                        + "." + field.getName() + " error! ", e);
             }
         }
         if (addType) {
             String typeName = beanClass.getName();
             if (!typeName.startsWith("java.")
-                && !typeName.startsWith("javax.")
-                && !typeName.startsWith("sun.")) {
+                    && !typeName.startsWith("javax.")
+                    && !typeName.startsWith("sun.")) {
                 map.put(JSON.CLASS_KEY, typeName);
             }
         }
@@ -201,7 +192,7 @@ public class BeanSerializer {
                 throw e;
             } catch (Exception e) {
                 throw new RuntimeException("Write bean filed " + realClass.getName()
-                    + "." + field.getName() + "error! ", e);
+                        + "." + field.getName() + "error! ", e);
             }
         }
         return (T) bean;

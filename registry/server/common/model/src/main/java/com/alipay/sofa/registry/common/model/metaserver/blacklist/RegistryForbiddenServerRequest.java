@@ -19,106 +19,107 @@ package com.alipay.sofa.registry.common.model.metaserver.blacklist;
 import com.alipay.sofa.registry.common.model.Node.NodeType;
 import com.alipay.sofa.registry.common.model.metaserver.DataOperation;
 import com.alipay.sofa.registry.common.model.metaserver.NodeServerOperateInfo;
+
 import java.io.Serializable;
 
 /**
  * @author chen.zhu
- *     <p>Mar 18, 2021
+ * <p>Mar 18, 2021
  */
 public class RegistryForbiddenServerRequest implements Serializable {
 
-  private final DataOperation operation;
+    private final DataOperation operation;
 
-  private final NodeType nodeType;
+    private final NodeType nodeType;
 
-  private final String ip;
+    private final String ip;
 
-  private final String cell;
+    private final String cell;
 
-  private NodeServerOperateInfo operateInfo;
+    private NodeServerOperateInfo operateInfo;
 
-  /**
-   * @param operation operation
-   * @param nodeType nodeType
-   * @param ip ip
-   */
-  public RegistryForbiddenServerRequest(
-      DataOperation operation, NodeType nodeType, String ip, String cell) {
-    this.operation = operation;
-    this.nodeType = nodeType;
-    this.ip = ip;
-    this.cell = cell;
-  }
+    /**
+     * @param operation operation
+     * @param nodeType  nodeType
+     * @param ip        ip
+     */
+    public RegistryForbiddenServerRequest(
+            DataOperation operation, NodeType nodeType, String ip, String cell) {
+        this.operation = operation;
+        this.nodeType = nodeType;
+        this.ip = ip;
+        this.cell = cell;
+    }
 
-  /**
-   * Getter method for property <tt>nodeType</tt>.
-   *
-   * @return property value of nodeType
-   */
-  public NodeType getNodeType() {
-    return nodeType;
-  }
+    /**
+     * Getter method for property <tt>nodeType</tt>.
+     *
+     * @return property value of nodeType
+     */
+    public NodeType getNodeType() {
+        return nodeType;
+    }
 
-  /**
-   * Gets get operation.
-   *
-   * @return the get operation
-   */
-  public DataOperation getOperation() {
-    return operation;
-  }
+    /**
+     * Gets get operation.
+     *
+     * @return the get operation
+     */
+    public DataOperation getOperation() {
+        return operation;
+    }
 
-  /**
-   * Gets get ip.
-   *
-   * @return the get ip
-   */
-  public String getIp() {
-    return ip;
-  }
+    /**
+     * Gets get ip.
+     *
+     * @return the get ip
+     */
+    public String getIp() {
+        return ip;
+    }
 
-  /**
-   * Getter method for property <tt>cell</tt>.
-   *
-   * @return property value of cell
-   */
-  public String getCell() {
-    return cell;
-  }
+    /**
+     * Getter method for property <tt>cell</tt>.
+     *
+     * @return property value of cell
+     */
+    public String getCell() {
+        return cell;
+    }
 
-  /**
-   * Getter method for property <tt>operateInfo</tt>.
-   *
-   * @return property value of operateInfo
-   */
-  public NodeServerOperateInfo getOperateInfo() {
-    return operateInfo;
-  }
+    /**
+     * Getter method for property <tt>operateInfo</tt>.
+     *
+     * @return property value of operateInfo
+     */
+    public NodeServerOperateInfo getOperateInfo() {
+        return operateInfo;
+    }
 
-  /**
-   * Setter method for property <tt>operateInfo</tt>.
-   *
-   * @param operateInfo value to be assigned to property operateInfo
-   */
-  public void setOperateInfo(NodeServerOperateInfo operateInfo) {
-    this.operateInfo = operateInfo;
-  }
+    /**
+     * Setter method for property <tt>operateInfo</tt>.
+     *
+     * @param operateInfo value to be assigned to property operateInfo
+     */
+    public void setOperateInfo(NodeServerOperateInfo operateInfo) {
+        this.operateInfo = operateInfo;
+    }
 
-  @Override
-  public String toString() {
-    return "RegistryForbiddenServerRequest{"
-        + "operation="
-        + operation
-        + ", nodeType="
-        + nodeType
-        + ", ip='"
-        + ip
-        + '\''
-        + ", cell='"
-        + cell
-        + '\''
-        + ", operateInfo="
-        + operateInfo
-        + '}';
-  }
+    @Override
+    public String toString() {
+        return "RegistryForbiddenServerRequest{"
+                + "operation="
+                + operation
+                + ", nodeType="
+                + nodeType
+                + ", ip='"
+                + ip
+                + '\''
+                + ", cell='"
+                + cell
+                + '\''
+                + ", operateInfo="
+                + operateInfo
+                + '}';
+    }
 }

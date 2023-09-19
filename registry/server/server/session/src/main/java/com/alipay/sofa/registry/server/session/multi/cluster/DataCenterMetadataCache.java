@@ -18,6 +18,7 @@ package com.alipay.sofa.registry.server.session.multi.cluster;
 
 import com.alipay.sofa.registry.common.model.multi.cluster.DataCenterMetadata;
 import com.alipay.sofa.registry.common.model.multi.cluster.RemoteSlotTableStatus;
+
 import java.util.Map;
 import java.util.Set;
 
@@ -27,19 +28,19 @@ import java.util.Set;
  */
 public interface DataCenterMetadataCache {
 
-  /**
-   * get zones of dataCenter
-   *
-   * @param dataCenter dataCenter
-   * @return Set
-   */
-  Set<String> dataCenterZonesOf(String dataCenter);
+    /**
+     * get zones of dataCenter
+     *
+     * @param dataCenter dataCenter
+     * @return Set
+     */
+    Set<String> dataCenterZonesOf(String dataCenter);
 
-  Map<String, Set<String>> dataCenterZonesOf(Set<String> dataCenters);
+    Map<String, Set<String>> dataCenterZonesOf(Set<String> dataCenters);
 
-  boolean saveDataCenterZones(Map<String, RemoteSlotTableStatus> remoteSlotTableStatus);
+    boolean saveDataCenterZones(Map<String, RemoteSlotTableStatus> remoteSlotTableStatus);
 
-  Set<String> getSyncDataCenters();
+    Set<String> getSyncDataCenters();
 
-  DataCenterMetadata metadataOf(String dataCenter);
+    DataCenterMetadata metadataOf(String dataCenter);
 }

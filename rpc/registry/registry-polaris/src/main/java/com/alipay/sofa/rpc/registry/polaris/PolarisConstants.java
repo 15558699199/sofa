@@ -25,21 +25,21 @@ public class PolarisConstants {
 
     public static final String POLARIS_SERVER_CONNECTOR_PROTOCOL_KEY = "connector.protocol";
 
-    public static final String HEALTH_CHECK_TTL_KEY                  = "healthCheck.ttl";
+    public static final String HEALTH_CHECK_TTL_KEY = "healthCheck.ttl";
 
-    public static final String HEARTBEAT_INTERVAL_KEY                = "heartbeat.interval";
+    public static final String HEARTBEAT_INTERVAL_KEY = "heartbeat.interval";
 
-    public static final String HEARTBEAT_CORE_SIZE_KEY               = "heartbeat.coreSize";
+    public static final String HEARTBEAT_CORE_SIZE_KEY = "heartbeat.coreSize";
 
-    public static final String LOOKUP_INTERVAL_KEY                   = "lookup.interval";
+    public static final String LOOKUP_INTERVAL_KEY = "lookup.interval";
 
-    public static final String POLARIS_SERVER_CONNECTOR_PROTOCOL     = "grpc";
+    public static final String POLARIS_SERVER_CONNECTOR_PROTOCOL = "grpc";
 
-    public static final int    DEFAULT_HEALTH_CHECK_TTL              = 10;
+    public static final int DEFAULT_HEALTH_CHECK_TTL = 10;
 
-    public static final int    DEFAULT_HEARTBEAT_INTERVAL            = 3000;
+    public static final int DEFAULT_HEARTBEAT_INTERVAL = 3000;
 
-    public static final int    DEFAULT_HEARTBEAT_CORE_SIZE           = 1;
+    public static final int DEFAULT_HEARTBEAT_CORE_SIZE = 1;
 
-    public static final int    DEFAULT_LOOKUP_INTERVAL               = 1000;
+    public static final int DEFAULT_LOOKUP_INTERVAL = 1000;
 }

@@ -20,22 +20,22 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class TraceTimeTest {
-  @Test
-  public void testCopy() throws InterruptedException {
-    TraceTimes times = new TraceTimes();
-    times.setDataChangeType(1);
-    times.setFirstDataChange(3);
-    times.setDatumNotifyCreate(5);
-    times.setDatumNotifySend(6);
-    times.setTriggerSession(7);
-    times = times.copy();
-    Assert.assertEquals(1, times.getDataChangeType());
-    Assert.assertEquals(3, times.getFirstDataChange());
-    Assert.assertEquals(5, times.getDatumNotifyCreate());
-    Assert.assertEquals(6, times.getDatumNotifySend());
-    Assert.assertEquals(7, times.getTriggerSession());
-    times.format(10);
-    Thread.sleep(10);
-    Assert.assertTrue(times.beforeThan(new TraceTimes()));
-  }
+    @Test
+    public void testCopy() throws InterruptedException {
+        TraceTimes times = new TraceTimes();
+        times.setDataChangeType(1);
+        times.setFirstDataChange(3);
+        times.setDatumNotifyCreate(5);
+        times.setDatumNotifySend(6);
+        times.setTriggerSession(7);
+        times = times.copy();
+        Assert.assertEquals(1, times.getDataChangeType());
+        Assert.assertEquals(3, times.getFirstDataChange());
+        Assert.assertEquals(5, times.getDatumNotifyCreate());
+        Assert.assertEquals(6, times.getDatumNotifySend());
+        Assert.assertEquals(7, times.getTriggerSession());
+        times.format(10);
+        Thread.sleep(10);
+        Assert.assertTrue(times.beforeThan(new TraceTimes()));
+    }
 }

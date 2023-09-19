@@ -50,7 +50,7 @@ public class HttpTransportUtils {
             return code;
         } else {
             throw new SofaRpcException(RpcErrorType.SERVER_DESERIALIZE, LogCodes.getLog(
-                LogCodes.ERROR_UNSUPPORTED_SERIALIZE_TYPE, serialization));
+                    LogCodes.ERROR_UNSUPPORTED_SERIALIZE_TYPE, serialization));
         }
     }
 
@@ -73,7 +73,7 @@ public class HttpTransportUtils {
             }
         }
         throw new SofaRpcException(RpcErrorType.SERVER_DESERIALIZE, LogCodes.getLog(
-            LogCodes.ERROR_UNSUPPORTED_CONTENT_TYPE, contentType, RemotingConstants.HEAD_SERIALIZE_TYPE));
+                LogCodes.ERROR_UNSUPPORTED_CONTENT_TYPE, contentType, RemotingConstants.HEAD_SERIALIZE_TYPE));
     }
 
     protected static String[] getInterfaceIdAndMethod(String uri) {
@@ -85,7 +85,7 @@ public class HttpTransportUtils {
         String[] end = uri.split("/");
         if (end.length < 3) {
             throw new SofaRpcException(RpcErrorType.SERVER_DESERIALIZE,
-                "The correct URI format is: http://ip:port/serviceName/methodName");
+                    "The correct URI format is: http://ip:port/serviceName/methodName");
         }
         int resultLength = 2;
         result = new String[resultLength];

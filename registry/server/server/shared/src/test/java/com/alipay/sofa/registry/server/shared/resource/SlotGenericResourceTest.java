@@ -20,25 +20,26 @@ import com.alipay.sofa.registry.common.model.GenericResponse;
 import com.alipay.sofa.registry.common.model.slot.Slot;
 import com.alipay.sofa.registry.common.model.slot.SlotTable;
 import com.google.common.collect.Sets;
-import java.util.Collections;
-import java.util.Set;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.Collections;
+import java.util.Set;
+
 public class SlotGenericResourceTest {
-  @Test
-  public void test() {
-    SlotGenericResource resource = new SlotGenericResource();
-    Set<Slot> slots = Sets.newHashSet(new Slot(1, "text", 2, Collections.emptyList()));
-    SlotTable slotTable = new SlotTable(10, slots);
-    resource.record(slotTable);
+    @Test
+    public void test() {
+        SlotGenericResource resource = new SlotGenericResource();
+        Set<Slot> slots = Sets.newHashSet(new Slot(1, "text", 2, Collections.emptyList()));
+        SlotTable slotTable = new SlotTable(10, slots);
+        resource.record(slotTable);
 
-    GenericResponse<SlotTable> response = resource.slotTable();
-    Assert.assertTrue(response.isSuccess());
-    Assert.assertEquals(response.getData(), slotTable);
+        GenericResponse<SlotTable> response = resource.slotTable();
+        Assert.assertTrue(response.isSuccess());
+        Assert.assertEquals(response.getData(), slotTable);
 
-    GenericResponse<Long> epochResp = resource.epoch();
-    Assert.assertTrue(response.isSuccess());
-    Assert.assertEquals(epochResp.getData().longValue(), 10);
-  }
+        GenericResponse<Long> epochResp = resource.epoch();
+        Assert.assertTrue(response.isSuccess());
+        Assert.assertEquals(epochResp.getData().longValue(), 10);
+    }
 }

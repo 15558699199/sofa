@@ -36,47 +36,48 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class FetchProvideDataRequestHandler extends BaseMetaServerHandler<FetchProvideDataRequest> {
 
-  private static final Logger DB_LOGGER =
-      LoggerFactory.getLogger(FetchProvideDataRequestHandler.class, "[DBService]");
+    private static final Logger DB_LOGGER =
+            LoggerFactory.getLogger(FetchProvideDataRequestHandler.class, "[DBService]");
 
-  @Autowired private ProvideDataService provideDataService;
+    @Autowired
+    private ProvideDataService provideDataService;
 
-  @Override
-  public Object doHandle(Channel channel, FetchProvideDataRequest fetchProvideDataRequest) {
-    try {
-      DBResponse<PersistenceData> ret =
-          provideDataService.queryProvideData(fetchProvideDataRequest.getDataInfoId());
+    @Override
+    public Object doHandle(Channel channel, FetchProvideDataRequest fetchProvideDataRequest) {
+        try {
+            DBResponse<PersistenceData> ret =
+                    provideDataService.queryProvideData(fetchProvideDataRequest.getDataInfoId());
 
-      if (ret.getOperationStatus() == OperationStatus.SUCCESS) {
-        PersistenceData data = ret.getEntity();
-        ProvideData provideData =
-            new ProvideData(
-                new ServerDataBox(data.getData()),
-                fetchProvideDataRequest.getDataInfoId(),
-                data.getVersion());
-        DB_LOGGER.info("get ProvideData {} from DB success!", provideData);
-        return provideData;
-      } else if (ret.getOperationStatus() == OperationStatus.NOTFOUND) {
-        ProvideData provideData =
-            new ProvideData(null, fetchProvideDataRequest.getDataInfoId(), null);
-        DB_LOGGER.warn(
-            "has not found data from DB dataInfoId:{}", fetchProvideDataRequest.getDataInfoId());
-        return provideData;
-      } else {
-        DB_LOGGER.error("get Data DB status error!");
-        throw new RuntimeException("Get Data DB status error!");
-      }
+            if (ret.getOperationStatus() == OperationStatus.SUCCESS) {
+                PersistenceData data = ret.getEntity();
+                ProvideData provideData =
+                        new ProvideData(
+                                new ServerDataBox(data.getData()),
+                                fetchProvideDataRequest.getDataInfoId(),
+                                data.getVersion());
+                DB_LOGGER.info("get ProvideData {} from DB success!", provideData);
+                return provideData;
+            } else if (ret.getOperationStatus() == OperationStatus.NOTFOUND) {
+                ProvideData provideData =
+                        new ProvideData(null, fetchProvideDataRequest.getDataInfoId(), null);
+                DB_LOGGER.warn(
+                        "has not found data from DB dataInfoId:{}", fetchProvideDataRequest.getDataInfoId());
+                return provideData;
+            } else {
+                DB_LOGGER.error("get Data DB status error!");
+                throw new RuntimeException("Get Data DB status error!");
+            }
 
-    } catch (Exception e) {
-      DB_LOGGER.error(
-          "get persistence Data dataInfoId {} from db error!",
-          fetchProvideDataRequest.getDataInfoId());
-      throw new RuntimeException("Get persistence Data from db error!", e);
+        } catch (Exception e) {
+            DB_LOGGER.error(
+                    "get persistence Data dataInfoId {} from db error!",
+                    fetchProvideDataRequest.getDataInfoId());
+            throw new RuntimeException("Get persistence Data from db error!", e);
+        }
     }
-  }
 
-  @Override
-  public Class interest() {
-    return FetchProvideDataRequest.class;
-  }
+    @Override
+    public Class interest() {
+        return FetchProvideDataRequest.class;
+    }
 }

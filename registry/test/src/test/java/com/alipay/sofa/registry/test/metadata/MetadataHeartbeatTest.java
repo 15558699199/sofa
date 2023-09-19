@@ -22,6 +22,7 @@ import com.alipay.sofa.registry.common.model.store.AppRevision;
 import com.alipay.sofa.registry.core.model.RegisterResponse;
 import com.alipay.sofa.registry.util.ConcurrentUtils;
 import com.alipay.sofa.registry.util.LoopRunnable;
+
 import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 
@@ -31,24 +32,24 @@ import java.util.concurrent.TimeUnit;
  */
 public class MetadataHeartbeatTest extends MetadataTest {
 
-  public class HeartbeatRunner extends LoopRunnable {
+    public class HeartbeatRunner extends LoopRunnable {
 
-    @Override
-    public void runUnthrowable() {
-      for (AppRevision appRevision : appRevisionList) {
-        MetaHeartbeatResponse response =
-            appRevisionHandlerStrategy.heartbeat(
-                Collections.singletonList(appRevision.getRevision()));
-        if (response.getStatusCode() == ValueConstants.METADATA_STATUS_DATA_NOT_FOUND) {
-          RegisterResponse result = new RegisterResponse();
-          appRevisionHandlerStrategy.handleAppRevisionRegister(appRevision, result, "");
+        @Override
+        public void runUnthrowable() {
+            for (AppRevision appRevision : appRevisionList) {
+                MetaHeartbeatResponse response =
+                        appRevisionHandlerStrategy.heartbeat(
+                                Collections.singletonList(appRevision.getRevision()));
+                if (response.getStatusCode() == ValueConstants.METADATA_STATUS_DATA_NOT_FOUND) {
+                    RegisterResponse result = new RegisterResponse();
+                    appRevisionHandlerStrategy.handleAppRevisionRegister(appRevision, result, "");
+                }
+            }
         }
-      }
-    }
 
-    @Override
-    public void waitingUnthrowable() {
-      ConcurrentUtils.sleepUninterruptibly(1, TimeUnit.SECONDS);
+        @Override
+        public void waitingUnthrowable() {
+            ConcurrentUtils.sleepUninterruptibly(1, TimeUnit.SECONDS);
+        }
     }
-  }
 }

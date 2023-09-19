@@ -21,65 +21,65 @@ package com.alipay.sofa.registry.core.model;
  * @version $Id: SubscriberRegister.java, v 0.1 2017-11-28 15:40 zhuoyu.sjw Exp $$
  */
 public class SubscriberRegister extends BaseRegister {
-  private static final long serialVersionUID = 5884257055097046886L;
+    private static final long serialVersionUID = 5884257055097046886L;
 
-  private String scope;
+    private String scope;
 
-  private String acceptEncoding;
+    private String acceptEncoding;
 
-  private boolean acceptMulti;
+    private boolean acceptMulti;
 
-  /**
-   * Getter method for property <tt>scope</tt>.
-   *
-   * @return property value of scope
-   */
-  public String getScope() {
-    return scope;
-  }
+    /**
+     * Getter method for property <tt>scope</tt>.
+     *
+     * @return property value of scope
+     */
+    public String getScope() {
+        return scope;
+    }
 
-  /**
-   * Setter method for property <tt>scope</tt>.
-   *
-   * @param scope value to be assigned to property scope
-   */
-  public void setScope(String scope) {
-    this.scope = scope;
-  }
+    /**
+     * Setter method for property <tt>scope</tt>.
+     *
+     * @param scope value to be assigned to property scope
+     */
+    public void setScope(String scope) {
+        this.scope = scope;
+    }
 
-  public boolean acceptMulti() {
-    return this.acceptMulti;
-  }
+    public boolean acceptMulti() {
+        return this.acceptMulti;
+    }
 
-  /**
-   * Setter method for property <tt>acceptMulti</tt>.
-   *
-   * @param acceptMulti value to be assigned to property acceptMulti
-   */
-  public void setAcceptMulti(boolean acceptMulti) {
-    this.acceptMulti = acceptMulti;
-  }
+    /**
+     * Setter method for property <tt>acceptMulti</tt>.
+     *
+     * @param acceptMulti value to be assigned to property acceptMulti
+     */
+    public void setAcceptMulti(boolean acceptMulti) {
+        this.acceptMulti = acceptMulti;
+    }
 
-  @Override
-  public String toString() {
-    return "SubscriberRegister{"
-        + "scope='"
-        + scope
-        + '\''
-        + ", acceptEncoding='"
-        + acceptEncoding
-        + '\''
-        + ", acceptMulti="
-        + acceptMulti
-        + '}'
-        + super.toString();
-  }
+    @Override
+    public String toString() {
+        return "SubscriberRegister{"
+                + "scope='"
+                + scope
+                + '\''
+                + ", acceptEncoding='"
+                + acceptEncoding
+                + '\''
+                + ", acceptMulti="
+                + acceptMulti
+                + '}'
+                + super.toString();
+    }
 
-  public String getAcceptEncoding() {
-    return acceptEncoding;
-  }
+    public String getAcceptEncoding() {
+        return acceptEncoding;
+    }
 
-  public void setAcceptEncoding(String acceptEncoding) {
-    this.acceptEncoding = acceptEncoding;
-  }
+    public void setAcceptEncoding(String acceptEncoding) {
+        this.acceptEncoding = acceptEncoding;
+    }
 }

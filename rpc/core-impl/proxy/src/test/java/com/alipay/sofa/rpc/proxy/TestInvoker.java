@@ -26,14 +26,12 @@ import com.alipay.sofa.rpc.invoke.Invoker;
 import java.lang.reflect.Method;
 
 /**
- *
- *
  * @author <a href="mailto:zhanggeng.zg@antfin.com">GengZhang</a>
  */
 public class TestInvoker implements Invoker {
 
     private TestInterfaceImpl testInterface = new TestInterfaceImpl();
-    private SofaRequest       request;
+    private SofaRequest request;
 
     @Override
     public SofaResponse invoke(SofaRequest request) throws SofaRpcException {
@@ -44,7 +42,7 @@ public class TestInvoker implements Invoker {
         SofaResponse response = new SofaResponse();
         try {
             Method method = TestInterface.class.getMethod(request.getMethodName(),
-                ClassTypeUtils.getClasses(request.getMethodArgSigs()));
+                    ClassTypeUtils.getClasses(request.getMethodArgSigs()));
             Object ret = method.invoke(testInterface, request.getMethodArgs());
             response = new SofaResponse();
             response.setAppResponse(ret);

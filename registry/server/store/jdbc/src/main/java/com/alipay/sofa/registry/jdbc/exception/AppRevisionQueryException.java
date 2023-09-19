@@ -22,7 +22,7 @@ package com.alipay.sofa.registry.jdbc.exception;
  */
 public class AppRevisionQueryException extends RuntimeException {
 
-  public AppRevisionQueryException(String revision, String msg) {
-    super(String.format("query revision: %s error, errorMsg: %s", revision, msg));
-  }
+    public AppRevisionQueryException(String revision, String msg) {
+        super(String.format("query revision: %s error, errorMsg: %s", revision, msg));
+    }
 }

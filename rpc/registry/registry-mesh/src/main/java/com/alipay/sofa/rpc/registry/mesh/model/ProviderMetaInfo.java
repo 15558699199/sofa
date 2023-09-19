@@ -24,13 +24,13 @@ import java.util.Map;
  */
 public class ProviderMetaInfo {
 
-    private String              protocol;
+    private String protocol;
 
-    private String              version;
+    private String version;
 
-    private String              serializeType;
+    private String serializeType;
 
-    private String              appName;
+    private String appName;
 
     private Map<String, String> properties;
 

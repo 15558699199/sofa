@@ -39,19 +39,19 @@ import static org.mockito.Mockito.mock;
 public class SpyDefinitionTests {
 
     private static final ResolvableType REAL_SERVICE_TYPE = ResolvableType
-                                                              .forClass(ExampleService.class);
+            .forClass(ExampleService.class);
 
     @Test
-	public void classToSpyMustNotBeNull() {
-		assertThatIllegalArgumentException().isThrownBy(() -> new SpyDefinition(null, null, null,
-						null, null,null, true, null))
-			.withMessageContaining("MockType must not be null");
-	}
+    public void classToSpyMustNotBeNull() {
+        assertThatIllegalArgumentException().isThrownBy(() -> new SpyDefinition(null, null, null,
+                        null, null, null, true, null))
+                .withMessageContaining("MockType must not be null");
+    }
 
     @Test
     public void createWithDefaults() {
         SpyDefinition definition = new SpyDefinition(REAL_SERVICE_TYPE, null, null, null, null,
-            null, true, null);
+                null, true, null);
         assertThat(definition.getName()).isNull();
         assertThat(definition.getType()).isNull();
         assertThat(definition.getModule()).isNull();
@@ -65,7 +65,7 @@ public class SpyDefinitionTests {
     public void createExplicit() {
         QualifierDefinition qualifier = mock(QualifierDefinition.class);
         SpyDefinition definition = new SpyDefinition(REAL_SERVICE_TYPE, "name", REAL_SERVICE_TYPE,
-            "Module", "Field", MockReset.BEFORE, false, qualifier);
+                "Module", "Field", MockReset.BEFORE, false, qualifier);
         assertThat(definition.getName()).isEqualTo("name");
         assertThat(definition.getType()).isEqualTo(REAL_SERVICE_TYPE);
         assertThat(definition.getModule()).isEqualTo("Module");
@@ -78,7 +78,7 @@ public class SpyDefinitionTests {
     @Test
     public void createSpy() {
         SpyDefinition definition = new SpyDefinition(REAL_SERVICE_TYPE, "name", REAL_SERVICE_TYPE,
-            "Module", "Field", MockReset.BEFORE, false, null);
+                "Module", "Field", MockReset.BEFORE, false, null);
         RealExampleService spy = definition.createSpy(new RealExampleService("hello"));
         MockCreationSettings<?> settings = Mockito.mockingDetails(spy).getMockCreationSettings();
         assertThat(spy).isInstanceOf(ExampleService.class);
@@ -87,25 +87,25 @@ public class SpyDefinitionTests {
     }
 
     @Test
-	void createSpyWhenNullInstanceShouldThrowException() {
-		SpyDefinition definition =  new SpyDefinition(REAL_SERVICE_TYPE,
-				"name", REAL_SERVICE_TYPE, "Module", "Field", MockReset.BEFORE, false, null);
-		assertThatIllegalArgumentException().isThrownBy(() -> definition.createSpy(null))
-			.withMessageContaining("Instance must not be null");
-	}
+    void createSpyWhenNullInstanceShouldThrowException() {
+        SpyDefinition definition = new SpyDefinition(REAL_SERVICE_TYPE,
+                "name", REAL_SERVICE_TYPE, "Module", "Field", MockReset.BEFORE, false, null);
+        assertThatIllegalArgumentException().isThrownBy(() -> definition.createSpy(null))
+                .withMessageContaining("Instance must not be null");
+    }
 
     @Test
-	void createSpyWhenWrongInstanceShouldThrowException() {
-		SpyDefinition definition =  new SpyDefinition(REAL_SERVICE_TYPE,
-				"name", REAL_SERVICE_TYPE, "Module", "Field", MockReset.BEFORE, false, null);
-		assertThatIllegalArgumentException().isThrownBy(() -> definition.createSpy(new ExampleServiceCaller(null)))
-			.withMessageContaining("must be an instance of");
-	}
+    void createSpyWhenWrongInstanceShouldThrowException() {
+        SpyDefinition definition = new SpyDefinition(REAL_SERVICE_TYPE,
+                "name", REAL_SERVICE_TYPE, "Module", "Field", MockReset.BEFORE, false, null);
+        assertThatIllegalArgumentException().isThrownBy(() -> definition.createSpy(new ExampleServiceCaller(null)))
+                .withMessageContaining("must be an instance of");
+    }
 
     @Test
     void createSpyTwice() {
         SpyDefinition definition = new SpyDefinition(REAL_SERVICE_TYPE, "name", REAL_SERVICE_TYPE,
-            "Module", "Field", MockReset.BEFORE, false, null);
+                "Module", "Field", MockReset.BEFORE, false, null);
         Object instance = new RealExampleService("hello");
         instance = definition.createSpy(instance);
         assertThat(instance).isEqualTo(definition.createSpy(instance));

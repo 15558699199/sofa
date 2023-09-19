@@ -18,7 +18,7 @@ package com.alipay.sofa.registry.common.model.metaserver.cleaner;
 
 public class AppRevisionSliceRequest extends BaseSliceRequest {
 
-  public AppRevisionSliceRequest(int slotNum, int slotId) {
-    super(slotNum, slotId);
-  }
+    public AppRevisionSliceRequest(int slotNum, int slotId) {
+        super(slotNum, slotId);
+    }
 }

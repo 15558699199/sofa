@@ -22,13 +22,15 @@ package com.alipay.sofa.registry.server.session.cache;
  */
 public interface EntityType {
 
-  /** symbol : */
-  char COMMA = ',';
+    /**
+     * symbol :
+     */
+    char COMMA = ',';
 
-  /**
-   * cache contents uniqueKey,use for make up Key' hash code
-   *
-   * @return String
-   */
-  String getUniqueKey();
+    /**
+     * cache contents uniqueKey,use for make up Key' hash code
+     *
+     * @return String
+     */
+    String getUniqueKey();
 }

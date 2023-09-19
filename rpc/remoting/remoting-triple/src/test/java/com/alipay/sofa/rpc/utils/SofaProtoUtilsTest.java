@@ -38,19 +38,6 @@ public class SofaProtoUtilsTest {
         Assert.assertFalse(SofaProtoUtils.isProtoClass(""));
     }
 
-    static class BindableServiceImpl implements BindableService {
-        @Override
-        public ServerServiceDefinition bindService() {
-            return null;
-        }
-    }
-
-    interface TestInterface {
-        void methodA();
-
-        void methodB();
-    }
-
     @Test
     public void testGetMethodNames() {
         String interfaceName = TestInterface.class.getName();
@@ -70,6 +57,19 @@ public class SofaProtoUtilsTest {
         Assert.assertTrue(SofaProtoUtils.checkIfUseGeneric(asTrue));
         Assert.assertFalse(SofaProtoUtils.checkIfUseGeneric(asFalse));
 
+    }
+
+    interface TestInterface {
+        void methodA();
+
+        void methodB();
+    }
+
+    static class BindableServiceImpl implements BindableService {
+        @Override
+        public ServerServiceDefinition bindService() {
+            return null;
+        }
     }
 
     static class NeedGeneric {

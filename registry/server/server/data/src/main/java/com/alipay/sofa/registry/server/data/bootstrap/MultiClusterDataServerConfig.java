@@ -22,35 +22,35 @@ package com.alipay.sofa.registry.server.data.bootstrap;
  */
 public interface MultiClusterDataServerConfig {
 
-  int getSyncRemoteSlotLeaderIntervalSecs();
+    int getSyncRemoteSlotLeaderIntervalSecs();
 
-  int getSyncRemoteSlotLeaderTimeoutMillis();
+    int getSyncRemoteSlotLeaderTimeoutMillis();
 
-  int getSyncRemoteSlotLeaderPort();
+    int getSyncRemoteSlotLeaderPort();
 
-  int getSyncRemoteSlotLeaderConnNum();
+    int getSyncRemoteSlotLeaderConnNum();
 
-  int getRemoteSyncSlotLeaderExecutorThreadSize();
+    int getRemoteSyncSlotLeaderExecutorThreadSize();
 
-  int getRemoteSyncSlotLeaderExecutorQueueSize();
+    int getRemoteSyncSlotLeaderExecutorQueueSize();
 
-  int getSyncSlotLowWaterMark();
+    int getSyncSlotLowWaterMark();
 
-  int getSyncSlotHighWaterMark();
+    int getSyncSlotHighWaterMark();
 
-  int getRemoteSlotSyncRequestExecutorMinPoolSize();
+    int getRemoteSlotSyncRequestExecutorMinPoolSize();
 
-  int getRemoteSlotSyncRequestExecutorMaxPoolSize();
+    int getRemoteSlotSyncRequestExecutorMaxPoolSize();
 
-  int getRemoteSlotSyncRequestExecutorQueueSize();
+    int getRemoteSlotSyncRequestExecutorQueueSize();
 
-  int getRemoteDataChangeExecutorThreadSize();
+    int getRemoteDataChangeExecutorThreadSize();
 
-  int getRemoteDataChangeExecutorQueueSize();
+    int getRemoteDataChangeExecutorQueueSize();
 
-  int getRemoteSyncDataIdExecutorThreadSize();
+    int getRemoteSyncDataIdExecutorThreadSize();
 
-  int getRemoteSyncDataIdExecutorQueueSize();
+    int getRemoteSyncDataIdExecutorQueueSize();
 
-  int getMultiClusterConfigReloadMillis();
+    int getMultiClusterConfigReloadMillis();
 }

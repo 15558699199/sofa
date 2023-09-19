@@ -23,5 +23,5 @@ import java.util.Date;
  * @version : DateNowRepository.java, v 0.1 2021年09月29日 15:06 xiaojian.xj Exp $
  */
 public interface DateNowRepository {
-  Date getNow();
+    Date getNow();
 }

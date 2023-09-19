@@ -17,18 +17,18 @@
 package com.alipay.sofa.registry.server.shared.providedata;
 
 public abstract class SystemDataStorage {
-  final long version;
+    final long version;
 
-  public SystemDataStorage(long version) {
-    this.version = version;
-  }
+    public SystemDataStorage(long version) {
+        this.version = version;
+    }
 
-  /**
-   * Getter method for property <tt>version</tt>.
-   *
-   * @return property value of version
-   */
-  public long getVersion() {
-    return version;
-  }
+    /**
+     * Getter method for property <tt>version</tt>.
+     *
+     * @return property value of version
+     */
+    public long getVersion() {
+        return version;
+    }
 }

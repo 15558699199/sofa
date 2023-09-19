@@ -23,20 +23,20 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class ListenServerChannelHandlerTest {
-  @Test
-  public void test() {
-    ListenServerChannelHandler handler =
-        new ListenServerChannelHandler() {
-          @Override
-          protected Node.NodeType getConnectNodeType() {
-            return Node.NodeType.CLIENT;
-          }
-        };
-    Assert.assertEquals(ChannelHandler.HandlerType.LISTENER, handler.getType());
-    Assert.assertNull(handler.interest());
-    TestUtils.assertRunException(
-        UnsupportedOperationException.class, () -> handler.doHandle(null, null));
+    @Test
+    public void test() {
+        ListenServerChannelHandler handler =
+                new ListenServerChannelHandler() {
+                    @Override
+                    protected Node.NodeType getConnectNodeType() {
+                        return Node.NodeType.CLIENT;
+                    }
+                };
+        Assert.assertEquals(ChannelHandler.HandlerType.LISTENER, handler.getType());
+        Assert.assertNull(handler.interest());
+        TestUtils.assertRunException(
+                UnsupportedOperationException.class, () -> handler.doHandle(null, null));
 
-    TestUtils.assertRunException(RuntimeException.class, () -> handler.buildFailedResponse(null));
-  }
+        TestUtils.assertRunException(RuntimeException.class, () -> handler.buildFailedResponse(null));
+    }
 }

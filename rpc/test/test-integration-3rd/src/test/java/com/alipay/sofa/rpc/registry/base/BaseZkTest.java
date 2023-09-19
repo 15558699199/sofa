@@ -33,7 +33,7 @@ import java.io.IOException;
  */
 public abstract class BaseZkTest {
 
-    protected final static Logger  LOGGER = LoggerFactory.getLogger(BaseZkTest.class);
+    protected final static Logger LOGGER = LoggerFactory.getLogger(BaseZkTest.class);
 
     protected static TestingServer server = null;
 

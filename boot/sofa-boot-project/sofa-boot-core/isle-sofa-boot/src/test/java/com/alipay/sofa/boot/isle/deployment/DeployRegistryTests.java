@@ -29,6 +29,11 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class DeployRegistryTests {
 
+    private static DependencyTree.Entry<String, DeploymentDescriptor> entry(String key,
+                                                                            DeploymentDescriptor value) {
+        return new DependencyTree.Entry<>(key, value);
+    }
+
     @Test
     void addAndRemove() {
         DeployRegistry registry = new DeployRegistry();
@@ -47,7 +52,7 @@ public class DeployRegistryTests {
         registry.add(descriptor1);
         registry.add(descriptor2);
         assertThat(registry.getResolvedEntries()).containsExactly(entry("module1", descriptor1),
-            entry("module2", descriptor2));
+                entry("module2", descriptor2));
     }
 
     @Test
@@ -58,7 +63,7 @@ public class DeployRegistryTests {
         descriptor2.addRequiredModule("module1");
         registry.add(descriptor2);
         assertThat(registry.getMissingRequirements())
-            .containsExactly(entry("module1", descriptor1));
+                .containsExactly(entry("module1", descriptor1));
     }
 
     @Test
@@ -69,7 +74,7 @@ public class DeployRegistryTests {
         registry.add(descriptor1);
         registry.add(descriptor2);
         assertThat(registry.getEntries()).containsExactly(entry("module1", descriptor1),
-            entry("module2", descriptor2));
+                entry("module2", descriptor2));
     }
 
     @Test
@@ -109,11 +114,6 @@ public class DeployRegistryTests {
         descriptor2.addRequiredModule("module1");
         registry.add(descriptor2);
         assertThat(registry.getPendingEntries()).contains(entry("module2", descriptor2));
-    }
-
-    private static DependencyTree.Entry<String, DeploymentDescriptor> entry(String key,
-                                                                            DeploymentDescriptor value) {
-        return new DependencyTree.Entry<>(key, value);
     }
 
 }

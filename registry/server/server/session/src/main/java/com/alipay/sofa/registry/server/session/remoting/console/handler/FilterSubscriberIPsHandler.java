@@ -23,16 +23,17 @@ import com.alipay.sofa.registry.server.session.store.Interests;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class FilterSubscriberIPsHandler extends AbstractConsoleHandler<FilterSubscriberIPsRequest> {
-  @Autowired protected Interests sessionInterests;
+    @Autowired
+    protected Interests sessionInterests;
 
-  @Override
-  public Class interest() {
-    return FilterSubscriberIPsRequest.class;
-  }
+    @Override
+    public Class interest() {
+        return FilterSubscriberIPsRequest.class;
+    }
 
-  @Override
-  public Object doHandle(Channel channel, FilterSubscriberIPsRequest request) {
-    return new GenericResponse()
-        .fillSucceed(sessionInterests.filterIPs(request.getGroup(), request.getIpLimit()));
-  }
+    @Override
+    public Object doHandle(Channel channel, FilterSubscriberIPsRequest request) {
+        return new GenericResponse()
+                .fillSucceed(sessionInterests.filterIPs(request.getGroup(), request.getIpLimit()));
+    }
 }

@@ -17,23 +17,24 @@
 package com.alipay.sofa.registry.common.model.store;
 
 import com.alipay.sofa.registry.compress.CompressedItem;
+
 import java.io.Serializable;
 
 public class ZipSubPublisherList extends CompressedItem implements Serializable {
-  private static final long serialVersionUID = 7412542391154672610L;
-  private final int pubNum;
+    private static final long serialVersionUID = 7412542391154672610L;
+    private final int pubNum;
 
-  public ZipSubPublisherList(byte[] compressedData, int originSize, String encoding, int pubNum) {
-    super(compressedData, originSize, encoding);
-    this.pubNum = pubNum;
-  }
+    public ZipSubPublisherList(byte[] compressedData, int originSize, String encoding, int pubNum) {
+        super(compressedData, originSize, encoding);
+        this.pubNum = pubNum;
+    }
 
-  public int getPubNum() {
-    return pubNum;
-  }
+    public int getPubNum() {
+        return pubNum;
+    }
 
-  @Override
-  public int size() {
-    return super.size() + 4;
-  }
+    @Override
+    public int size() {
+        return super.size() + 4;
+    }
 }

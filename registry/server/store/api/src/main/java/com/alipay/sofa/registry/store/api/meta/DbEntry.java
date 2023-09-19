@@ -19,7 +19,7 @@ package com.alipay.sofa.registry.store.api.meta;
 import java.util.Date;
 
 public interface DbEntry {
-  long getId();
+    long getId();
 
-  Date getGmtCreate();
+    Date getGmtCreate();
 }

@@ -20,7 +20,6 @@ import com.alipay.sofa.rpc.auth.AuthRuleGroup;
 import com.alipay.sofa.rpc.ext.Extensible;
 
 /**
- *
  * @author bystander
  * @version : DynamicManager.java, v 0.1 2019年04月12日 11:35 bystander Exp $
  */
@@ -45,7 +44,7 @@ public abstract class DynamicConfigManager {
      * Get provider service related property.
      *
      * @param service target service
-     * @param key property key
+     * @param key     property key
      * @return property value
      */
     public abstract String getProviderServiceProperty(String service, String key);
@@ -54,7 +53,7 @@ public abstract class DynamicConfigManager {
      * Get consumer service related property.
      *
      * @param service target service
-     * @param key property key
+     * @param key     property key
      * @return property value
      */
     public abstract String getConsumerServiceProperty(String service, String key);
@@ -63,8 +62,8 @@ public abstract class DynamicConfigManager {
      * Get provider method related property.
      *
      * @param service target service
-     * @param method target method
-     * @param key property key
+     * @param method  target method
+     * @param key     property key
      * @return property value
      */
     public abstract String getProviderMethodProperty(String service, String method, String key);
@@ -73,8 +72,8 @@ public abstract class DynamicConfigManager {
      * Get consumer method related property.
      *
      * @param service target service
-     * @param method target method
-     * @param key property key
+     * @param method  target method
+     * @param key     property key
      * @return property value
      */
     public abstract String getConsumerMethodProperty(String service, String method, String key);

@@ -26,15 +26,16 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class SessionNodeExchanger extends ServerSideExchanger {
 
-  @Autowired private MetaServerConfig metaServerConfig;
+    @Autowired
+    private MetaServerConfig metaServerConfig;
 
-  @Override
-  public int getRpcTimeoutMillis() {
-    return metaServerConfig.getSessionNodeExchangeTimeoutMillis();
-  }
+    @Override
+    public int getRpcTimeoutMillis() {
+        return metaServerConfig.getSessionNodeExchangeTimeoutMillis();
+    }
 
-  @Override
-  public int getServerPort() {
-    return metaServerConfig.getSessionServerPort();
-  }
+    @Override
+    public int getServerPort() {
+        return metaServerConfig.getSessionServerPort();
+    }
 }

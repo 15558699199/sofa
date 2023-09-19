@@ -39,9 +39,9 @@ public class RegistryConfigContainerTests {
 
     private final RegistryConfigureProcessor localFileConfigurator = new LocalFileConfigurator();
 
-    private final RegistryConfigureProcessor zkFileConfigurator    = new ZookeeperConfigurator();
+    private final RegistryConfigureProcessor zkFileConfigurator = new ZookeeperConfigurator();
 
-    private RegistryConfigContainer          registryConfigContainer;
+    private RegistryConfigContainer registryConfigContainer;
 
     @BeforeEach
     public void init() {
@@ -54,7 +54,7 @@ public class RegistryConfigContainerTests {
     @Test
     public void getLocalRegistryConfig() {
         RegistryConfig registryConfigLocal = localFileConfigurator
-            .buildFromAddress("local:///home/admin/local");
+                .buildFromAddress("local:///home/admin/local");
         assertThat(registryConfigLocal.getProtocol()).isEqualTo("local");
         assertThat(registryConfigLocal.getFile()).isEqualTo("/home/admin/local");
     }
@@ -62,7 +62,7 @@ public class RegistryConfigContainerTests {
     @Test
     public void zooKeeperRegistryConfig() {
         RegistryConfig registryConfigZk = zkFileConfigurator
-            .buildFromAddress("zookeeper://127.0.0.1:2181?file=/home/admin/zookeeper");
+                .buildFromAddress("zookeeper://127.0.0.1:2181?file=/home/admin/zookeeper");
         assertThat(registryConfigZk.getProtocol()).isEqualTo("zookeeper");
         assertThat(registryConfigZk.getFile()).isEqualTo("/home/admin/zookeeper");
     }
@@ -77,7 +77,7 @@ public class RegistryConfigContainerTests {
         } catch (Throwable e) {
             assertThat(e).isInstanceOf(SofaBootRpcRuntimeException.class);
             assertThat(e.getMessage()).isEqualTo(
-                "RPC-010060028: Registry config [no] is not supported ");
+                    "RPC-010060028: Registry config [no] is not supported ");
         }
 
     }

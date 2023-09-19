@@ -22,11 +22,11 @@ package com.alipay.sofa.registry.server.session.cache;
  */
 public interface CacheGenerator {
 
-  /**
-   * generator cache on write request
-   *
-   * @param key key
-   * @return Value
-   */
-  Value generatePayload(Key key);
+    /**
+     * generator cache on write request
+     *
+     * @param key key
+     * @return Value
+     */
+    Value generatePayload(Key key);
 }

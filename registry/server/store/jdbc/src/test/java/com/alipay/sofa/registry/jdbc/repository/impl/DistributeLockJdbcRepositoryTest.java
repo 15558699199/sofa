@@ -31,20 +31,21 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class DistributeLockJdbcRepositoryTest extends AbstractH2DbTestBase {
 
-  @Autowired private DistributeLockRepository distributeLockRepository;
+    @Autowired
+    private DistributeLockRepository distributeLockRepository;
 
-  private DistributeLockMapper distributeLockMapper;
+    private DistributeLockMapper distributeLockMapper;
 
-  @Before
-  public void init() {
-    distributeLockMapper = applicationContext.getBean(DistributeLockMapper.class);
-  }
+    @Before
+    public void init() {
+        distributeLockMapper = applicationContext.getBean(DistributeLockMapper.class);
+    }
 
-  @Test
-  public void test() throws Exception {
-    DistributeLockInfo lock = new DistributeLockInfo(CLUSTER_ID, "testLock", "1.1.1.1", 1000);
-    distributeLockMapper.competeLockOnInsert(lock);
-    DistributeLockInfo query = distributeLockRepository.queryDistLock("testLock");
-    Assert.assertEquals(lock.getOwner(), query.getOwner());
-  }
+    @Test
+    public void test() throws Exception {
+        DistributeLockInfo lock = new DistributeLockInfo(CLUSTER_ID, "testLock", "1.1.1.1", 1000);
+        distributeLockMapper.competeLockOnInsert(lock);
+        DistributeLockInfo query = distributeLockRepository.queryDistLock("testLock");
+        Assert.assertEquals(lock.getOwner(), query.getOwner());
+    }
 }

@@ -40,11 +40,7 @@ import com.alipay.sofa.rpc.dynamic.DynamicConfigKeys;
 import com.alipay.sofa.rpc.dynamic.DynamicConfigManager;
 import com.alipay.sofa.rpc.dynamic.DynamicConfigManagerFactory;
 import com.alipay.sofa.rpc.dynamic.DynamicHelper;
-import com.alipay.sofa.rpc.event.EventBus;
-import com.alipay.sofa.rpc.event.ProviderInfoAddEvent;
-import com.alipay.sofa.rpc.event.ProviderInfoRemoveEvent;
-import com.alipay.sofa.rpc.event.ProviderInfoUpdateAllEvent;
-import com.alipay.sofa.rpc.event.ProviderInfoUpdateEvent;
+import com.alipay.sofa.rpc.event.*;
 import com.alipay.sofa.rpc.filter.ConsumerInvoker;
 import com.alipay.sofa.rpc.filter.FilterChain;
 import com.alipay.sofa.rpc.listener.ConsumerStateListener;
@@ -55,12 +51,7 @@ import com.alipay.sofa.rpc.message.ResponseFuture;
 import com.alipay.sofa.rpc.transport.ClientTransport;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.alipay.sofa.rpc.client.ProviderInfoAttrs.ATTR_TIMEOUT;
@@ -78,6 +69,42 @@ public abstract class AbstractCluster extends Cluster {
      * slf4j Logger for this class
      */
     private final static Logger LOGGER = LoggerFactory.getLogger(AbstractCluster.class);
+    /**
+     * 是否已启动(已建立连接)
+     */
+    protected volatile boolean initialized = false;
+    /**
+     * 是否已经销毁（已经销毁不能再继续使用）
+     */
+    protected volatile boolean destroyed = false;
+    /**
+     * 当前Client正在发送的调用数量
+     */
+    protected AtomicInteger countOfInvoke = new AtomicInteger(0);
+    /**
+     * 路由列表
+     */
+    protected RouterChain routerChain;
+    /**
+     * 负载均衡接口
+     */
+    protected LoadBalancer loadBalancer;
+    /**
+     * 地址保持器
+     */
+    protected AddressHolder addressHolder;
+    /**
+     * 连接管理器
+     */
+    protected ConnectionHolder connectionHolder;
+    /**
+     * 过滤器链
+     */
+    protected FilterChain filterChain;
+    /**
+     * 上一次连接，目前是记录整个接口的，是否需要方法级的？？
+     */
+    private volatile ProviderInfo lastProviderInfo;
 
     /**
      * 构造函数
@@ -87,42 +114,6 @@ public abstract class AbstractCluster extends Cluster {
     public AbstractCluster(ConsumerBootstrap consumerBootstrap) {
         super(consumerBootstrap);
     }
-
-    /**
-     * 是否已启动(已建立连接)
-     */
-    protected volatile boolean initialized   = false;
-
-    /**
-     * 是否已经销毁（已经销毁不能再继续使用）
-     */
-    protected volatile boolean destroyed     = false;
-
-    /**
-     * 当前Client正在发送的调用数量
-     */
-    protected AtomicInteger    countOfInvoke = new AtomicInteger(0);
-
-    /**
-     * 路由列表
-     */
-    protected RouterChain      routerChain;
-    /**
-     * 负载均衡接口
-     */
-    protected LoadBalancer     loadBalancer;
-    /**
-     * 地址保持器
-     */
-    protected AddressHolder    addressHolder;
-    /**
-     * 连接管理器
-     */
-    protected ConnectionHolder connectionHolder;
-    /**
-     * 过滤器链
-     */
-    protected FilterChain      filterChain;
 
     @Override
     public synchronized void init() {
@@ -139,7 +130,7 @@ public abstract class AbstractCluster extends Cluster {
         connectionHolder = ConnectionHolderFactory.getConnectionHolder(consumerBootstrap);
         // 构造Filter链,最底层是调用过滤器
         this.filterChain = FilterChain.buildConsumerChain(this.consumerConfig,
-            new ConsumerInvoker(consumerBootstrap));
+                new ConsumerInvoker(consumerBootstrap));
 
         if (consumerConfig.isLazy()) { // 延迟连接
             if (LOGGER.isInfoEnabled(consumerConfig.getAppName())) {
@@ -214,7 +205,7 @@ public abstract class AbstractCluster extends Cluster {
             if (!ProviderHelper.isEmpty(oldProviderGroup)) {
                 if (LOGGER.isWarnEnabled(consumerConfig.getAppName())) {
                     LOGGER.warnWithApp(consumerConfig.getAppName(), "Provider list is emptied, may be all " +
-                        "providers has been closed, or this consumer has been add to blacklist");
+                            "providers has been closed, or this consumer has been add to blacklist");
                     closeTransports();
                 }
             }
@@ -244,7 +235,7 @@ public abstract class AbstractCluster extends Cluster {
             if (CommonUtils.isNotEmpty(currentProviderList)) {
                 if (LOGGER.isWarnEnabled(consumerConfig.getAppName())) {
                     LOGGER.warnWithApp(consumerConfig.getAppName(), "Provider list is emptied, may be all " +
-                        "providers has been closed, or this consumer has been add to blacklist");
+                            "providers has been closed, or this consumer has been add to blacklist");
                     closeTransports();
                 }
             }
@@ -254,7 +245,7 @@ public abstract class AbstractCluster extends Cluster {
         }
         if (EventBus.isEnable(ProviderInfoUpdateAllEvent.class)) {
             ProviderInfoUpdateAllEvent event = new ProviderInfoUpdateAllEvent(consumerConfig, oldProviderGroups,
-                providerGroups);
+                    providerGroups);
             EventBus.post(event);
         }
     }
@@ -275,8 +266,8 @@ public abstract class AbstractCluster extends Cluster {
             if (!StringUtils.equals(providerInfo.getProtocolType(), consumerConfig.getProtocol())) {
                 if (LOGGER.isWarnEnabled(consumerConfig.getAppName())) {
                     LOGGER.warnWithApp(consumerConfig.getAppName(),
-                        "Unmatched protocol between consumer [{}] and provider [{}].",
-                        consumerConfig.getProtocol(), providerInfo.getProtocolType());
+                            "Unmatched protocol between consumer [{}] and provider [{}].",
+                            consumerConfig.getProtocol(), providerInfo.getProtocolType());
                 }
             }
         }
@@ -327,7 +318,7 @@ public abstract class AbstractCluster extends Cluster {
                 parameters.put("methodName", request.getMethodName());
                 parameters.put("methodArgs", request.getMethodArgs());
                 parameters.put("methodArgSigs", request.getMethodArgSigs());
-                Object mockAppResponse=  RpcHttpClient.getInstance().doPost(mockUrl,JSON.toJSONString(parameters),request.getMethod().getReturnType());
+                Object mockAppResponse = RpcHttpClient.getInstance().doPost(mockUrl, JSON.toJSONString(parameters), request.getMethod().getReturnType());
                 response.setAppResponse(mockAppResponse);
             } catch (Throwable e) {
                 response.setErrorMsg(e.getMessage());
@@ -356,11 +347,6 @@ public abstract class AbstractCluster extends Cluster {
     protected void checkProviderVersion(ProviderInfo providerInfo, SofaRequest request) {
 
     }
-
-    /**
-     * 上一次连接，目前是记录整个接口的，是否需要方法级的？？
-     */
-    private volatile ProviderInfo lastProviderInfo;
 
     /**
      * 根据规则进行负载均衡
@@ -400,7 +386,7 @@ public abstract class AbstractCluster extends Cluster {
         List<ProviderInfo> providerInfos = routerChain.route(message, null);
         RpcInternalContext context = RpcInternalContext.peekContext();
         RpcInvokeContext rpcInvokeContext = RpcInvokeContext.getContext();
-        rpcInvokeContext.put(RpcConstants.INTERNAL_KEY_CLIENT_ROUTER_TIME_NANO, System.nanoTime()-routerStartTime);
+        rpcInvokeContext.put(RpcConstants.INTERNAL_KEY_CLIENT_ROUTER_TIME_NANO, System.nanoTime() - routerStartTime);
         //保存一下原始地址,为了打印
         List<ProviderInfo> originalProviderInfos;
 
@@ -428,7 +414,7 @@ public abstract class AbstractCluster extends Cluster {
             // 已经调用异常的本次不再重试
             providerInfos.removeAll(invokedProviderInfos);
             // If all providers have retried once, then select by loadBalancer without filter.
-            if(CommonUtils.isEmpty(providerInfos)){
+            if (CommonUtils.isEmpty(providerInfos)) {
                 providerInfos = originalProviderInfos;
             }
         }
@@ -453,7 +439,7 @@ public abstract class AbstractCluster extends Cluster {
                 // 再进行负载均衡筛选
                 long loadBalanceStartTime = System.nanoTime();
                 providerInfo = loadBalancer.select(message, providerInfos);
-                rpcInvokeContext.put(RpcConstants.INTERNAL_KEY_CLIENT_BALANCER_TIME_NANO, System.nanoTime()-loadBalanceStartTime);
+                rpcInvokeContext.put(RpcConstants.INTERNAL_KEY_CLIENT_BALANCER_TIME_NANO, System.nanoTime() - loadBalanceStartTime);
 
                 ClientTransport transport = selectByProvider(message, providerInfo);
                 if (transport != null) {
@@ -478,8 +464,8 @@ public abstract class AbstractCluster extends Cluster {
         if (CommonUtils.isNotEmpty(providerInfos)) {
             for (ProviderInfo providerInfo : providerInfos) {
                 if (providerInfo.getHost().equals(tp.getHost())
-                    && StringUtils.equals(providerInfo.getProtocolType(), tp.getProtocolType())
-                    && providerInfo.getPort() == tp.getPort()) {
+                        && StringUtils.equals(providerInfo.getProtocolType(), tp.getProtocolType())
+                        && providerInfo.getPort() == tp.getPort()) {
                     return providerInfo;
                 }
             }
@@ -564,16 +550,16 @@ public abstract class AbstractCluster extends Cluster {
     private void calculateConsumerFilterTime() {
         // R3: Record consumer filter execution time
         Long filterStartTime = (Long) RpcInvokeContext.getContext().get(
-            RpcConstants.INTERNAL_KEY_CONSUMER_FILTER_START_TIME_NANO);
+                RpcConstants.INTERNAL_KEY_CONSUMER_FILTER_START_TIME_NANO);
         Long filterEndTime = (Long) RpcInvokeContext.getContext().get(
-            RpcConstants.INTERNAL_KEY_CONSUMER_FILTER_END_TIME_NANO);
+                RpcConstants.INTERNAL_KEY_CONSUMER_FILTER_END_TIME_NANO);
         Long invokerStartTime = (Long) RpcInvokeContext.getContext().get(
-            RpcConstants.INTERNAL_KEY_CONSUMER_INVOKE_START_TIME_NANO);
+                RpcConstants.INTERNAL_KEY_CONSUMER_INVOKE_START_TIME_NANO);
         Long invokerEndTime = (Long) RpcInvokeContext.getContext().get(
-            RpcConstants.INTERNAL_KEY_CONSUMER_INVOKE_END_TIME_NANO);
+                RpcConstants.INTERNAL_KEY_CONSUMER_INVOKE_END_TIME_NANO);
         if (filterStartTime != null && filterEndTime != null && invokerStartTime != null && invokerEndTime != null) {
             RpcInvokeContext.getContext().put(RpcConstants.INTERNAL_KEY_CLIENT_FILTER_TIME_NANO,
-                filterEndTime - filterStartTime - (invokerEndTime - invokerStartTime));
+                    filterEndTime - filterStartTime - (invokerEndTime - invokerStartTime));
         }
     }
 
@@ -637,7 +623,7 @@ public abstract class AbstractCluster extends Cluster {
                 SofaResponseCallback sofaResponseCallback = request.getSofaResponseCallback();
                 if (sofaResponseCallback == null) {
                     SofaResponseCallback methodResponseCallback = consumerConfig
-                        .getMethodOnreturn(request.getMethodName());
+                            .getMethodOnreturn(request.getMethodName());
                     if (methodResponseCallback != null) { // 方法的Callback
                         request.setSofaResponseCallback(methodResponseCallback);
                     }
@@ -691,13 +677,13 @@ public abstract class AbstractCluster extends Cluster {
         if (StringUtils.isNotBlank(dynamicAlias)) {
             String dynamicTimeout = null;
             DynamicConfigManager dynamicConfigManager = DynamicConfigManagerFactory.getDynamicManager(
-                consumerConfig.getAppName(),
-                dynamicAlias);
+                    consumerConfig.getAppName(),
+                    dynamicAlias);
 
             if (dynamicConfigManager != null) {
                 dynamicTimeout = dynamicConfigManager.getConsumerMethodProperty(request.getInterfaceName(),
-                    request.getMethodName(),
-                    "timeout");
+                        request.getMethodName(),
+                        "timeout");
             }
 
             if (DynamicHelper.isNotDefault(dynamicTimeout) && StringUtils.isNotBlank(dynamicTimeout)) {
@@ -751,35 +737,6 @@ public abstract class AbstractCluster extends Cluster {
     protected void closeTransports() {
         if (connectionHolder != null) {
             connectionHolder.closeAllClientTransports(new GracefulDestroyHook());
-        }
-    }
-
-    /**
-     * 优雅关闭的钩子
-     */
-    protected class GracefulDestroyHook implements DestroyHook {
-        @Override
-        public void preDestroy() {
-            // 准备关闭连接
-            int count = countOfInvoke.get();
-            final int timeout = consumerConfig.getDisconnectTimeout(); // 等待结果超时时间
-            if (count > 0) { // 有正在调用的请求
-                long start = RpcRuntimeContext.now();
-                if (LOGGER.isWarnEnabled()) {
-                    LOGGER.warn("There are {} outstanding call in client, will close transports util return",
-                        count);
-                }
-                while (countOfInvoke.get() > 0 && RpcRuntimeContext.now() - start < timeout) { // 等待返回结果
-                    try {
-                        Thread.sleep(10);
-                    } catch (InterruptedException ignore) {
-                    }
-                }
-            }
-        }
-
-        @Override
-        public void postDestroy() {
         }
     }
 
@@ -837,7 +794,7 @@ public abstract class AbstractCluster extends Cluster {
                             listener.onUnavailable(proxyIns);
                         } catch (Exception e) {
                             LOGGER.error(LogCodes.getLog(LogCodes.ERROR_NOTIFY_CONSUMER_STATE_UN, proxyIns.getClass()
-                                .getName()));
+                                    .getName()));
                         }
                     }
                 }
@@ -864,7 +821,7 @@ public abstract class AbstractCluster extends Cluster {
                             listener.onAvailable(proxyIns);
                         } catch (Exception e) {
                             LOGGER.warn(LogCodes.getLog(LogCodes.WARN_NOTIFY_CONSUMER_STATE, proxyIns.getClass()
-                                .getName()));
+                                    .getName()));
                         }
                     }
                 }
@@ -937,5 +894,34 @@ public abstract class AbstractCluster extends Cluster {
     public boolean containsProviderInfo(String groupName, ProviderInfo providerInfo) {
         ProviderGroup group = addressHolder.getProviderGroup(groupName);
         return group != null && group.providerInfos.contains(providerInfo);
+    }
+
+    /**
+     * 优雅关闭的钩子
+     */
+    protected class GracefulDestroyHook implements DestroyHook {
+        @Override
+        public void preDestroy() {
+            // 准备关闭连接
+            int count = countOfInvoke.get();
+            final int timeout = consumerConfig.getDisconnectTimeout(); // 等待结果超时时间
+            if (count > 0) { // 有正在调用的请求
+                long start = RpcRuntimeContext.now();
+                if (LOGGER.isWarnEnabled()) {
+                    LOGGER.warn("There are {} outstanding call in client, will close transports util return",
+                            count);
+                }
+                while (countOfInvoke.get() > 0 && RpcRuntimeContext.now() - start < timeout) { // 等待返回结果
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ignore) {
+                    }
+                }
+            }
+        }
+
+        @Override
+        public void postDestroy() {
+        }
     }
 }

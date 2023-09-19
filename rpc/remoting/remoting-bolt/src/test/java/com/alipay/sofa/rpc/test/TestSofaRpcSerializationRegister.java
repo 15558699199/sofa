@@ -17,13 +17,10 @@
 package com.alipay.sofa.rpc.test;
 
 import com.alipay.remoting.CustomSerializerManager;
-import com.alipay.sofa.rpc.codec.bolt.AbstractSerializationRegister;
 import com.alipay.sofa.rpc.codec.bolt.SofaRpcSerialization;
 import com.alipay.sofa.rpc.codec.bolt.SofaRpcSerializationRegister;
 import com.alipay.sofa.rpc.core.request.SofaRequest;
 import com.alipay.sofa.rpc.ext.Extension;
-
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Register custom serializer to bolt.
@@ -43,12 +40,12 @@ public class TestSofaRpcSerializationRegister extends SofaRpcSerializationRegist
         // 注册序列化器到bolt
         if (CustomSerializerManager.getCustomSerializer(SofaRequest.class.getName()) == null) {
             CustomSerializerManager.registerCustomSerializer(SofaRequest.class.getName(),
-                rpcSerialization);
+                    rpcSerialization);
         }
 
         if (CustomSerializerManager.getCustomSerializer(TestSofaRpcSerializationRegister.class.getName()) == null) {
             CustomSerializerManager.registerCustomSerializer(TestSofaRpcSerializationRegister.class.getName(),
-                rpcSerialization);
+                    rpcSerialization);
         }
     }
 }

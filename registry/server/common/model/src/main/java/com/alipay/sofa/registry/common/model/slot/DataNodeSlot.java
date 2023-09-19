@@ -19,6 +19,7 @@ package com.alipay.sofa.registry.common.model.slot;
 import com.alipay.sofa.registry.util.StringFormatter;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+
 import java.io.Serializable;
 import java.util.*;
 
@@ -27,138 +28,138 @@ import java.util.*;
  * @version v 0.1 2020-11-03 11:27 yuzhi.lyz Exp $
  */
 public final class DataNodeSlot implements Serializable {
-  private static final long serialVersionUID = -4418378966762753298L;
-  private final String dataNode;
-  private final Set<Integer> leaders = Sets.newTreeSet();
-  private final Set<Integer> followers = Sets.newTreeSet();
+    private static final long serialVersionUID = -4418378966762753298L;
+    private final String dataNode;
+    private final Set<Integer> leaders = Sets.newTreeSet();
+    private final Set<Integer> followers = Sets.newTreeSet();
 
-  /**
-   * Constructor.
-   *
-   * @param dataNode the data node
-   */
-  public DataNodeSlot(String dataNode) {
-    this.dataNode = dataNode;
-  }
-
-  /**
-   * Fork data node slot.
-   *
-   * @param ignoreFollowers the ignore followers
-   * @return the data node slot
-   */
-  public DataNodeSlot fork(boolean ignoreFollowers) {
-    DataNodeSlot clone = new DataNodeSlot(dataNode);
-    clone.leaders.addAll(leaders);
-    if (!ignoreFollowers) {
-      clone.followers.addAll(followers);
+    /**
+     * Constructor.
+     *
+     * @param dataNode the data node
+     */
+    public DataNodeSlot(String dataNode) {
+        this.dataNode = dataNode;
     }
-    return clone;
-  }
 
-  public DataNodeSlot addLeader(int slotId) {
-    leaders.add(slotId);
-    return this;
-  }
+    public static List<String> collectDataNodes(Collection<DataNodeSlot> dataNodeSlots) {
+        Set<String> ret = Sets.newLinkedHashSet();
+        dataNodeSlots.forEach(d -> ret.add(d.dataNode));
+        return Lists.newArrayList(ret);
+    }
 
-  public DataNodeSlot addLeader(Collection<Integer> slotIds) {
-    leaders.addAll(slotIds);
-    return this;
-  }
+    /**
+     * Fork data node slot.
+     *
+     * @param ignoreFollowers the ignore followers
+     * @return the data node slot
+     */
+    public DataNodeSlot fork(boolean ignoreFollowers) {
+        DataNodeSlot clone = new DataNodeSlot(dataNode);
+        clone.leaders.addAll(leaders);
+        if (!ignoreFollowers) {
+            clone.followers.addAll(followers);
+        }
+        return clone;
+    }
 
-  public DataNodeSlot removeLeader(int slotId) {
-    leaders.remove(slotId);
-    return this;
-  }
+    public DataNodeSlot addLeader(int slotId) {
+        leaders.add(slotId);
+        return this;
+    }
 
-  public DataNodeSlot addFollower(int slotId) {
-    followers.add(slotId);
-    return this;
-  }
+    public DataNodeSlot addLeader(Collection<Integer> slotIds) {
+        leaders.addAll(slotIds);
+        return this;
+    }
 
-  public DataNodeSlot addFollower(Collection<Integer> slotIds) {
-    followers.addAll(slotIds);
-    return this;
-  }
+    public DataNodeSlot removeLeader(int slotId) {
+        leaders.remove(slotId);
+        return this;
+    }
 
-  public DataNodeSlot removeFollower(int slotId) {
-    followers.remove(slotId);
-    return this;
-  }
+    public DataNodeSlot addFollower(int slotId) {
+        followers.add(slotId);
+        return this;
+    }
 
-  public boolean containsLeader(int slotId) {
-    return leaders.contains(slotId);
-  }
+    public DataNodeSlot addFollower(Collection<Integer> slotIds) {
+        followers.addAll(slotIds);
+        return this;
+    }
 
-  public boolean containsFollower(int slotId) {
-    return followers.contains(slotId);
-  }
+    public DataNodeSlot removeFollower(int slotId) {
+        followers.remove(slotId);
+        return this;
+    }
 
-  /**
-   * Getter method for property <tt>dataNode</tt>.
-   *
-   * @return property value of dataNode
-   */
-  public String getDataNode() {
-    return dataNode;
-  }
+    public boolean containsLeader(int slotId) {
+        return leaders.contains(slotId);
+    }
 
-  /**
-   * Getter method for property <tt>leaders</tt>.
-   *
-   * @return property value of leaders
-   */
-  public Set<Integer> getLeaders() {
-    return Collections.unmodifiableSet(leaders);
-  }
+    public boolean containsFollower(int slotId) {
+        return followers.contains(slotId);
+    }
 
-  /**
-   * Getter method for property <tt>followers</tt>.
-   *
-   * @return property value of followers
-   */
-  public Set<Integer> getFollowers() {
-    return Collections.unmodifiableSet(followers);
-  }
+    /**
+     * Getter method for property <tt>dataNode</tt>.
+     *
+     * @return property value of dataNode
+     */
+    public String getDataNode() {
+        return dataNode;
+    }
 
-  /**
-   * Total slot num int.
-   *
-   * @return the int
-   */
-  public int totalSlotNum() {
-    return leaders.size() + followers.size();
-  }
+    /**
+     * Getter method for property <tt>leaders</tt>.
+     *
+     * @return property value of leaders
+     */
+    public Set<Integer> getLeaders() {
+        return Collections.unmodifiableSet(leaders);
+    }
 
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    DataNodeSlot that = (DataNodeSlot) o;
-    return Objects.equals(dataNode, that.dataNode)
-        && Objects.equals(leaders, that.leaders)
-        && Objects.equals(followers, that.followers);
-  }
+    /**
+     * Getter method for property <tt>followers</tt>.
+     *
+     * @return property value of followers
+     */
+    public Set<Integer> getFollowers() {
+        return Collections.unmodifiableSet(followers);
+    }
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(dataNode, leaders, followers);
-  }
+    /**
+     * Total slot num int.
+     *
+     * @return the int
+     */
+    public int totalSlotNum() {
+        return leaders.size() + followers.size();
+    }
 
-  @Override
-  public String toString() {
-    return StringFormatter.format(
-        "DataNodeSlot{{},leaders={}/{},followers={}/{}",
-        dataNode,
-        leaders.size(),
-        leaders,
-        followers.size(),
-        followers);
-  }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        DataNodeSlot that = (DataNodeSlot) o;
+        return Objects.equals(dataNode, that.dataNode)
+                && Objects.equals(leaders, that.leaders)
+                && Objects.equals(followers, that.followers);
+    }
 
-  public static List<String> collectDataNodes(Collection<DataNodeSlot> dataNodeSlots) {
-    Set<String> ret = Sets.newLinkedHashSet();
-    dataNodeSlots.forEach(d -> ret.add(d.dataNode));
-    return Lists.newArrayList(ret);
-  }
+    @Override
+    public int hashCode() {
+        return Objects.hash(dataNode, leaders, followers);
+    }
+
+    @Override
+    public String toString() {
+        return StringFormatter.format(
+                "DataNodeSlot{{},leaders={}/{},followers={}/{}",
+                dataNode,
+                leaders.size(),
+                leaders,
+                followers.size(),
+                followers);
+    }
 }

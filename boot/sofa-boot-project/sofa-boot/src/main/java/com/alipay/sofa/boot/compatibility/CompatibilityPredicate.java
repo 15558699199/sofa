@@ -26,6 +26,7 @@ public interface CompatibilityPredicate {
 
     /**
      * whether is compatible
+     *
      * @return compatible result
      */
     boolean isCompatible();

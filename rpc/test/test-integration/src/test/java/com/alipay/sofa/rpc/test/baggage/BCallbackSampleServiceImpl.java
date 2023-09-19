@@ -29,19 +29,17 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 /**
- *
- *
  * @author zhanggeng
  */
 public class BCallbackSampleServiceImpl implements SampleService {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(BCallbackSampleServiceImpl.class);
 
-    private SampleService       sampleServiceC;
+    private SampleService sampleServiceC;
 
-    private SampleService       sampleServiceD;
+    private SampleService sampleServiceD;
 
-    private String              reqBaggage;
+    private String reqBaggage;
 
     public BCallbackSampleServiceImpl(SampleService sampleServiceC, SampleService sampleServiceD) {
         this.sampleServiceC = sampleServiceC;

@@ -30,11 +30,7 @@ import org.springframework.boot.actuate.endpoint.OperationResponseBody;
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
 import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * {@link Endpoint @Endpoint} to expose details of sofa rpc information.
@@ -51,7 +47,7 @@ public class SofaRpcEndpoint {
         List<ConsumerDescriptor> consumerDescriptors = getConsumerDescriptors();
         List<RegistryDescriptor> registryDescriptors = getRegistryDescriptors();
         return new RpcServicesDescriptor(providerDescriptors, consumerDescriptors,
-            registryDescriptors);
+                registryDescriptors);
     }
 
     @SuppressWarnings("rawtypes")
@@ -123,7 +119,7 @@ public class SofaRpcEndpoint {
     /**
      * Description of an application's rpc services.
      */
-    @JsonPropertyOrder({ "provider", "consumer", "registry" })
+    @JsonPropertyOrder({"provider", "consumer", "registry"})
     public static class RpcServicesDescriptor implements OperationResponseBody {
 
         private final List<ProviderDescriptor> providers;
@@ -159,19 +155,19 @@ public class SofaRpcEndpoint {
      */
     public static class ProviderDescriptor {
 
-        protected final String              interfaceId;
+        protected final String interfaceId;
 
-        protected final String              uniqueId;
+        protected final String uniqueId;
 
-        protected final List<String>        protocols;
+        protected final List<String> protocols;
 
-        protected final List<String>        registries;
+        protected final List<String> registries;
 
-        protected final String              serialization;
+        protected final String serialization;
 
-        protected final boolean             register;
+        protected final boolean register;
 
-        protected final String              targetClassName;
+        protected final String targetClassName;
 
         protected final Map<String, Object> extraInfos = new HashMap<>();
 
@@ -225,25 +221,25 @@ public class SofaRpcEndpoint {
      */
     public static class ConsumerDescriptor {
 
-        protected final String              interfaceId;
+        protected final String interfaceId;
 
-        protected final String              uniqueId;
+        protected final String uniqueId;
 
-        protected final String              protocol;
+        protected final String protocol;
 
-        protected final List<String>        registries;
+        protected final List<String> registries;
 
-        protected final String              serialization;
+        protected final String serialization;
 
-        protected final String              directUrl;
+        protected final String directUrl;
 
-        protected final String              invokeType;
+        protected final String invokeType;
 
-        protected final boolean             subscribe;
+        protected final boolean subscribe;
 
-        protected final int                 timeout;
+        protected final int timeout;
 
-        protected final int                 retries;
+        protected final int retries;
 
         protected final Map<String, Object> extraInfos = new HashMap<>();
 

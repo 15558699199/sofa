@@ -41,13 +41,13 @@ public class SofaHessianSerializerTest {
     @Test
     public void getSerializerFactory() {
         Assert.assertEquals(SingleClassLoaderSofaSerializerFactory.class,
-            serializer.getSerializerFactory(false, false).getClass());
+                serializer.getSerializerFactory(false, false).getClass());
         Assert.assertEquals(MultipleClassLoaderSofaSerializerFactory.class,
-            serializer.getSerializerFactory(true, false).getClass());
+                serializer.getSerializerFactory(true, false).getClass());
         Assert.assertEquals(GenericSingleClassLoaderSofaSerializerFactory.class,
-            serializer.getSerializerFactory(false, true).getClass());
+                serializer.getSerializerFactory(false, true).getClass());
         Assert.assertEquals(GenericMultipleClassLoaderSofaSerializerFactory.class,
-            serializer.getSerializerFactory(true, true).getClass());
+                serializer.getSerializerFactory(true, true).getClass());
     }
 
     @Test
@@ -98,17 +98,17 @@ public class SofaHessianSerializerTest {
         GenericObject genericObject = new GenericObject(TestGenericBean.class.getCanonicalName());
         genericObject.putField("name", "Lilei");
         genericObject.putField("age", 123);
-        request.setMethodArgSigs(new String[] { TestGenericBean.class.getCanonicalName() }); // change to generic request
-        request.setMethodArgs(new Object[] { genericObject });
+        request.setMethodArgSigs(new String[]{TestGenericBean.class.getCanonicalName()}); // change to generic request
+        request.setMethodArgs(new Object[]{genericObject});
         data = serializer.encode(request, Collections.singletonMap(RemotingConstants.HEAD_GENERIC_TYPE,
-            RemotingConstants.SERIALIZE_FACTORY_GENERIC));
+                RemotingConstants.SERIALIZE_FACTORY_GENERIC));
         newRequest = (SofaRequest) serializer.decode(data, SofaRequest.class, null);
         Assert.assertEquals(newRequest.getInterfaceName(), request.getInterfaceName());
         Assert.assertEquals(newRequest.getMethodName(), request.getMethodName());
         Assert.assertArrayEquals(newRequest.getMethodArgSigs(), request.getMethodArgSigs());
         Assert.assertEquals(newRequest.getMethodArgs().length, request.getMethodArgs().length);
         Assert.assertEquals(TestGenericBean.class.getCanonicalName(), newRequest.getMethodArgs()[0].getClass()
-            .getCanonicalName());
+                .getCanonicalName());
         Assert.assertEquals(newRequest.getTargetServiceUniqueName(), request.getTargetServiceUniqueName());
         Assert.assertEquals(newRequest.getTargetAppName(), request.getTargetAppName());
 
@@ -136,8 +136,8 @@ public class SofaHessianSerializerTest {
         SofaResponse newResponse = (SofaResponse) serializer.decode(data, SofaResponse.class, null);
         Assert.assertTrue(newResponse.isError());
         SofaResponse newResponse2 = (SofaResponse) serializer.decode(data, SofaResponse.class,
-            Collections.singletonMap(RemotingConstants.HEAD_GENERIC_TYPE,
-                RemotingConstants.SERIALIZE_FACTORY_GENERIC));
+                Collections.singletonMap(RemotingConstants.HEAD_GENERIC_TYPE,
+                        RemotingConstants.SERIALIZE_FACTORY_GENERIC));
         Assert.assertTrue(newResponse2.isError());
 
         response = new SofaResponse();
@@ -153,8 +153,8 @@ public class SofaHessianSerializerTest {
         request.setInterfaceName(Invoker.class.getName());
         request.setMethodName("invoke");
         request.setMethod(Invoker.class.getMethod("invoke", SofaRequest.class));
-        request.setMethodArgs(new Object[] { new SofaRequest() });
-        request.setMethodArgSigs(new String[] { SofaRequest.class.getCanonicalName() });
+        request.setMethodArgs(new Object[]{new SofaRequest()});
+        request.setMethodArgSigs(new String[]{SofaRequest.class.getCanonicalName()});
         request.setTargetServiceUniqueName(Invoker.class.getName() + ":1.0");
         request.setTargetAppName("targetApp");
         request.setSerializeType((byte) 11);

@@ -26,17 +26,17 @@ import java.util.List;
  */
 public interface ServerManager {
 
-  /**
-   * Gets server list.
-   *
-   * @return the server list
-   */
-  List<ServerNode> getServerList();
+    /**
+     * Gets server list.
+     *
+     * @return the server list
+     */
+    List<ServerNode> getServerList();
 
-  /**
-   * Random url.
-   *
-   * @return the url
-   */
-  ServerNode random();
+    /**
+     * Random url.
+     *
+     * @return the url
+     */
+    ServerNode random();
 }

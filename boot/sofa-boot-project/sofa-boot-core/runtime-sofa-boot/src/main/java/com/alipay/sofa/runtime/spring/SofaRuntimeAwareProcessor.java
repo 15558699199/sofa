@@ -40,18 +40,18 @@ import org.springframework.core.PriorityOrdered;
  * @author qilong.zql
  * @author khotyn
  * @author huzijie
- * @since  2.5.0
+ * @since 2.5.0
  */
 @SingletonSofaPostProcessor
 public class SofaRuntimeAwareProcessor implements BeanPostProcessor, PriorityOrdered {
 
-    private final SofaRuntimeManager    sofaRuntimeManager;
+    private final SofaRuntimeManager sofaRuntimeManager;
 
-    private final SofaRuntimeContext    sofaRuntimeContext;
+    private final SofaRuntimeContext sofaRuntimeContext;
 
     private final ClientFactoryInternal clientFactory;
 
-    private final ExtensionClientImpl   extensionClient;
+    private final ExtensionClientImpl extensionClient;
 
     public SofaRuntimeAwareProcessor(SofaRuntimeManager sofaRuntimeManager) {
         this.sofaRuntimeManager = sofaRuntimeManager;
@@ -62,7 +62,7 @@ public class SofaRuntimeAwareProcessor implements BeanPostProcessor, PriorityOrd
 
     @Override
     public Object postProcessBeforeInitialization(Object bean, String beanName)
-                                                                               throws BeansException {
+            throws BeansException {
         if (bean instanceof SofaRuntimeContextAware) {
             ((SofaRuntimeContextAware) bean).setSofaRuntimeContext(sofaRuntimeContext);
         }

@@ -51,7 +51,7 @@ public class HttpResponseFuture<V> extends AbstractResponseFuture<V> {
     /**
      * sofa响应
      */
-    protected SofaResponse      response;
+    protected SofaResponse response;
 
     /**
      * 构造函数
@@ -64,10 +64,10 @@ public class HttpResponseFuture<V> extends AbstractResponseFuture<V> {
     @Override
     protected TimeoutException clientTimeoutException() {
         throw new SofaTimeOutException(LogCodes.getLog(LogCodes.ERROR_INVOKE_TIMEOUT,
-            SerializerFactory.getAliasByCode(request.getSerializeType()),
-            request.getTargetServiceUniqueName(),
-            request.getMethodName(), "",
-            StringUtils.objectsToString(request.getMethodArgs()), timeout));
+                SerializerFactory.getAliasByCode(request.getSerializeType()),
+                request.getTargetServiceUniqueName(),
+                request.getMethodName(), "",
+                StringUtils.objectsToString(request.getMethodArgs()), timeout));
     }
 
     @Override
@@ -124,17 +124,17 @@ public class HttpResponseFuture<V> extends AbstractResponseFuture<V> {
      * to complete, and then retrieves its result, if available.
      *
      * @param timeout the maximum time to wait
-     * @param unit the time unit of the timeout argument
+     * @param unit    the time unit of the timeout argument
      * @return the computed result
      * @throws CancellationException if the computation was cancelled
-     * @throws ExecutionException if the computation threw an
-     * exception
-     * @throws InterruptedException if the current thread was interrupted
-     * while waiting
-     * @throws TimeoutException if the wait timed out
+     * @throws ExecutionException    if the computation threw an
+     *                               exception
+     * @throws InterruptedException  if the current thread was interrupted
+     *                               while waiting
+     * @throws TimeoutException      if the wait timed out
      */
     public SofaResponse getSofaResponse(int timeout, TimeUnit unit) throws CancellationException,
-        TimeoutException, InterruptedException, ExecutionException {
+            TimeoutException, InterruptedException, ExecutionException {
         long realTimeOut = unit.toMillis(timeout);
         long remainTime = realTimeOut - (sentTime - genTime); // 剩余时间
         if (remainTime <= 0) { // 没有剩余时间不等待

@@ -21,9 +21,9 @@ import com.alipay.sofa.registry.common.model.metaserver.Lease;
 
 /**
  * @author chen.zhu
- *     <p>Mar 18, 2021
+ * <p>Mar 18, 2021
  */
 public interface LeaseFilter<T extends Node> {
 
-  boolean allowSelect(Lease<T> lease);
+    boolean allowSelect(Lease<T> lease);
 }

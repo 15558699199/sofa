@@ -32,13 +32,13 @@ import java.util.List;
 import java.util.concurrent.ConcurrentMap;
 
 /**
- *
- *
  * @author <a href="mailto:zhanggeng.zg@antfin.com">GengZhang</a>
  */
 public class ExtensionLoaderTest {
 
-    /** Logger for ExtensionLoaderTest **/
+    /**
+     * Logger for ExtensionLoaderTest
+     **/
     private static final Logger LOGGER = LoggerFactory.getLogger(ExtensionLoaderTest.class);
 
     @Before
@@ -338,31 +338,31 @@ public class ExtensionLoaderTest {
         Assert.assertNull(loader.parseAliasAndClassName("# xxxx"));
         Assert.assertNull(loader.parseAliasAndClassName("xxx="));
 
-        Assert.assertArrayEquals(loader.parseAliasAndClassName("1111"), new String[] { null, "1111" });
-        Assert.assertArrayEquals(loader.parseAliasAndClassName("  1111"), new String[] { null, "1111" });
-        Assert.assertArrayEquals(loader.parseAliasAndClassName("  1111   "), new String[] { null, "1111" });
-        Assert.assertArrayEquals(loader.parseAliasAndClassName("1111   "), new String[] { null, "1111" });
-        Assert.assertArrayEquals(loader.parseAliasAndClassName("1111#aa"), new String[] { null, "1111" });
-        Assert.assertArrayEquals(loader.parseAliasAndClassName("  1111#aa"), new String[] { null, "1111" });
-        Assert.assertArrayEquals(loader.parseAliasAndClassName("1111#aa   "), new String[] { null, "1111" });
-        Assert.assertArrayEquals(loader.parseAliasAndClassName("  1111#aa  "), new String[] { null, "1111" });
-        Assert.assertArrayEquals(loader.parseAliasAndClassName("1111 #aa"), new String[] { null, "1111" });
-        Assert.assertArrayEquals(loader.parseAliasAndClassName("  1111 #aa"), new String[] { null, "1111" });
-        Assert.assertArrayEquals(loader.parseAliasAndClassName("1111 #aa   "), new String[] { null, "1111" });
-        Assert.assertArrayEquals(loader.parseAliasAndClassName("  1111 #aa  "), new String[] { null, "1111" });
+        Assert.assertArrayEquals(loader.parseAliasAndClassName("1111"), new String[]{null, "1111"});
+        Assert.assertArrayEquals(loader.parseAliasAndClassName("  1111"), new String[]{null, "1111"});
+        Assert.assertArrayEquals(loader.parseAliasAndClassName("  1111   "), new String[]{null, "1111"});
+        Assert.assertArrayEquals(loader.parseAliasAndClassName("1111   "), new String[]{null, "1111"});
+        Assert.assertArrayEquals(loader.parseAliasAndClassName("1111#aa"), new String[]{null, "1111"});
+        Assert.assertArrayEquals(loader.parseAliasAndClassName("  1111#aa"), new String[]{null, "1111"});
+        Assert.assertArrayEquals(loader.parseAliasAndClassName("1111#aa   "), new String[]{null, "1111"});
+        Assert.assertArrayEquals(loader.parseAliasAndClassName("  1111#aa  "), new String[]{null, "1111"});
+        Assert.assertArrayEquals(loader.parseAliasAndClassName("1111 #aa"), new String[]{null, "1111"});
+        Assert.assertArrayEquals(loader.parseAliasAndClassName("  1111 #aa"), new String[]{null, "1111"});
+        Assert.assertArrayEquals(loader.parseAliasAndClassName("1111 #aa   "), new String[]{null, "1111"});
+        Assert.assertArrayEquals(loader.parseAliasAndClassName("  1111 #aa  "), new String[]{null, "1111"});
 
-        Assert.assertArrayEquals(loader.parseAliasAndClassName("aa=1111"), new String[] { "aa", "1111" });
-        Assert.assertArrayEquals(loader.parseAliasAndClassName("  aa=1111"), new String[] { "aa", "1111" });
-        Assert.assertArrayEquals(loader.parseAliasAndClassName("aa=1111  "), new String[] { "aa", "1111" });
-        Assert.assertArrayEquals(loader.parseAliasAndClassName("  aa=1111  "), new String[] { "aa", "1111" });
-        Assert.assertArrayEquals(loader.parseAliasAndClassName("aa=1111#aa"), new String[] { "aa", "1111" });
-        Assert.assertArrayEquals(loader.parseAliasAndClassName("  aa=1111#aa"), new String[] { "aa", "1111" });
-        Assert.assertArrayEquals(loader.parseAliasAndClassName("aa=1111#aa  "), new String[] { "aa", "1111" });
-        Assert.assertArrayEquals(loader.parseAliasAndClassName("  aa=1111#aa  "), new String[] { "aa", "1111" });
-        Assert.assertArrayEquals(loader.parseAliasAndClassName("aa=1111  #aa"), new String[] { "aa", "1111" });
-        Assert.assertArrayEquals(loader.parseAliasAndClassName("  aa=1111  #aa"), new String[] { "aa", "1111" });
-        Assert.assertArrayEquals(loader.parseAliasAndClassName("aa=1111  #aa  "), new String[] { "aa", "1111" });
-        Assert.assertArrayEquals(loader.parseAliasAndClassName("  aa=1111  #aa  "), new String[] { "aa", "1111" });
+        Assert.assertArrayEquals(loader.parseAliasAndClassName("aa=1111"), new String[]{"aa", "1111"});
+        Assert.assertArrayEquals(loader.parseAliasAndClassName("  aa=1111"), new String[]{"aa", "1111"});
+        Assert.assertArrayEquals(loader.parseAliasAndClassName("aa=1111  "), new String[]{"aa", "1111"});
+        Assert.assertArrayEquals(loader.parseAliasAndClassName("  aa=1111  "), new String[]{"aa", "1111"});
+        Assert.assertArrayEquals(loader.parseAliasAndClassName("aa=1111#aa"), new String[]{"aa", "1111"});
+        Assert.assertArrayEquals(loader.parseAliasAndClassName("  aa=1111#aa"), new String[]{"aa", "1111"});
+        Assert.assertArrayEquals(loader.parseAliasAndClassName("aa=1111#aa  "), new String[]{"aa", "1111"});
+        Assert.assertArrayEquals(loader.parseAliasAndClassName("  aa=1111#aa  "), new String[]{"aa", "1111"});
+        Assert.assertArrayEquals(loader.parseAliasAndClassName("aa=1111  #aa"), new String[]{"aa", "1111"});
+        Assert.assertArrayEquals(loader.parseAliasAndClassName("  aa=1111  #aa"), new String[]{"aa", "1111"});
+        Assert.assertArrayEquals(loader.parseAliasAndClassName("aa=1111  #aa  "), new String[]{"aa", "1111"});
+        Assert.assertArrayEquals(loader.parseAliasAndClassName("  aa=1111  #aa  "), new String[]{"aa", "1111"});
     }
 
     @Test
@@ -374,7 +374,7 @@ public class ExtensionLoaderTest {
     }
 
     @Test
-    public void testAddListener(){
+    public void testAddListener() {
         ExtensionLoader<Filter> extensionLoader = ExtensionLoaderFactory.getExtensionLoader(Filter.class);
         extensionLoader.loadExtension(DynamicFilter.class);
         ConcurrentMap<String, ExtensionClass<Filter>> all = extensionLoader.all;
@@ -384,7 +384,7 @@ public class ExtensionLoaderTest {
 
         List<String> filters = new ArrayList<>();
         extensionLoader = ExtensionLoaderFactory.getExtensionLoader(Filter.class);
-        extensionLoader.addListener( new  ExtensionLoaderListener<Filter>() {
+        extensionLoader.addListener(new ExtensionLoaderListener<Filter>() {
             @Override
             public void onLoad(ExtensionClass<Filter> extensionClass) {
                 filters.add(extensionClass.getAlias());

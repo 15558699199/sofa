@@ -19,19 +19,20 @@ package com.alipay.sofa.registry.jdbc.domain;
 import java.util.Date;
 
 public class DateNowDomain {
-  public DateNowDomain() {}
+    private Date now;
 
-  public DateNowDomain(Date now) {
-    this.now = now;
-  }
+    public DateNowDomain() {
+    }
 
-  private Date now;
+    public DateNowDomain(Date now) {
+        this.now = now;
+    }
 
-  public Date getNow() {
-    return now;
-  }
+    public Date getNow() {
+        return now;
+    }
 
-  public void setNow(Date now) {
-    this.now = now;
-  }
+    public void setNow(Date now) {
+        this.now = now;
+    }
 }

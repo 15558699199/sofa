@@ -17,55 +17,56 @@
 package com.alipay.sofa.registry.util;
 
 import com.google.common.collect.Sets;
+
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class AtomicSet<T> {
-  private Set<T> data = Sets.newConcurrentHashSet();
-  private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
-  private final ReentrantReadWriteLock.ReadLock rlock = lock.readLock();
-  private final ReentrantReadWriteLock.WriteLock wlock = lock.writeLock();
+    private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
+    private final ReentrantReadWriteLock.ReadLock rlock = lock.readLock();
+    private final ReentrantReadWriteLock.WriteLock wlock = lock.writeLock();
+    private Set<T> data = Sets.newConcurrentHashSet();
 
-  public void add(T t) {
-    rlock.lock();
-    try {
-      data.add(t);
-    } finally {
-      rlock.unlock();
+    public void add(T t) {
+        rlock.lock();
+        try {
+            data.add(t);
+        } finally {
+            rlock.unlock();
+        }
     }
-  }
 
-  public Set<T> getAndReset() {
-    wlock.lock();
-    try {
-      Set<T> ret = data;
-      data = Sets.newConcurrentHashSet();
-      return ret;
-    } finally {
-      wlock.unlock();
+    public Set<T> getAndReset() {
+        wlock.lock();
+        try {
+            Set<T> ret = data;
+            data = Sets.newConcurrentHashSet();
+            return ret;
+        } finally {
+            wlock.unlock();
+        }
     }
-  }
 
-  public Set<T> get() {
-    return new HashSet<>(data);
-  }
-
-  public void addAll(Set<T> adds) {
-    rlock.lock();
-    try {
-      data.addAll(adds);
-    } finally {
-      rlock.unlock();
+    public Set<T> get() {
+        return new HashSet<>(data);
     }
-  }
 
-  public int size() {
-    rlock.lock();
-    try {
-      return data.size();
-    } finally {
-      rlock.unlock();
+    public void addAll(Set<T> adds) {
+        rlock.lock();
+        try {
+            data.addAll(adds);
+        } finally {
+            rlock.unlock();
+        }
     }
-  }
+
+    public int size() {
+        rlock.lock();
+        try {
+            return data.size();
+        } finally {
+            rlock.unlock();
+        }
+    }
 }

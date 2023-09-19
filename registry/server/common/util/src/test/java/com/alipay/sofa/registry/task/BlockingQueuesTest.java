@@ -21,25 +21,25 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class BlockingQueuesTest {
-  @Test
-  public void test() {
-    BlockingQueues queues = new BlockingQueues(2, 2, true);
-    Assert.assertEquals(queues.queueNum(), 2);
-    Assert.assertEquals(queues.getTotalQueueSize(), 0);
-    // avgSize=1
-    // size<avg
-    queues.put(0, new Object());
-    // totalSize<buffer
-    queues.put(0, new Object());
-    TestUtils.assertException(
-        FastRejectedExecutionException.class, () -> queues.put(0, new Object()));
+    @Test
+    public void test() {
+        BlockingQueues queues = new BlockingQueues(2, 2, true);
+        Assert.assertEquals(queues.queueNum(), 2);
+        Assert.assertEquals(queues.getTotalQueueSize(), 0);
+        // avgSize=1
+        // size<avg
+        queues.put(0, new Object());
+        // totalSize<buffer
+        queues.put(0, new Object());
+        TestUtils.assertException(
+                FastRejectedExecutionException.class, () -> queues.put(0, new Object()));
 
-    // size<avg
-    queues.put(1, new Object());
-    TestUtils.assertException(
-        FastRejectedExecutionException.class, () -> queues.put(1, new Object()));
-    Assert.assertEquals(queues.getTotalQueueSize(), 3);
-    Assert.assertEquals(queues.getQueue(0).size(), 2);
-    Assert.assertEquals(queues.getQueue(1).size(), 1);
-  }
+        // size<avg
+        queues.put(1, new Object());
+        TestUtils.assertException(
+                FastRejectedExecutionException.class, () -> queues.put(1, new Object()));
+        Assert.assertEquals(queues.getTotalQueueSize(), 3);
+        Assert.assertEquals(queues.getQueue(0).size(), 2);
+        Assert.assertEquals(queues.getQueue(1).size(), 1);
+    }
 }

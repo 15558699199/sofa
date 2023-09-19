@@ -16,33 +16,18 @@
  */
 package com.alipay.sofa.rpc.server.rest;
 
-import com.alipay.lookout.api.Id;
-import com.alipay.lookout.api.Lookout;
-import com.alipay.lookout.api.Measurement;
-import com.alipay.lookout.api.Metric;
-import com.alipay.lookout.api.NoopRegistry;
-import com.alipay.lookout.api.Registry;
-import com.alipay.lookout.api.Tag;
+import com.alipay.lookout.api.*;
 import com.alipay.lookout.core.DefaultRegistry;
 import com.alipay.sofa.rpc.common.RpcConstants;
 import com.alipay.sofa.rpc.common.utils.StringUtils;
-import com.alipay.sofa.rpc.config.ApplicationConfig;
-import com.alipay.sofa.rpc.config.ConsumerConfig;
-import com.alipay.sofa.rpc.config.JAXRSProviderManager;
-import com.alipay.sofa.rpc.config.ProviderConfig;
-import com.alipay.sofa.rpc.config.ServerConfig;
+import com.alipay.sofa.rpc.config.*;
 import com.alipay.sofa.rpc.context.RpcRunningState;
 import com.alipay.sofa.rpc.context.RpcRuntimeContext;
 import com.alipay.sofa.rpc.test.ActivelyDestroyTest;
-import java.util.Iterator;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertEquals;
@@ -53,13 +38,46 @@ import static org.junit.Assert.assertTrue;
  */
 public class RestLookoutTest extends ActivelyDestroyTest {
 
-    private ServerConfig                serverConfig;
+    private ServerConfig serverConfig;
 
     private ProviderConfig<RestService> providerConfig;
 
     private ConsumerConfig<RestService> consumerConfig;
 
-    private RestService                 helloService;
+    private RestService helloService;
+
+    @BeforeClass
+    public static void beforeCurrentClass() {
+
+        RpcRunningState.setUnitTestMode(false);
+
+        JAXRSProviderManager.registerInternalProviderClass(LookoutRequestFilter.class);
+
+        RpcRuntimeContext.putIfAbsent(RpcRuntimeContext.KEY_APPNAME, "TestLookOutServer");
+
+        Registry registry = new DefaultRegistry();
+        final Registry currentRegistry = Lookout.registry();
+        if (currentRegistry == NoopRegistry.INSTANCE) {
+            Lookout.setRegistry(registry);
+        } else {
+            //clear all metrics now
+            Iterator<Metric> itar = currentRegistry.iterator();
+            while (itar.hasNext()) {
+                Metric metric = itar.next();
+                Id id = metric.id();
+                currentRegistry.removeMetric(id);
+            }
+        }
+    }
+
+    @AfterClass
+    public static void afterCurrentClass() {
+
+        JAXRSProviderManager.removeInternalProviderClass(LookoutRequestFilter.class);
+
+        RpcRunningState.setUnitTestMode(true);
+        ActivelyDestroyTest.adAfterClass();
+    }
 
     private Metric fetchWithNameAndMethod(String name, String methodName) {
         Registry registry = Lookout.registry();
@@ -97,39 +115,6 @@ public class RestLookoutTest extends ActivelyDestroyTest {
         return false;
     }
 
-    @BeforeClass
-    public static void beforeCurrentClass() {
-
-        RpcRunningState.setUnitTestMode(false);
-
-        JAXRSProviderManager.registerInternalProviderClass(LookoutRequestFilter.class);
-
-        RpcRuntimeContext.putIfAbsent(RpcRuntimeContext.KEY_APPNAME, "TestLookOutServer");
-
-        Registry registry = new DefaultRegistry();
-        final Registry currentRegistry = Lookout.registry();
-        if (currentRegistry == NoopRegistry.INSTANCE) {
-            Lookout.setRegistry(registry);
-        } else {
-            //clear all metrics now
-            Iterator<Metric> itar = currentRegistry.iterator();
-            while (itar.hasNext()) {
-                Metric metric = itar.next();
-                Id id = metric.id();
-                currentRegistry.removeMetric(id);
-            }
-        }
-    }
-
-    @AfterClass
-    public static void afterCurrentClass() {
-
-        JAXRSProviderManager.removeInternalProviderClass(LookoutRequestFilter.class);
-
-        RpcRunningState.setUnitTestMode(true);
-        ActivelyDestroyTest.adAfterClass();
-    }
-
     /**
      * invoke
      */
@@ -138,41 +123,41 @@ public class RestLookoutTest extends ActivelyDestroyTest {
 
         // 只有1个线程 执行
         serverConfig = new ServerConfig()
-            .setStopTimeout(1000)
-            .setPort(8802)
-            .setProtocol(RpcConstants.PROTOCOL_TYPE_REST)
-            .setContextPath("/xyz");
+                .setStopTimeout(1000)
+                .setPort(8802)
+                .setProtocol(RpcConstants.PROTOCOL_TYPE_REST)
+                .setContextPath("/xyz");
         //.setQueues(100).setCoreThreads(1).setMaxThreads(2);
 
         // 发布一个服务，每个请求要执行1秒
         ApplicationConfig serverApplication = new ApplicationConfig();
         serverApplication.setAppName("TestLookOutServer");
         providerConfig = new ProviderConfig<RestService>()
-            .setInterfaceId(RestService.class.getName())
-            .setRef(new RestServiceImpl())
-            .setServer(serverConfig)
-            .setBootstrap("rest")
-            //.setParameter(RpcConstants.CONFIG_HIDDEN_KEY_WARNING, "false")
-            .setRegister(false)
-            .setApplication(serverApplication);
+                .setInterfaceId(RestService.class.getName())
+                .setRef(new RestServiceImpl())
+                .setServer(serverConfig)
+                .setBootstrap("rest")
+                //.setParameter(RpcConstants.CONFIG_HIDDEN_KEY_WARNING, "false")
+                .setRegister(false)
+                .setApplication(serverApplication);
         providerConfig.export();
 
         ApplicationConfig clientApplication = new ApplicationConfig();
         clientApplication.setAppName("TestLookOutClient");
         consumerConfig = new ConsumerConfig<RestService>()
-            .setInterfaceId(RestService.class.getName())
-            .setDirectUrl(
-                "rest://127.0.0.1:8802/xyz?uniqueId=&version=1"
-                    + ".0&timeout=0&delay=-1&id=rpc-cfg-0&dynamic=true&weight=100&accepts=100000"
-                    + "&startTime=1523240755024&appName="
-                    +
-                    serverApplication.getAppName() + "&pid=22385&language=java&rpcVer=50300")
-            .setProtocol("rest")
-            .setBootstrap("rest")
-            .setTimeout(30000)
-            .setConnectionNum(5)
-            .setRegister(false)
-            .setApplication(clientApplication);
+                .setInterfaceId(RestService.class.getName())
+                .setDirectUrl(
+                        "rest://127.0.0.1:8802/xyz?uniqueId=&version=1"
+                                + ".0&timeout=0&delay=-1&id=rpc-cfg-0&dynamic=true&weight=100&accepts=100000"
+                                + "&startTime=1523240755024&appName="
+                                +
+                                serverApplication.getAppName() + "&pid=22385&language=java&rpcVer=50300")
+                .setProtocol("rest")
+                .setBootstrap("rest")
+                .setTimeout(30000)
+                .setConnectionNum(5)
+                .setRegister(false)
+                .setApplication(clientApplication);
         helloService = consumerConfig.refer();
 
     }
@@ -335,13 +320,13 @@ public class RestLookoutTest extends ActivelyDestroyTest {
             if (!isProvider) {
                 if (name.equals("request_size.count")) {
                     LOGGER.info("request_size.count,value={},requestSize={},totalCount={}", value, requestSize,
-                        totalCount);
+                            totalCount);
                     assertTrue("request_size.count is smaller than 0", requestSize > 0);
                     invokeInfoAssert = true;
                 }
                 if (name.equals("response_size.count")) {
                     LOGGER.info("response_size.count,value={},responseSize={},totalCount={}", value, responseSize,
-                        totalCount);
+                            totalCount);
                     assertTrue("response_size.count is smaller than 0", requestSize > 0);
                     invokeInfoAssert = true;
                 }

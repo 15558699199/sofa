@@ -16,9 +16,6 @@
  */
 package com.alipay.sofa.registry.test.resource.session;
 
-import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static org.junit.Assert.assertTrue;
-
 import com.alipay.sofa.registry.client.api.model.RegistryType;
 import com.alipay.sofa.registry.client.api.registration.PublisherRegistration;
 import com.alipay.sofa.registry.client.constants.ValueConstants;
@@ -28,43 +25,46 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import static org.junit.Assert.assertTrue;
+
 /**
  * @author xuanbei
  * @since 2019/1/14
  */
 @RunWith(SpringRunner.class)
 public class ClientsOpenResourceTest extends BaseIntegrationTest {
-  private String dataId = "test-dataId-testClientOff" + System.currentTimeMillis();
-  private String value = "test client off";
+    private String dataId = "test-dataId-testClientOff" + System.currentTimeMillis();
+    private String value = "test client off";
 
-  @Test
-  public void testClientOff() throws Exception {
-    clientOff();
+    @Test
+    public void testClientOff() throws Exception {
+        clientOff();
 
-    PublisherRegistration registration = new PublisherRegistration(dataId);
-    registryClient1.register(registration, value);
-    Thread.sleep(2000L);
+        PublisherRegistration registration = new PublisherRegistration(dataId);
+        registryClient1.register(registration, value);
+        Thread.sleep(2000L);
 
-    String countResult =
-        dataChannel
-            .getWebTarget()
-            .path("digest/datum/count")
-            .request(APPLICATION_JSON)
-            .get(String.class);
-    assertTrue(countResult.contains("[Publisher] size of publisher in DefaultDataCenter is 1"));
+        String countResult =
+                dataChannel
+                        .getWebTarget()
+                        .path("digest/datum/count")
+                        .request(APPLICATION_JSON)
+                        .get(String.class);
+        assertTrue(countResult.contains("[Publisher] size of publisher in DefaultDataCenter is 1"));
 
-    clientOff();
-    countResult =
-        dataChannel
-            .getWebTarget()
-            .path("digest/datum/count")
-            .request(APPLICATION_JSON)
-            .get(String.class);
-    assertTrue(countResult.contains("[Publisher] size of publisher in DefaultDataCenter is 0"));
-  }
+        clientOff();
+        countResult =
+                dataChannel
+                        .getWebTarget()
+                        .path("digest/datum/count")
+                        .request(APPLICATION_JSON)
+                        .get(String.class);
+        assertTrue(countResult.contains("[Publisher] size of publisher in DefaultDataCenter is 0"));
+    }
 
-  @After
-  public void clean() {
-    registryClient1.unregister(dataId, ValueConstants.DEFAULT_GROUP, RegistryType.PUBLISHER);
-  }
+    @After
+    public void clean() {
+        registryClient1.unregister(dataId, ValueConstants.DEFAULT_GROUP, RegistryType.PUBLISHER);
+    }
 }

@@ -16,21 +16,28 @@
 
     <update id="update" parameterType="com.alipay.sofa.registry.jdbc.domain.InterfaceAppsIndexDomain">
         <![CDATA[
-
-              update interface_apps_index set gmt_modified = NOW(6)
-              WHERE data_center = #{dataCenter} AND app_name = #{appName} AND hashcode = #{hashcode} AND reference = true
-
+        update interface_apps_index
+        set gmt_modified = NOW(6)
+        WHERE data_center = #{dataCenter}
+          AND app_name = #{appName}
+          AND hashcode = #{hashcode}
+          AND reference = true
         ]]>
     </update>
 
     <insert id="replace" parameterType="com.alipay.sofa.registry.jdbc.domain.InterfaceAppsIndexDomain">
             <![CDATA[
-                delete from interface_apps_index where data_center=#{dataCenter} and app_name=#{appName} and hashcode=#{hashcode};
+        delete
+        from interface_apps_index
+        where data_center = #{dataCenter}
+          and app_name = #{appName}
+          and hashcode = #{hashcode};
             ]]>
             <![CDATA[
             insert into interface_apps_index(data_center, interface_name, app_name, reference, hashcode, gmt_create,
-            gmt_modified)
-            values (#{dataCenter},#{interfaceName},#{appName}, #{reference} , #{hashcode}, NOW(6), NOW(6)) on duplicate key update reference=true;
+                                         gmt_modified)
+        values (#{dataCenter}, #{interfaceName}, #{appName}, #{reference}, #{hashcode}, NOW(6), NOW(6)) on duplicate key
+        update reference= true;
         ]]>
     </insert>
 

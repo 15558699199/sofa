@@ -21,68 +21,69 @@ import com.alipay.sofa.registry.net.NetUtil;
 import com.alipay.sofa.registry.remoting.Server;
 import com.alipay.sofa.registry.remoting.exchange.Exchange;
 import com.alipay.sofa.registry.server.meta.bootstrap.MetaServerConfiguration;
-import java.lang.annotation.Annotation;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
-import javax.ws.rs.Path;
-import javax.ws.rs.ext.Provider;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.junit.Before;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ApplicationContext;
 
+import javax.ws.rs.Path;
+import javax.ws.rs.ext.Provider;
+import java.lang.annotation.Annotation;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 /**
  * @author chen.zhu
- *     <p>Apr 06, 2021
+ * <p>Apr 06, 2021
  */
 public class AbstractMetaHttpResourceTestBase extends AbstractMetaServerTestBase {
 
-  private ResourceConfig resourceConfig = new ResourceConfig();
+    private final AtomicBoolean httpStart = new AtomicBoolean(false);
+    private ResourceConfig resourceConfig = new ResourceConfig();
+    private Server httpServer;
 
-  private final AtomicBoolean httpStart = new AtomicBoolean(false);
+    @Autowired
+    private Exchange jerseyExchange;
 
-  private Server httpServer;
+    @Autowired
+    private ApplicationContext applicationContext;
 
-  @Autowired private Exchange jerseyExchange;
-
-  @Autowired private ApplicationContext applicationContext;
-
-  @Before
-  public void beforeAbstractMetaHttpResourceTestBase() {
-    SpringApplicationBuilder builder = new SpringApplicationBuilder(MetaServerConfiguration.class);
-    builder.run();
-    openHttpServer();
-  }
-
-  private void openHttpServer() {
-    try {
-      if (httpStart.compareAndSet(false, true)) {
-        bindResourceConfig();
-        httpServer =
-            jerseyExchange.open(
-                new URL(
-                    NetUtil.getLocalAddress().getHostAddress(),
-                    metaServerConfig.getHttpServerPort()),
-                new ResourceConfig[] {resourceConfig});
-        logger.info("Open http server port {} success!", metaServerConfig.getHttpServerPort());
-      }
-    } catch (Exception e) {
-      httpStart.set(false);
-      logger.error("Open http server port {} error!", metaServerConfig.getHttpServerPort(), e);
-      throw new RuntimeException("Open http server error!", e);
+    @Before
+    public void beforeAbstractMetaHttpResourceTestBase() {
+        SpringApplicationBuilder builder = new SpringApplicationBuilder(MetaServerConfiguration.class);
+        builder.run();
+        openHttpServer();
     }
-  }
 
-  private void bindResourceConfig() {
-    registerInstances(Path.class);
-    registerInstances(Provider.class);
-  }
-
-  private void registerInstances(Class<? extends Annotation> annotationType) {
-    Map<String, Object> beans = applicationContext.getBeansWithAnnotation(annotationType);
-    if (beans != null && beans.size() > 0) {
-      beans.forEach((beanName, bean) -> resourceConfig.registerInstances(bean));
+    private void openHttpServer() {
+        try {
+            if (httpStart.compareAndSet(false, true)) {
+                bindResourceConfig();
+                httpServer =
+                        jerseyExchange.open(
+                                new URL(
+                                        NetUtil.getLocalAddress().getHostAddress(),
+                                        metaServerConfig.getHttpServerPort()),
+                                new ResourceConfig[]{resourceConfig});
+                logger.info("Open http server port {} success!", metaServerConfig.getHttpServerPort());
+            }
+        } catch (Exception e) {
+            httpStart.set(false);
+            logger.error("Open http server port {} error!", metaServerConfig.getHttpServerPort(), e);
+            throw new RuntimeException("Open http server error!", e);
+        }
     }
-  }
+
+    private void bindResourceConfig() {
+        registerInstances(Path.class);
+        registerInstances(Provider.class);
+    }
+
+    private void registerInstances(Class<? extends Annotation> annotationType) {
+        Map<String, Object> beans = applicationContext.getBeansWithAnnotation(annotationType);
+        if (beans != null && beans.size() > 0) {
+            beans.forEach((beanName, bean) -> resourceConfig.registerInstances(bean));
+        }
+    }
 }

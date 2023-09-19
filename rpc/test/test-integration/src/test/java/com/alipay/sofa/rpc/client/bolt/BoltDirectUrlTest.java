@@ -41,27 +41,27 @@ public class BoltDirectUrlTest extends ActivelyDestroyTest {
     public void testAll() {
         // 只有2个线程 执行
         ServerConfig serverConfig = new ServerConfig()
-            .setPort(12300)
-            .setProtocol(RpcConstants.PROTOCOL_TYPE_BOLT)
-            .setDaemon(true);
+                .setPort(12300)
+                .setProtocol(RpcConstants.PROTOCOL_TYPE_BOLT)
+                .setDaemon(true);
 
         // 发布一个服务，每个请求要执行1秒
         ProviderConfig<HelloService> providerConfig = new ProviderConfig<HelloService>()
-            .setInterfaceId(HelloService.class.getName())
-            .setRef(new HelloServiceImpl())
-            .setBootstrap("bolt")
-            .setApplication(new ApplicationConfig().setAppName("serverApp"))
-            .setServer(serverConfig)
-            .setRegister(false);
+                .setInterfaceId(HelloService.class.getName())
+                .setRef(new HelloServiceImpl())
+                .setBootstrap("bolt")
+                .setApplication(new ApplicationConfig().setAppName("serverApp"))
+                .setServer(serverConfig)
+                .setRegister(false);
         providerConfig.export();
 
         final ConsumerConfig<HelloService> consumerConfig = new ConsumerConfig<HelloService>()
-            .setInterfaceId(HelloService.class.getName())
-            .setDirectUrl("bolt://127.0.0.1:12300")
-            .setProtocol(RpcConstants.PROTOCOL_TYPE_BOLT)
-            .setBootstrap("bolt")
-            .setApplication(new ApplicationConfig().setAppName("clientApp"))
-            .setReconnectPeriod(1000);
+                .setInterfaceId(HelloService.class.getName())
+                .setDirectUrl("bolt://127.0.0.1:12300")
+                .setProtocol(RpcConstants.PROTOCOL_TYPE_BOLT)
+                .setBootstrap("bolt")
+                .setApplication(new ApplicationConfig().setAppName("clientApp"))
+                .setReconnectPeriod(1000);
 
         HelloService helloService = consumerConfig.refer();
 
@@ -81,7 +81,7 @@ public class BoltDirectUrlTest extends ActivelyDestroyTest {
             @Override
             public Boolean call() throws Exception {
                 return CommonUtils.isEmpty(consumerConfig.getConsumerBootstrap()
-                    .getCluster().getConnectionHolder().getAvailableConnections());
+                        .getCluster().getConnectionHolder().getAvailableConnections());
             }
         }, true, 50, 40));
 
@@ -91,7 +91,7 @@ public class BoltDirectUrlTest extends ActivelyDestroyTest {
             @Override
             public Boolean call() throws Exception {
                 return CommonUtils.isNotEmpty(consumerConfig.getConsumerBootstrap()
-                    .getCluster().getConnectionHolder().getAvailableConnections());
+                        .getCluster().getConnectionHolder().getAvailableConnections());
             }
         }, true, 50, 60));
 

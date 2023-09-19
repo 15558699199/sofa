@@ -27,8 +27,6 @@ import java.util.List;
 import java.util.Map;
 
 /**
- *
- *
  * @author <a href=mailto:zhanggeng@howtimeflies.org>GengZhang</a>
  */
 public class JSONSerializerTest {
@@ -50,8 +48,8 @@ public class JSONSerializerTest {
         Assert.assertEquals(JSONSerializer.serialize("c"), "\"c\"");
         Assert.assertEquals(JSONSerializer.serialize("\"c\""), "\"\\\"c\\\"\"");
 
-        Assert.assertEquals(JSONSerializer.serialize(new String[] {}), "[]");
-        Assert.assertEquals(JSONSerializer.serialize(new String[] { "1", "2" }), "[\"1\",\"2\"]");
+        Assert.assertEquals(JSONSerializer.serialize(new String[]{}), "[]");
+        Assert.assertEquals(JSONSerializer.serialize(new String[]{"1", "2"}), "[\"1\",\"2\"]");
         List list = new ArrayList();
         Assert.assertEquals(JSONSerializer.serialize(list), "[]");
         list.add("1");
@@ -74,20 +72,20 @@ public class JSONSerializerTest {
         Assert.assertEquals(map.size(), 0);
 
         String s = "{" +
-            "\"a\": null," +
-            "        \"b\":1," +
-            "        \"c\":9999999999," +
-            "        \"d\":1.0," +
-            "        \"e\":false," +
-            "        \"f\":\"c\"," +
-            "        \"g\":[]," +
-            "        \"h\":[1,2]," +
-            "        \"i\":[\"11\",\"22\"]," +
-            "        \"j\":{}," +
-            "        \"k\":{" +
-            "            \"11\":\"22\"" +
-            "        }" +
-            "}";
+                "\"a\": null," +
+                "        \"b\":1," +
+                "        \"c\":9999999999," +
+                "        \"d\":1.0," +
+                "        \"e\":false," +
+                "        \"f\":\"c\"," +
+                "        \"g\":[]," +
+                "        \"h\":[1,2]," +
+                "        \"i\":[\"11\",\"22\"]," +
+                "        \"j\":{}," +
+                "        \"k\":{" +
+                "            \"11\":\"22\"" +
+                "        }" +
+                "}";
         Map json = (Map) JSONSerializer.deserialize(s);
         Assert.assertNotNull(json);
         Assert.assertEquals(json.get("a"), null);
@@ -114,11 +112,11 @@ public class JSONSerializerTest {
     public void testDeserializeWithComment() {
 
         String s = "{" +
-            "\"a\": null, // 111\n" +
-            "        \"b\":1, /*2   // asdsad / das */\n" +
-            "        \"c\":1, /*2   // asdsad \n \r / das */\n" +
-            "        \"d\":9999999999" +
-            "}";
+                "\"a\": null, // 111\n" +
+                "        \"b\":1, /*2   // asdsad / das */\n" +
+                "        \"c\":1, /*2   // asdsad \n \r / das */\n" +
+                "        \"d\":9999999999" +
+                "}";
         LOGGER.info(s);
         Map json = (Map) JSONSerializer.deserialize(s);
         Assert.assertNotNull(json);

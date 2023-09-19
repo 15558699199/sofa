@@ -33,10 +33,10 @@ public class StartupReporterBeanPostProcessorTests {
     public void setStartupReporter() {
         StartupReporter startupReporter = new StartupReporter();
         StartupReporterBeanPostProcessor startupReporterBeanPostProcessor = new StartupReporterBeanPostProcessor(
-            startupReporter);
+                startupReporter);
         StartupReporterAwareImpl startupReporterAware = new StartupReporterAwareImpl();
         startupReporterAware = (StartupReporterAwareImpl) startupReporterBeanPostProcessor
-            .postProcessBeforeInitialization(startupReporterAware, "startupReporterAwareImpl");
+                .postProcessBeforeInitialization(startupReporterAware, "startupReporterAwareImpl");
 
         assertThat(startupReporterAware).isNotNull();
         assertThat(startupReporterAware.getStartupReporter()).isEqualTo(startupReporter);
@@ -46,13 +46,13 @@ public class StartupReporterBeanPostProcessorTests {
 
         private StartupReporter startupReporter;
 
+        public StartupReporter getStartupReporter() {
+            return startupReporter;
+        }
+
         @Override
         public void setStartupReporter(StartupReporter startupReporter) throws BeansException {
             this.startupReporter = startupReporter;
-        }
-
-        public StartupReporter getStartupReporter() {
-            return startupReporter;
         }
     }
 }

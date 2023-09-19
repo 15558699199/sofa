@@ -29,95 +29,95 @@ import org.apache.commons.lang.StringUtils;
  */
 public class SyncLeaderTask implements Runnable {
 
-  private final String localDataCenter;
-  private final String syncDataCenter;
-  private final boolean syncLocalDataCenter;
+    private final String localDataCenter;
+    private final String syncDataCenter;
+    private final boolean syncLocalDataCenter;
 
-  private final long startTimestamp = System.currentTimeMillis();
-  private final long slotTableEpoch;
-  private final Slot slot;
-  private final SlotDiffSyncer syncer;
-  private final ClientSideExchanger clientSideExchanger;
-  private final SyncContinues continues;
+    private final long startTimestamp = System.currentTimeMillis();
+    private final long slotTableEpoch;
+    private final Slot slot;
+    private final SlotDiffSyncer syncer;
+    private final ClientSideExchanger clientSideExchanger;
+    private final SyncContinues continues;
 
-  private final Logger SYNC_DIGEST_LOGGER;
-  private final Logger SYNC_ERROR_LOGGER;
+    private final Logger SYNC_DIGEST_LOGGER;
+    private final Logger SYNC_ERROR_LOGGER;
 
-  public SyncLeaderTask(
-      String localDataCenter,
-      String syncDataCenter,
-      long slotTableEpoch,
-      Slot slot,
-      SlotDiffSyncer syncer,
-      ClientSideExchanger clientSideExchanger,
-      SyncContinues continues,
-      Logger syncDigestLogger,
-      Logger syncErrorLogger) {
-    this.localDataCenter = localDataCenter;
-    this.syncDataCenter = syncDataCenter;
-    syncLocalDataCenter = StringUtils.equals(localDataCenter, syncDataCenter);
+    public SyncLeaderTask(
+            String localDataCenter,
+            String syncDataCenter,
+            long slotTableEpoch,
+            Slot slot,
+            SlotDiffSyncer syncer,
+            ClientSideExchanger clientSideExchanger,
+            SyncContinues continues,
+            Logger syncDigestLogger,
+            Logger syncErrorLogger) {
+        this.localDataCenter = localDataCenter;
+        this.syncDataCenter = syncDataCenter;
+        syncLocalDataCenter = StringUtils.equals(localDataCenter, syncDataCenter);
 
-    this.slotTableEpoch = slotTableEpoch;
-    this.slot = slot;
-    this.syncer = syncer;
-    this.clientSideExchanger = clientSideExchanger;
-    this.continues = continues;
+        this.slotTableEpoch = slotTableEpoch;
+        this.slot = slot;
+        this.syncer = syncer;
+        this.clientSideExchanger = clientSideExchanger;
+        this.continues = continues;
 
-    this.SYNC_DIGEST_LOGGER = syncDigestLogger;
-    this.SYNC_ERROR_LOGGER = syncErrorLogger;
-  }
-
-  @Override
-  public void run() {
-    boolean success = false;
-    try {
-      success =
-          syncer.syncSlotLeader(
-              localDataCenter,
-              syncDataCenter,
-              syncLocalDataCenter,
-              slot.getId(),
-              slot.getLeader(),
-              slot.getLeaderEpoch(),
-              clientSideExchanger,
-              slotTableEpoch,
-              continues);
-      if (!success) {
-        throw new RuntimeException(StringFormatter.format("{} sync leader failed", syncDataCenter));
-      }
-    } catch (Throwable e) {
-      SYNC_ERROR_LOGGER.error(
-          "[syncLeader]syncLocal={}, syncDataCenter={}, failed={}, slot={}",
-          syncDataCenter,
-          syncDataCenter,
-          slot.getLeader(),
-          slot.getId(),
-          e);
-      // rethrow silence exception, notify the task is failed
-      throw TaskErrorSilenceException.INSTANCE;
-    } finally {
-      SYNC_DIGEST_LOGGER.info(
-          "[syncLeader]{},{},{},{},{},span={}",
-          success ? 'Y' : 'N',
-          syncLocalDataCenter ? 'L' : 'R',
-          syncDataCenter,
-          slot.getId(),
-          slot.getLeader(),
-          System.currentTimeMillis() - startTimestamp);
+        this.SYNC_DIGEST_LOGGER = syncDigestLogger;
+        this.SYNC_ERROR_LOGGER = syncErrorLogger;
     }
-  }
 
-  @Override
-  public String toString() {
-    return "SyncLeaderTask{"
-        + "syncDataCenter="
-        + syncDataCenter
-        + ", syncLocalDataCenter="
-        + syncLocalDataCenter
-        + ", slotTableEpoch="
-        + slotTableEpoch
-        + ", slot="
-        + slot
-        + '}';
-  }
+    @Override
+    public void run() {
+        boolean success = false;
+        try {
+            success =
+                    syncer.syncSlotLeader(
+                            localDataCenter,
+                            syncDataCenter,
+                            syncLocalDataCenter,
+                            slot.getId(),
+                            slot.getLeader(),
+                            slot.getLeaderEpoch(),
+                            clientSideExchanger,
+                            slotTableEpoch,
+                            continues);
+            if (!success) {
+                throw new RuntimeException(StringFormatter.format("{} sync leader failed", syncDataCenter));
+            }
+        } catch (Throwable e) {
+            SYNC_ERROR_LOGGER.error(
+                    "[syncLeader]syncLocal={}, syncDataCenter={}, failed={}, slot={}",
+                    syncDataCenter,
+                    syncDataCenter,
+                    slot.getLeader(),
+                    slot.getId(),
+                    e);
+            // rethrow silence exception, notify the task is failed
+            throw TaskErrorSilenceException.INSTANCE;
+        } finally {
+            SYNC_DIGEST_LOGGER.info(
+                    "[syncLeader]{},{},{},{},{},span={}",
+                    success ? 'Y' : 'N',
+                    syncLocalDataCenter ? 'L' : 'R',
+                    syncDataCenter,
+                    slot.getId(),
+                    slot.getLeader(),
+                    System.currentTimeMillis() - startTimestamp);
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "SyncLeaderTask{"
+                + "syncDataCenter="
+                + syncDataCenter
+                + ", syncLocalDataCenter="
+                + syncLocalDataCenter
+                + ", slotTableEpoch="
+                + slotTableEpoch
+                + ", slot="
+                + slot
+                + '}';
+    }
 }

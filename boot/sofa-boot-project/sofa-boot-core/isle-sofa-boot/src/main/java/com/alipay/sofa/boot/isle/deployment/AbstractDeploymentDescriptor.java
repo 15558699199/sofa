@@ -22,13 +22,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Properties;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -39,33 +33,33 @@ import java.util.stream.Collectors;
  */
 public abstract class AbstractDeploymentDescriptor implements DeploymentDescriptor {
 
-    protected final Properties                        properties;
+    protected final Properties properties;
 
     protected final DeploymentDescriptorConfiguration deploymentDescriptorConfiguration;
 
-    protected final ClassLoader                       classLoader;
+    protected final ClassLoader classLoader;
 
-    protected final URL                               url;
+    protected final URL url;
 
-    protected final List<String>                      installedSpringXml = new ArrayList<>();
+    protected final List<String> installedSpringXml = new ArrayList<>();
 
-    protected final Map<String, Resource>             springResources    = new HashMap<>();
+    protected final Map<String, Resource> springResources = new HashMap<>();
 
-    protected final String                            moduleName;
+    protected final String moduleName;
 
-    protected final String                            name;
+    protected final String name;
 
-    protected final List<String>                      requiredModules;
+    protected final List<String> requiredModules;
 
-    protected final String                            parentModule;
+    protected final String parentModule;
 
-    protected ApplicationContext                      applicationContext;
+    protected ApplicationContext applicationContext;
 
-    protected long                                    startTime;
+    protected long startTime;
 
-    protected long                                    elapsedTime;
+    protected long elapsedTime;
 
-    private boolean                                   ignoreRequireModule;
+    private boolean ignoreRequireModule;
 
     public AbstractDeploymentDescriptor(URL url,
                                         Properties properties,
@@ -120,6 +114,11 @@ public abstract class AbstractDeploymentDescriptor implements DeploymentDescript
     }
 
     @Override
+    public void setApplicationContext(ApplicationContext applicationContext) {
+        this.applicationContext = applicationContext;
+    }
+
+    @Override
     public Map<String, Resource> getSpringResources() {
         return springResources;
     }
@@ -142,11 +141,6 @@ public abstract class AbstractDeploymentDescriptor implements DeploymentDescript
     @Override
     public void deployFinish() {
         elapsedTime = System.currentTimeMillis() - startTime;
-    }
-
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) {
-        this.applicationContext = applicationContext;
     }
 
     @Override
@@ -177,7 +171,7 @@ public abstract class AbstractDeploymentDescriptor implements DeploymentDescript
 
     protected String getModuleNameFromProperties() {
         List<String> moduleNameIdentities = deploymentDescriptorConfiguration
-            .getModuleNameIdentities();
+                .getModuleNameIdentities();
 
         if (CollectionUtils.isEmpty(moduleNameIdentities)) {
             return null;
@@ -208,7 +202,7 @@ public abstract class AbstractDeploymentDescriptor implements DeploymentDescript
         List<String> requires = new ArrayList<>();
 
         List<String> requireModuleIdentities = deploymentDescriptorConfiguration
-            .getRequireModuleIdentities();
+                .getRequireModuleIdentities();
 
         if (CollectionUtils.isEmpty(requireModuleIdentities)) {
             return requires;

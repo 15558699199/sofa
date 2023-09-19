@@ -41,12 +41,12 @@ public class SpringMessageTracerBeanPostProcessor implements BeanPostProcessor, 
 
     @Override
     public Object postProcessBeforeInitialization(Object bean, String beanName)
-                                                                               throws BeansException {
+            throws BeansException {
         if (bean instanceof AbstractMessageChannel) {
             Assert
-                .isTrue(StringUtils.hasText(appName), TRACER_APPNAME_KEY + " must be configured!");
+                    .isTrue(StringUtils.hasText(appName), TRACER_APPNAME_KEY + " must be configured!");
             ((AbstractMessageChannel) bean).addInterceptor(SofaTracerChannelInterceptor
-                .create(appName));
+                    .create(appName));
         }
         return bean;
     }

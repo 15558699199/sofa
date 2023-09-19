@@ -26,9 +26,10 @@ import com.alipay.sofa.registry.server.shared.providedata.ProvideDataProcessor;
 import com.alipay.sofa.registry.server.shared.remoting.AbstractClientHandler;
 import com.alipay.sofa.registry.util.ParaCheckUtil;
 import com.google.common.annotations.VisibleForTesting;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.util.concurrent.Executor;
 import java.util.concurrent.ThreadPoolExecutor;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * @author shangyu.wh
@@ -36,52 +37,55 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class NotifyProvideDataChangeHandler extends AbstractClientHandler<ProvideDataChangeEvent> {
 
-  @Autowired private MetaServerService metaServerService;
+    @Autowired
+    private MetaServerService metaServerService;
 
-  @Autowired private ProvideDataProcessor provideDataProcessorManager;
+    @Autowired
+    private ProvideDataProcessor provideDataProcessorManager;
 
-  @Autowired private ThreadPoolExecutor metaNodeExecutor;
+    @Autowired
+    private ThreadPoolExecutor metaNodeExecutor;
 
-  @Override
-  protected NodeType getConnectNodeType() {
-    return NodeType.META;
-  }
+    @Override
+    protected NodeType getConnectNodeType() {
+        return NodeType.META;
+    }
 
-  @Override
-  public void checkParam(ProvideDataChangeEvent request) {
-    ParaCheckUtil.checkNotBlank(request.getDataInfoId(), "request.dataInfoId");
-  }
+    @Override
+    public void checkParam(ProvideDataChangeEvent request) {
+        ParaCheckUtil.checkNotBlank(request.getDataInfoId(), "request.dataInfoId");
+    }
 
-  @Override
-  public Object doHandle(Channel channel, ProvideDataChangeEvent request) {
-    String dataInfoId = request.getDataInfoId();
-    ProvideData provideData = metaServerService.fetchData(dataInfoId);
-    provideDataProcessorManager.processData(provideData);
-    return null;
-  }
+    @Override
+    public Object doHandle(Channel channel, ProvideDataChangeEvent request) {
+        String dataInfoId = request.getDataInfoId();
+        ProvideData provideData = metaServerService.fetchData(dataInfoId);
+        provideDataProcessorManager.processData(provideData);
+        return null;
+    }
 
-  @Override
-  public Class interest() {
-    return ProvideDataChangeEvent.class;
-  }
+    @Override
+    public Class interest() {
+        return ProvideDataChangeEvent.class;
+    }
 
-  @Override
-  public CommonResponse buildFailedResponse(String msg) {
-    return CommonResponse.buildFailedResponse(msg);
-  }
+    @Override
+    public CommonResponse buildFailedResponse(String msg) {
+        return CommonResponse.buildFailedResponse(msg);
+    }
 
-  @VisibleForTesting
-  void setMetaServerService(MetaServerService metaServerService) {
-    this.metaServerService = metaServerService;
-  }
+    @VisibleForTesting
+    void setMetaServerService(MetaServerService metaServerService) {
+        this.metaServerService = metaServerService;
+    }
 
-  @VisibleForTesting
-  void setProvideDataProcessorManager(ProvideDataProcessor provideDataProcessorManager) {
-    this.provideDataProcessorManager = provideDataProcessorManager;
-  }
+    @VisibleForTesting
+    void setProvideDataProcessorManager(ProvideDataProcessor provideDataProcessorManager) {
+        this.provideDataProcessorManager = provideDataProcessorManager;
+    }
 
-  @Override
-  public Executor getExecutor() {
-    return metaNodeExecutor;
-  }
+    @Override
+    public Executor getExecutor() {
+        return metaNodeExecutor;
+    }
 }

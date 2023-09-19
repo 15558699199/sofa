@@ -35,11 +35,7 @@ import org.apache.curator.framework.recipes.cache.ChildData;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Method;
 import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -114,7 +110,7 @@ public class ZookeeperRegistryHelper extends RegistryUtils {
         String attribute = childData.getPath().substring(configPath.length() + 1);
         //If event type is CHILD_REMOVED, attribute should return to default value
         return Collections.singletonMap(attribute, removeType ? RpcConfigs.getStringValue(attribute)
-            : StringSerializer.decode(childData.getData()));
+                : StringSerializer.decode(childData.getData()));
     }
 
     /**
@@ -129,7 +125,7 @@ public class ZookeeperRegistryHelper extends RegistryUtils {
     static List<Map<String, String>> convertOverrideToAttributes(AbstractInterfaceConfig config,
                                                                  String overridePath,
                                                                  List<ChildData> currentData)
-        throws UnsupportedEncodingException {
+            throws UnsupportedEncodingException {
         List<Map<String, String>> attributes = new ArrayList<Map<String, String>>();
         if (CommonUtils.isEmpty(currentData)) {
             return attributes;
@@ -137,11 +133,11 @@ public class ZookeeperRegistryHelper extends RegistryUtils {
 
         for (ChildData childData : currentData) {
             String url = URLDecoder.decode(childData.getPath().substring(overridePath.length() + 1),
-                "UTF-8");
+                    "UTF-8");
             if (config instanceof ConsumerConfig) {
                 //If child data contains system local host, convert config to attribute
                 if (StringUtils.isNotEmpty(url) && StringUtils.isNotEmpty(SystemInfo.getLocalHost())
-                    && url.contains("://" + SystemInfo.getLocalHost() + "?")) {
+                        && url.contains("://" + SystemInfo.getLocalHost() + "?")) {
                     attributes.add(convertConfigToAttribute(overridePath, childData, false));
                 }
             }
@@ -163,13 +159,13 @@ public class ZookeeperRegistryHelper extends RegistryUtils {
                                                           boolean removeType,
                                                           AbstractInterfaceConfig interfaceConfig) throws Exception {
         String url = URLDecoder.decode(childData.getPath().substring(overridePath.length() + 1),
-            "UTF-8");
+                "UTF-8");
         Map<String, String> attribute = new ConcurrentHashMap<String, String>();
         for (String keyPairs : url.substring(url.indexOf('?') + 1).split("&")) {
             String[] overrideAttrs = keyPairs.split("=");
             // TODO 这个列表待确认，不少字段是不支持的
             List<String> configKeys = Arrays.asList(RpcConstants.CONFIG_KEY_TIMEOUT,
-                RpcConstants.CONFIG_KEY_SERIALIZATION, RpcConstants.CONFIG_KEY_LOADBALANCER);
+                    RpcConstants.CONFIG_KEY_SERIALIZATION, RpcConstants.CONFIG_KEY_LOADBALANCER);
             if (configKeys.contains(overrideAttrs[0])) {
                 if (removeType) {
                     Class clazz = null;
@@ -181,11 +177,11 @@ public class ZookeeperRegistryHelper extends RegistryUtils {
                     }
                     if (clazz != null) {
                         Method getMethod = ReflectUtils.getPropertyGetterMethod(clazz,
-                            overrideAttrs[0]);
+                                overrideAttrs[0]);
                         Class propertyClazz = getMethod.getReturnType();
                         //If event type is CHILD_REMOVED, attribute should return to register value
                         attribute.put(overrideAttrs[0], StringUtils.toString(BeanUtils
-                            .getProperty(interfaceConfig, overrideAttrs[0], propertyClazz)));
+                                .getProperty(interfaceConfig, overrideAttrs[0], propertyClazz)));
                     }
                 } else {
                     attribute.put(overrideAttrs[0], overrideAttrs[1]);

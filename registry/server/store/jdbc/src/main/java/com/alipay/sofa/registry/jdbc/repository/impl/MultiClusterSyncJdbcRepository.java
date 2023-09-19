@@ -27,9 +27,10 @@ import com.alipay.sofa.registry.log.LoggerFactory;
 import com.alipay.sofa.registry.store.api.config.DefaultCommonConfig;
 import com.alipay.sofa.registry.store.api.meta.MultiClusterSyncRepository;
 import com.alipay.sofa.registry.store.api.meta.RecoverConfig;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.util.List;
 import java.util.Set;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * @author xiaojian.xj
@@ -37,92 +38,91 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class MultiClusterSyncJdbcRepository implements MultiClusterSyncRepository, RecoverConfig {
 
-  private static final Logger LOG =
-      LoggerFactory.getLogger("MULTI-CLUSTER-CONFIG", "[UpdateSyncInfo]");
+    private static final Logger LOG =
+            LoggerFactory.getLogger("MULTI-CLUSTER-CONFIG", "[UpdateSyncInfo]");
+    @Autowired
+    protected DefaultCommonConfig defaultCommonConfig;
+    @Autowired
+    private MultiClusterSyncMapper multiClusterSyncMapper;
+    private Configer configer;
 
-  @Autowired private MultiClusterSyncMapper multiClusterSyncMapper;
-
-  @Autowired protected DefaultCommonConfig defaultCommonConfig;
-
-  private Configer configer;
-
-  public MultiClusterSyncJdbcRepository() {
-    configer = new Configer();
-  }
-
-  class Configer extends BaseConfigRepository<MultiClusterSyncDomain> {
-    public Configer() {
-      super("MultiClusterSyncInfo", LOG);
+    public MultiClusterSyncJdbcRepository() {
+        configer = new Configer();
     }
 
     @Override
-    protected MultiClusterSyncDomain queryExistVersion(MultiClusterSyncDomain entry) {
-      return multiClusterSyncMapper.query(entry.getDataCenter(), entry.getRemoteDataCenter());
+    public boolean insert(MultiClusterSyncInfo syncInfo) {
+        try {
+            MultiClusterSyncDomain domain =
+                    MultiClusterSyncConvertor.convert2Domain(
+                            syncInfo, defaultCommonConfig.getClusterId(tableName()));
+            MultiClusterSyncDomain exist = configer.queryExistVersion(domain);
+            if (exist != null) {
+                LOG.error("multi cluster sync info: {} exist when insert.", syncInfo);
+                return false;
+            }
+            // it will throw duplicate key exception when parallel invocation
+            configer.insert(domain);
+        } catch (Throwable t) {
+            LOG.error("multi cluster sync info: {} insert error", syncInfo, t);
+            return false;
+        }
+
+        return true;
     }
 
     @Override
-    protected long insert(MultiClusterSyncDomain entry) {
-      return multiClusterSyncMapper.save(entry);
+    public boolean update(MultiClusterSyncInfo syncInfo, long expectVersion) {
+        return configer.put(
+                MultiClusterSyncConvertor.convert2Domain(
+                        syncInfo, defaultCommonConfig.getClusterId(tableName())),
+                expectVersion);
     }
 
     @Override
-    protected int updateWithExpectVersion(MultiClusterSyncDomain entry, long exist) {
-      return multiClusterSyncMapper.update(entry, exist);
-    }
-  }
-
-  @Override
-  public boolean insert(MultiClusterSyncInfo syncInfo) {
-    try {
-      MultiClusterSyncDomain domain =
-          MultiClusterSyncConvertor.convert2Domain(
-              syncInfo, defaultCommonConfig.getClusterId(tableName()));
-      MultiClusterSyncDomain exist = configer.queryExistVersion(domain);
-      if (exist != null) {
-        LOG.error("multi cluster sync info: {} exist when insert.", syncInfo);
-        return false;
-      }
-      // it will throw duplicate key exception when parallel invocation
-      configer.insert(domain);
-    } catch (Throwable t) {
-      LOG.error("multi cluster sync info: {} insert error", syncInfo, t);
-      return false;
+    public Set<MultiClusterSyncInfo> queryLocalSyncInfos() {
+        List<MultiClusterSyncDomain> domains =
+                multiClusterSyncMapper.queryByCluster(defaultCommonConfig.getClusterId(tableName()));
+        return MultiClusterSyncConvertor.convert2Infos(domains);
     }
 
-    return true;
-  }
+    @Override
+    public int remove(String remoteDataCenter, long dataVersion) {
+        return multiClusterSyncMapper.remove(
+                defaultCommonConfig.getClusterId(tableName()), remoteDataCenter, dataVersion);
+    }
 
-  @Override
-  public boolean update(MultiClusterSyncInfo syncInfo, long expectVersion) {
-    return configer.put(
-        MultiClusterSyncConvertor.convert2Domain(
-            syncInfo, defaultCommonConfig.getClusterId(tableName())),
-        expectVersion);
-  }
+    @Override
+    public MultiClusterSyncInfo query(String remoteDataCenter) {
+        MultiClusterSyncDomain query =
+                multiClusterSyncMapper.query(
+                        defaultCommonConfig.getClusterId(tableName()), remoteDataCenter);
+        return MultiClusterSyncConvertor.convert2Info(query);
+    }
 
-  @Override
-  public Set<MultiClusterSyncInfo> queryLocalSyncInfos() {
-    List<MultiClusterSyncDomain> domains =
-        multiClusterSyncMapper.queryByCluster(defaultCommonConfig.getClusterId(tableName()));
-    return MultiClusterSyncConvertor.convert2Infos(domains);
-  }
+    @Override
+    public String tableName() {
+        return TableEnum.MULTI_CLUSTER_SYNC_INFO.getTableName();
+    }
 
-  @Override
-  public int remove(String remoteDataCenter, long dataVersion) {
-    return multiClusterSyncMapper.remove(
-        defaultCommonConfig.getClusterId(tableName()), remoteDataCenter, dataVersion);
-  }
+    class Configer extends BaseConfigRepository<MultiClusterSyncDomain> {
+        public Configer() {
+            super("MultiClusterSyncInfo", LOG);
+        }
 
-  @Override
-  public MultiClusterSyncInfo query(String remoteDataCenter) {
-    MultiClusterSyncDomain query =
-        multiClusterSyncMapper.query(
-            defaultCommonConfig.getClusterId(tableName()), remoteDataCenter);
-    return MultiClusterSyncConvertor.convert2Info(query);
-  }
+        @Override
+        protected MultiClusterSyncDomain queryExistVersion(MultiClusterSyncDomain entry) {
+            return multiClusterSyncMapper.query(entry.getDataCenter(), entry.getRemoteDataCenter());
+        }
 
-  @Override
-  public String tableName() {
-    return TableEnum.MULTI_CLUSTER_SYNC_INFO.getTableName();
-  }
+        @Override
+        protected long insert(MultiClusterSyncDomain entry) {
+            return multiClusterSyncMapper.save(entry);
+        }
+
+        @Override
+        protected int updateWithExpectVersion(MultiClusterSyncDomain entry, long exist) {
+            return multiClusterSyncMapper.update(entry, exist);
+        }
+    }
 }

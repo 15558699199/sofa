@@ -16,8 +16,6 @@
  */
 package com.alipay.sofa.registry.server.session.strategy.impl;
 
-import static com.alipay.sofa.registry.common.model.constants.ValueConstants.DEFAULT_INSTANCE_ID;
-
 import com.alipay.sofa.registry.common.model.store.URL;
 import com.alipay.sofa.registry.common.model.store.Watcher;
 import com.alipay.sofa.registry.core.constants.EventTypeConstants;
@@ -33,88 +31,91 @@ import com.alipay.sofa.registry.server.session.strategy.WatcherHandlerStrategy;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import static com.alipay.sofa.registry.common.model.constants.ValueConstants.DEFAULT_INSTANCE_ID;
+
 /**
  * @author xuanbei
  * @since 2019/2/15
  */
 public class DefaultWatcherHandlerStrategy implements WatcherHandlerStrategy {
-  private static final Logger WATCH_LOGGER = LoggerFactory.getLogger("WATCH-RECEIVE");
+    private static final Logger WATCH_LOGGER = LoggerFactory.getLogger("WATCH-RECEIVE");
 
-  @Autowired protected Registry sessionRegistry;
+    @Autowired
+    protected Registry sessionRegistry;
 
-  @Override
-  public void handleConfiguratorRegister(
-      Channel channel,
-      ConfiguratorRegister configuratorRegister,
-      RegisterResponse registerResponse) {
-    Watcher watcher = null;
-    try {
-      configuratorRegister.setIp(channel.getRemoteAddress().getAddress().getHostAddress());
-      configuratorRegister.setPort(channel.getRemoteAddress().getPort());
+    @Override
+    public void handleConfiguratorRegister(
+            Channel channel,
+            ConfiguratorRegister configuratorRegister,
+            RegisterResponse registerResponse) {
+        Watcher watcher = null;
+        try {
+            configuratorRegister.setIp(channel.getRemoteAddress().getAddress().getHostAddress());
+            configuratorRegister.setPort(channel.getRemoteAddress().getPort());
 
-      if (StringUtils.isBlank(configuratorRegister.getInstanceId())) {
-        configuratorRegister.setInstanceId(DEFAULT_INSTANCE_ID);
-      }
+            if (StringUtils.isBlank(configuratorRegister.getInstanceId())) {
+                configuratorRegister.setInstanceId(DEFAULT_INSTANCE_ID);
+            }
 
-      watcher = SubscriberConverter.convert(configuratorRegister);
-      watcher.setProcessId(
-          channel.getRemoteAddress().getHostName() + ":" + channel.getRemoteAddress().getPort());
+            watcher = SubscriberConverter.convert(configuratorRegister);
+            watcher.setProcessId(
+                    channel.getRemoteAddress().getHostName() + ":" + channel.getRemoteAddress().getPort());
 
-      handle(watcher, channel, configuratorRegister, registerResponse);
-    } catch (Throwable e) {
-      handleError(configuratorRegister, watcher, registerResponse, e);
+            handle(watcher, channel, configuratorRegister, registerResponse);
+        } catch (Throwable e) {
+            handleError(configuratorRegister, watcher, registerResponse, e);
+        }
     }
-  }
 
-  protected void handle(
-      Watcher watcher,
-      Channel channel,
-      ConfiguratorRegister register,
-      RegisterResponse registerResponse) {
-    watcher.setSourceAddress(
-        new URL(channel.getRemoteAddress(), BoltUtil.getBoltCustomSerializer(channel)));
-    watcher.setTargetAddress(new URL(channel.getLocalAddress()));
+    protected void handle(
+            Watcher watcher,
+            Channel channel,
+            ConfiguratorRegister register,
+            RegisterResponse registerResponse) {
+        watcher.setSourceAddress(
+                new URL(channel.getRemoteAddress(), BoltUtil.getBoltCustomSerializer(channel)));
+        watcher.setTargetAddress(new URL(channel.getLocalAddress()));
 
-    final String eventType = register.getEventType();
-    if (EventTypeConstants.REGISTER.equals(eventType)) {
-      sessionRegistry.register(watcher, channel);
-    } else if (EventTypeConstants.UNREGISTER.equals(eventType)) {
-      sessionRegistry.unRegister(watcher);
-    } else {
-      RegisterLogs.REGISTER_LOGGER.warn("unsupported watch.eventType:{}", eventType);
+        final String eventType = register.getEventType();
+        if (EventTypeConstants.REGISTER.equals(eventType)) {
+            sessionRegistry.register(watcher, channel);
+        } else if (EventTypeConstants.UNREGISTER.equals(eventType)) {
+            sessionRegistry.unRegister(watcher);
+        } else {
+            RegisterLogs.REGISTER_LOGGER.warn("unsupported watch.eventType:{}", eventType);
+        }
+        registerResponse.setVersion(register.getVersion());
+        registerResponse.setRegistId(register.getRegistId());
+        registerResponse.setSuccess(true);
+        registerResponse.setMessage("ConfiguratorRegister register success!");
+        log(true, register, watcher);
     }
-    registerResponse.setVersion(register.getVersion());
-    registerResponse.setRegistId(register.getRegistId());
-    registerResponse.setSuccess(true);
-    registerResponse.setMessage("ConfiguratorRegister register success!");
-    log(true, register, watcher);
-  }
 
-  private void log(boolean success, ConfiguratorRegister register, Watcher watcher) {
-    // [Y|N],[R|U|N],app,zone,dataInfoId,registerId,clientVersion,clientIp,clientPort
-    Metrics.Access.watCount(success);
-    WATCH_LOGGER.info(
-        "{},{},{},{},{},{},{},{},{},{},{},attrs={}",
-        success ? 'Y' : 'N',
-        EventTypeConstants.getEventTypeFlag(register.getEventType()),
-        register.getAppName(),
-        register.getZone(),
-        register.getDataId(),
-        register.getGroup(),
-        register.getInstanceId(),
-        register.getRegistId(),
-        watcher == null ? "" : watcher.getClientVersion(),
-        register.getIp(),
-        register.getPort(),
-        watcher == null ? "0" : watcher.attributesSize());
-  }
+    private void log(boolean success, ConfiguratorRegister register, Watcher watcher) {
+        // [Y|N],[R|U|N],app,zone,dataInfoId,registerId,clientVersion,clientIp,clientPort
+        Metrics.Access.watCount(success);
+        WATCH_LOGGER.info(
+                "{},{},{},{},{},{},{},{},{},{},{},attrs={}",
+                success ? 'Y' : 'N',
+                EventTypeConstants.getEventTypeFlag(register.getEventType()),
+                register.getAppName(),
+                register.getZone(),
+                register.getDataId(),
+                register.getGroup(),
+                register.getInstanceId(),
+                register.getRegistId(),
+                watcher == null ? "" : watcher.getClientVersion(),
+                register.getIp(),
+                register.getPort(),
+                watcher == null ? "0" : watcher.attributesSize());
+    }
 
-  protected void handleError(
-      ConfiguratorRegister register,
-      Watcher watcher,
-      RegisterResponse registerResponse,
-      Throwable e) {
-    log(false, register, watcher);
-    RegisterLogs.logError(register, "Watcher", registerResponse, e);
-  }
+    protected void handleError(
+            ConfiguratorRegister register,
+            Watcher watcher,
+            RegisterResponse registerResponse,
+            Throwable e) {
+        log(false, register, watcher);
+        RegisterLogs.logError(register, "Watcher", registerResponse, e);
+    }
 }

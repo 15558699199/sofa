@@ -27,8 +27,9 @@ import com.alipay.sofa.registry.remoting.exchange.RequestException;
 import com.alipay.sofa.registry.remoting.exchange.message.Request;
 import com.alipay.sofa.registry.remoting.exchange.message.Response;
 import com.alipay.sofa.registry.util.CollectionUtils;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
 
 /**
  * @author yuzhi.lyz
@@ -36,55 +37,56 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public abstract class ServerSideExchanger implements NodeExchanger {
 
-  @Autowired protected Exchange boltExchange;
+    @Autowired
+    protected Exchange boltExchange;
 
-  @Override
-  public Response request(Request request) throws RequestException {
-    final URL url = request.getRequestUrl();
-    if (url == null) {
-      throw new RequestException("null url", request);
-    }
-    return request(url, request);
-  }
-
-  public Response request(URL url, Request request) throws RequestException {
-    final Server server = boltExchange.getServer(getServerPort());
-    if (server == null) {
-      throw new RequestException("no server for " + url + "," + getServerPort(), request);
-    }
-    final int timeout = request.getTimeout() != null ? request.getTimeout() : getRpcTimeoutMillis();
-    Channel channel = null;
-    if (url == null) {
-      // now use in dsr console sync case
-      channel = chooseChannel(server);
-    } else {
-      channel = server.getChannel(url);
+    @Override
+    public Response request(Request request) throws RequestException {
+        final URL url = request.getRequestUrl();
+        if (url == null) {
+            throw new RequestException("null url", request);
+        }
+        return request(url, request);
     }
 
-    if (channel == null || !channel.isConnected()) {
-      throw new RequestChannelClosedException(
-          getServerPort() + ", channel may be closed, " + url, request);
+    public Response request(URL url, Request request) throws RequestException {
+        final Server server = boltExchange.getServer(getServerPort());
+        if (server == null) {
+            throw new RequestException("no server for " + url + "," + getServerPort(), request);
+        }
+        final int timeout = request.getTimeout() != null ? request.getTimeout() : getRpcTimeoutMillis();
+        Channel channel = null;
+        if (url == null) {
+            // now use in dsr console sync case
+            channel = chooseChannel(server);
+        } else {
+            channel = server.getChannel(url);
+        }
+
+        if (channel == null || !channel.isConnected()) {
+            throw new RequestChannelClosedException(
+                    getServerPort() + ", channel may be closed, " + url, request);
+        }
+        if (request.getCallBackHandler() != null) {
+            server.sendCallback(channel, request.getRequestBody(), request.getCallBackHandler(), timeout);
+            return () -> Response.ResultStatus.SUCCESSFUL;
+        } else {
+            final Object result = server.sendSync(channel, request.getRequestBody(), timeout);
+            return () -> result;
+        }
     }
-    if (request.getCallBackHandler() != null) {
-      server.sendCallback(channel, request.getRequestBody(), request.getCallBackHandler(), timeout);
-      return () -> Response.ResultStatus.SUCCESSFUL;
-    } else {
-      final Object result = server.sendSync(channel, request.getRequestBody(), timeout);
-      return () -> result;
+
+    private Channel chooseChannel(Server server) {
+        List<Channel> channels = server.getChannels();
+        return CollectionUtils.getRandom(channels);
     }
-  }
 
-  private Channel chooseChannel(Server server) {
-    List<Channel> channels = server.getChannels();
-    return CollectionUtils.getRandom(channels);
-  }
+    @Override
+    public Client connectServer() {
+        throw new UnsupportedOperationException();
+    }
 
-  @Override
-  public Client connectServer() {
-    throw new UnsupportedOperationException();
-  }
+    public abstract int getRpcTimeoutMillis();
 
-  public abstract int getRpcTimeoutMillis();
-
-  public abstract int getServerPort();
+    public abstract int getServerPort();
 }

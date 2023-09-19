@@ -21,26 +21,26 @@ package com.alipay.sofa.registry.jdbc.constant;
  * @version : TableEnum.java, v 0.1 2021年09月27日 22:48 xiaojian.xj Exp $
  */
 public enum TableEnum {
-  PROVIDE_DATA("provide_data"),
-  APP_REVISION("app_revision"),
-  INTERFACE_APP_INDEX("interface_app_index"),
-  DISTRIBUTE_LOCK("distribute_lock"),
-  CLIENT_MANAGER_ADDRESS("client_manager_address"),
-  MULTI_CLUSTER_SYNC_INFO("multi_cluster_sync_info"),
-  ;
+    PROVIDE_DATA("provide_data"),
+    APP_REVISION("app_revision"),
+    INTERFACE_APP_INDEX("interface_app_index"),
+    DISTRIBUTE_LOCK("distribute_lock"),
+    CLIENT_MANAGER_ADDRESS("client_manager_address"),
+    MULTI_CLUSTER_SYNC_INFO("multi_cluster_sync_info"),
+    ;
 
-  private String tableName;
+    private String tableName;
 
-  TableEnum(String tableName) {
-    this.tableName = tableName;
-  }
+    TableEnum(String tableName) {
+        this.tableName = tableName;
+    }
 
-  /**
-   * Getter method for property <tt>tableName</tt>.
-   *
-   * @return property value of tableName
-   */
-  public String getTableName() {
-    return tableName;
-  }
+    /**
+     * Getter method for property <tt>tableName</tt>.
+     *
+     * @return property value of tableName
+     */
+    public String getTableName() {
+        return tableName;
+    }
 }

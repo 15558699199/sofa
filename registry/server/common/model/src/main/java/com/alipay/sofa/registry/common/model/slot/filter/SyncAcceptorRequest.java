@@ -25,41 +25,41 @@ import com.alipay.sofa.registry.util.ParaCheckUtil;
  */
 public class SyncAcceptorRequest {
 
-  private final String dataInfoId;
+    private final String dataInfoId;
 
-  private final PublishSource source;
+    private final PublishSource source;
 
-  private SyncAcceptorRequest(String dataInfoId, PublishSource source) {
-    this.dataInfoId = dataInfoId;
-    this.source = source;
-  }
+    private SyncAcceptorRequest(String dataInfoId, PublishSource source) {
+        this.dataInfoId = dataInfoId;
+        this.source = source;
+    }
 
-  public static SyncAcceptorRequest buildRequest(String dataInfoId) {
-    ParaCheckUtil.checkNotBlank(dataInfoId, "dataInfoId");
-    return new SyncAcceptorRequest(dataInfoId, null);
-  }
+    public static SyncAcceptorRequest buildRequest(String dataInfoId) {
+        ParaCheckUtil.checkNotBlank(dataInfoId, "dataInfoId");
+        return new SyncAcceptorRequest(dataInfoId, null);
+    }
 
-  public static SyncAcceptorRequest buildRequest(String dataInfoId, PublishSource source) {
-    ParaCheckUtil.checkNotNull(dataInfoId, "dataInfoId");
-    ParaCheckUtil.checkNotNull(source, "publishSource");
-    return new SyncAcceptorRequest(dataInfoId, source);
-  }
+    public static SyncAcceptorRequest buildRequest(String dataInfoId, PublishSource source) {
+        ParaCheckUtil.checkNotNull(dataInfoId, "dataInfoId");
+        ParaCheckUtil.checkNotNull(source, "publishSource");
+        return new SyncAcceptorRequest(dataInfoId, source);
+    }
 
-  /**
-   * Getter method for property <tt>dataInfoId</tt>.
-   *
-   * @return property value of dataInfoId
-   */
-  public String getDataInfoId() {
-    return dataInfoId;
-  }
+    /**
+     * Getter method for property <tt>dataInfoId</tt>.
+     *
+     * @return property value of dataInfoId
+     */
+    public String getDataInfoId() {
+        return dataInfoId;
+    }
 
-  /**
-   * Getter method for property <tt>source</tt>.
-   *
-   * @return property value of source
-   */
-  public PublishSource getSource() {
-    return source;
-  }
+    /**
+     * Getter method for property <tt>source</tt>.
+     *
+     * @return property value of source
+     */
+    public PublishSource getSource() {
+        return source;
+    }
 }

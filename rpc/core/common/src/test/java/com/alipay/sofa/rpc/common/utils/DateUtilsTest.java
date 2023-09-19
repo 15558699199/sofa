@@ -23,8 +23,6 @@ import java.util.Date;
 import java.util.TimeZone;
 
 /**
- *
- *
  * @author <a href="mailto:zhanggeng.zg@antfin.com">GengZhang</a>
  */
 public class DateUtilsTest {

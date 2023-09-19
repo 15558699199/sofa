@@ -32,13 +32,7 @@ import com.alipay.sofa.rpc.server.http.HttpServiceImpl;
 import com.alipay.sofa.rpc.test.ActivelyDestroyTest;
 import com.alipay.sofa.rpc.transport.ClientTransportConfig;
 import io.netty.buffer.ByteBuf;
-import io.netty.handler.codec.http.DefaultFullHttpRequest;
-import io.netty.handler.codec.http.FullHttpRequest;
-import io.netty.handler.codec.http.FullHttpResponse;
-import io.netty.handler.codec.http.HttpHeaderNames;
-import io.netty.handler.codec.http.HttpHeaderValues;
-import io.netty.handler.codec.http.HttpHeaders;
-import io.netty.handler.codec.http.HttpMethod;
+import io.netty.handler.codec.http.*;
 import io.netty.handler.codec.http2.HttpConversionUtil;
 import org.junit.Assert;
 import org.junit.Test;
@@ -60,19 +54,19 @@ public class Http2ClearTextBadRequestTest extends ActivelyDestroyTest {
     public void testAll() throws Exception {
         // 只有1个线程 执行
         ServerConfig serverConfig = new ServerConfig()
-            .setStopTimeout(60000)
-            .setPort(12333)
-            .setProtocol(RpcConstants.PROTOCOL_TYPE_H2C)
-            .setDaemon(true);
+                .setStopTimeout(60000)
+                .setPort(12333)
+                .setProtocol(RpcConstants.PROTOCOL_TYPE_H2C)
+                .setDaemon(true);
 
         // 发布一个服务，每个请求要执行1秒
         ProviderConfig<HttpService> providerConfig = new ProviderConfig<HttpService>()
-            .setInterfaceId(HttpService.class.getName())
-            .setRef(new HttpServiceImpl())
-            .setApplication(new ApplicationConfig().setAppName("serverApp"))
-            .setServer(serverConfig)
-            .setUniqueId("uuu")
-            .setRegister(false);
+                .setInterfaceId(HttpService.class.getName())
+                .setRef(new HttpServiceImpl())
+                .setApplication(new ApplicationConfig().setAppName("serverApp"))
+                .setServer(serverConfig)
+                .setUniqueId("uuu")
+                .setRegister(false);
         providerConfig.export();
 
         ClientTransportConfig clientTransportConfig = new ClientTransportConfig();
@@ -174,7 +168,7 @@ public class Http2ClearTextBadRequestTest extends ActivelyDestroyTest {
         // Create a simple POST request with a body.
         EchoRequest request = EchoRequest.newBuilder().setGroup(Group.A).setName("xxx").build();
         FullHttpRequest httpRequest = new DefaultFullHttpRequest(HTTP_1_1, POST, url,
-            wrappedBuffer(request.toByteArray()));
+                wrappedBuffer(request.toByteArray()));
         HttpHeaders headers = httpRequest.headers();
         addToHeader(headers, HttpHeaderNames.HOST, "127.0.0.1");
         addToHeader(headers, HttpConversionUtil.ExtensionHeaderNames.SCHEME.text(), "HTTP");
@@ -190,7 +184,7 @@ public class Http2ClearTextBadRequestTest extends ActivelyDestroyTest {
     }
 
     private MyHandler sendHttpRequest(Http2ClientTransport clientTransport, FullHttpRequest httpRequest)
-        throws InterruptedException {
+            throws InterruptedException {
         MyHandler handler = new MyHandler();
         clientTransport.sendHttpRequest(httpRequest, handler);
         handler.latch.await(10000, TimeUnit.MILLISECONDS);
@@ -204,11 +198,11 @@ public class Http2ClearTextBadRequestTest extends ActivelyDestroyTest {
 
     private final class MyHandler extends AbstractHttpClientHandler {
 
-        CountDownLatch   latch = new CountDownLatch(1);
+        CountDownLatch latch = new CountDownLatch(1);
         FullHttpResponse response;
-        Object           result;
-        Throwable        exception;
-        private byte[]   content;
+        Object result;
+        Throwable exception;
+        private byte[] content;
 
         protected MyHandler() {
             super(null, null, null, null, null);

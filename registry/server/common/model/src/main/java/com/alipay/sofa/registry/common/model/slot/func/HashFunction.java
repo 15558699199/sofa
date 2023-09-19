@@ -24,11 +24,11 @@ package com.alipay.sofa.registry.common.model.slot.func;
  */
 public interface HashFunction {
 
-  /**
-   * return object's int hashCode
-   *
-   * @param o object
-   * @return int hashCode
-   */
-  int hash(Object o);
+    /**
+     * return object's int hashCode
+     *
+     * @param o object
+     * @return int hashCode
+     */
+    int hash(Object o);
 }

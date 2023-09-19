@@ -44,17 +44,38 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class DynamicJvmServiceProxyFinder {
 
-    private static final DynamicJvmServiceProxyFinder         dynamicJvmServiceProxyFinder = new DynamicJvmServiceProxyFinder();
+    private static final DynamicJvmServiceProxyFinder dynamicJvmServiceProxyFinder = new DynamicJvmServiceProxyFinder();
 
-    private static final Map<String, JvmServiceTargetHabitat> jvmServiceTargetHabitats     = new ConcurrentHashMap<>();
+    private static final Map<String, JvmServiceTargetHabitat> jvmServiceTargetHabitats = new ConcurrentHashMap<>();
+    @ArkInject
+    private BizManagerService bizManagerService;
+    private boolean hasFinishStartup = false;
 
     private DynamicJvmServiceProxyFinder() {
     }
 
-    @ArkInject
-    private BizManagerService bizManagerService;
+    /**
+     * Get Biz {@link Biz} according to SofaRuntimeManager {@link SofaRuntimeManager}
+     *
+     * @param sofaRuntimeManager
+     * @return
+     */
+    public static Biz getBiz(SofaRuntimeManager sofaRuntimeManager) {
+        if (getInstance().bizManagerService == null) {
+            return null;
+        }
 
-    private boolean           hasFinishStartup = false;
+        for (Biz biz : getInstance().bizManagerService.getBizInOrder()) {
+            if (biz.getBizClassLoader().equals(sofaRuntimeManager.getAppClassLoader())) {
+                return biz;
+            }
+        }
+        return null;
+    }
+
+    public static DynamicJvmServiceProxyFinder getInstance() {
+        return dynamicJvmServiceProxyFinder;
+    }
 
     public ServiceProxy findServiceProxy(ClassLoader clientClassloader, Contract contract) {
         ServiceComponent serviceComponent = findServiceComponent(clientClassloader, contract);
@@ -63,7 +84,7 @@ public class DynamicJvmServiceProxyFinder {
         }
 
         SofaRuntimeManager sofaRuntimeManager = serviceComponent.getContext()
-            .getSofaRuntimeManager();
+                .getSofaRuntimeManager();
         Biz biz = getBiz(sofaRuntimeManager);
 
         if (biz == null) {
@@ -71,7 +92,7 @@ public class DynamicJvmServiceProxyFinder {
         }
 
         return createDynamicJvmServiceInvoker(clientClassloader, contract, serviceComponent,
-            sofaRuntimeManager, biz);
+                sofaRuntimeManager, biz);
     }
 
     public ServiceComponent findServiceComponent(ClassLoader clientClassloader, Contract contract) {
@@ -106,7 +127,7 @@ public class DynamicJvmServiceProxyFinder {
             // do not match state, check next
             // https://github.com/sofastack/sofa-boot/issues/532
             if (hasFinishStartup && biz.getBizState() != BizState.DEACTIVATED
-                && biz.getBizState() != BizState.ACTIVATED) {
+                    && biz.getBizState() != BizState.ACTIVATED) {
                 continue;
             }
 
@@ -123,7 +144,7 @@ public class DynamicJvmServiceProxyFinder {
 
             // match biz
             serviceComponent = findServiceComponent(uniqueId, interfaceType,
-                sofaRuntimeManager.getComponentManager());
+                    sofaRuntimeManager.getComponentManager());
             if (serviceComponent != null) {
                 return serviceComponent;
             }
@@ -136,7 +157,7 @@ public class DynamicJvmServiceProxyFinder {
         // The overhead is acceptable as this only happens after biz's successful installation
         SofaRuntimeManager sofaRuntimeManager = SofaRuntimeContainer.getSofaRuntimeManager(biz.getBizClassLoader());
         if (sofaRuntimeManager != null && SofaRuntimeContainer.isJvmServiceCache(biz.getBizClassLoader())) {
-            for (ComponentInfo componentInfo: sofaRuntimeManager.getComponentManager().getComponents()) {
+            for (ComponentInfo componentInfo : sofaRuntimeManager.getComponentManager().getComponents()) {
                 if (componentInfo instanceof ServiceComponent serviceComponent) {
                     String uniqueName = getUniqueName(serviceComponent.getService());
                     addCache(uniqueName, biz, serviceComponent);
@@ -164,13 +185,13 @@ public class DynamicJvmServiceProxyFinder {
                                                             SofaRuntimeManager sofaRuntimeManager,
                                                             Biz biz) {
         JvmBinding referenceJvmBinding = (JvmBinding) contract
-            .getBinding(JvmBinding.JVM_BINDING_TYPE);
+                .getBinding(JvmBinding.JVM_BINDING_TYPE);
         JvmBinding serviceJvmBinding = (JvmBinding) serviceComponent.getService().getBinding(
-            JvmBinding.JVM_BINDING_TYPE);
+                JvmBinding.JVM_BINDING_TYPE);
         boolean serialize;
         if (serviceJvmBinding != null && referenceJvmBinding != null) {
             serialize = referenceJvmBinding.getJvmBindingParam().isSerialize()
-                        || serviceJvmBinding.getJvmBindingParam().isSerialize();
+                    || serviceJvmBinding.getJvmBindingParam().isSerialize();
         } else {
             // Service provider don't intend to publish JVM service, serialize is considered to be true in this case
             serialize = true;
@@ -179,8 +200,8 @@ public class DynamicJvmServiceProxyFinder {
         serialize &= SofaRuntimeContainer.isJvmInvokeSerialize(clientClassloader);
 
         return new DynamicJvmServiceInvoker(clientClassloader,
-            sofaRuntimeManager.getAppClassLoader(), serviceComponent.getService().getTarget(),
-            contract, biz.getIdentity(), serialize);
+                sofaRuntimeManager.getAppClassLoader(), serviceComponent.getService().getTarget(),
+                contract, biz.getIdentity(), serialize);
     }
 
     private void addCache(String uniqueName, Biz biz, ServiceComponent serviceComponent) {
@@ -229,32 +250,13 @@ public class DynamicJvmServiceProxyFinder {
     private ServiceComponent findServiceComponent(String uniqueId, String interfaceType,
                                                   ComponentManager componentManager) {
         Collection<ComponentInfo> components = componentManager
-            .getComponentInfosByType(ServiceComponent.SERVICE_COMPONENT_TYPE);
+                .getComponentInfosByType(ServiceComponent.SERVICE_COMPONENT_TYPE);
         for (ComponentInfo c : components) {
             ServiceComponent component = (ServiceComponent) c;
             Contract serviceContract = component.getService();
             if (serviceContract.getInterfaceTypeCanonicalName().equals(interfaceType)
-                && uniqueId.equals(serviceContract.getUniqueId())) {
+                    && uniqueId.equals(serviceContract.getUniqueId())) {
                 return component;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Get Biz {@link Biz} according to SofaRuntimeManager {@link SofaRuntimeManager}
-     *
-     * @param sofaRuntimeManager
-     * @return
-     */
-    public static Biz getBiz(SofaRuntimeManager sofaRuntimeManager) {
-        if (getInstance().bizManagerService == null) {
-            return null;
-        }
-
-        for (Biz biz : getInstance().bizManagerService.getBizInOrder()) {
-            if (biz.getBizClassLoader().equals(sofaRuntimeManager.getAppClassLoader())) {
-                return biz;
             }
         }
         return null;
@@ -268,16 +270,12 @@ public class DynamicJvmServiceProxyFinder {
         this.hasFinishStartup = hasFinishStartup;
     }
 
-    void setBizManagerService(BizManagerService bizManagerService) {
-        this.bizManagerService = bizManagerService;
-    }
-
     public BizManagerService getBizManagerService() {
         return bizManagerService;
     }
 
-    public static DynamicJvmServiceProxyFinder getInstance() {
-        return dynamicJvmServiceProxyFinder;
+    void setBizManagerService(BizManagerService bizManagerService) {
+        this.bizManagerService = bizManagerService;
     }
 
 }

@@ -19,71 +19,72 @@ package com.alipay.sofa.registry.server.session.store;
 import com.alipay.sofa.registry.common.model.Tuple;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import org.springframework.util.CollectionUtils;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiConsumer;
-import org.springframework.util.CollectionUtils;
 
 public class SimpleStore<T> implements Store<T> {
-  protected final Map<String /*dataInfoId*/, Map<String /*registerId*/, T>> stores;
-  private final int registerIdCount;
+    protected final Map<String /*dataInfoId*/, Map<String /*registerId*/, T>> stores;
+    private final int registerIdCount;
 
-  public SimpleStore(int dataIdCount, int registerIdCount) {
-    stores = new ConcurrentHashMap<>(dataIdCount);
-    this.registerIdCount = registerIdCount;
-  }
-
-  @Override
-  public Map<String, T> get(String dataInfoId) {
-    return stores.get(dataInfoId);
-  }
-
-  @Override
-  public Map<String, T> getOrCreate(String dataInfoId) {
-    return stores.computeIfAbsent(dataInfoId, k -> new ConcurrentHashMap<>(registerIdCount));
-  }
-
-  @Override
-  public void forEach(BiConsumer<String, Map<String, T>> consumer) {
-    stores.forEach(consumer);
-  }
-
-  @Override
-  public Map<String, Map<String, T>> copyMap() {
-    Map<String, Map<String, T>> ret = Maps.newHashMapWithExpectedSize(stores.size());
-    for (Map.Entry<String, Map<String, T>> e : stores.entrySet()) {
-      if (!e.getValue().isEmpty()) {
-        ret.put(e.getKey(), new HashMap<>(e.getValue()));
-      }
+    public SimpleStore(int dataIdCount, int registerIdCount) {
+        stores = new ConcurrentHashMap<>(dataIdCount);
+        this.registerIdCount = registerIdCount;
     }
-    return ret;
-  }
 
-  @Override
-  public Tuple<Long, Long> count() {
-    long dataInfoIdCount = 0;
-    long dataCount = 0;
-    for (Map<String, T> map : stores.values()) {
-      int size = map.size();
-      dataCount += size;
-      if (size != 0) {
-        dataInfoIdCount++;
-      }
+    @Override
+    public Map<String, T> get(String dataInfoId) {
+        return stores.get(dataInfoId);
     }
-    return Tuple.of(dataInfoIdCount, dataCount);
-  }
 
-  @Override
-  public Collection<String> getDataInfoIds() {
-    Set<String> ret = Sets.newHashSetWithExpectedSize(stores.values().size());
-    for (Map.Entry<String, Map<String, T>> e : stores.entrySet()) {
-      if (!CollectionUtils.isEmpty(e.getValue())) {
-        ret.add(e.getKey());
-      }
+    @Override
+    public Map<String, T> getOrCreate(String dataInfoId) {
+        return stores.computeIfAbsent(dataInfoId, k -> new ConcurrentHashMap<>(registerIdCount));
     }
-    return ret;
-  }
+
+    @Override
+    public void forEach(BiConsumer<String, Map<String, T>> consumer) {
+        stores.forEach(consumer);
+    }
+
+    @Override
+    public Map<String, Map<String, T>> copyMap() {
+        Map<String, Map<String, T>> ret = Maps.newHashMapWithExpectedSize(stores.size());
+        for (Map.Entry<String, Map<String, T>> e : stores.entrySet()) {
+            if (!e.getValue().isEmpty()) {
+                ret.put(e.getKey(), new HashMap<>(e.getValue()));
+            }
+        }
+        return ret;
+    }
+
+    @Override
+    public Tuple<Long, Long> count() {
+        long dataInfoIdCount = 0;
+        long dataCount = 0;
+        for (Map<String, T> map : stores.values()) {
+            int size = map.size();
+            dataCount += size;
+            if (size != 0) {
+                dataInfoIdCount++;
+            }
+        }
+        return Tuple.of(dataInfoIdCount, dataCount);
+    }
+
+    @Override
+    public Collection<String> getDataInfoIds() {
+        Set<String> ret = Sets.newHashSetWithExpectedSize(stores.values().size());
+        for (Map.Entry<String, Map<String, T>> e : stores.entrySet()) {
+            if (!CollectionUtils.isEmpty(e.getValue())) {
+                ret.add(e.getKey());
+            }
+        }
+        return ret;
+    }
 }

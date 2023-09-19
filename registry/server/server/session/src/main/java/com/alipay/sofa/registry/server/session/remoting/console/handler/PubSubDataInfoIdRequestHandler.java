@@ -28,25 +28,26 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @version : PubSubDataInfoIdRequestHandler.java, v 0.1 2021年08月04日 14:23 xiaojian.xj Exp $
  */
 public class PubSubDataInfoIdRequestHandler
-    extends AbstractConsoleHandler<PubSubDataInfoIdRequest> {
+        extends AbstractConsoleHandler<PubSubDataInfoIdRequest> {
 
-  @Autowired protected FetchPubSubDataInfoIdService fetchPubSubDataInfoIdService;
+    @Autowired
+    protected FetchPubSubDataInfoIdService fetchPubSubDataInfoIdService;
 
-  @Override
-  public Class interest() {
-    return PubSubDataInfoIdRequest.class;
-  }
+    @Override
+    public Class interest() {
+        return PubSubDataInfoIdRequest.class;
+    }
 
-  @Override
-  public GenericResponse<PubSubDataInfoIdResp> doHandle(
-      Channel channel, PubSubDataInfoIdRequest request) {
-    PubSubDataInfoIdResp pubSubDataInfoIdResp =
-        fetchPubSubDataInfoIdService.queryByIps(request.getIps());
-    return new GenericResponse<PubSubDataInfoIdResp>().fillSucceed(pubSubDataInfoIdResp);
-  }
+    @Override
+    public GenericResponse<PubSubDataInfoIdResp> doHandle(
+            Channel channel, PubSubDataInfoIdRequest request) {
+        PubSubDataInfoIdResp pubSubDataInfoIdResp =
+                fetchPubSubDataInfoIdService.queryByIps(request.getIps());
+        return new GenericResponse<PubSubDataInfoIdResp>().fillSucceed(pubSubDataInfoIdResp);
+    }
 
-  @Override
-  public Object buildFailedResponse(String msg) {
-    return new GenericResponse<PubSubDataInfoIdResp>().fillFailed(msg);
-  }
+    @Override
+    public Object buildFailedResponse(String msg) {
+        return new GenericResponse<PubSubDataInfoIdResp>().fillFailed(msg);
+    }
 }

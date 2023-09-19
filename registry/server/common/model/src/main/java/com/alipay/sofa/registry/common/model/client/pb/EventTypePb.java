@@ -16,87 +16,96 @@
  */
 package com.alipay.sofa.registry.common.model.client.pb;
 
-/** Protobuf enum {@code EventTypePb} */
+/**
+ * Protobuf enum {@code EventTypePb}
+ */
 public enum EventTypePb implements com.google.protobuf.ProtocolMessageEnum {
-  /** <code>REGISTER = 0;</code> */
-  REGISTER(0),
-  /** <code>UNREGISTER = 1;</code> */
-  UNREGISTER(1),
-  UNRECOGNIZED(-1),
-  ;
+    /**
+     * <code>REGISTER = 0;</code>
+     */
+    REGISTER(0),
+    /**
+     * <code>UNREGISTER = 1;</code>
+     */
+    UNREGISTER(1),
+    UNRECOGNIZED(-1),
+    ;
 
-  /** <code>REGISTER = 0;</code> */
-  public static final int REGISTER_VALUE = 0;
-  /** <code>UNREGISTER = 1;</code> */
-  public static final int UNREGISTER_VALUE = 1;
+    /**
+     * <code>REGISTER = 0;</code>
+     */
+    public static final int REGISTER_VALUE = 0;
+    /**
+     * <code>UNREGISTER = 1;</code>
+     */
+    public static final int UNREGISTER_VALUE = 1;
+    private static final com.google.protobuf.Internal.EnumLiteMap<EventTypePb> internalValueMap =
+            new com.google.protobuf.Internal.EnumLiteMap<EventTypePb>() {
+                public EventTypePb findValueByNumber(int number) {
+                    return EventTypePb.forNumber(number);
+                }
+            };
+    private static final EventTypePb[] VALUES = values();
+    private final int value;
 
-  public final int getNumber() {
-    if (this == UNRECOGNIZED) {
-      throw new java.lang.IllegalArgumentException(
-          "Can't get the number of an unknown enum value.");
+    private EventTypePb(int value) {
+        this.value = value;
     }
-    return value;
-  }
 
-  /** @deprecated Use {@link #forNumber(int)} instead. */
-  @java.lang.Deprecated
-  public static EventTypePb valueOf(int value) {
-    return forNumber(value);
-  }
-
-  public static EventTypePb forNumber(int value) {
-    switch (value) {
-      case 0:
-        return REGISTER;
-      case 1:
-        return UNREGISTER;
-      default:
-        return null;
+    /**
+     * @deprecated Use {@link #forNumber(int)} instead.
+     */
+    @java.lang.Deprecated
+    public static EventTypePb valueOf(int value) {
+        return forNumber(value);
     }
-  }
 
-  public static com.google.protobuf.Internal.EnumLiteMap<EventTypePb> internalGetValueMap() {
-    return internalValueMap;
-  }
-
-  private static final com.google.protobuf.Internal.EnumLiteMap<EventTypePb> internalValueMap =
-      new com.google.protobuf.Internal.EnumLiteMap<EventTypePb>() {
-        public EventTypePb findValueByNumber(int number) {
-          return EventTypePb.forNumber(number);
+    public static EventTypePb forNumber(int value) {
+        switch (value) {
+            case 0:
+                return REGISTER;
+            case 1:
+                return UNREGISTER;
+            default:
+                return null;
         }
-      };
-
-  public final com.google.protobuf.Descriptors.EnumValueDescriptor getValueDescriptor() {
-    return getDescriptor().getValues().get(ordinal());
-  }
-
-  public final com.google.protobuf.Descriptors.EnumDescriptor getDescriptorForType() {
-    return getDescriptor();
-  }
-
-  public static final com.google.protobuf.Descriptors.EnumDescriptor getDescriptor() {
-    return com.alipay.sofa.registry.common.model.client.pb.EventTypePbOuterClass.getDescriptor()
-        .getEnumTypes()
-        .get(0);
-  }
-
-  private static final EventTypePb[] VALUES = values();
-
-  public static EventTypePb valueOf(com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
-    if (desc.getType() != getDescriptor()) {
-      throw new java.lang.IllegalArgumentException("EnumValueDescriptor is not for this type.");
     }
-    if (desc.getIndex() == -1) {
-      return UNRECOGNIZED;
+
+    public static com.google.protobuf.Internal.EnumLiteMap<EventTypePb> internalGetValueMap() {
+        return internalValueMap;
     }
-    return VALUES[desc.getIndex()];
-  }
 
-  private final int value;
+    public static final com.google.protobuf.Descriptors.EnumDescriptor getDescriptor() {
+        return com.alipay.sofa.registry.common.model.client.pb.EventTypePbOuterClass.getDescriptor()
+                .getEnumTypes()
+                .get(0);
+    }
 
-  private EventTypePb(int value) {
-    this.value = value;
-  }
+    public static EventTypePb valueOf(com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+        if (desc.getType() != getDescriptor()) {
+            throw new java.lang.IllegalArgumentException("EnumValueDescriptor is not for this type.");
+        }
+        if (desc.getIndex() == -1) {
+            return UNRECOGNIZED;
+        }
+        return VALUES[desc.getIndex()];
+    }
 
-  // @@protoc_insertion_point(enum_scope:EventTypePb)
+    public final int getNumber() {
+        if (this == UNRECOGNIZED) {
+            throw new java.lang.IllegalArgumentException(
+                    "Can't get the number of an unknown enum value.");
+        }
+        return value;
+    }
+
+    public final com.google.protobuf.Descriptors.EnumValueDescriptor getValueDescriptor() {
+        return getDescriptor().getValues().get(ordinal());
+    }
+
+    public final com.google.protobuf.Descriptors.EnumDescriptor getDescriptorForType() {
+        return getDescriptor();
+    }
+
+    // @@protoc_insertion_point(enum_scope:EventTypePb)
 }

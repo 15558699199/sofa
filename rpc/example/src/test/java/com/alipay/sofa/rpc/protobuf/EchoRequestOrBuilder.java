@@ -20,8 +20,8 @@
 package com.alipay.sofa.rpc.protobuf;
 
 public interface EchoRequestOrBuilder extends
-                                     // @@protoc_insertion_point(interface_extends:com.alipay.sofa.rpc.protobuf.EchoRequest)
-                                     com.google.protobuf.MessageOrBuilder {
+        // @@protoc_insertion_point(interface_extends:com.alipay.sofa.rpc.protobuf.EchoRequest)
+        com.google.protobuf.MessageOrBuilder {
 
     /**
      * <code>string name = 1;</code>
@@ -32,7 +32,7 @@ public interface EchoRequestOrBuilder extends
      * <code>string name = 1;</code>
      */
     com.google.protobuf.ByteString
-            getNameBytes();
+    getNameBytes();
 
     /**
      * <code>.com.alipay.sofa.rpc.protobuf.Group group = 2;</code>

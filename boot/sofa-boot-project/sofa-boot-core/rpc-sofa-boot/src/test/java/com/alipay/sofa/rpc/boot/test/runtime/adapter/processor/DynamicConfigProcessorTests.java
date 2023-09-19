@@ -27,14 +27,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests for {@link DynamicConfigProcessor}.
- * 
+ *
  * @author zhaowang
  * @version : DynamicConfigProcessorTest.java, v 0.1 2020年03月11日 3:21 下午 zhaowang Exp $
  */
 public class DynamicConfigProcessorTests {
 
-    public static final String     CONFIG    = "config";
-    public static final String     ANOTHER   = "another";
+    public static final String CONFIG = "config";
+    public static final String ANOTHER = "another";
     private DynamicConfigProcessor processor = new DynamicConfigProcessor("");
 
     @Test
@@ -63,14 +63,14 @@ public class DynamicConfigProcessorTests {
         consumerConfig = new ConsumerConfig();
         processor.processorConsumer(consumerConfig);
         assertThat(
-            StringUtils.hasText(consumerConfig.getParameter(DynamicConfigKeys.DYNAMIC_ALIAS)))
-            .isFalse();
+                StringUtils.hasText(consumerConfig.getParameter(DynamicConfigKeys.DYNAMIC_ALIAS)))
+                .isFalse();
 
         providerConfig = new ProviderConfig();
         processor.processorProvider(providerConfig);
         assertThat(
-            StringUtils.hasText(providerConfig.getParameter(DynamicConfigKeys.DYNAMIC_ALIAS)))
-            .isFalse();
+                StringUtils.hasText(providerConfig.getParameter(DynamicConfigKeys.DYNAMIC_ALIAS)))
+                .isFalse();
     }
 
 }

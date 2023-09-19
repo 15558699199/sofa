@@ -22,31 +22,31 @@ package com.alipay.sofa.registry.server.meta.bootstrap.config;
  */
 public interface MultiClusterMetaServerConfig {
 
-  int getRemoteClusterRpcTimeoutMillis();
+    int getRemoteClusterRpcTimeoutMillis();
 
-  int getRemoteMetaServerPort();
+    int getRemoteMetaServerPort();
 
-  int getRemoteSlotSyncerMillis();
+    int getRemoteSlotSyncerMillis();
 
-  int getRemoteSlotSyncerExecutorQueueSize();
+    int getRemoteSlotSyncerExecutorQueueSize();
 
-  int getRemoteSlotSyncerExecutorPoolSize();
+    int getRemoteSlotSyncerExecutorPoolSize();
 
-  int getMultiClusterConfigReloadMillis();
+    int getMultiClusterConfigReloadMillis();
 
-  int getMultiClusterConfigReloadWorkerSize();
+    int getMultiClusterConfigReloadWorkerSize();
 
-  int getMultiClusterConfigReloadMaxBufferSize();
+    int getMultiClusterConfigReloadMaxBufferSize();
 
-  int getRemoteClusterHandlerCoreSize();
+    int getRemoteClusterHandlerCoreSize();
 
-  int getRemoteClusterHandlerMaxSize();
+    int getRemoteClusterHandlerMaxSize();
 
-  int getRemoteClusterHandlerMaxBufferSize();
+    int getRemoteClusterHandlerMaxBufferSize();
 
-  int getClientManagerCoreSize();
+    int getClientManagerCoreSize();
 
-  int getClientManagerMaxSize();
+    int getClientManagerMaxSize();
 
-  int getClientManagerMaxBufferSize();
+    int getClientManagerMaxBufferSize();
 }

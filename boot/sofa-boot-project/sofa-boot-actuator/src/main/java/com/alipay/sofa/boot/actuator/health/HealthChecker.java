@@ -29,18 +29,21 @@ public interface HealthChecker {
 
     /**
      * HealthCheck information.
+     *
      * @return health result.
      */
     Health isHealthy();
 
     /**
      * HealthChecker name
+     *
      * @return component name
      */
     String getComponentName();
 
     /**
      * The number of retries after failure.
+     *
      * @return retry times.
      */
     default int getRetryCount() {
@@ -49,9 +52,10 @@ public interface HealthChecker {
 
     /**
      * The time interval for each retry after failure.
+     *
      * @return retry interval, unit milliseconds.
      */
-    default long getRetryTimeInterval(){
+    default long getRetryTimeInterval() {
         return 0;
     }
 
@@ -59,6 +63,7 @@ public interface HealthChecker {
      * Is it strictly checked?
      * If true, the final check result of isHealthy() is used as the result of the component's check.
      * If false, the final result of the component is considered to be healthy, but the exception log is printed.
+     *
      * @return whether stric check.
      */
     default boolean isStrictCheck() {
@@ -68,6 +73,7 @@ public interface HealthChecker {
     /**
      * The timeout in milliseconds.
      * If less than or equal to 0, the property {@literal com.alipay.sofa.healthcheck.component.timeout} is used as timeout.
+     *
      * @return health check timeout, unit milliseconds.
      */
     default int getTimeout() {

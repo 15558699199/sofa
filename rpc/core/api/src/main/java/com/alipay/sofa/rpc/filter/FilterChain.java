@@ -34,14 +34,7 @@ import com.alipay.sofa.rpc.log.LogCodes;
 import com.alipay.sofa.rpc.log.Logger;
 import com.alipay.sofa.rpc.log.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -54,61 +47,33 @@ public class FilterChain implements Invoker {
     /**
      * 日志
      */
-    private static final Logger                              LOGGER                = LoggerFactory
-                                                                                       .getLogger(FilterChain.class);
+    private static final Logger LOGGER = LoggerFactory
+            .getLogger(FilterChain.class);
 
     /**
      * 服务端自动激活的 {"alias":ExtensionClass}
      */
     private final static Map<String, ExtensionClass<Filter>> PROVIDER_AUTO_ACTIVES = Collections
-                                                                                       .synchronizedMap(new LinkedHashMap<String, ExtensionClass<Filter>>());
+            .synchronizedMap(new LinkedHashMap<String, ExtensionClass<Filter>>());
 
     /**
      * 调用端自动激活的 {"alias":ExtensionClass}
      */
     private final static Map<String, ExtensionClass<Filter>> CONSUMER_AUTO_ACTIVES = Collections
-                                                                                       .synchronizedMap(new LinkedHashMap<String, ExtensionClass<Filter>>());
+            .synchronizedMap(new LinkedHashMap<String, ExtensionClass<Filter>>());
 
     /**
      * 扩展加载器
      */
-    private final static ExtensionLoader<Filter>             EXTENSION_LOADER      = buildLoader();
-
-    private static ExtensionLoader<Filter> buildLoader() {
-        ExtensionLoader<Filter> extensionLoader = ExtensionLoaderFactory.getExtensionLoader(Filter.class);
-        extensionLoader.addListener(new ExtensionLoaderListener<Filter>() {
-            @Override
-            public void onLoad(ExtensionClass<Filter> extensionClass) {
-                Class<? extends Filter> implClass = extensionClass.getClazz();
-                // 读取自动加载的类列表。
-                AutoActive autoActive = implClass.getAnnotation(AutoActive.class);
-                if (autoActive != null) {
-                    String alias = extensionClass.getAlias();
-                    if (autoActive.providerSide()) {
-                        PROVIDER_AUTO_ACTIVES.put(alias, extensionClass);
-                    }
-                    if (autoActive.consumerSide()) {
-                        CONSUMER_AUTO_ACTIVES.put(alias, extensionClass);
-                    }
-                    if (LOGGER.isDebugEnabled()) {
-                        LOGGER.debug("Extension of interface " + Filter.class
-                            + ", " + implClass + "(" + alias + ") will auto active");
-                    }
-                }
-            }
-        });
-        return extensionLoader;
-    }
-
+    private final static ExtensionLoader<Filter> EXTENSION_LOADER = buildLoader();
     /**
      * 调用链
      */
     private FilterInvoker invokerChain;
-
     /**
      * 过滤器列表，从底至上排序
      */
-    private List<Filter>  loadedFilters;
+    private List<Filter> loadedFilters;
 
     /**
      * 构造执行链
@@ -140,6 +105,32 @@ public class FilterChain implements Invoker {
                 }
             }
         }
+    }
+
+    private static ExtensionLoader<Filter> buildLoader() {
+        ExtensionLoader<Filter> extensionLoader = ExtensionLoaderFactory.getExtensionLoader(Filter.class);
+        extensionLoader.addListener(new ExtensionLoaderListener<Filter>() {
+            @Override
+            public void onLoad(ExtensionClass<Filter> extensionClass) {
+                Class<? extends Filter> implClass = extensionClass.getClazz();
+                // 读取自动加载的类列表。
+                AutoActive autoActive = implClass.getAnnotation(AutoActive.class);
+                if (autoActive != null) {
+                    String alias = extensionClass.getAlias();
+                    if (autoActive.providerSide()) {
+                        PROVIDER_AUTO_ACTIVES.put(alias, extensionClass);
+                    }
+                    if (autoActive.consumerSide()) {
+                        CONSUMER_AUTO_ACTIVES.put(alias, extensionClass);
+                    }
+                    if (LOGGER.isDebugEnabled()) {
+                        LOGGER.debug("Extension of interface " + Filter.class
+                                + ", " + implClass + "(" + alias + ") will auto active");
+                    }
+                }
+            }
+        });
+        return extensionLoader;
     }
 
     /**
@@ -185,7 +176,7 @@ public class FilterChain implements Invoker {
          */
         // 用户通过自己new实例的方式注入的filter，优先级高
         List<Filter> customFilters = config.getFilterRef() == null ?
-            new ArrayList<Filter>() : new CopyOnWriteArrayList<Filter>(config.getFilterRef());
+                new ArrayList<Filter>() : new CopyOnWriteArrayList<Filter>(config.getFilterRef());
         // 先解析是否有特殊处理
         HashSet<String> excludes = parseExcludeFilter(customFilters);
 
@@ -241,8 +232,8 @@ public class FilterChain implements Invoker {
                     String excludeName = excludeFilter.getExcludeName();
                     if (StringUtils.isNotEmpty(excludeName)) {
                         String excludeFilterName = startsWithExcludePrefix(excludeName) ?
-                            excludeName.substring(1)
-                            : excludeName;
+                                excludeName.substring(1)
+                                : excludeName;
                         if (StringUtils.isNotEmpty(excludeFilterName)) {
                             excludeKeys.add(excludeFilterName);
                         }
@@ -279,14 +270,14 @@ public class FilterChain implements Invoker {
      * @throws SofaRpcException occur error
      */
     public void onAsyncResponse(ConsumerConfig config, SofaRequest request, SofaResponse response, Throwable throwable)
-        throws SofaRpcException {
+            throws SofaRpcException {
         try {
             for (Filter loadedFilter : loadedFilters) {
                 loadedFilter.onAsyncResponse(config, request, response, throwable);
             }
         } catch (SofaRpcException e) {
             LOGGER
-                .errorWithApp(config.getAppName(), "Catch exception when do filtering after asynchronous respond.", e);
+                    .errorWithApp(config.getAppName(), "Catch exception when do filtering after asynchronous respond.", e);
         }
     }
 

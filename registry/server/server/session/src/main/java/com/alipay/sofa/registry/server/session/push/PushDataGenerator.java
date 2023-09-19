@@ -38,160 +38,167 @@ import com.alipay.sofa.registry.server.session.providedata.CompressPushService;
 import com.alipay.sofa.registry.util.ParaCheckUtil;
 import com.alipay.sofa.registry.util.StringFormatter;
 import com.google.common.collect.Lists;
-import java.util.*;
-import java.util.Map.Entry;
-import java.util.function.Predicate;
-import javax.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 
+import javax.annotation.Resource;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.function.Predicate;
+
 public class PushDataGenerator {
 
-  @Autowired SessionServerConfig sessionServerConfig;
+    @Autowired
+    SessionServerConfig sessionServerConfig;
 
-  @Resource CompressPushService compressPushService;
+    @Resource
+    CompressPushService compressPushService;
 
-  @Autowired DataCenterMetadataCache dataCenterMetadataCache;
+    @Autowired
+    DataCenterMetadataCache dataCenterMetadataCache;
 
-  public PushData createPushData(MultiSubDatum unzipDatum, Map<String, Subscriber> subscriberMap) {
-    unzipDatum.mustUnzipped();
-    if (subscriberMap.size() > 1) {
-      SubscriberUtils.getAndAssertHasSameScope(subscriberMap.values());
-      SubscriberUtils.getAndAssertAcceptedEncodes(subscriberMap.values());
-      SubscriberUtils.getAndAssertAcceptMulti(subscriberMap.values());
-    }
-    // only supported 4.x
-    SubscriberUtils.assertClientVersion(subscriberMap.values(), BaseInfo.ClientVersion.StoreData);
+    public PushData createPushData(MultiSubDatum unzipDatum, Map<String, Subscriber> subscriberMap) {
+        unzipDatum.mustUnzipped();
+        if (subscriberMap.size() > 1) {
+            SubscriberUtils.getAndAssertHasSameScope(subscriberMap.values());
+            SubscriberUtils.getAndAssertAcceptedEncodes(subscriberMap.values());
+            SubscriberUtils.getAndAssertAcceptMulti(subscriberMap.values());
+        }
+        // only supported 4.x
+        SubscriberUtils.assertClientVersion(subscriberMap.values(), BaseInfo.ClientVersion.StoreData);
 
-    final Subscriber subscriber = subscriberMap.values().iterator().next();
-    String clientCell = sessionServerConfig.getClientCell(subscriber.getCell());
+        final Subscriber subscriber = subscriberMap.values().iterator().next();
+        String clientCell = sessionServerConfig.getClientCell(subscriber.getCell());
 
-    CompressorGetter compressorGetter =
-        (Map<String, List<DataBox>> data) ->
-            compressPushService.getCompressor(
-                data, subscriber.getAcceptEncodes(), subscriber.getSourceAddress().getIpAddress());
-    if (subscriber.acceptMulti()) {
-      return createMultiReceivePushData(
-          unzipDatum,
-          clientCell,
-          Lists.newArrayList(subscriberMap.keySet()),
-          subscriber,
-          compressorGetter);
-    }
-    return createReceivePushData(
-        unzipDatum,
-        clientCell,
-        Lists.newArrayList(subscriberMap.keySet()),
-        subscriber,
-        compressorGetter);
-  }
-
-  private PushData createMultiReceivePushData(
-      MultiSubDatum unzipDatum,
-      String clientCell,
-      List<String> subscriberRegisterIdList,
-      Subscriber subscriber,
-      CompressorGetter compressorGetter) {
-    Predicate<String> pushDataPredicate =
-        ZonePredicate.pushDataPredicate(
-            unzipDatum.getDataId(), clientCell, subscriber.getScope(), sessionServerConfig);
-
-    Set<String> pushDataCenters = unzipDatum.getDatumMap().keySet();
-    Map<String, Set<String>> segmentZones =
-        dataCenterMetadataCache.dataCenterZonesOf(pushDataCenters);
-
-    Set<String> metadataDataCenters = segmentZones.keySet();
-
-    if (!pushDataCenters.equals(metadataDataCenters)) {
-      throw new SofaRegistryRuntimeException(
-          StringFormatter.format(
-              "createMultiReceivePushData error, datum.dataCenters: {}, metadata.dataCenters: {}",
-              pushDataCenters,
-              metadataDataCenters));
-    }
-    PushData<MultiReceivedData> pushData =
-        ReceivedDataConverter.getMultiReceivedData(
-            unzipDatum,
-            subscriber.getScope(),
-            subscriberRegisterIdList,
-            clientCell,
-            sessionServerConfig.getSessionServerDataCenter(),
-            pushDataPredicate,
-            segmentZones);
-
-    final Byte serializerIndex = subscriber.getSourceAddress().getSerializerIndex();
-    if (serializerIndex == null || URL.PROTOBUF != serializerIndex) {
-      return pushData;
+        CompressorGetter compressorGetter =
+                (Map<String, List<DataBox>> data) ->
+                        compressPushService.getCompressor(
+                                data, subscriber.getAcceptEncodes(), subscriber.getSourceAddress().getIpAddress());
+        if (subscriber.acceptMulti()) {
+            return createMultiReceivePushData(
+                    unzipDatum,
+                    clientCell,
+                    Lists.newArrayList(subscriberMap.keySet()),
+                    subscriber,
+                    compressorGetter);
+        }
+        return createReceivePushData(
+                unzipDatum,
+                clientCell,
+                Lists.newArrayList(subscriberMap.keySet()),
+                subscriber,
+                compressorGetter);
     }
 
-    ParaCheckUtil.checkNotEmpty(pushData.getPayload().getMultiData(), "multiSegmentDatas");
-    MultiReceivedDataPb multiReceivedDataPb =
-        ReceivedDataConvertor.convert2MultiPb(pushData.getPayload(), compressorGetter);
+    private PushData createMultiReceivePushData(
+            MultiSubDatum unzipDatum,
+            String clientCell,
+            List<String> subscriberRegisterIdList,
+            Subscriber subscriber,
+            CompressorGetter compressorGetter) {
+        Predicate<String> pushDataPredicate =
+                ZonePredicate.pushDataPredicate(
+                        unzipDatum.getDataId(), clientCell, subscriber.getScope(), sessionServerConfig);
 
-    fillSegmentPushInfo(pushData, multiReceivedDataPb);
+        Set<String> pushDataCenters = unzipDatum.getDatumMap().keySet();
+        Map<String, Set<String>> segmentZones =
+                dataCenterMetadataCache.dataCenterZonesOf(pushDataCenters);
 
-    return new PushData<>(multiReceivedDataPb, pushData.getDataCenterPushInfo());
-  }
+        Set<String> metadataDataCenters = segmentZones.keySet();
 
-  private void fillSegmentPushInfo(
-      PushData<MultiReceivedData> pushData, MultiReceivedDataPb multiReceivedDataPb) {
-    for (Entry<String, MultiSegmentDataPb> entry :
-        multiReceivedDataPb.getMultiDataMap().entrySet()) {
-      pushData.addSegmentInfo(
-          entry.getKey(), entry.getValue().getEncoding(), entry.getValue().getZipData().size());
-    }
-  }
+        if (!pushDataCenters.equals(metadataDataCenters)) {
+            throw new SofaRegistryRuntimeException(
+                    StringFormatter.format(
+                            "createMultiReceivePushData error, datum.dataCenters: {}, metadata.dataCenters: {}",
+                            pushDataCenters,
+                            metadataDataCenters));
+        }
+        PushData<MultiReceivedData> pushData =
+                ReceivedDataConverter.getMultiReceivedData(
+                        unzipDatum,
+                        subscriber.getScope(),
+                        subscriberRegisterIdList,
+                        clientCell,
+                        sessionServerConfig.getSessionServerDataCenter(),
+                        pushDataPredicate,
+                        segmentZones);
 
-  private PushData createReceivePushData(
-      MultiSubDatum unzipDatum,
-      String clientCell,
-      List<String> subscriberRegisterIdList,
-      Subscriber subscriber,
-      CompressorGetter compressorGetter) {
-    Predicate<String> pushDataPredicate =
-        ZonePredicate.pushDataPredicate(
-            unzipDatum.getDataId(), clientCell, subscriber.getScope(), sessionServerConfig);
+        final Byte serializerIndex = subscriber.getSourceAddress().getSerializerIndex();
+        if (serializerIndex == null || URL.PROTOBUF != serializerIndex) {
+            return pushData;
+        }
 
-    PushData<ReceivedData> pushData =
-        ReceivedDataConverter.getReceivedData(
-            unzipDatum,
-            subscriber.getScope(),
-            subscriberRegisterIdList,
-            clientCell,
-            sessionServerConfig.getSessionServerDataCenter(),
-            pushDataPredicate);
+        ParaCheckUtil.checkNotEmpty(pushData.getPayload().getMultiData(), "multiSegmentDatas");
+        MultiReceivedDataPb multiReceivedDataPb =
+                ReceivedDataConvertor.convert2MultiPb(pushData.getPayload(), compressorGetter);
 
-    final Byte serializerIndex = subscriber.getSourceAddress().getSerializerIndex();
-    if (serializerIndex == null || URL.PROTOBUF != serializerIndex) {
-      return pushData;
-    }
+        fillSegmentPushInfo(pushData, multiReceivedDataPb);
 
-    ParaCheckUtil.checkNotNull(pushData.getPayload().getData(), "datas");
-    ReceivedDataPb receivedDataPb =
-        ReceivedDataConvertor.convert2Pb(pushData.getPayload(), compressorGetter);
-
-    if (receivedDataPb.getBody() == null || StringUtils.isEmpty(receivedDataPb.getEncoding())) {
-      return new PushData(receivedDataPb, pushData.getDataCenterPushInfo());
-    } else {
-      pushData.addSegmentInfo(
-          receivedDataPb.getSegment(),
-          receivedDataPb.getEncoding(),
-          receivedDataPb.getBody().size());
-      return new PushData<>(receivedDataPb, pushData.getDataCenterPushInfo());
-    }
-  }
-
-  public PushData createPushData(Watcher watcher, ReceivedConfigData data) {
-    URL url = watcher.getSourceAddress();
-    Object o = data;
-    if (url.getSerializerIndex() != null && URL.PROTOBUF == url.getSerializerIndex()) {
-      o = ReceivedDataConvertor.convert2Pb(data);
+        return new PushData<>(multiReceivedDataPb, pushData.getDataCenterPushInfo());
     }
 
-    String dataCenter = sessionServerConfig.getSessionServerDataCenter();
-    DataCenterPushInfo dataCenterPushInfo = new DataCenterPushInfo();
-    dataCenterPushInfo.setSegmentPushInfos(
-        Collections.singletonMap(dataCenter, new SegmentPushInfo(dataCenter, 1)));
-    return new PushData(o, Collections.singletonMap(dataCenter, dataCenterPushInfo));
-  }
+    private void fillSegmentPushInfo(
+            PushData<MultiReceivedData> pushData, MultiReceivedDataPb multiReceivedDataPb) {
+        for (Entry<String, MultiSegmentDataPb> entry :
+                multiReceivedDataPb.getMultiDataMap().entrySet()) {
+            pushData.addSegmentInfo(
+                    entry.getKey(), entry.getValue().getEncoding(), entry.getValue().getZipData().size());
+        }
+    }
+
+    private PushData createReceivePushData(
+            MultiSubDatum unzipDatum,
+            String clientCell,
+            List<String> subscriberRegisterIdList,
+            Subscriber subscriber,
+            CompressorGetter compressorGetter) {
+        Predicate<String> pushDataPredicate =
+                ZonePredicate.pushDataPredicate(
+                        unzipDatum.getDataId(), clientCell, subscriber.getScope(), sessionServerConfig);
+
+        PushData<ReceivedData> pushData =
+                ReceivedDataConverter.getReceivedData(
+                        unzipDatum,
+                        subscriber.getScope(),
+                        subscriberRegisterIdList,
+                        clientCell,
+                        sessionServerConfig.getSessionServerDataCenter(),
+                        pushDataPredicate);
+
+        final Byte serializerIndex = subscriber.getSourceAddress().getSerializerIndex();
+        if (serializerIndex == null || URL.PROTOBUF != serializerIndex) {
+            return pushData;
+        }
+
+        ParaCheckUtil.checkNotNull(pushData.getPayload().getData(), "datas");
+        ReceivedDataPb receivedDataPb =
+                ReceivedDataConvertor.convert2Pb(pushData.getPayload(), compressorGetter);
+
+        if (receivedDataPb.getBody() == null || StringUtils.isEmpty(receivedDataPb.getEncoding())) {
+            return new PushData(receivedDataPb, pushData.getDataCenterPushInfo());
+        } else {
+            pushData.addSegmentInfo(
+                    receivedDataPb.getSegment(),
+                    receivedDataPb.getEncoding(),
+                    receivedDataPb.getBody().size());
+            return new PushData<>(receivedDataPb, pushData.getDataCenterPushInfo());
+        }
+    }
+
+    public PushData createPushData(Watcher watcher, ReceivedConfigData data) {
+        URL url = watcher.getSourceAddress();
+        Object o = data;
+        if (url.getSerializerIndex() != null && URL.PROTOBUF == url.getSerializerIndex()) {
+            o = ReceivedDataConvertor.convert2Pb(data);
+        }
+
+        String dataCenter = sessionServerConfig.getSessionServerDataCenter();
+        DataCenterPushInfo dataCenterPushInfo = new DataCenterPushInfo();
+        dataCenterPushInfo.setSegmentPushInfos(
+                Collections.singletonMap(dataCenter, new SegmentPushInfo(dataCenter, 1)));
+        return new PushData(o, Collections.singletonMap(dataCenter, dataCenterPushInfo));
+    }
 }

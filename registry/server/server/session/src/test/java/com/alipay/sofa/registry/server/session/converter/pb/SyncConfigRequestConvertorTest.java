@@ -22,20 +22,20 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class SyncConfigRequestConvertorTest {
-  @Test
-  public void test() {
-    Assert.assertNull(SyncConfigRequestConvertor.convert2Pb(null));
-    Assert.assertNull(SyncConfigRequestConvertor.convert2Java(null));
-    SyncConfigRequest registerJava = new SyncConfigRequest();
+    @Test
+    public void test() {
+        Assert.assertNull(SyncConfigRequestConvertor.convert2Pb(null));
+        Assert.assertNull(SyncConfigRequestConvertor.convert2Java(null));
+        SyncConfigRequest registerJava = new SyncConfigRequest();
 
-    registerJava.setDataCenter("testDataCenter");
-    registerJava.setZone("testZone");
+        registerJava.setDataCenter("testDataCenter");
+        registerJava.setZone("testZone");
 
-    SyncConfigRequestPb pb = SyncConfigRequestConvertor.convert2Pb(registerJava);
-    SyncConfigRequest convertJava = SyncConfigRequestConvertor.convert2Java(pb);
+        SyncConfigRequestPb pb = SyncConfigRequestConvertor.convert2Pb(registerJava);
+        SyncConfigRequest convertJava = SyncConfigRequestConvertor.convert2Java(pb);
 
-    Assert.assertEquals(registerJava.getDataCenter(), convertJava.getDataCenter());
-    Assert.assertEquals(registerJava.getZone(), convertJava.getZone());
-    Assert.assertEquals(registerJava.toString(), convertJava.toString());
-  }
+        Assert.assertEquals(registerJava.getDataCenter(), convertJava.getDataCenter());
+        Assert.assertEquals(registerJava.getZone(), convertJava.getZone());
+        Assert.assertEquals(registerJava.toString(), convertJava.toString());
+    }
 }

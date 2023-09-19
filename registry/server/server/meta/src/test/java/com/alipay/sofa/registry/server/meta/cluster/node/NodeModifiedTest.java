@@ -23,16 +23,16 @@ import org.junit.Test;
 /**
  * @author zhuchen
  * @date Dec 15, 2020, 8:02:29 PM
- *     <p>nothing here, simply increase unit test coverage
+ * <p>nothing here, simply increase unit test coverage
  */
 public class NodeModifiedTest extends AbstractMetaServerTestBase {
 
-  @Test
-  public void testGetOldNode() {
-    NodeModified<SimpleNode> event =
-        new NodeModified<>(new SimpleNode(randomIp()), new SimpleNode(randomIp()));
-    Assert.assertNotNull(event.getNewNode());
-    Assert.assertNotNull(event.getOldNode());
-    Assert.assertNotEquals(event.getOldNode(), event.getNewNode());
-  }
+    @Test
+    public void testGetOldNode() {
+        NodeModified<SimpleNode> event =
+                new NodeModified<>(new SimpleNode(randomIp()), new SimpleNode(randomIp()));
+        Assert.assertNotNull(event.getNewNode());
+        Assert.assertNotNull(event.getOldNode());
+        Assert.assertNotEquals(event.getOldNode(), event.getNewNode());
+    }
 }

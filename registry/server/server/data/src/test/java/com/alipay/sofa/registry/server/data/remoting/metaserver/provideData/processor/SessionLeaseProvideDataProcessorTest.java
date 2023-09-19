@@ -27,41 +27,41 @@ import org.junit.Test;
 
 public class SessionLeaseProvideDataProcessorTest {
 
-  @Test
-  public void test() {
-    final SessionLeaseProvideDataProcessor processor = new SessionLeaseProvideDataProcessor();
-    DataServerConfig cfg = TestBaseUtils.newDataConfig("testDc");
-    processor.setDataServerConfig(cfg);
-    ProvideData provideData = new ProvideData(null, "test", 100L);
-    Assert.assertFalse(processor.support(provideData.getDataInfoId()));
+    @Test
+    public void test() {
+        final SessionLeaseProvideDataProcessor processor = new SessionLeaseProvideDataProcessor();
+        DataServerConfig cfg = TestBaseUtils.newDataConfig("testDc");
+        processor.setDataServerConfig(cfg);
+        ProvideData provideData = new ProvideData(null, "test", 100L);
+        Assert.assertFalse(processor.support(provideData.getDataInfoId()));
 
-    provideData = new ProvideData(null, ValueConstants.DATA_SESSION_LEASE_SEC, 100L);
-    Assert.assertTrue(processor.support(provideData.getDataInfoId()));
+        provideData = new ProvideData(null, ValueConstants.DATA_SESSION_LEASE_SEC, 100L);
+        Assert.assertTrue(processor.support(provideData.getDataInfoId()));
 
-    int prev = cfg.getSessionLeaseSecs();
-    processor.processData(null);
-    Assert.assertEquals(prev, cfg.getSessionLeaseSecs());
+        int prev = cfg.getSessionLeaseSecs();
+        processor.processData(null);
+        Assert.assertEquals(prev, cfg.getSessionLeaseSecs());
 
-    processor.processData(new ProvideData(null, ValueConstants.DATA_SESSION_LEASE_SEC, 100L));
-    Assert.assertEquals(prev, cfg.getSessionLeaseSecs());
+        processor.processData(new ProvideData(null, ValueConstants.DATA_SESSION_LEASE_SEC, 100L));
+        Assert.assertEquals(prev, cfg.getSessionLeaseSecs());
 
-    TestBaseUtils.assertException(
-        IllegalArgumentException.class,
-        () -> {
-          ServerDataBox box = new ServerDataBox("3");
-          processor.processData(new ProvideData(box, ValueConstants.DATA_SESSION_LEASE_SEC, 100L));
-        });
+        TestBaseUtils.assertException(
+                IllegalArgumentException.class,
+                () -> {
+                    ServerDataBox box = new ServerDataBox("3");
+                    processor.processData(new ProvideData(box, ValueConstants.DATA_SESSION_LEASE_SEC, 100L));
+                });
 
-    ServerDataBox box = new ServerDataBox("10");
-    processor.processData(new ProvideData(box, ValueConstants.DATA_SESSION_LEASE_SEC, 100L));
-    Assert.assertEquals(10, cfg.getSessionLeaseSecs());
+        ServerDataBox box = new ServerDataBox("10");
+        processor.processData(new ProvideData(box, ValueConstants.DATA_SESSION_LEASE_SEC, 100L));
+        Assert.assertEquals(10, cfg.getSessionLeaseSecs());
 
-    ProvideDataProcessorManager mgr = new ProvideDataProcessorManager();
-    mgr.addProvideDataProcessor(processor);
-    Assert.assertFalse(mgr.support(null));
+        ProvideDataProcessorManager mgr = new ProvideDataProcessorManager();
+        mgr.addProvideDataProcessor(processor);
+        Assert.assertFalse(mgr.support(null));
 
-    box = new ServerDataBox("20");
-    mgr.processData(new ProvideData(box, ValueConstants.DATA_SESSION_LEASE_SEC, 100L));
-    Assert.assertEquals(20, cfg.getSessionLeaseSecs());
-  }
+        box = new ServerDataBox("20");
+        mgr.processData(new ProvideData(box, ValueConstants.DATA_SESSION_LEASE_SEC, 100L));
+        Assert.assertEquals(20, cfg.getSessionLeaseSecs());
+    }
 }

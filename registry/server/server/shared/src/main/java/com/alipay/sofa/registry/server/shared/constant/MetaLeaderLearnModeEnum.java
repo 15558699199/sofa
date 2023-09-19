@@ -21,22 +21,22 @@ package com.alipay.sofa.registry.server.shared.constant;
  * @version : ExchangerModeEnum.java, v 0.1 2022年04月16日 17:49 xiaojian.xj Exp $
  */
 public enum MetaLeaderLearnModeEnum {
-  JDBC("JDBC"),
-  LOADBALANCER("LOADBALANCER"),
-  ;
+    JDBC("JDBC"),
+    LOADBALANCER("LOADBALANCER"),
+    ;
 
-  private String code;
+    private String code;
 
-  MetaLeaderLearnModeEnum(String code) {
-    this.code = code;
-  }
+    MetaLeaderLearnModeEnum(String code) {
+        this.code = code;
+    }
 
-  /**
-   * Getter method for property <tt>code</tt>.
-   *
-   * @return property value of code
-   */
-  public String getCode() {
-    return code;
-  }
+    /**
+     * Getter method for property <tt>code</tt>.
+     *
+     * @return property value of code
+     */
+    public String getCode() {
+        return code;
+    }
 }

@@ -26,91 +26,91 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = MetadataConfigBean.PRE_FIX)
 public class MetadataConfigBean implements MetadataConfig {
 
-  public static final String PRE_FIX = "metadata.server";
+    public static final String PRE_FIX = "metadata.server";
 
-  private int revisionRenewIntervalMinutes = 60 * 3;
-  private int interfaceAppsIndexRenewIntervalMinutes = 60 * 3;
+    private int revisionRenewIntervalMinutes = 60 * 3;
+    private int interfaceAppsIndexRenewIntervalMinutes = 60 * 3;
 
-  private int interfaceAppsExecutorPoolSize = OsUtils.getCpuCount() * 3;
-  private int interfaceAppsExecutorQueueSize = 1000;
+    private int interfaceAppsExecutorPoolSize = OsUtils.getCpuCount() * 3;
+    private int interfaceAppsExecutorQueueSize = 1000;
 
-  private int clientManagerExecutorPoolSize = OsUtils.getCpuCount() * 6;
-  private int clientManagerExecutorQueueSize = 3000;
+    private int clientManagerExecutorPoolSize = OsUtils.getCpuCount() * 6;
+    private int clientManagerExecutorQueueSize = 3000;
 
-  public int getRevisionRenewIntervalMinutes() {
-    return revisionRenewIntervalMinutes;
-  }
+    public int getRevisionRenewIntervalMinutes() {
+        return revisionRenewIntervalMinutes;
+    }
 
-  public void setRevisionRenewIntervalMinutes(int revisionRenewIntervalMinutes) {
-    this.revisionRenewIntervalMinutes = revisionRenewIntervalMinutes;
-  }
+    public void setRevisionRenewIntervalMinutes(int revisionRenewIntervalMinutes) {
+        this.revisionRenewIntervalMinutes = revisionRenewIntervalMinutes;
+    }
 
-  public int getInterfaceAppsIndexRenewIntervalMinutes() {
-    return interfaceAppsIndexRenewIntervalMinutes;
-  }
+    public int getInterfaceAppsIndexRenewIntervalMinutes() {
+        return interfaceAppsIndexRenewIntervalMinutes;
+    }
 
-  public void setInterfaceAppsIndexRenewIntervalMinutes(
-      int interfaceAppsIndexRenewIntervalMinutes) {
-    this.interfaceAppsIndexRenewIntervalMinutes = interfaceAppsIndexRenewIntervalMinutes;
-  }
+    public void setInterfaceAppsIndexRenewIntervalMinutes(
+            int interfaceAppsIndexRenewIntervalMinutes) {
+        this.interfaceAppsIndexRenewIntervalMinutes = interfaceAppsIndexRenewIntervalMinutes;
+    }
 
-  @Override
-  public int getInterfaceAppsExecutorPoolSize() {
-    return interfaceAppsExecutorPoolSize;
-  }
+    @Override
+    public int getInterfaceAppsExecutorPoolSize() {
+        return interfaceAppsExecutorPoolSize;
+    }
 
-  @Override
-  public int getInterfaceAppsExecutorQueueSize() {
-    return interfaceAppsExecutorQueueSize;
-  }
+    /**
+     * Setter method for property <tt>interfaceAppsExecutorPoolSize</tt>.
+     *
+     * @param interfaceAppsExecutorPoolSize value to be assigned to property
+     *                                      interfaceAppsExecutorPoolSize
+     */
+    public void setInterfaceAppsExecutorPoolSize(int interfaceAppsExecutorPoolSize) {
+        this.interfaceAppsExecutorPoolSize = interfaceAppsExecutorPoolSize;
+    }
 
-  @Override
-  public int getClientManagerExecutorPoolSize() {
-    return clientManagerExecutorPoolSize;
-  }
+    @Override
+    public int getInterfaceAppsExecutorQueueSize() {
+        return interfaceAppsExecutorQueueSize;
+    }
 
-  @Override
-  public int getClientManagerExecutorQueueSize() {
-    return clientManagerExecutorQueueSize;
-  }
+    /**
+     * Setter method for property <tt>interfaceAppsExecutorQueueSize</tt>.
+     *
+     * @param interfaceAppsExecutorQueueSize value to be assigned to property
+     *                                       interfaceAppsExecutorQueueSize
+     */
+    public void setInterfaceAppsExecutorQueueSize(int interfaceAppsExecutorQueueSize) {
+        this.interfaceAppsExecutorQueueSize = interfaceAppsExecutorQueueSize;
+    }
 
-  /**
-   * Setter method for property <tt>clientManagerExecutorQueueSize</tt>.
-   *
-   * @param clientManagerExecutorQueueSize value to be assigned to property
-   *     clientManagerExecutorQueueSize
-   */
-  public void setClientManagerExecutorQueueSize(int clientManagerExecutorQueueSize) {
-    this.clientManagerExecutorQueueSize = clientManagerExecutorQueueSize;
-  }
+    @Override
+    public int getClientManagerExecutorPoolSize() {
+        return clientManagerExecutorPoolSize;
+    }
 
-  /**
-   * Setter method for property <tt>interfaceAppsExecutorPoolSize</tt>.
-   *
-   * @param interfaceAppsExecutorPoolSize value to be assigned to property
-   *     interfaceAppsExecutorPoolSize
-   */
-  public void setInterfaceAppsExecutorPoolSize(int interfaceAppsExecutorPoolSize) {
-    this.interfaceAppsExecutorPoolSize = interfaceAppsExecutorPoolSize;
-  }
+    /**
+     * Setter method for property <tt>clientManagerExecutorPoolSize</tt>.
+     *
+     * @param clientManagerExecutorPoolSize value to be assigned to property
+     *                                      clientManagerExecutorPoolSize
+     */
+    public void setClientManagerExecutorPoolSize(int clientManagerExecutorPoolSize) {
+        this.clientManagerExecutorPoolSize = clientManagerExecutorPoolSize;
+    }
 
-  /**
-   * Setter method for property <tt>interfaceAppsExecutorQueueSize</tt>.
-   *
-   * @param interfaceAppsExecutorQueueSize value to be assigned to property
-   *     interfaceAppsExecutorQueueSize
-   */
-  public void setInterfaceAppsExecutorQueueSize(int interfaceAppsExecutorQueueSize) {
-    this.interfaceAppsExecutorQueueSize = interfaceAppsExecutorQueueSize;
-  }
+    @Override
+    public int getClientManagerExecutorQueueSize() {
+        return clientManagerExecutorQueueSize;
+    }
 
-  /**
-   * Setter method for property <tt>clientManagerExecutorPoolSize</tt>.
-   *
-   * @param clientManagerExecutorPoolSize value to be assigned to property
-   *     clientManagerExecutorPoolSize
-   */
-  public void setClientManagerExecutorPoolSize(int clientManagerExecutorPoolSize) {
-    this.clientManagerExecutorPoolSize = clientManagerExecutorPoolSize;
-  }
+    /**
+     * Setter method for property <tt>clientManagerExecutorQueueSize</tt>.
+     *
+     * @param clientManagerExecutorQueueSize value to be assigned to property
+     *                                       clientManagerExecutorQueueSize
+     */
+    public void setClientManagerExecutorQueueSize(int clientManagerExecutorQueueSize) {
+        this.clientManagerExecutorQueueSize = clientManagerExecutorQueueSize;
+    }
 }

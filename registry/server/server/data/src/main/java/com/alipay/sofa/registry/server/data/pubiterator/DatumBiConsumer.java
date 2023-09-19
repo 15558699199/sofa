@@ -23,6 +23,7 @@ import com.alipay.sofa.registry.common.model.slot.filter.SyncSlotAcceptorManager
 import com.alipay.sofa.registry.server.data.cache.PublisherEnvelope;
 import com.alipay.sofa.registry.server.data.cache.PublisherGroup;
 import com.google.common.collect.Maps;
+
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -34,97 +35,97 @@ import java.util.function.BiConsumer;
  */
 public class DatumBiConsumer {
 
-  public static BiConsumer<String, PublisherGroup> publisherGroupsBiConsumer(
-      Map<String, Map<String, DatumSummary>> summaries,
-      Set<String> sessions,
-      SyncSlotAcceptorManager syncSlotAcceptorManager) {
-    for (String sessionIp : sessions) {
-      summaries.computeIfAbsent(sessionIp, v -> Maps.newHashMapWithExpectedSize(64));
-    }
-
-    return (dataInfoId, publisherGroup) -> {
-      Map<String /*sessionIp*/, Map<String /*registerId*/, RegisterVersion>> publisherVersions =
-          Maps.newHashMapWithExpectedSize(sessions.size());
-
-      if (!syncSlotAcceptorManager.accept(SyncAcceptorRequest.buildRequest(dataInfoId))) {
-        return;
-      }
-
-      publisherGroup.foreach(
-          publisherGroupBiConsumer(
-              dataInfoId, publisherVersions, sessions, syncSlotAcceptorManager));
-      Map<String, DatumSummary> sessionSummary = Maps.newHashMapWithExpectedSize(sessions.size());
-
-      for (Entry<String, Map<String, RegisterVersion>> entry : publisherVersions.entrySet()) {
-        sessionSummary.put(entry.getKey(), new DatumSummary(dataInfoId, entry.getValue()));
-      }
-
-      for (Entry<String, DatumSummary> entry : sessionSummary.entrySet()) {
-        if (entry.getValue().isEmpty()) {
-          continue;
+    public static BiConsumer<String, PublisherGroup> publisherGroupsBiConsumer(
+            Map<String, Map<String, DatumSummary>> summaries,
+            Set<String> sessions,
+            SyncSlotAcceptorManager syncSlotAcceptorManager) {
+        for (String sessionIp : sessions) {
+            summaries.computeIfAbsent(sessionIp, v -> Maps.newHashMapWithExpectedSize(64));
         }
-        Map<String, DatumSummary> summaryMap = summaries.get(entry.getKey());
-        summaryMap.put(dataInfoId, entry.getValue());
-      }
-    };
-  }
 
-  public static BiConsumer<String, PublisherEnvelope> publisherGroupBiConsumer(
-      String dataInfoId,
-      Map<String, Map<String, RegisterVersion>> publisherVersions,
-      Set<String> sessions,
-      SyncSlotAcceptorManager syncSlotAcceptorManager) {
+        return (dataInfoId, publisherGroup) -> {
+            Map<String /*sessionIp*/, Map<String /*registerId*/, RegisterVersion>> publisherVersions =
+                    Maps.newHashMapWithExpectedSize(sessions.size());
 
-    for (String sessionIp : sessions) {
-      publisherVersions.computeIfAbsent(sessionIp, k -> Maps.newHashMapWithExpectedSize(64));
+            if (!syncSlotAcceptorManager.accept(SyncAcceptorRequest.buildRequest(dataInfoId))) {
+                return;
+            }
+
+            publisherGroup.foreach(
+                    publisherGroupBiConsumer(
+                            dataInfoId, publisherVersions, sessions, syncSlotAcceptorManager));
+            Map<String, DatumSummary> sessionSummary = Maps.newHashMapWithExpectedSize(sessions.size());
+
+            for (Entry<String, Map<String, RegisterVersion>> entry : publisherVersions.entrySet()) {
+                sessionSummary.put(entry.getKey(), new DatumSummary(dataInfoId, entry.getValue()));
+            }
+
+            for (Entry<String, DatumSummary> entry : sessionSummary.entrySet()) {
+                if (entry.getValue().isEmpty()) {
+                    continue;
+                }
+                Map<String, DatumSummary> summaryMap = summaries.get(entry.getKey());
+                summaryMap.put(dataInfoId, entry.getValue());
+            }
+        };
     }
 
-    return (registerId, envelope) -> {
-      RegisterVersion v = envelope.getVersionIfPub();
-      // v = null when envelope is unpub
-      if (v == null
-          || !syncSlotAcceptorManager.accept(
-              SyncAcceptorRequest.buildRequest(
-                  dataInfoId, envelope.getPublisher().getPublishSource()))) {
-        return;
-      }
+    public static BiConsumer<String, PublisherEnvelope> publisherGroupBiConsumer(
+            String dataInfoId,
+            Map<String, Map<String, RegisterVersion>> publisherVersions,
+            Set<String> sessions,
+            SyncSlotAcceptorManager syncSlotAcceptorManager) {
 
-      if (sessions.contains(envelope.getSessionProcessId().getHostAddress())) {
-        publisherVersions.get(envelope.getSessionProcessId().getHostAddress()).put(registerId, v);
-      }
-    };
-  }
+        for (String sessionIp : sessions) {
+            publisherVersions.computeIfAbsent(sessionIp, k -> Maps.newHashMapWithExpectedSize(64));
+        }
 
-  public static BiConsumer<String, PublisherGroup> publisherGroupsBiConsumer(
-      Map<String, DatumSummary> summaries, SyncSlotAcceptorManager syncSlotAcceptorManager) {
-    return (dataInfoId, publisherGroup) -> {
-      if (!syncSlotAcceptorManager.accept(SyncAcceptorRequest.buildRequest(dataInfoId))) {
-        return;
-      }
+        return (registerId, envelope) -> {
+            RegisterVersion v = envelope.getVersionIfPub();
+            // v = null when envelope is unpub
+            if (v == null
+                    || !syncSlotAcceptorManager.accept(
+                    SyncAcceptorRequest.buildRequest(
+                            dataInfoId, envelope.getPublisher().getPublishSource()))) {
+                return;
+            }
 
-      Map<String /*registerId*/, RegisterVersion> publisherVersions =
-          Maps.newHashMapWithExpectedSize(publisherGroup.pubSize());
-      publisherGroup.foreach(
-          publisherGroupBiConsumer(dataInfoId, publisherVersions, syncSlotAcceptorManager));
-      DatumSummary summary = new DatumSummary(dataInfoId, publisherVersions);
-      summaries.put(dataInfoId, summary);
-    };
-  }
+            if (sessions.contains(envelope.getSessionProcessId().getHostAddress())) {
+                publisherVersions.get(envelope.getSessionProcessId().getHostAddress()).put(registerId, v);
+            }
+        };
+    }
 
-  public static BiConsumer<String, PublisherEnvelope> publisherGroupBiConsumer(
-      String dataInfoId,
-      Map<String, RegisterVersion> publisherVersions,
-      SyncSlotAcceptorManager syncSlotAcceptorManager) {
-    return (registerId, envelope) -> {
-      RegisterVersion v = envelope.getVersionIfPub();
-      // v = null when envelope is unpub
-      if (v == null
-          || !syncSlotAcceptorManager.accept(
-              SyncAcceptorRequest.buildRequest(
-                  dataInfoId, envelope.getPublisher().getPublishSource()))) {
-        return;
-      }
-      publisherVersions.put(registerId, v);
-    };
-  }
+    public static BiConsumer<String, PublisherGroup> publisherGroupsBiConsumer(
+            Map<String, DatumSummary> summaries, SyncSlotAcceptorManager syncSlotAcceptorManager) {
+        return (dataInfoId, publisherGroup) -> {
+            if (!syncSlotAcceptorManager.accept(SyncAcceptorRequest.buildRequest(dataInfoId))) {
+                return;
+            }
+
+            Map<String /*registerId*/, RegisterVersion> publisherVersions =
+                    Maps.newHashMapWithExpectedSize(publisherGroup.pubSize());
+            publisherGroup.foreach(
+                    publisherGroupBiConsumer(dataInfoId, publisherVersions, syncSlotAcceptorManager));
+            DatumSummary summary = new DatumSummary(dataInfoId, publisherVersions);
+            summaries.put(dataInfoId, summary);
+        };
+    }
+
+    public static BiConsumer<String, PublisherEnvelope> publisherGroupBiConsumer(
+            String dataInfoId,
+            Map<String, RegisterVersion> publisherVersions,
+            SyncSlotAcceptorManager syncSlotAcceptorManager) {
+        return (registerId, envelope) -> {
+            RegisterVersion v = envelope.getVersionIfPub();
+            // v = null when envelope is unpub
+            if (v == null
+                    || !syncSlotAcceptorManager.accept(
+                    SyncAcceptorRequest.buildRequest(
+                            dataInfoId, envelope.getPublisher().getPublishSource()))) {
+                return;
+            }
+            publisherVersions.put(registerId, v);
+        };
+    }
 }

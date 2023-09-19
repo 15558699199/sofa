@@ -24,7 +24,7 @@ import com.alipay.sofa.rpc.core.request.SofaRequest;
 
 import java.util.List;
 
-@Extension(value = "lb2", order = 2, rejection = { "lb1", "lb3" })
+@Extension(value = "lb2", order = 2, rejection = {"lb1", "lb3"})
 public class RejectionLB2 extends LoadBalancer {
     public RejectionLB2(ConsumerBootstrap consumerBootstrap) {
         super(consumerBootstrap);

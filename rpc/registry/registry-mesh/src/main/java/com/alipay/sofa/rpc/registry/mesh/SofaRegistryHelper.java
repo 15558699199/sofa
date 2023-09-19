@@ -25,11 +25,7 @@ import com.alipay.sofa.rpc.common.Version;
 import com.alipay.sofa.rpc.common.utils.CommonUtils;
 import com.alipay.sofa.rpc.common.utils.NetUtils;
 import com.alipay.sofa.rpc.common.utils.StringUtils;
-import com.alipay.sofa.rpc.config.AbstractInterfaceConfig;
-import com.alipay.sofa.rpc.config.ConfigUniqueNameGenerator;
-import com.alipay.sofa.rpc.config.MethodConfig;
-import com.alipay.sofa.rpc.config.ProviderConfig;
-import com.alipay.sofa.rpc.config.ServerConfig;
+import com.alipay.sofa.rpc.config.*;
 import com.alipay.sofa.rpc.context.RpcRuntimeContext;
 import com.alipay.sofa.rpc.log.LogCodes;
 import com.alipay.sofa.rpc.log.Logger;
@@ -42,15 +38,7 @@ import java.util.Map;
 
 import static com.alipay.sofa.rpc.client.ProviderInfoAttrs.*;
 import static com.alipay.sofa.rpc.common.RpcConstants.*;
-import static com.alipay.sofa.rpc.registry.mesh.SofaRegistryConstants.APP_NAME;
-import static com.alipay.sofa.rpc.registry.mesh.SofaRegistryConstants.HOST_MACHINE_KEY;
-import static com.alipay.sofa.rpc.registry.mesh.SofaRegistryConstants.KEY_TIMEOUT;
-import static com.alipay.sofa.rpc.registry.mesh.SofaRegistryConstants.RPC_REMOTING_PROTOCOL;
-import static com.alipay.sofa.rpc.registry.mesh.SofaRegistryConstants.RPC_SERVICE_VERSION;
-import static com.alipay.sofa.rpc.registry.mesh.SofaRegistryConstants.SERIALIZE_TYPE_KEY;
-import static com.alipay.sofa.rpc.registry.mesh.SofaRegistryConstants.SOFA4_RPC_SERVICE_VERSION;
-import static com.alipay.sofa.rpc.registry.mesh.SofaRegistryConstants.TIMEOUT;
-import static com.alipay.sofa.rpc.registry.mesh.SofaRegistryConstants.WEIGHT_KEY;
+import static com.alipay.sofa.rpc.registry.mesh.SofaRegistryConstants.*;
 
 /**
  * Created by zhanggeng on 2017/7/5.
@@ -59,31 +47,27 @@ import static com.alipay.sofa.rpc.registry.mesh.SofaRegistryConstants.WEIGHT_KEY
  */
 public class SofaRegistryHelper {
 
-    private static final Logger LOGGER                     = LoggerFactory.getLogger(SofaRegistryHelper.class);
-
     /**
      * 注册关键字前缀
      */
-    public static final String  PUBLISHER_PREFIX           = "SofaProvider-";
+    public static final String PUBLISHER_PREFIX = "SofaProvider-";
     /**
      * 订阅关键字前缀
      */
-    public static final String  SUBSCRIBER_PREFIX          = "SofaSubscriber-";
-
+    public static final String SUBSCRIBER_PREFIX = "SofaSubscriber-";
     /**
      * 服务参数配置格式GroupId 统一为 SOFA.CONFIG
      */
-    public static final String  SUBSCRIBER_LIST_GROUP_ID   = "SOFA";
-
+    public static final String SUBSCRIBER_LIST_GROUP_ID = "SOFA";
     /**
      * 服务参数配置格式GroupId 统一为 SOFA.CONFIG
      */
-    public static final String  SUBSCRIBER_CONFIG_GROUP_ID = "SOFA.CONFIG";
-
+    public static final String SUBSCRIBER_CONFIG_GROUP_ID = "SOFA.CONFIG";
     /**
      * 服务协议：配置覆盖，特殊
      */
-    public static final String  PROTOCOL_TYPE_OVERRIDE     = "override";
+    public static final String PROTOCOL_TYPE_OVERRIDE = "override";
+    private static final Logger LOGGER = LoggerFactory.getLogger(SofaRegistryHelper.class);
 
     /**
      * 构建服务列表的DataId， 格式为interface:version[:uniqueId]@protocol
@@ -118,8 +102,8 @@ public class SofaRegistryHelper {
         } else {
             if (LOGGER.isWarnEnabled(appName)) {
                 LOGGER.warnWithApp(appName,
-                    "Virtual host is specified, host will be change from {} to {} when register",
-                    server.getHost(), host);
+                        "Virtual host is specified, host will be change from {} to {} when register",
+                        server.getHost(), host);
             }
         }
         Integer port = server.getVirtualPort(); // 虚拟port
@@ -128,8 +112,8 @@ public class SofaRegistryHelper {
         } else {
             if (LOGGER.isWarnEnabled(appName)) {
                 LOGGER.warnWithApp(appName,
-                    "Virtual port is specified, host will be change from {} to {} when register",
-                    server.getPort(), port);
+                        "Virtual port is specified, host will be change from {} to {} when register",
+                        server.getPort(), port);
             }
         }
 
@@ -353,7 +337,7 @@ public class SofaRegistryHelper {
         }
         // serializeType 使用字符传递
         String serializationStr = getValue(parameters, ATTR_SERIALIZATION,
-            SERIALIZE_TYPE_KEY);
+                SERIALIZE_TYPE_KEY);
         if (serializationStr != null) {
             removeOldKeys(parameters, ATTR_SERIALIZATION, SERIALIZE_TYPE_KEY);
             // 1 -> hessian   2->java   4->hessian2  11->protobuf
@@ -370,7 +354,7 @@ public class SofaRegistryHelper {
         }
         // appName
         String appNameStr = getValue(parameters, ATTR_APP_NAME, APP_NAME,
-            SofaRegistryConstants.SELF_APP_NAME);
+                SofaRegistryConstants.SELF_APP_NAME);
         if (appNameStr != null) {
             removeOldKeys(parameters, APP_NAME, SofaRegistryConstants.SELF_APP_NAME);
             providerInfo.setStaticAttr(ATTR_APP_NAME, appNameStr);
@@ -412,7 +396,7 @@ public class SofaRegistryHelper {
         }
         // warmupWeight
         String warmupWeightStr = getValue(parameters, ATTR_WARMUP_WEIGHT,
-            SofaRegistryConstants.WARMUP_WEIGHT_KEY);
+                SofaRegistryConstants.WARMUP_WEIGHT_KEY);
         int warmupWeight = 0;
         if (warmupWeightStr != null) {
             removeOldKeys(parameters, ATTR_WARMUP_WEIGHT, SofaRegistryConstants.WARMUP_WEIGHT_KEY);
@@ -455,7 +439,7 @@ public class SofaRegistryHelper {
         Map<String, Object> methodParameters = new HashMap<String, Object>();
         for (Map.Entry<String, String> entry : parameters.entrySet()) {
             if (entry.getKey().startsWith("[") && entry.getKey().endsWith("]") && entry.getValue().startsWith("[") &&
-                entry.getValue().endsWith("]")) { // 认为是方法配置
+                    entry.getValue().endsWith("]")) { // 认为是方法配置
                 String key = entry.getKey();
                 methodKeys.add(key);
                 String methodName = key.substring(1, key.length() - 1);
@@ -501,12 +485,12 @@ public class SofaRegistryHelper {
             }
             // timeout特殊处理
             String timeout = getValue(tmp, ATTR_TIMEOUT, KEY_TIMEOUT,
-                TIMEOUT);
+                    TIMEOUT);
             if (timeout != null) {
                 removeOldKeys(tmp, ATTR_TIMEOUT, KEY_TIMEOUT, TIMEOUT);
                 try {
                     methodParameters.put("." + method + "." + ATTR_TIMEOUT,
-                        Integer.parseInt(timeout));
+                            Integer.parseInt(timeout));
                 } catch (Exception e) {
                     LOGGER.error("method timeout is invalid : {}", timeout);
                 }

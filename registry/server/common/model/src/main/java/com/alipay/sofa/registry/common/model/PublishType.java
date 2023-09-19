@@ -22,8 +22,12 @@ package com.alipay.sofa.registry.common.model;
  */
 public enum PublishType {
 
-  /** normally publisher */
-  NORMAL,
-  /** TEMPORARY publisher */
-  TEMPORARY
+    /**
+     * normally publisher
+     */
+    NORMAL,
+    /**
+     * TEMPORARY publisher
+     */
+    TEMPORARY
 }

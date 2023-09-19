@@ -27,9 +27,9 @@ import org.w3c.dom.Element;
  */
 public class ExtensionParam {
     // target extension point name
-    private String  targetName;
+    private String targetName;
     // target bean name of extension
-    private String  targetInstanceName;
+    private String targetInstanceName;
     // XML Contribution element
     private Element element;
 

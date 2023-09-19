@@ -18,15 +18,16 @@ package com.alipay.sofa.registry.server.shared.resource;
 
 import com.alipay.sofa.registry.server.shared.env.ServerEnv;
 import com.alipay.sofa.registry.util.StringFormatter;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 
 @Path("/")
 public class VersionResource {
-  @GET
-  @Path("version")
-  public String version() {
-    return StringFormatter.format(
-        "release properties: \t\t {}", ServerEnv.getReleaseProps(ServerEnv.GIT_PROPS_FILE));
-  }
+    @GET
+    @Path("version")
+    public String version() {
+        return StringFormatter.format(
+                "release properties: \t\t {}", ServerEnv.getReleaseProps(ServerEnv.GIT_PROPS_FILE));
+    }
 }

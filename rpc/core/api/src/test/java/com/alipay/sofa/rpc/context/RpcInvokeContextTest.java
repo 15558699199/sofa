@@ -33,7 +33,7 @@ import java.util.concurrent.atomic.AtomicReference;
 public class RpcInvokeContextTest {
 
     private static boolean oldEnableBaggage;
-    private static Field   enableBaggageField;
+    private static Field enableBaggageField;
 
     static {
         try {

@@ -23,61 +23,61 @@ import java.util.Set;
  * @version $Id: MetaServerConfig.java, v 0.1 2018-01-16 10:58 shangyu.wh Exp $
  */
 public interface MetaServerConfig {
-  String getLocalDataCenter();
+    String getLocalDataCenter();
 
-  boolean isLocalDataCenter(String dataCenter);
+    boolean isLocalDataCenter(String dataCenter);
 
-  Set<String> getLocalDataCenterZones();
+    Set<String> getLocalDataCenterZones();
 
-  int getSessionServerPort();
+    int getSessionServerPort();
 
-  int getDataServerPort();
+    int getDataServerPort();
 
-  int getMetaServerPort();
+    int getMetaServerPort();
 
-  int getHttpServerPort();
+    int getHttpServerPort();
 
-  int getExpireCheckIntervalMillis();
+    int getExpireCheckIntervalMillis();
 
-  int getDataNodeExchangeTimeoutMillis();
+    int getDataNodeExchangeTimeoutMillis();
 
-  int getSessionNodeExchangeTimeoutMillis();
+    int getSessionNodeExchangeTimeoutMillis();
 
-  int getMetaNodeExchangeTimeoutMillis();
+    int getMetaNodeExchangeTimeoutMillis();
 
-  int getDefaultRequestExecutorMinSize();
+    int getDefaultRequestExecutorMinSize();
 
-  int getDefaultRequestExecutorMaxSize();
+    int getDefaultRequestExecutorMaxSize();
 
-  int getDefaultRequestExecutorQueueSize();
+    int getDefaultRequestExecutorQueueSize();
 
-  long getMetaLeaderWarmupMillis();
+    long getMetaLeaderWarmupMillis();
 
-  int getSchedulerHeartbeatIntervalSecs();
+    int getSchedulerHeartbeatIntervalSecs();
 
-  long getDataReplicateMaxGapMillis();
+    long getDataReplicateMaxGapMillis();
 
-  int getRevisionGcSilenceHour();
+    int getRevisionGcSilenceHour();
 
-  int getRevisionGcInitialDelaySecs();
+    int getRevisionGcInitialDelaySecs();
 
-  int getRevisionGcSecs();
+    int getRevisionGcSecs();
 
-  int getMetaSchedulerPoolSize();
+    int getMetaSchedulerPoolSize();
 
-  int getDataNodeProtectionNum();
+    int getDataNodeProtectionNum();
 
-  int getClientManagerRefreshMillis();
+    int getClientManagerRefreshMillis();
 
-  int getClientManagerWatchMillis();
+    int getClientManagerWatchMillis();
 
-  int getClientManagerRefreshLimit();
+    int getClientManagerRefreshLimit();
 
-  int getClientManagerCleanSecs();
+    int getClientManagerCleanSecs();
 
-  int getClientManagerExpireDays();
+    int getClientManagerExpireDays();
 
-  int getAppRevisionMaxRemove();
+    int getAppRevisionMaxRemove();
 
-  int getAppRevisionCountAlarmThreshold();
+    int getAppRevisionCountAlarmThreshold();
 }

@@ -39,11 +39,7 @@ import com.alipay.sofa.rpc.log.Logger;
 import com.alipay.sofa.rpc.log.LoggerFactory;
 import com.alipay.sofa.rpc.message.ResponseFuture;
 import com.alipay.sofa.rpc.message.http.HttpResponseFuture;
-import com.alipay.sofa.rpc.transport.AbstractByteBuf;
-import com.alipay.sofa.rpc.transport.AbstractChannel;
-import com.alipay.sofa.rpc.transport.ClientHandler;
-import com.alipay.sofa.rpc.transport.ClientTransport;
-import com.alipay.sofa.rpc.transport.ClientTransportConfig;
+import com.alipay.sofa.rpc.transport.*;
 import com.alipay.sofa.rpc.transport.netty.NettyChannel;
 import com.alipay.sofa.rpc.transport.netty.NettyHelper;
 import io.netty.bootstrap.Bootstrap;
@@ -53,18 +49,9 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.epoll.EpollSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.handler.codec.http.DefaultFullHttpRequest;
-import io.netty.handler.codec.http.FullHttpRequest;
-import io.netty.handler.codec.http.HttpHeaderNames;
-import io.netty.handler.codec.http.HttpHeaderValues;
-import io.netty.handler.codec.http.HttpHeaders;
-import io.netty.handler.codec.http.HttpScheme;
+import io.netty.handler.codec.http.*;
 import io.netty.handler.codec.http2.HttpConversionUtil;
-import io.netty.util.AsciiString;
-import io.netty.util.HashedWheelTimer;
-import io.netty.util.Timeout;
-import io.netty.util.Timer;
-import io.netty.util.TimerTask;
+import io.netty.util.*;
 
 import java.net.InetSocketAddress;
 import java.util.Map;
@@ -89,6 +76,37 @@ public abstract class AbstractHttp2ClientTransport extends ClientTransport {
      * Logger for AbstractHttpClientTransport
      **/
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractHttp2ClientTransport.class);
+    /**
+     * Start from 3 (because 1 is setting stream)
+     */
+    private final static int START_STREAM_ID = 3;
+    /**
+     * 超时处理器
+     */
+    private static final Timer TIMEOUT_TIMER = new HashedWheelTimer(new NamedThreadFactory("HTTP-TIMER"),
+            10, TimeUnit.MILLISECONDS);
+    /**
+     * 服务端提供者信息
+     */
+    protected final ProviderInfo providerInfo;
+    /**
+     * StreamId, start from 3 (because 1 is setting stream)
+     */
+    protected final AtomicInteger streamId = new AtomicInteger();
+    /**
+     * 正在发送的调用数量
+     */
+    protected volatile AtomicInteger currentRequests = new AtomicInteger(0);
+
+    /**
+     * Channel
+     */
+    protected NettyChannel channel;
+
+    /**
+     * Response channel handler
+     */
+    protected Http2ClientChannelHandler responseChannelHandler;
 
     /**
      * 客户端配置
@@ -99,39 +117,6 @@ public abstract class AbstractHttp2ClientTransport extends ClientTransport {
         super(transportConfig);
         this.providerInfo = transportConfig.getProviderInfo();
     }
-
-    /**
-     * 服务端提供者信息
-     */
-    protected final ProviderInfo        providerInfo;
-    /**
-     * Start from 3 (because 1 is setting stream)
-     */
-    private final static int            START_STREAM_ID = 3;
-    /**
-     * StreamId, start from 3 (because 1 is setting stream)
-     */
-    protected final AtomicInteger       streamId        = new AtomicInteger();
-    /**
-     * 正在发送的调用数量
-     */
-    protected volatile AtomicInteger    currentRequests = new AtomicInteger(0);
-
-    /**
-     * Channel
-     */
-    protected NettyChannel              channel;
-
-    /**
-     * Response channel handler
-     */
-    protected Http2ClientChannelHandler responseChannelHandler;
-
-    /**
-     * 超时处理器
-     */
-    private static final Timer          TIMEOUT_TIMER   = new HashedWheelTimer(new NamedThreadFactory("HTTP-TIMER"),
-                                                            10, TimeUnit.MILLISECONDS);
 
     @Override
     public void connect() {
@@ -187,13 +172,13 @@ public abstract class AbstractHttp2ClientTransport extends ClientTransport {
     }
 
     @Override
-    public void setChannel(AbstractChannel channel) {
-        this.channel = (NettyChannel) channel;
+    public AbstractChannel getChannel() {
+        return channel;
     }
 
     @Override
-    public AbstractChannel getChannel() {
-        return channel;
+    public void setChannel(AbstractChannel channel) {
+        this.channel = (NettyChannel) channel;
     }
 
     @Override
@@ -228,15 +213,15 @@ public abstract class AbstractHttp2ClientTransport extends ClientTransport {
         SofaResponseCallback listener = request.getSofaResponseCallback();
         if (listener != null) {
             AbstractHttpClientHandler callback = new CallbackInvokeClientHandler(transportConfig.getConsumerConfig(),
-                transportConfig.getProviderInfo(), listener, request, rpcContext,
-                ClassLoaderUtils.getCurrentClassLoader());
+                    transportConfig.getProviderInfo(), listener, request, rpcContext,
+                    ClassLoaderUtils.getCurrentClassLoader());
             doSend(request, callback, timeoutMillis);
             return null;
         } else {
             HttpResponseFuture future = new HttpResponseFuture(request, timeoutMillis);
             AbstractHttpClientHandler callback = new FutureInvokeClientHandler(transportConfig.getConsumerConfig(),
-                transportConfig.getProviderInfo(), future, request, rpcContext,
-                ClassLoaderUtils.getCurrentClassLoader());
+                    transportConfig.getProviderInfo(), future, request, rpcContext,
+                    ClassLoaderUtils.getCurrentClassLoader());
             doSend(request, callback, timeoutMillis);
             future.setSentTime();
             return future;
@@ -272,11 +257,11 @@ public abstract class AbstractHttp2ClientTransport extends ClientTransport {
      * @throws TimeoutException     超时异常
      */
     protected SofaResponse doInvokeSync(SofaRequest request, int timeout) throws InterruptedException,
-        ExecutionException, TimeoutException {
+            ExecutionException, TimeoutException {
         HttpResponseFuture future = new HttpResponseFuture(request, timeout);
         AbstractHttpClientHandler callback = new SyncInvokeClientHandler(transportConfig.getConsumerConfig(),
-            transportConfig.getProviderInfo(), future, request, RpcInternalContext.getContext(),
-            ClassLoaderUtils.getCurrentClassLoader());
+                transportConfig.getProviderInfo(), future, request, RpcInternalContext.getContext(),
+                ClassLoaderUtils.getCurrentClassLoader());
         future.setSentTime();
         doSend(request, callback, timeout);
         future.setSentTime();
@@ -305,7 +290,7 @@ public abstract class AbstractHttp2ClientTransport extends ClientTransport {
                     @Override
                     public void run(Timeout timeout) throws Exception {
                         Map.Entry<ChannelFuture, AbstractHttpClientHandler> entry = responseChannelHandler
-                            .removePromise(requestId);
+                                .removePromise(requestId);
                         if (entry != null) {
                             ClientHandler handler = entry.getValue();
                             Exception e = timeoutException(request, timeoutMills, null);
@@ -332,14 +317,14 @@ public abstract class AbstractHttp2ClientTransport extends ClientTransport {
 
         // Create a simple POST request with a body.
         FullHttpRequest httpRequest = new DefaultFullHttpRequest(HTTP_1_1, POST, url,
-            wrappedBuffer(request.getData().array()));
+                wrappedBuffer(request.getData().array()));
         HttpHeaders headers = httpRequest.headers();
         addToHeader(headers, HttpHeaderNames.HOST, hostName);
         addToHeader(headers, HttpConversionUtil.ExtensionHeaderNames.SCHEME.text(), scheme.name());
         addToHeader(headers, HttpHeaderNames.ACCEPT_ENCODING, HttpHeaderValues.GZIP);
         addToHeader(headers, HttpHeaderNames.ACCEPT_ENCODING, HttpHeaderValues.DEFLATE);
         addToHeader(headers, RemotingConstants.HEAD_SERIALIZE_TYPE,
-            SerializerFactory.getAliasByCode(request.getSerializeType()));
+                SerializerFactory.getAliasByCode(request.getSerializeType()));
         addToHeader(headers, RemotingConstants.HEAD_TARGET_APP, request.getTargetAppName());
         Map<String, Object> requestProps = request.getRequestProps();
         if (requestProps != null) {
@@ -420,8 +405,8 @@ public abstract class AbstractHttp2ClientTransport extends ClientTransport {
 
     protected SofaTimeOutException timeoutException(SofaRequest request, int timeout, Throwable e) {
         return new SofaTimeOutException(LogCodes.getLog(LogCodes.ERROR_INVOKE_TIMEOUT,
-            providerInfo.getProtocolType(), request.getTargetServiceUniqueName(), request.getMethodName(),
-            providerInfo.toString(), StringUtils.objectsToString(request.getMethodArgs()), timeout), e);
+                providerInfo.getProtocolType(), request.getTargetServiceUniqueName(), request.getMethodName(),
+                providerInfo.toString(), StringUtils.objectsToString(request.getMethodArgs()), timeout), e);
     }
 
     /**

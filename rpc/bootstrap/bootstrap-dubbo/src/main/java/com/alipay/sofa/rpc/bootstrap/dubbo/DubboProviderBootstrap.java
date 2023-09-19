@@ -16,8 +16,6 @@
  */
 package com.alipay.sofa.rpc.bootstrap.dubbo;
 
-import org.apache.dubbo.config.ProtocolConfig;
-import org.apache.dubbo.config.ServiceConfig;
 import com.alipay.sofa.rpc.bootstrap.ProviderBootstrap;
 import com.alipay.sofa.rpc.common.RpcConstants;
 import com.alipay.sofa.rpc.common.Version;
@@ -28,6 +26,8 @@ import com.alipay.sofa.rpc.config.MethodConfig;
 import com.alipay.sofa.rpc.config.ProviderConfig;
 import com.alipay.sofa.rpc.config.ServerConfig;
 import com.alipay.sofa.rpc.ext.Extension;
+import org.apache.dubbo.config.ProtocolConfig;
+import org.apache.dubbo.config.ServiceConfig;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,14 +42,9 @@ import java.util.Map;
 public class DubboProviderBootstrap<T> extends ProviderBootstrap<T> {
 
     /**
-     * 构造函数
-     *
-     * @param providerConfig 服务发布者配置
+     * dubbo service version
      */
-    protected DubboProviderBootstrap(ProviderConfig<T> providerConfig) {
-        super(providerConfig);
-    }
-
+    private static final String VERSION = "version";
     /**
      * 是否已发布
      */
@@ -58,12 +53,16 @@ public class DubboProviderBootstrap<T> extends ProviderBootstrap<T> {
     /**
      * Dubbo的配置
      */
-    private ServiceConfig<T>             serviceConfig;
+    private ServiceConfig<T> serviceConfig;
 
     /**
-     * dubbo service version
+     * 构造函数
+     *
+     * @param providerConfig 服务发布者配置
      */
-    private static final String          VERSION = "version";
+    protected DubboProviderBootstrap(ProviderConfig<T> providerConfig) {
+        super(providerConfig);
+    }
 
     @Override
     public void export() {
@@ -195,19 +194,19 @@ public class DubboProviderBootstrap<T> extends ProviderBootstrap<T> {
                 for (ServerConfig server : servers) {
                     StringBuilder sb = new StringBuilder(200);
                     sb.append(server.getProtocol()).append("://").append(server.getHost())
-                        .append(":").append(server.getPort()).append(server.getContextPath())
-                        .append(providerConfig.getInterfaceId())
-                        .append("?uniqueId=").append(providerConfig.getUniqueId())
-                        .append(getKeyPairs("version", "1.0"))
-                        .append(getKeyPairs("delay", providerConfig.getDelay()))
-                        .append(getKeyPairs("weight", providerConfig.getWeight()))
-                        .append(getKeyPairs("register", providerConfig.isRegister()))
-                        .append(getKeyPairs("maxThreads", server.getMaxThreads()))
-                        .append(getKeyPairs("ioThreads", server.getIoThreads()))
-                        .append(getKeyPairs("threadPoolType", server.getThreadPoolType()))
-                        .append(getKeyPairs("accepts", server.getAccepts()))
-                        .append(getKeyPairs("dynamic", providerConfig.isDynamic()))
-                        .append(getKeyPairs(RpcConstants.CONFIG_KEY_RPC_VERSION, Version.RPC_VERSION));
+                            .append(":").append(server.getPort()).append(server.getContextPath())
+                            .append(providerConfig.getInterfaceId())
+                            .append("?uniqueId=").append(providerConfig.getUniqueId())
+                            .append(getKeyPairs("version", "1.0"))
+                            .append(getKeyPairs("delay", providerConfig.getDelay()))
+                            .append(getKeyPairs("weight", providerConfig.getWeight()))
+                            .append(getKeyPairs("register", providerConfig.isRegister()))
+                            .append(getKeyPairs("maxThreads", server.getMaxThreads()))
+                            .append(getKeyPairs("ioThreads", server.getIoThreads()))
+                            .append(getKeyPairs("threadPoolType", server.getThreadPoolType()))
+                            .append(getKeyPairs("accepts", server.getAccepts()))
+                            .append(getKeyPairs("dynamic", providerConfig.isDynamic()))
+                            .append(getKeyPairs(RpcConstants.CONFIG_KEY_RPC_VERSION, Version.RPC_VERSION));
                     urls.add(sb.toString());
                 }
                 return urls;

@@ -18,11 +18,7 @@ package com.alipay.sofa.boot.autoconfigure.condition;
 
 import org.springframework.context.annotation.Conditional;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 /**
  * {@link Conditional @Conditional} that checks if the running environment is not ark module biz.
@@ -30,7 +26,7 @@ import java.lang.annotation.Target;
  * @author caojie.cj@antfin.com
  * @since 2019/10/29
  */
-@Target({ ElementType.TYPE, ElementType.METHOD })
+@Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Conditional(OnMasterBizCondition.class)
@@ -38,7 +34,6 @@ public @interface ConditionalOnMasterBiz {
 
     /**
      * Extension condition used in master biz.
-     *
      */
     String extensionCondition() default "";
 }

@@ -24,33 +24,33 @@ import org.junit.Assert;
 
 public class HackTest {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(HackTest.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(HackTest.class);
 
-  public void testSLF4jLogger() {
-    Assert.assertTrue(LOGGER instanceof SLF4JLogger);
-    Assert.assertEquals(LOGGER.getName(), HackTest.class.getName());
-    Assert.assertTrue(LOGGER.toString(), LOGGER.toString().contains(HackTest.class.getName()));
-  }
+    public void testSLF4jLogger() {
+        Assert.assertTrue(LOGGER instanceof SLF4JLogger);
+        Assert.assertEquals(LOGGER.getName(), HackTest.class.getName());
+        Assert.assertTrue(LOGGER.toString(), LOGGER.toString().contains(HackTest.class.getName()));
+    }
 
-  public void test() throws Exception {
-    final int num = Hack.printDisruptorStats();
-    Assert.assertNull(Hack.hackLoggerDisruptor(null));
-    Assert.assertEquals(num, Hack.printDisruptorStats());
+    public void test() throws Exception {
+        final int num = Hack.printDisruptorStats();
+        Assert.assertNull(Hack.hackLoggerDisruptor(null));
+        Assert.assertEquals(num, Hack.printDisruptorStats());
 
-    Assert.assertEquals(LOGGER, Hack.hackLoggerDisruptor(LOGGER));
-    Assert.assertEquals(num, Hack.printDisruptorStats());
-    AsyncLoggerDisruptor loggerDisruptor = new AsyncLoggerDisruptor("testCtx");
-    AsyncLogger asyncLogger =
-        new AsyncLogger(new LoggerContext("testCtx"), "testCtx", null, loggerDisruptor);
-    Assert.assertTrue(Hack.FIELD_DISRUPTOR.get(asyncLogger) == loggerDisruptor);
+        Assert.assertEquals(LOGGER, Hack.hackLoggerDisruptor(LOGGER));
+        Assert.assertEquals(num, Hack.printDisruptorStats());
+        AsyncLoggerDisruptor loggerDisruptor = new AsyncLoggerDisruptor("testCtx");
+        AsyncLogger asyncLogger =
+                new AsyncLogger(new LoggerContext("testCtx"), "testCtx", null, loggerDisruptor);
+        Assert.assertTrue(Hack.FIELD_DISRUPTOR.get(asyncLogger) == loggerDisruptor);
 
-    Hack.hackLoggerDisruptor(LOGGER, asyncLogger);
-    HackAsyncLoggerDisruptor hack =
-        (HackAsyncLoggerDisruptor) Hack.FIELD_DISRUPTOR.get(asyncLogger);
-    Assert.assertNotNull(hack);
-    Assert.assertTrue(hack != loggerDisruptor);
-    Assert.assertTrue(
-        hack.toString(), hack.toString().contains(HackAsyncLoggerDisruptor.class.getSimpleName()));
-    Assert.assertEquals(num + 1, Hack.printDisruptorStats());
-  }
+        Hack.hackLoggerDisruptor(LOGGER, asyncLogger);
+        HackAsyncLoggerDisruptor hack =
+                (HackAsyncLoggerDisruptor) Hack.FIELD_DISRUPTOR.get(asyncLogger);
+        Assert.assertNotNull(hack);
+        Assert.assertTrue(hack != loggerDisruptor);
+        Assert.assertTrue(
+                hack.toString(), hack.toString().contains(HackAsyncLoggerDisruptor.class.getSimpleName()));
+        Assert.assertEquals(num + 1, Hack.printDisruptorStats());
+    }
 }

@@ -22,27 +22,27 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class RegisterResponseConvertorTest {
-  @Test
-  public void test() {
-    Assert.assertNull(RegisterResponseConvertor.convert2Pb(null));
-    Assert.assertNull(RegisterResponseConvertor.convert2Java(null));
-    RegisterResponse registerJava = new RegisterResponse();
+    @Test
+    public void test() {
+        Assert.assertNull(RegisterResponseConvertor.convert2Pb(null));
+        Assert.assertNull(RegisterResponseConvertor.convert2Java(null));
+        RegisterResponse registerJava = new RegisterResponse();
 
-    registerJava.setVersion(100);
-    registerJava.setRegistId("testRegisterId");
-    registerJava.setMessage("testMsg");
-    registerJava.setSuccess(true);
-    registerJava.setRefused(true);
+        registerJava.setVersion(100);
+        registerJava.setRegistId("testRegisterId");
+        registerJava.setMessage("testMsg");
+        registerJava.setSuccess(true);
+        registerJava.setRefused(true);
 
-    RegisterResponsePb pb = RegisterResponseConvertor.convert2Pb(registerJava);
-    RegisterResponse convertJava = RegisterResponseConvertor.convert2Java(pb);
+        RegisterResponsePb pb = RegisterResponseConvertor.convert2Pb(registerJava);
+        RegisterResponse convertJava = RegisterResponseConvertor.convert2Java(pb);
 
-    Assert.assertEquals(registerJava.getVersion(), convertJava.getVersion());
-    Assert.assertEquals(registerJava.getMessage(), convertJava.getMessage());
-    Assert.assertEquals(registerJava.isSuccess(), convertJava.isSuccess());
-    Assert.assertEquals(registerJava.getRegistId(), convertJava.getRegistId());
-    Assert.assertEquals(registerJava.isRefused(), convertJava.isRefused());
+        Assert.assertEquals(registerJava.getVersion(), convertJava.getVersion());
+        Assert.assertEquals(registerJava.getMessage(), convertJava.getMessage());
+        Assert.assertEquals(registerJava.isSuccess(), convertJava.isSuccess());
+        Assert.assertEquals(registerJava.getRegistId(), convertJava.getRegistId());
+        Assert.assertEquals(registerJava.isRefused(), convertJava.isRefused());
 
-    Assert.assertEquals(registerJava.toString(), convertJava.toString());
-  }
+        Assert.assertEquals(registerJava.toString(), convertJava.toString());
+    }
 }

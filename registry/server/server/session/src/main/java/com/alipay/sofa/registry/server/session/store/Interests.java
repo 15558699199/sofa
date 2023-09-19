@@ -18,6 +18,7 @@ package com.alipay.sofa.registry.server.session.store;
 
 import com.alipay.sofa.registry.common.model.store.Subscriber;
 import com.alipay.sofa.registry.server.session.registry.SessionRegistry.SelectSubscriber;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -29,33 +30,33 @@ import java.util.Set;
  */
 public interface Interests extends DataManager<Subscriber, String, String> {
 
-  /**
-   * check subscribers interest dataInfoId version,very dataCenter dataInfoId version different if
-   * return false else check return bigger version
-   *
-   * @param dataCenter dataCenter
-   * @param datumDataInfoId datumDataInfoId
-   * @param version version
-   * @return InterestVersionCheck
-   */
-  InterestVersionCheck checkInterestVersion(
-      String dataCenter, String datumDataInfoId, long version);
+    /**
+     * check subscribers interest dataInfoId version,very dataCenter dataInfoId version different if
+     * return false else check return bigger version
+     *
+     * @param dataCenter      dataCenter
+     * @param datumDataInfoId datumDataInfoId
+     * @param version         version
+     * @return InterestVersionCheck
+     */
+    InterestVersionCheck checkInterestVersion(
+            String dataCenter, String datumDataInfoId, long version);
 
-  Collection<Subscriber> getInterests(String datumDataInfoId);
+    Collection<Subscriber> getInterests(String datumDataInfoId);
 
-  SelectSubscriber selectSubscribers(Set<String> dataCenters);
+    SelectSubscriber selectSubscribers(Set<String> dataCenters);
 
-  Map<String, List<String>> filterIPs(String group, int limit);
+    Map<String, List<String>> filterIPs(String group, int limit);
 
-  enum InterestVersionCheck {
-    NoSub(false),
-    Obsolete(false),
-    Interested(true),
-    ;
-    public final boolean interested;
+    enum InterestVersionCheck {
+        NoSub(false),
+        Obsolete(false),
+        Interested(true),
+        ;
+        public final boolean interested;
 
-    InterestVersionCheck(boolean Interested) {
-      this.interested = Interested;
+        InterestVersionCheck(boolean Interested) {
+            this.interested = Interested;
+        }
     }
-  }
 }

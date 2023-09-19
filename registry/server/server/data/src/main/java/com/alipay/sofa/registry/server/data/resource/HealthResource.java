@@ -21,6 +21,8 @@ import com.alipay.sofa.registry.metrics.ReporterUtils;
 import com.alipay.sofa.registry.server.data.bootstrap.DataServerBootstrap;
 import com.codahale.metrics.Gauge;
 import com.codahale.metrics.MetricRegistry;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import javax.annotation.PostConstruct;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -29,7 +31,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * @author shangyu.wh
@@ -38,56 +39,57 @@ import org.springframework.beans.factory.annotation.Autowired;
 @Path("health")
 public class HealthResource {
 
-  @Autowired DataServerBootstrap dataServerBootstrap;
+    @Autowired
+    DataServerBootstrap dataServerBootstrap;
 
-  @PostConstruct
-  public void init() {
-    MetricRegistry metrics = new MetricRegistry();
-    metrics.register("healthCheck", (Gauge<CommonResponse>) () -> getHealthCheckResult());
-    ReporterUtils.startSlf4jReporter(60, metrics);
-  }
-
-  @GET
-  @Path("check")
-  @Produces(MediaType.APPLICATION_JSON)
-  public Response checkHealth() {
-
-    ResponseBuilder builder = Response.status(Response.Status.OK);
-    CommonResponse response = getHealthCheckResult();
-    builder.entity(response);
-    if (!response.isSuccess()) {
-      builder.status(Status.INTERNAL_SERVER_ERROR);
+    @PostConstruct
+    public void init() {
+        MetricRegistry metrics = new MetricRegistry();
+        metrics.register("healthCheck", (Gauge<CommonResponse>) () -> getHealthCheckResult());
+        ReporterUtils.startSlf4jReporter(60, metrics);
     }
 
-    return builder.build();
-  }
+    @GET
+    @Path("check")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response checkHealth() {
 
-  private CommonResponse getHealthCheckResult() {
-    CommonResponse response;
+        ResponseBuilder builder = Response.status(Response.Status.OK);
+        CommonResponse response = getHealthCheckResult();
+        builder.entity(response);
+        if (!response.isSuccess()) {
+            builder.status(Status.INTERNAL_SERVER_ERROR);
+        }
 
-    StringBuilder sb = new StringBuilder("DataServerBoot ");
-
-    boolean start = dataServerBootstrap.getServerForSessionStarted();
-    boolean ret = start;
-    sb.append("severForSession:").append(start);
-
-    start = dataServerBootstrap.getServerForDataSyncStarted();
-    ret = ret && start;
-    sb.append(", severForDataSync:").append(start);
-
-    start = dataServerBootstrap.getHttpServerStarted();
-    ret = ret && start;
-    sb.append(", httpServer:").append(start);
-
-    start = dataServerBootstrap.getSchedulerStarted();
-    ret = ret && start;
-    sb.append(", schedulerStarted:").append(start);
-
-    if (ret) {
-      response = CommonResponse.buildSuccessResponse(sb.toString());
-    } else {
-      response = CommonResponse.buildFailedResponse(sb.toString());
+        return builder.build();
     }
-    return response;
-  }
+
+    private CommonResponse getHealthCheckResult() {
+        CommonResponse response;
+
+        StringBuilder sb = new StringBuilder("DataServerBoot ");
+
+        boolean start = dataServerBootstrap.getServerForSessionStarted();
+        boolean ret = start;
+        sb.append("severForSession:").append(start);
+
+        start = dataServerBootstrap.getServerForDataSyncStarted();
+        ret = ret && start;
+        sb.append(", severForDataSync:").append(start);
+
+        start = dataServerBootstrap.getHttpServerStarted();
+        ret = ret && start;
+        sb.append(", httpServer:").append(start);
+
+        start = dataServerBootstrap.getSchedulerStarted();
+        ret = ret && start;
+        sb.append(", schedulerStarted:").append(start);
+
+        if (ret) {
+            response = CommonResponse.buildSuccessResponse(sb.toString());
+        } else {
+            response = CommonResponse.buildFailedResponse(sb.toString());
+        }
+        return response;
+    }
 }

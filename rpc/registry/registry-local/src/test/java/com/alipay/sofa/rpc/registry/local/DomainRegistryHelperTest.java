@@ -20,9 +20,7 @@ import org.junit.Test;
 
 import static com.alipay.sofa.rpc.registry.local.DomainRegistryHelper.getDomain;
 import static com.alipay.sofa.rpc.registry.local.DomainRegistryHelper.isDomain;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * @author <a href=mailto:orezsilence@163.com>zhangchengxi</a>

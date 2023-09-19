@@ -24,35 +24,36 @@ import com.alipay.sofa.registry.lifecycle.Lifecycle;
 
 /**
  * @author chen.zhu
- *     <p>Nov 20, 2020
+ * <p>Nov 20, 2020
  */
 public final class LifecycleHelper {
-  private LifecycleHelper() {}
-
-  public static void initializeIfPossible(Object obj) throws InitializeException {
-
-    if (obj instanceof Lifecycle && ((Lifecycle) obj).getLifecycleState().canInitialize()) {
-      ((Lifecycle) obj).initialize();
+    private LifecycleHelper() {
     }
-  }
 
-  public static void startIfPossible(Object obj) throws StartException {
+    public static void initializeIfPossible(Object obj) throws InitializeException {
 
-    if (obj instanceof Lifecycle && ((Lifecycle) obj).getLifecycleState().canStart()) {
-      ((Lifecycle) obj).start();
+        if (obj instanceof Lifecycle && ((Lifecycle) obj).getLifecycleState().canInitialize()) {
+            ((Lifecycle) obj).initialize();
+        }
     }
-  }
 
-  public static void stopIfPossible(Object obj) throws StopException {
+    public static void startIfPossible(Object obj) throws StartException {
 
-    if (obj instanceof Lifecycle && ((Lifecycle) obj).getLifecycleState().canStop()) {
-      ((Lifecycle) obj).stop();
+        if (obj instanceof Lifecycle && ((Lifecycle) obj).getLifecycleState().canStart()) {
+            ((Lifecycle) obj).start();
+        }
     }
-  }
 
-  public static void disposeIfPossible(Object obj) throws DisposeException {
-    if (obj instanceof Lifecycle && ((Lifecycle) obj).getLifecycleState().canDispose()) {
-      ((Lifecycle) obj).dispose();
+    public static void stopIfPossible(Object obj) throws StopException {
+
+        if (obj instanceof Lifecycle && ((Lifecycle) obj).getLifecycleState().canStop()) {
+            ((Lifecycle) obj).stop();
+        }
     }
-  }
+
+    public static void disposeIfPossible(Object obj) throws DisposeException {
+        if (obj instanceof Lifecycle && ((Lifecycle) obj).getLifecycleState().canDispose()) {
+            ((Lifecycle) obj).dispose();
+        }
+    }
 }

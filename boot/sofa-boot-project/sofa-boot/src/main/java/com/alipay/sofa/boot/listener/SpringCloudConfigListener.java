@@ -16,10 +16,10 @@
  */
 package com.alipay.sofa.boot.listener;
 
+import com.alipay.sofa.boot.constant.ApplicationListenerOrderConstants;
 import com.alipay.sofa.boot.constant.SofaBootConstants;
 import com.alipay.sofa.boot.util.SofaBootEnvUtils;
 import com.alipay.sofa.common.log.env.LogEnvUtils;
-import com.alipay.sofa.boot.constant.ApplicationListenerOrderConstants;
 import org.springframework.boot.Banner;
 import org.springframework.boot.ConfigurableBootstrapContext;
 import org.springframework.boot.SpringApplication;
@@ -29,45 +29,37 @@ import org.springframework.boot.context.event.ApplicationEnvironmentPreparedEven
 import org.springframework.boot.env.EnvironmentPostProcessorApplicationListener;
 import org.springframework.context.ApplicationListener;
 import org.springframework.core.Ordered;
-import org.springframework.core.env.ConfigurableEnvironment;
-import org.springframework.core.env.EnumerablePropertySource;
-import org.springframework.core.env.MapPropertySource;
-import org.springframework.core.env.PropertySource;
-import org.springframework.core.env.StandardEnvironment;
+import org.springframework.core.env.*;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.stream.StreamSupport;
 
 /**
  * Implementation of {@link ApplicationListener<ApplicationEnvironmentPreparedEvent>} to suit spring cloud environment.
  * <p> used to register sofa logs properties to spring cloud bootstrap env.
- * @see org.springframework.cloud.bootstrap.BootstrapApplicationListener
- * 
+ *
  * @author qilong.zql
+ * @see org.springframework.cloud.bootstrap.BootstrapApplicationListener
  * @since 3.0.0
  */
 public class SpringCloudConfigListener implements
-                                      ApplicationListener<ApplicationEnvironmentPreparedEvent>,
-                                      Ordered {
+        ApplicationListener<ApplicationEnvironmentPreparedEvent>,
+        Ordered {
 
     private final static MapPropertySource HIGH_PRIORITY_CONFIG = new MapPropertySource(
-                                                                    SofaBootConstants.SOFA_HIGH_PRIORITY_CONFIG,
-                                                                    new HashMap<>());
+            SofaBootConstants.SOFA_HIGH_PRIORITY_CONFIG,
+            new HashMap<>());
 
     /**
      * config log settings
      */
     private void assemblyLogSetting(ConfigurableEnvironment environment) {
         StreamSupport.stream(environment.getPropertySources().spliterator(), false)
-            .filter(propertySource -> propertySource instanceof EnumerablePropertySource)
-            .map(propertySource -> Arrays
-                .asList(((EnumerablePropertySource<?>) propertySource).getPropertyNames()))
+                .filter(propertySource -> propertySource instanceof EnumerablePropertySource)
+                .map(propertySource -> Arrays
+                        .asList(((EnumerablePropertySource<?>) propertySource).getPropertyNames()))
                 .flatMap(Collection::stream).filter(LogEnvUtils::isSofaCommonLoggingConfig)
                 .forEach((key) -> HIGH_PRIORITY_CONFIG.getSource().put(key, environment.getProperty(key)));
     }
@@ -78,7 +70,7 @@ public class SpringCloudConfigListener implements
     private void assemblyRequireProperties(ConfigurableEnvironment environment) {
         if (StringUtils.hasText(environment.getProperty(SofaBootConstants.APP_NAME_KEY))) {
             HIGH_PRIORITY_CONFIG.getSource().put(SofaBootConstants.APP_NAME_KEY,
-                environment.getProperty(SofaBootConstants.APP_NAME_KEY));
+                    environment.getProperty(SofaBootConstants.APP_NAME_KEY));
         }
     }
 

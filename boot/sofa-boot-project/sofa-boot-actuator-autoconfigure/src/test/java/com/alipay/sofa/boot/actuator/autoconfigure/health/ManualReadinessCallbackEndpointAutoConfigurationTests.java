@@ -16,11 +16,7 @@
  */
 package com.alipay.sofa.boot.actuator.autoconfigure.health;
 
-import com.alipay.sofa.boot.actuator.health.HealthCheckerProcessor;
-import com.alipay.sofa.boot.actuator.health.HealthIndicatorProcessor;
-import com.alipay.sofa.boot.actuator.health.ManualReadinessCallbackEndpoint;
-import com.alipay.sofa.boot.actuator.health.ReadinessCheckCallbackProcessor;
-import com.alipay.sofa.boot.actuator.health.ReadinessCheckListener;
+import com.alipay.sofa.boot.actuator.health.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
@@ -39,9 +35,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ManualReadinessCallbackEndpointAutoConfigurationTests {
 
     private final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
-                                                             .withConfiguration(AutoConfigurations
-                                                                 .of(MockReadinessCheckListenerConfiguration.class,
-                                                                     ManualReadinessCallbackEndpointAutoConfiguration.class));
+            .withConfiguration(AutoConfigurations
+                    .of(MockReadinessCheckListenerConfiguration.class,
+                            ManualReadinessCallbackEndpointAutoConfiguration.class));
 
     @Test
     void runShouldHaveEndpointBean() {
@@ -76,7 +72,7 @@ public class ManualReadinessCallbackEndpointAutoConfigurationTests {
                                           HealthIndicatorProcessor healthIndicatorProcessor,
                                           ReadinessCheckCallbackProcessor afterReadinessCheckCallbackProcessor) {
             super(healthCheckerProcessor, healthIndicatorProcessor,
-                afterReadinessCheckCallbackProcessor);
+                    afterReadinessCheckCallbackProcessor);
         }
 
         @Override

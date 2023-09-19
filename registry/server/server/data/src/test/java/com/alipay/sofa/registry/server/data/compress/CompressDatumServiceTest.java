@@ -26,35 +26,35 @@ import org.junit.Test;
 
 public class CompressDatumServiceTest extends CompressDatumService {
 
-  @Test
-  public void test() {
-    Assert.assertFalse(getCompressSwitch().isEnabled());
-    doProcess(
-        storage.get(),
-        new ProvideData(
-            new ServerDataBox("{\"enabled\": true}"),
-            ValueConstants.COMPRESS_DATUM_SWITCH_DATA_ID,
-            2L));
-    Assert.assertTrue(getCompressSwitch().isEnabled());
-    Assert.assertEquals(
-        getCompressSwitch().getCompressMinSize(), CompressConstants.defaultCompressDatumMinSize);
-    doProcess(
-        storage.get(),
-        new ProvideData(
-            new ServerDataBox("{\"enabled\": false}"),
-            ValueConstants.COMPRESS_DATUM_SWITCH_DATA_ID,
-            2L));
-    Assert.assertFalse(getCompressSwitch().isEnabled());
-    doProcess(
-        storage.get(),
-        new ProvideData(
-            new ServerDataBox("{\"enabled\": true}"),
-            ValueConstants.COMPRESS_DATUM_SWITCH_DATA_ID,
-            2L));
+    @Test
+    public void test() {
+        Assert.assertFalse(getCompressSwitch().isEnabled());
+        doProcess(
+                storage.get(),
+                new ProvideData(
+                        new ServerDataBox("{\"enabled\": true}"),
+                        ValueConstants.COMPRESS_DATUM_SWITCH_DATA_ID,
+                        2L));
+        Assert.assertTrue(getCompressSwitch().isEnabled());
+        Assert.assertEquals(
+                getCompressSwitch().getCompressMinSize(), CompressConstants.defaultCompressDatumMinSize);
+        doProcess(
+                storage.get(),
+                new ProvideData(
+                        new ServerDataBox("{\"enabled\": false}"),
+                        ValueConstants.COMPRESS_DATUM_SWITCH_DATA_ID,
+                        2L));
+        Assert.assertFalse(getCompressSwitch().isEnabled());
+        doProcess(
+                storage.get(),
+                new ProvideData(
+                        new ServerDataBox("{\"enabled\": true}"),
+                        ValueConstants.COMPRESS_DATUM_SWITCH_DATA_ID,
+                        2L));
 
-    doProcess(
-        storage.get(),
-        new ProvideData(new ServerDataBox(""), ValueConstants.COMPRESS_PUSH_SWITCH_DATA_ID, 4L));
-    Assert.assertTrue(getCompressSwitch().isEnabled());
-  }
+        doProcess(
+                storage.get(),
+                new ProvideData(new ServerDataBox(""), ValueConstants.COMPRESS_PUSH_SWITCH_DATA_ID, 4L));
+        Assert.assertTrue(getCompressSwitch().isEnabled());
+    }
 }

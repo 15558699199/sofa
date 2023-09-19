@@ -16,16 +16,13 @@
  */
 package com.alipay.sofa.registry.server.session.providedata;
 
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.anyObject;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import com.alipay.sofa.registry.common.model.constants.ValueConstants;
 import com.alipay.sofa.registry.common.model.metaserver.ProvideData;
 import org.junit.Test;
+
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Mockito.*;
 
 /**
  * @author xiaojian.xj
@@ -33,16 +30,16 @@ import org.junit.Test;
  */
 public class ProvideDataProcessorManagerTest {
 
-  @Test
-  public void test() {
-    ProvideDataProcessorManager provideDataProcessorManager = new ProvideDataProcessorManager();
-    FetchStopPushService fetchStopPushService = mock(FetchStopPushService.class);
+    @Test
+    public void test() {
+        ProvideDataProcessorManager provideDataProcessorManager = new ProvideDataProcessorManager();
+        FetchStopPushService fetchStopPushService = mock(FetchStopPushService.class);
 
-    when(fetchStopPushService.support(ValueConstants.STOP_PUSH_DATA_SWITCH_DATA_ID))
-        .thenReturn(true);
-    provideDataProcessorManager.addProvideDataProcessor(fetchStopPushService);
-    provideDataProcessorManager.processData(
-        new ProvideData(null, ValueConstants.STOP_PUSH_DATA_SWITCH_DATA_ID, anyLong()));
-    verify(fetchStopPushService, times(1)).processData(anyObject());
-  }
+        when(fetchStopPushService.support(ValueConstants.STOP_PUSH_DATA_SWITCH_DATA_ID))
+                .thenReturn(true);
+        provideDataProcessorManager.addProvideDataProcessor(fetchStopPushService);
+        provideDataProcessorManager.processData(
+                new ProvideData(null, ValueConstants.STOP_PUSH_DATA_SWITCH_DATA_ID, anyLong()));
+        verify(fetchStopPushService, times(1)).processData(anyObject());
+    }
 }

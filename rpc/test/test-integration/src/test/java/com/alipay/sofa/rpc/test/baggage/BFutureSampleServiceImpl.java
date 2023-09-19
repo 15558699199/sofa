@@ -27,19 +27,17 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 /**
- *
- *
  * @author zhanggeng
  */
 public class BFutureSampleServiceImpl implements SampleService {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(BFutureSampleServiceImpl.class);
 
-    private SampleService       sampleServiceC;
+    private SampleService sampleServiceC;
 
-    private SampleService       sampleServiceD;
+    private SampleService sampleServiceD;
 
-    private String              reqBaggage;
+    private String reqBaggage;
 
     public BFutureSampleServiceImpl(SampleService sampleServiceC, SampleService sampleServiceD) {
         this.sampleServiceC = sampleServiceC;

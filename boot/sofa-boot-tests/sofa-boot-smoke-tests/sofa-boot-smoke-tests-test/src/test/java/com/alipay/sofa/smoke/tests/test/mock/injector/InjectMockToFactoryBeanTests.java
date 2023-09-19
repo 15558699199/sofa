@@ -41,7 +41,7 @@ import static org.mockito.Mockito.when;
 public class InjectMockToFactoryBeanTests {
 
     @MockBeanInjector(field = "service", type = ExampleServiceCaller.class)
-    private ExampleService     exampleService;
+    private ExampleService exampleService;
 
     @Autowired
     private ApplicationContext applicationContext;

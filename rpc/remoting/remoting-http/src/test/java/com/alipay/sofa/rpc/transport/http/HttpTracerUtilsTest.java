@@ -41,10 +41,10 @@ public class HttpTracerUtilsTest {
         Assert.assertEquals("11", map.get("xx"));
 
         HttpTracerUtils.parseTraceKey(map, RemotingConstants.RPC_TRACE_NAME + "." + RemotingConstants.RPC_ID_KEY,
-            "11");
+                "11");
         Assert.assertEquals("11", map.get(RemotingConstants.RPC_ID_KEY));
         HttpTracerUtils.parseTraceKey(map, RemotingConstants.RPC_TRACE_NAME + "."
-            + RemotingConstants.RPC_ID_KEY.toLowerCase(), "11");
+                + RemotingConstants.RPC_ID_KEY.toLowerCase(), "11");
         Assert.assertEquals("11", map.get(RemotingConstants.RPC_ID_KEY));
     }
 }

@@ -25,13 +25,13 @@ import java.util.List;
  */
 public class SubscribeServiceResult {
 
-    private String       serviceName;
+    private String serviceName;
 
     private List<String> datas = new ArrayList<String>();
 
-    private boolean      success;
+    private boolean success;
 
-    private String       errorMessage;
+    private String errorMessage;
 
     public String getServiceName() {
         return serviceName;

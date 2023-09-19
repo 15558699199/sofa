@@ -21,24 +21,25 @@ import com.alipay.sofa.registry.common.model.ProcessId;
 import com.alipay.sofa.registry.common.model.metaserver.DataCenterNodes;
 import com.alipay.sofa.registry.common.model.metaserver.nodes.SessionNode;
 import com.alipay.sofa.registry.common.model.store.URL;
-import java.util.Collections;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.Collections;
+
 public class DataCenterNodesTest {
-  @Test
-  public void test() {
-    ProcessId processId1 = new ProcessId("test", 1, 2, 3);
-    final String dataId = "testDataId";
-    DataCenterNodes request = new DataCenterNodes(Node.NodeType.CLIENT, 10, dataId);
-    SessionNode sessionNode = new SessionNode(new URL("192.168.1.1", 8888), "testZone", processId1);
-    request.setNodes(Collections.singletonMap("testKey", sessionNode));
-    Assert.assertEquals(request.getDataCenterId(), dataId);
-    Assert.assertEquals(request.getVersion(), 10);
+    @Test
+    public void test() {
+        ProcessId processId1 = new ProcessId("test", 1, 2, 3);
+        final String dataId = "testDataId";
+        DataCenterNodes request = new DataCenterNodes(Node.NodeType.CLIENT, 10, dataId);
+        SessionNode sessionNode = new SessionNode(new URL("192.168.1.1", 8888), "testZone", processId1);
+        request.setNodes(Collections.singletonMap("testKey", sessionNode));
+        Assert.assertEquals(request.getDataCenterId(), dataId);
+        Assert.assertEquals(request.getVersion(), 10);
 
-    Assert.assertEquals(request.getNodes().size(), 1);
-    Assert.assertEquals(request.getNodes().get("testKey"), sessionNode);
+        Assert.assertEquals(request.getNodes().size(), 1);
+        Assert.assertEquals(request.getNodes().get("testKey"), sessionNode);
 
-    Assert.assertTrue(request.toString(), request.toString().contains(dataId));
-  }
+        Assert.assertTrue(request.toString(), request.toString().contains(dataId));
+    }
 }

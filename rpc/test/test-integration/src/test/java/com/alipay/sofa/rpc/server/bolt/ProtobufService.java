@@ -20,7 +20,7 @@ import com.alipay.sofa.rpc.server.bolt.pb.EchoRequest;
 import com.alipay.sofa.rpc.server.bolt.pb.EchoResponse;
 
 /**
- * 
+ *
  */
 public interface ProtobufService {
 

@@ -27,66 +27,33 @@ import com.fasterxml.jackson.annotation.Nulls;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ShutdownSwitch {
 
-  private boolean shutdown = false;
+    private boolean shutdown = false;
 
-  @JsonSetter(nulls = Nulls.SKIP)
-  private String cause;
-
-  public ShutdownSwitch() {}
-
-  public ShutdownSwitch(boolean shutdown) {
-    this.shutdown = shutdown;
-  }
-
-  public ShutdownSwitch(boolean shutdown, String cause) {
-    this.shutdown = shutdown;
-    this.cause = cause;
-  }
-
-  public static ShutdownSwitch defaultSwitch() {
-    return new ShutdownSwitch();
-  }
-
-  public boolean isShutdown() {
-    return shutdown;
-  }
-
-  public void setShutdown(boolean shutdown) {
-    this.shutdown = shutdown;
-  }
-
-  /**
-   * Getter method for property <tt>cause</tt>.
-   *
-   * @return property value of cause
-   */
-  public String getCause() {
-    return cause;
-  }
-
-  /**
-   * Setter method for property <tt>cause</tt>.
-   *
-   * @param cause value to be assigned to property cause
-   */
-  public void setCause(String cause) {
-    this.cause = cause;
-  }
-
-  @Override
-  public String toString() {
-    return "ShutdownSwitch{" + "shutdown=" + shutdown + ", cause=" + cause + '}';
-  }
-
-  public enum CauseEnum {
-    FORCE("force"),
-    SELF_ADAPTION("self_adaption"),
-    ;
-
+    @JsonSetter(nulls = Nulls.SKIP)
     private String cause;
 
-    CauseEnum(String cause) {
-      this.cause = cause;
+    public ShutdownSwitch() {
+    }
+
+    public ShutdownSwitch(boolean shutdown) {
+        this.shutdown = shutdown;
+    }
+
+    public ShutdownSwitch(boolean shutdown, String cause) {
+        this.shutdown = shutdown;
+        this.cause = cause;
+    }
+
+    public static ShutdownSwitch defaultSwitch() {
+        return new ShutdownSwitch();
+    }
+
+    public boolean isShutdown() {
+        return shutdown;
+    }
+
+    public void setShutdown(boolean shutdown) {
+        this.shutdown = shutdown;
     }
 
     /**
@@ -95,7 +62,41 @@ public class ShutdownSwitch {
      * @return property value of cause
      */
     public String getCause() {
-      return cause;
+        return cause;
     }
-  }
+
+    /**
+     * Setter method for property <tt>cause</tt>.
+     *
+     * @param cause value to be assigned to property cause
+     */
+    public void setCause(String cause) {
+        this.cause = cause;
+    }
+
+    @Override
+    public String toString() {
+        return "ShutdownSwitch{" + "shutdown=" + shutdown + ", cause=" + cause + '}';
+    }
+
+    public enum CauseEnum {
+        FORCE("force"),
+        SELF_ADAPTION("self_adaption"),
+        ;
+
+        private String cause;
+
+        CauseEnum(String cause) {
+            this.cause = cause;
+        }
+
+        /**
+         * Getter method for property <tt>cause</tt>.
+         *
+         * @return property value of cause
+         */
+        public String getCause() {
+            return cause;
+        }
+    }
 }

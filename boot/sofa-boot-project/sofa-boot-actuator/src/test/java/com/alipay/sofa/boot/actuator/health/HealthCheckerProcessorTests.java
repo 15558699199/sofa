@@ -40,36 +40,36 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /**
  * Tests for {@link HealthCheckerProcessor}.
- * 
+ *
  * @author huzijie
  * @version HealthCheckerProcessorTests.java, v 0.1 2023年01月06日 11:07 AM huzijie Exp $
  */
-@ExtendWith({ MockitoExtension.class, OutputCaptureExtension.class })
+@ExtendWith({MockitoExtension.class, OutputCaptureExtension.class})
 public class HealthCheckerProcessorTests {
 
     static {
         LogOutPutUtils.openOutPutForLoggers(HealthCheckerProcessor.class);
     }
 
-    private final ExecutorService  executorService           = Executors.newSingleThreadExecutor();
+    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
-    private final HealthChecker    successHealthChecker      = new SuccessHealthChecker();
+    private final HealthChecker successHealthChecker = new SuccessHealthChecker();
 
-    private final HealthChecker    failHealthChecker         = new FailHealthChecker();
+    private final HealthChecker failHealthChecker = new FailHealthChecker();
 
-    private final HealthChecker    exceptionHealthChecker    = new ExceptionHealthChecker();
+    private final HealthChecker exceptionHealthChecker = new ExceptionHealthChecker();
 
-    private final HealthChecker    timeoutHealthChecker      = new TimeoutHealthChecker();
+    private final HealthChecker timeoutHealthChecker = new TimeoutHealthChecker();
 
-    private final HealthChecker    nonReadinessHealthChecker = new NonReadinessHealthChecker();
+    private final HealthChecker nonReadinessHealthChecker = new NonReadinessHealthChecker();
 
-    private final HealthChecker    retryHealthChecker        = new RetryHealthChecker();
+    private final HealthChecker retryHealthChecker = new RetryHealthChecker();
 
     @InjectMocks
     private HealthCheckerProcessor healthCheckerProcessor;
 
     @Mock
-    private ApplicationContext     applicationContext;
+    private ApplicationContext applicationContext;
 
     @BeforeEach
     public void setUp() {
@@ -99,18 +99,18 @@ public class HealthCheckerProcessorTests {
 
         healthCheckerProcessor.init();
         assertThat(capturedOutput.getOut()).contains(
-            "Found 1 HealthChecker implementation:successHealthChecker");
+                "Found 1 HealthChecker implementation:successHealthChecker");
         HashMap<String, Health> healthMap = new HashMap<>();
         boolean result = healthCheckerProcessor.readinessHealthCheck(healthMap);
 
         assertThat(capturedOutput.getOut())
-            .contains("Begin SOFABoot HealthChecker readiness check");
+                .contains("Begin SOFABoot HealthChecker readiness check");
         assertThat(capturedOutput.getOut()).contains(
-            "SOFABoot HealthChecker readiness check 1 item: success");
+                "SOFABoot HealthChecker readiness check 1 item: success");
         assertThat(capturedOutput.getOut()).contains(
-            "HealthChecker [successHealthChecker] readiness check start");
+                "HealthChecker [successHealthChecker] readiness check start");
         assertThat(capturedOutput.getOut()).contains(
-            "SOFABoot HealthChecker readiness check result: success");
+                "SOFABoot HealthChecker readiness check result: success");
         assertThat(result).isTrue();
         assertThat(healthMap.size()).isEqualTo(1);
         Health health = healthMap.get("successHealthChecker");
@@ -131,10 +131,10 @@ public class HealthCheckerProcessorTests {
         boolean result = healthCheckerProcessor.readinessHealthCheck(healthMap);
 
         assertThat(capturedOutput.getOut())
-            .contains(
-                "SOFA-BOOT-01-23001: HealthChecker[failHealthChecker] readiness check fail with 0 retry; fail details:{\"reason\":\"error\"}; strict mode:true");
+                .contains(
+                        "SOFA-BOOT-01-23001: HealthChecker[failHealthChecker] readiness check fail with 0 retry; fail details:{\"reason\":\"error\"}; strict mode:true");
         assertThat(capturedOutput.getOut()).contains(
-            "SOFA-BOOT-01-23000: SOFABoot HealthChecker readiness check result: failed");
+                "SOFA-BOOT-01-23000: SOFABoot HealthChecker readiness check result: failed");
         assertThat(result).isFalse();
         assertThat(healthMap.size()).isEqualTo(2);
         Health health = healthMap.get("failHealthChecker");
@@ -155,13 +155,13 @@ public class HealthCheckerProcessorTests {
         boolean result = healthCheckerProcessor.readinessHealthCheck(healthMap);
 
         assertThat(capturedOutput.getOut())
-            .contains(
-                "Exception occurred while wait the result of HealthChecker[exceptionHealthChecker] readiness check");
+                .contains(
+                        "Exception occurred while wait the result of HealthChecker[exceptionHealthChecker] readiness check");
         assertThat(capturedOutput.getOut())
-            .contains(
-                "SOFA-BOOT-01-23001: HealthChecker[exceptionHealthChecker] readiness check fail with 0 retry; fail details:{\"error\":\"java.util.concurrent.ExecutionException: java.lang.RuntimeException: indicator exception\"}; strict mode:true");
+                .contains(
+                        "SOFA-BOOT-01-23001: HealthChecker[exceptionHealthChecker] readiness check fail with 0 retry; fail details:{\"error\":\"java.util.concurrent.ExecutionException: java.lang.RuntimeException: indicator exception\"}; strict mode:true");
         assertThat(capturedOutput.getOut()).contains(
-            "SOFA-BOOT-01-23000: SOFABoot HealthChecker readiness check result: failed");
+                "SOFA-BOOT-01-23000: SOFABoot HealthChecker readiness check result: failed");
         assertThat(result).isFalse();
         assertThat(healthMap.size()).isEqualTo(2);
         Health health = healthMap.get("exceptionHealthChecker");
@@ -181,13 +181,13 @@ public class HealthCheckerProcessorTests {
         HashMap<String, Health> healthMap = new HashMap<>();
         boolean result = healthCheckerProcessor.readinessHealthCheck(healthMap);
         assertThat(capturedOutput.getOut())
-            .contains(
-                "Timeout occurred while doing HealthChecker[timeoutHealthChecker] readiness check, the timeout value is: 100ms");
+                .contains(
+                        "Timeout occurred while doing HealthChecker[timeoutHealthChecker] readiness check, the timeout value is: 100ms");
         assertThat(capturedOutput.getOut())
-            .contains(
-                "SOFA-BOOT-01-23001: HealthChecker[timeoutHealthChecker] readiness check fail with 0 retry; fail details:{\"error\":\"java.util.concurrent.TimeoutException: null\",\"timeout\":100}; strict mode:true");
+                .contains(
+                        "SOFA-BOOT-01-23001: HealthChecker[timeoutHealthChecker] readiness check fail with 0 retry; fail details:{\"error\":\"java.util.concurrent.TimeoutException: null\",\"timeout\":100}; strict mode:true");
         assertThat(capturedOutput.getOut()).contains(
-            "SOFA-BOOT-01-23000: SOFABoot HealthChecker readiness check result: failed");
+                "SOFA-BOOT-01-23000: SOFABoot HealthChecker readiness check result: failed");
 
         assertThat(result).isFalse();
         assertThat(healthMap.size()).isEqualTo(2);
@@ -195,7 +195,7 @@ public class HealthCheckerProcessorTests {
         assertThat(health).isNotNull();
         assertThat(health.getStatus()).isEqualTo(Status.UNKNOWN);
         assertThat(health.getDetails().toString())
-            .contains("java.util.concurrent.TimeoutException");
+                .contains("java.util.concurrent.TimeoutException");
         assertThat(health.getDetails().toString()).contains("timeout=100");
     }
 
@@ -396,7 +396,7 @@ public class HealthCheckerProcessorTests {
 
     static class RetryHealthChecker implements HealthChecker {
 
-        private int  retry;
+        private int retry;
 
         private long startTime;
 

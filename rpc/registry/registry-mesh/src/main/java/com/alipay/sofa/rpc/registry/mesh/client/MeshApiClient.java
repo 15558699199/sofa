@@ -22,17 +22,7 @@ import com.alipay.sofa.rpc.common.json.JSON;
 import com.alipay.sofa.rpc.common.utils.StringUtils;
 import com.alipay.sofa.rpc.log.Logger;
 import com.alipay.sofa.rpc.log.LoggerFactory;
-import com.alipay.sofa.rpc.registry.mesh.model.ApplicationInfoRequest;
-import com.alipay.sofa.rpc.registry.mesh.model.ApplicationInfoResult;
-import com.alipay.sofa.rpc.registry.mesh.model.MeshEndpoint;
-import com.alipay.sofa.rpc.registry.mesh.model.PublishServiceRequest;
-import com.alipay.sofa.rpc.registry.mesh.model.PublishServiceResult;
-import com.alipay.sofa.rpc.registry.mesh.model.SubscribeServiceRequest;
-import com.alipay.sofa.rpc.registry.mesh.model.SubscribeServiceResult;
-import com.alipay.sofa.rpc.registry.mesh.model.UnPublishServiceRequest;
-import com.alipay.sofa.rpc.registry.mesh.model.UnPublishServiceResult;
-import com.alipay.sofa.rpc.registry.mesh.model.UnSubscribeServiceRequest;
-import com.alipay.sofa.rpc.registry.mesh.model.UnSubscribeServiceResult;
+import com.alipay.sofa.rpc.registry.mesh.model.*;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -48,24 +38,19 @@ import java.net.URL;
  */
 public class MeshApiClient {
 
-    private static final Logger LOGGER         = LoggerFactory.getLogger(MeshApiClient.class);
-
-    private URI                 baseURI;
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(MeshApiClient.class);
     /**
      * 连接超时
      */
-    private static int          connectTimeout = SofaConfigs.getOrDefault(RpcConfigKeys.MESH_HTTP_CONNECTION_TIMEOUT);
-
+    private static int connectTimeout = SofaConfigs.getOrDefault(RpcConfigKeys.MESH_HTTP_CONNECTION_TIMEOUT);
     /**
      * 读取超时
      */
-    private static int          readTimeout    = SofaConfigs.getOrDefault(RpcConfigKeys.MESH_HTTP_READ_TIMEOUT);
-
-    private static String       errorMessage   = "ERROR";
-
-    private String              host;
-    private int                 port;
+    private static int readTimeout = SofaConfigs.getOrDefault(RpcConfigKeys.MESH_HTTP_READ_TIMEOUT);
+    private static String errorMessage = "ERROR";
+    private URI baseURI;
+    private String host;
+    private int port;
 
     public MeshApiClient(String meshAddress) {
         baseURI = URI.create(meshAddress);
@@ -97,7 +82,7 @@ public class MeshApiClient {
 
         if (!StringUtils.equals(result, errorMessage)) {
             final ApplicationInfoResult parse = JSON.parseObject(result,
-                ApplicationInfoResult.class);
+                    ApplicationInfoResult.class);
             if (parse.isSuccess()) {
                 return true;
             }
@@ -115,7 +100,7 @@ public class MeshApiClient {
 
         if (!StringUtils.equals(result, errorMessage)) {
             final UnPublishServiceResult parse = JSON.parseObject(result,
-                UnPublishServiceResult.class);
+                    UnPublishServiceResult.class);
             if (parse.isSuccess()) {
                 return 1;
             }
@@ -148,7 +133,7 @@ public class MeshApiClient {
 
         if (!StringUtils.equals(result, errorMessage)) {
             final UnSubscribeServiceResult parse = JSON.parseObject(result,
-                UnSubscribeServiceResult.class);
+                    UnSubscribeServiceResult.class);
             if (parse.isSuccess()) {
                 return true;
             }
@@ -189,7 +174,7 @@ public class MeshApiClient {
                 // 读取返回内容
                 StringBuilder buffer = new StringBuilder();
                 BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream(),
-                    "UTF-8"));
+                        "UTF-8"));
                 String temp;
                 while ((temp = br.readLine()) != null) {
                     buffer.append(temp);

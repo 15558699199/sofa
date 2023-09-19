@@ -57,7 +57,7 @@ public class OrderedComparatorTest {
     }
 
     @Test
-    public void testComparatorInt(){
+    public void testComparatorInt() {
         List<Obj> list = new ArrayList<Obj>();
         list.add(new Obj("a", 10));
         list.add(new Obj("b", 2));
@@ -104,7 +104,7 @@ public class OrderedComparatorTest {
 
     private static class Obj implements Sortable {
         private final String name;
-        private final int    order;
+        private final int order;
 
         Obj(String name, int order) {
             this.name = name;

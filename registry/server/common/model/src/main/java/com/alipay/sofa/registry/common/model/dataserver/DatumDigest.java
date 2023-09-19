@@ -17,65 +17,66 @@
 package com.alipay.sofa.registry.common.model.dataserver;
 
 import com.alipay.sofa.registry.util.StringFormatter;
+
 import java.io.Serializable;
 import java.util.Objects;
 
 public final class DatumDigest implements Serializable {
-  private final long publisherIdSign;
-  private final long publisherVerSign;
-  private final long publisherTimestampSign;
-  private final int publisherNum;
-  private final short maxTimestamp;
-  private final short minTimestamp;
+    private final long publisherIdSign;
+    private final long publisherVerSign;
+    private final long publisherTimestampSign;
+    private final int publisherNum;
+    private final short maxTimestamp;
+    private final short minTimestamp;
 
-  public DatumDigest(
-      int publisherNum,
-      long publisherIdSign,
-      long publisherVerSign,
-      long publisherTimestampSign,
-      short maxTimestamp,
-      short minTimestamp) {
-    this.publisherNum = publisherNum;
-    this.publisherIdSign = publisherIdSign;
-    this.publisherVerSign = publisherVerSign;
-    this.publisherTimestampSign = publisherTimestampSign;
-    this.maxTimestamp = maxTimestamp;
-    this.minTimestamp = minTimestamp;
-  }
+    public DatumDigest(
+            int publisherNum,
+            long publisherIdSign,
+            long publisherVerSign,
+            long publisherTimestampSign,
+            short maxTimestamp,
+            short minTimestamp) {
+        this.publisherNum = publisherNum;
+        this.publisherIdSign = publisherIdSign;
+        this.publisherVerSign = publisherVerSign;
+        this.publisherTimestampSign = publisherTimestampSign;
+        this.maxTimestamp = maxTimestamp;
+        this.minTimestamp = minTimestamp;
+    }
 
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    DatumDigest that = (DatumDigest) o;
-    return publisherIdSign == that.publisherIdSign
-        && publisherVerSign == that.publisherVerSign
-        && publisherTimestampSign == that.publisherTimestampSign
-        && publisherNum == that.publisherNum
-        && maxTimestamp == that.maxTimestamp
-        && minTimestamp == that.minTimestamp;
-  }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        DatumDigest that = (DatumDigest) o;
+        return publisherIdSign == that.publisherIdSign
+                && publisherVerSign == that.publisherVerSign
+                && publisherTimestampSign == that.publisherTimestampSign
+                && publisherNum == that.publisherNum
+                && maxTimestamp == that.maxTimestamp
+                && minTimestamp == that.minTimestamp;
+    }
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(
-        publisherIdSign,
-        publisherVerSign,
-        publisherTimestampSign,
-        publisherNum,
-        maxTimestamp,
-        minTimestamp);
-  }
+    @Override
+    public int hashCode() {
+        return Objects.hash(
+                publisherIdSign,
+                publisherVerSign,
+                publisherTimestampSign,
+                publisherNum,
+                maxTimestamp,
+                minTimestamp);
+    }
 
-  @Override
-  public String toString() {
-    return StringFormatter.format(
-        "Digest{num={},idSign={},verSign={},tsSign={},maxTs={},minTs={}",
-        publisherNum,
-        publisherIdSign,
-        publisherVerSign,
-        publisherTimestampSign,
-        maxTimestamp,
-        minTimestamp);
-  }
+    @Override
+    public String toString() {
+        return StringFormatter.format(
+                "Digest{num={},idSign={},verSign={},tsSign={},maxTs={},minTs={}",
+                publisherNum,
+                publisherIdSign,
+                publisherVerSign,
+                publisherTimestampSign,
+                maxTimestamp,
+                minTimestamp);
+    }
 }

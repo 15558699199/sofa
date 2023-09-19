@@ -39,10 +39,10 @@ public class ArkDynamicServiceProxyManagerTests {
         Contract contract = new ReferenceImpl("test", SampleService.class, InterfaceMode.api, true);
 
         assertThat(
-            arkDynamicServiceProxyManager.getDynamicServiceProxy(contract,
-                ClassLoader.getSystemClassLoader())).isNull();
+                arkDynamicServiceProxyManager.getDynamicServiceProxy(contract,
+                        ClassLoader.getSystemClassLoader())).isNull();
         assertThat(
-            arkDynamicServiceProxyManager.getDynamicServiceComponent(contract,
-                ClassLoader.getSystemClassLoader())).isNull();
+                arkDynamicServiceProxyManager.getDynamicServiceComponent(contract,
+                        ClassLoader.getSystemClassLoader())).isNull();
     }
 }

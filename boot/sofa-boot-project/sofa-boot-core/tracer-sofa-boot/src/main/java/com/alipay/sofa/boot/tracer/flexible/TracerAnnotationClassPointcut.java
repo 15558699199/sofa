@@ -71,7 +71,7 @@ public class TracerAnnotationClassPointcut extends DynamicMethodMatcherPointcut 
 
         boolean hasAnnotatedMethods(Class<?> clazz) {
             final AtomicBoolean found = new AtomicBoolean(false);
-            ReflectionUtils.doWithMethods(clazz, (method) ->{
+            ReflectionUtils.doWithMethods(clazz, (method) -> {
                 if (found.get()) {
                     return;
                 }

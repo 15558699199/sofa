@@ -26,24 +26,24 @@ import com.alipay.sofa.registry.client.api.model.ConfigData;
  */
 public interface Configurator extends Register {
 
-  /**
-   * Gets data observer.
-   *
-   * @return the data observer
-   */
-  ConfigDataObserver getDataObserver();
+    /**
+     * Gets data observer.
+     *
+     * @return the data observer
+     */
+    ConfigDataObserver getDataObserver();
 
-  /**
-   * Sets config data observer.
-   *
-   * @param configDataObserver the config data observer
-   */
-  void setDataObserver(ConfigDataObserver configDataObserver);
+    /**
+     * Sets config data observer.
+     *
+     * @param configDataObserver the config data observer
+     */
+    void setDataObserver(ConfigDataObserver configDataObserver);
 
-  /**
-   * Peek data config data.
-   *
-   * @return the config data
-   */
-  ConfigData peekData();
+    /**
+     * Peek data config data.
+     *
+     * @return the config data
+     */
+    ConfigData peekData();
 }

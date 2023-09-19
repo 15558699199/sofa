@@ -20,11 +20,7 @@ import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockReset;
 import org.springframework.core.annotation.AliasFor;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 /**
  * Annotation that can be used to create spies and inject spy to a target bean's field.
@@ -35,7 +31,7 @@ import java.lang.annotation.Target;
  * <p>
  * Field in target bean will be found by {@link #field()}. If no field could be found, {@link IllegalStateException} will be thrown.
  * <p>
- *
+ * <p>
  * Typical usage might be: <pre class="code">
  * &#064;RunWith(SpringRunner.class)
  * public class ExampleServiceTest {
@@ -81,10 +77,11 @@ import java.lang.annotation.Target;
  *     ...
  * }
  * </pre>
+ *
  * @author pengym
  * @version SpyBeanInjector.java, v 0.1 2023年08月07日 15:38 pengym
  */
-@Target({ ElementType.FIELD })
+@Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface SpyBeanInjector {
@@ -97,6 +94,7 @@ public @interface SpyBeanInjector {
 
     /**
      * The name of the bean to inject the spy to a field.
+     *
      * @return the name of the target bean
      */
     String name() default "";
@@ -104,6 +102,7 @@ public @interface SpyBeanInjector {
     /**
      * The class type of the bean to inject the spy to a field. This is an alias of {@link #type()} which can be used for
      * brevity if no other attributes are defined. See {@link #type()} for details.
+     *
      * @return the class type of the target bean
      */
     @AliasFor("type")
@@ -111,6 +110,7 @@ public @interface SpyBeanInjector {
 
     /**
      * The class type of the bean to inject the spy to a field
+     *
      * @return the class ype of the target bean
      */
     @AliasFor("value")
@@ -125,6 +125,7 @@ public @interface SpyBeanInjector {
     /**
      * The reset mode to apply to the spy. The default is {@link MockReset#AFTER}
      * meaning that spies are automatically reset after each test method is invoked.
+     *
      * @return the reset mode
      */
     MockReset reset() default MockReset.AFTER;
@@ -135,6 +136,7 @@ public @interface SpyBeanInjector {
      * If set to {@code false} you may need to use the result of
      * {@link org.springframework.test.util.AopTestUtils#getUltimateTargetObject(Object)
      * AopTestUtils.getUltimateTargetObject(...)} when calling Mockito methods.
+     *
      * @return {@code true} if the target of AOP advised beans is used or {@code false} if
      * the proxy is used directly
      */

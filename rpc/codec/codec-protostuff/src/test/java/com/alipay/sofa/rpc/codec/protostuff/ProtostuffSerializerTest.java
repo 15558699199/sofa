@@ -16,10 +16,6 @@
  */
 package com.alipay.sofa.rpc.codec.protostuff;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
 import com.alipay.sofa.rpc.common.RemotingConstants;
 import com.alipay.sofa.rpc.common.RpcConstants;
 import com.alipay.sofa.rpc.core.exception.SofaRpcException;
@@ -31,6 +27,10 @@ import com.alipay.sofa.rpc.transport.AbstractByteBuf;
 import com.alipay.sofa.rpc.transport.ByteArrayWrapperByteBuf;
 import org.junit.Assert;
 import org.junit.Test;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author leizhiyuan
@@ -123,7 +123,7 @@ public class ProtostuffSerializerTest {
         Assert.assertEquals(newRequest.getTargetServiceUniqueName(), request.getTargetServiceUniqueName());
         Assert.assertEquals(newRequest.getTargetAppName(), request.getTargetAppName());
         Assert.assertEquals(newRequest.getRequestProp(RemotingConstants.RPC_TRACE_NAME),
-            request.getRequestProp(RemotingConstants.RPC_TRACE_NAME));
+                request.getRequestProp(RemotingConstants.RPC_TRACE_NAME));
 
         // null request
         head = new HashMap<String, String>();
@@ -219,8 +219,8 @@ public class ProtostuffSerializerTest {
         request.setMethod(ProtostuffService.class.getMethod("echoStr", ExampleObj.class));
         ExampleObj exampleObj = new ExampleObj();
         exampleObj.setName("xxxx");
-        request.setMethodArgs(new Object[] { exampleObj });
-        request.setMethodArgSigs(new String[] { ExampleObj.class.getCanonicalName() });
+        request.setMethodArgs(new Object[]{exampleObj});
+        request.setMethodArgSigs(new String[]{ExampleObj.class.getCanonicalName()});
         request.setTargetServiceUniqueName(ProtostuffService.class.getName() + ":1.0");
         request.setTargetAppName("targetApp");
         request.setSerializeType((byte) 11);

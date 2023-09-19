@@ -32,7 +32,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class DataSourceBeanPostProcessorTests {
 
-    private final String                      testUrl                     = "jdbc:oracle:thin:@localhost:1521:orcl";
+    private final String testUrl = "jdbc:oracle:thin:@localhost:1521:orcl";
 
     private final DataSourceBeanPostProcessor dataSourceBeanPostProcessor = new DataSourceBeanPostProcessor();
 
@@ -44,7 +44,7 @@ public class DataSourceBeanPostProcessorTests {
     public void skipSmartDataSource() {
         SmartDataSource smartDataSource = new SmartDataSource(new EmptyDataSource());
         Object bean = dataSourceBeanPostProcessor.postProcessAfterInitialization(smartDataSource,
-            "normalBean");
+                "normalBean");
         assertThat(bean).isEqualTo(smartDataSource);
     }
 
@@ -52,7 +52,7 @@ public class DataSourceBeanPostProcessorTests {
     public void skipNoDataSource() {
         Object noDataSource = new Object();
         Object bean = dataSourceBeanPostProcessor.postProcessAfterInitialization(noDataSource,
-            "normalBean");
+                "normalBean");
         assertThat(bean).isEqualTo(noDataSource);
         assertThat(bean).isNotInstanceOf(SmartDataSource.class);
     }
@@ -62,7 +62,7 @@ public class DataSourceBeanPostProcessorTests {
         DruidDataSource dataSource = new DruidDataSource();
         dataSource.setUrl(testUrl);
         Object bean = dataSourceBeanPostProcessor.postProcessAfterInitialization(dataSource,
-            "normalBean");
+                "normalBean");
         assertThat(bean).isNotNull();
         assertThat(bean).isNotEqualTo(dataSource);
         assertThat(bean).isInstanceOf(SmartDataSource.class);
@@ -74,7 +74,7 @@ public class DataSourceBeanPostProcessorTests {
         org.apache.commons.dbcp.BasicDataSource dataSource = new org.apache.commons.dbcp.BasicDataSource();
         dataSource.setUrl(testUrl);
         Object bean = dataSourceBeanPostProcessor.postProcessAfterInitialization(dataSource,
-            "normalBean");
+                "normalBean");
         assertThat(bean).isNotNull();
         assertThat(bean).isNotEqualTo(dataSource);
         assertThat(bean).isInstanceOf(SmartDataSource.class);
@@ -86,7 +86,7 @@ public class DataSourceBeanPostProcessorTests {
         org.apache.commons.dbcp2.BasicDataSource dataSource = new org.apache.commons.dbcp2.BasicDataSource();
         dataSource.setUrl(testUrl);
         Object bean = dataSourceBeanPostProcessor.postProcessAfterInitialization(dataSource,
-            "normalBean");
+                "normalBean");
         assertThat(bean).isNotNull();
         assertThat(bean).isNotEqualTo(dataSource);
         assertThat(bean).isInstanceOf(SmartDataSource.class);
@@ -98,7 +98,7 @@ public class DataSourceBeanPostProcessorTests {
         org.apache.tomcat.jdbc.pool.DataSource dataSource = new org.apache.tomcat.jdbc.pool.DataSource();
         dataSource.setUrl(testUrl);
         Object bean = dataSourceBeanPostProcessor.postProcessAfterInitialization(dataSource,
-            "normalBean");
+                "normalBean");
         assertThat(bean).isNotNull();
         assertThat(bean).isNotEqualTo(dataSource);
         assertThat(bean).isInstanceOf(SmartDataSource.class);
@@ -110,7 +110,7 @@ public class DataSourceBeanPostProcessorTests {
         ComboPooledDataSource dataSource = new ComboPooledDataSource();
         dataSource.setJdbcUrl(testUrl);
         Object bean = dataSourceBeanPostProcessor.postProcessAfterInitialization(dataSource,
-            "normalBean");
+                "normalBean");
         assertThat(bean).isNotNull();
         assertThat(bean).isNotEqualTo(dataSource);
         assertThat(bean).isInstanceOf(SmartDataSource.class);
@@ -122,7 +122,7 @@ public class DataSourceBeanPostProcessorTests {
         HikariDataSource dataSource = new HikariDataSource();
         dataSource.setJdbcUrl(testUrl);
         Object bean = dataSourceBeanPostProcessor.postProcessAfterInitialization(dataSource,
-            "normalBean");
+                "normalBean");
         assertThat(bean).isNotNull();
         assertThat(bean).isNotEqualTo(dataSource);
         assertThat(bean).isInstanceOf(SmartDataSource.class);

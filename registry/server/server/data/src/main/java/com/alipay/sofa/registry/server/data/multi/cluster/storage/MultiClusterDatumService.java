@@ -29,9 +29,10 @@ import com.alipay.sofa.registry.server.data.change.DataChangeType;
 import com.alipay.sofa.registry.server.data.slot.SlotAccessorDelegate;
 import com.alipay.sofa.registry.store.api.meta.MultiClusterSyncRepository;
 import com.google.common.collect.Maps;
-import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
+
+import java.util.Map;
 
 /**
  * @author xiaojian.xj
@@ -39,48 +40,52 @@ import org.springframework.util.CollectionUtils;
  */
 public class MultiClusterDatumService {
 
-  private static final Logger LOG = LoggerFactory.getLogger(MultiClusterDatumService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(MultiClusterDatumService.class);
 
-  @Autowired private DatumStorageDelegate datumStorageDelegate;
+    @Autowired
+    private DatumStorageDelegate datumStorageDelegate;
 
-  @Autowired private SlotAccessorDelegate slotAccessorDelegate;
+    @Autowired
+    private SlotAccessorDelegate slotAccessorDelegate;
 
-  @Autowired private MultiClusterSyncRepository multiClusterSyncRepository;
+    @Autowired
+    private MultiClusterSyncRepository multiClusterSyncRepository;
 
-  @Autowired private DataChangeEventCenter dataChangeEventCenter;
+    @Autowired
+    private DataChangeEventCenter dataChangeEventCenter;
 
-  public void clear(RemoteDatumClearEvent request) {
+    public void clear(RemoteDatumClearEvent request) {
 
-    MultiClusterSyncInfo query = multiClusterSyncRepository.query(request.getRemoteDataCenter());
-    if (query != null && query.isEnableSyncDatum()) {
-      LOG.error("clear datum forbidden when sync enable, request:{}", request);
-      return;
+        MultiClusterSyncInfo query = multiClusterSyncRepository.query(request.getRemoteDataCenter());
+        if (query != null && query.isEnableSyncDatum()) {
+            LOG.error("clear datum forbidden when sync enable, request:{}", request);
+            return;
+        }
+
+        Map<String, DatumVersion> datumVersionMap = Maps.newHashMap();
+        if (request.getDatumType() == DatumType.DATA_INFO_ID) {
+            if (!slotAccessorDelegate.isLeader(
+                    request.getRemoteDataCenter(), slotAccessorDelegate.slotOf(request.getDataInfoId()))) {
+                return;
+            }
+            DatumVersion datumVersion =
+                    datumStorageDelegate.clearPublishers(
+                            request.getRemoteDataCenter(), request.getDataInfoId());
+            if (datumVersion != null) {
+                datumVersionMap.put(request.getDataInfoId(), datumVersion);
+            }
+        } else if (request.getDatumType() == DatumType.GROUP) {
+            datumVersionMap =
+                    datumStorageDelegate.clearGroupPublishers(
+                            request.getRemoteDataCenter(), request.getGroup());
+        } else {
+            throw new SofaRegistryRuntimeException("illegal request datumType:" + request.getDatumType());
+        }
+
+        LOG.info("[ClearMultiDatum]req: {}, datumVersionMap:{}", request, datumVersionMap);
+        if (!CollectionUtils.isEmpty(datumVersionMap)) {
+            dataChangeEventCenter.onChange(
+                    datumVersionMap.keySet(), DataChangeType.CLEAR, request.getRemoteDataCenter());
+        }
     }
-
-    Map<String, DatumVersion> datumVersionMap = Maps.newHashMap();
-    if (request.getDatumType() == DatumType.DATA_INFO_ID) {
-      if (!slotAccessorDelegate.isLeader(
-          request.getRemoteDataCenter(), slotAccessorDelegate.slotOf(request.getDataInfoId()))) {
-        return;
-      }
-      DatumVersion datumVersion =
-          datumStorageDelegate.clearPublishers(
-              request.getRemoteDataCenter(), request.getDataInfoId());
-      if (datumVersion != null) {
-        datumVersionMap.put(request.getDataInfoId(), datumVersion);
-      }
-    } else if (request.getDatumType() == DatumType.GROUP) {
-      datumVersionMap =
-          datumStorageDelegate.clearGroupPublishers(
-              request.getRemoteDataCenter(), request.getGroup());
-    } else {
-      throw new SofaRegistryRuntimeException("illegal request datumType:" + request.getDatumType());
-    }
-
-    LOG.info("[ClearMultiDatum]req: {}, datumVersionMap:{}", request, datumVersionMap);
-    if (!CollectionUtils.isEmpty(datumVersionMap)) {
-      dataChangeEventCenter.onChange(
-          datumVersionMap.keySet(), DataChangeType.CLEAR, request.getRemoteDataCenter());
-    }
-  }
 }

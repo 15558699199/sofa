@@ -46,10 +46,10 @@ import static org.mockito.Mockito.mock;
  */
 public class InjectorMockApplicationContextCacheTests {
 
-    private final DefaultContextCache                    contextCache = new DefaultContextCache();
+    private final DefaultContextCache contextCache = new DefaultContextCache();
 
-    private final DefaultCacheAwareContextLoaderDelegate delegate     = new DefaultCacheAwareContextLoaderDelegate(
-                                                                          this.contextCache);
+    private final DefaultCacheAwareContextLoaderDelegate delegate = new DefaultCacheAwareContextLoaderDelegate(
+            this.contextCache);
 
     @AfterEach
     @SuppressWarnings("unchecked")

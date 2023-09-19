@@ -33,41 +33,41 @@ public class ServerConfigTest {
     public void testAll() {
         ServerConfig config = new ServerConfig();
         config.setProtocol("bolt")
-            .setHost("127.0.0.2")
-            .setPort(54321)
-            .setContextPath("/")
-            .setIoThreads(4)
-            .setThreadPoolType("fixed")
-            .setCoreThreads(20)
-            .setMaxThreads(200)
-            .setTelnet(false)
-            .setQueueType("priority")
-            .setQueues(1024)
-            .setAliveTime(30000)
-            .setPreStartCore(true)
-            .setAccepts(30000)
-            .setPayload(10 * 1024 * 1024)
-            .setSerialization("protobuf")
-            .setDispatcher("message")
-            .setParameters(Collections.singletonMap("app", "app"))
-            .setVirtualHost("192.168.1.1")
-            .setVirtualPort(12345)
-            .setOnConnect(Arrays.<ChannelListener> asList(new ChannelListener() {
+                .setHost("127.0.0.2")
+                .setPort(54321)
+                .setContextPath("/")
+                .setIoThreads(4)
+                .setThreadPoolType("fixed")
+                .setCoreThreads(20)
+                .setMaxThreads(200)
+                .setTelnet(false)
+                .setQueueType("priority")
+                .setQueues(1024)
+                .setAliveTime(30000)
+                .setPreStartCore(true)
+                .setAccepts(30000)
+                .setPayload(10 * 1024 * 1024)
+                .setSerialization("protobuf")
+                .setDispatcher("message")
+                .setParameters(Collections.singletonMap("app", "app"))
+                .setVirtualHost("192.168.1.1")
+                .setVirtualPort(12345)
+                .setOnConnect(Arrays.<ChannelListener>asList(new ChannelListener() {
 
-                @Override
-                public void onConnected(AbstractChannel channel) {
-                }
+                    @Override
+                    public void onConnected(AbstractChannel channel) {
+                    }
 
-                @Override
-                public void onDisconnected(AbstractChannel channel) {
-                }
-            })).setEpoll(true)
-            .setDaemon(false)
-            .setAdaptivePort(true)
-            .setTransport("netty")
-            .setAutoStart(true)
-            .setStopTimeout(10000)
-            .setKeepAlive(true);
+                    @Override
+                    public void onDisconnected(AbstractChannel channel) {
+                    }
+                })).setEpoll(true)
+                .setDaemon(false)
+                .setAdaptivePort(true)
+                .setTransport("netty")
+                .setAutoStart(true)
+                .setStopTimeout(10000)
+                .setKeepAlive(true);
 
         Assert.assertEquals("bolt", config.getProtocol());
         Assert.assertEquals("127.0.0.2", config.getHost());

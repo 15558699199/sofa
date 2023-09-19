@@ -16,8 +16,6 @@
  */
 package com.alipay.sofa.registry.server.session.providedata;
 
-import static org.mockito.Mockito.mock;
-
 import com.alipay.sofa.registry.common.model.ServerDataBox;
 import com.alipay.sofa.registry.common.model.constants.ValueConstants;
 import com.alipay.sofa.registry.common.model.metaserver.ProvideData;
@@ -28,35 +26,37 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.mockito.Mockito.mock;
+
 /**
  * @author xiaojian.xj
  * @version $Id: FetchBlackListTest.java, v 0.1 2021年06月04日 21:03 xiaojian.xj Exp $
  */
 public class FetchBlackListTest extends FetchBlackListService {
 
-  @Before
-  public void beforeFetchBlackListTest() {
+    @Before
+    public void beforeFetchBlackListTest() {
 
-    Registry sessionRegistry = mock(Registry.class);
-    SessionServerConfig sessionServerConfig = mock(SessionServerConfig.class);
-    ConnectionsService connectionsService = mock(ConnectionsService.class);
+        Registry sessionRegistry = mock(Registry.class);
+        SessionServerConfig sessionServerConfig = mock(SessionServerConfig.class);
+        ConnectionsService connectionsService = mock(ConnectionsService.class);
 
-    this.setSessionRegistry(sessionRegistry)
-        .setSessionServerConfig(sessionServerConfig)
-        .setConnectionsService(connectionsService);
-  }
+        this.setSessionRegistry(sessionRegistry)
+                .setSessionServerConfig(sessionServerConfig)
+                .setConnectionsService(connectionsService);
+    }
 
-  @Test
-  public void test() {
-    Assert.assertEquals(0, getBlacklistConfigList().size());
+    @Test
+    public void test() {
+        Assert.assertEquals(0, getBlacklistConfigList().size());
 
-    Assert.assertTrue(
-        doProcess(
-            storage.get(),
-            new ProvideData(
-                new ServerDataBox(
-                    "{\"FORBIDDEN_PUB\":{\"IP_FULL\":[\"1.1.1.1\"]},\"FORBIDDEN_SUB_BY_PREFIX\":{\"IP_FULL\":[\"1.1.1.1\"]}}"),
-                ValueConstants.BLACK_LIST_DATA_ID,
-                1L)));
-  }
+        Assert.assertTrue(
+                doProcess(
+                        storage.get(),
+                        new ProvideData(
+                                new ServerDataBox(
+                                        "{\"FORBIDDEN_PUB\":{\"IP_FULL\":[\"1.1.1.1\"]},\"FORBIDDEN_SUB_BY_PREFIX\":{\"IP_FULL\":[\"1.1.1.1\"]}}"),
+                                ValueConstants.BLACK_LIST_DATA_ID,
+                                1L)));
+    }
 }

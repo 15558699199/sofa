@@ -24,5 +24,5 @@ import java.io.Serializable;
  */
 public class GetSlotTableStatusRequest implements Serializable {
 
-  private static final long serialVersionUID = 3343855660232710818L;
+    private static final long serialVersionUID = 3343855660232710818L;
 }

@@ -18,14 +18,10 @@ package com.alipay.sofa.rpc.server;
 
 import com.alipay.sofa.rpc.config.ServerConfig;
 
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.SynchronousQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 /**
- * Business pool 
+ * Business pool
  *
  * @author <a href=mailto:zhanggeng.zg@antfin.com>GengZhang</a>
  */
@@ -38,7 +34,7 @@ public class BusinessPool {
         int aliveTime = serverConfig.getAliveTime();
 
         BlockingQueue<Runnable> poolQueue = queueSize > 0 ? new LinkedBlockingQueue<Runnable>(
-            queueSize) : new SynchronousQueue<Runnable>();
+                queueSize) : new SynchronousQueue<Runnable>();
 
         return new ThreadPoolExecutor(minPoolSize, maxPoolSize, aliveTime, TimeUnit.MILLISECONDS, poolQueue);
     }

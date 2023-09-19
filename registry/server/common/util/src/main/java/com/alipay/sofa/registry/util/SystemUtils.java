@@ -19,37 +19,38 @@ package com.alipay.sofa.registry.util;
 import org.apache.commons.lang.StringUtils;
 
 public final class SystemUtils {
-  private SystemUtils() {}
-
-  public static int getSystemInteger(String name, int def) {
-    String v = System.getProperty(name);
-    if (v == null) {
-      v = System.getenv(convertEnvKey(name));
+    private SystemUtils() {
     }
-    return v == null ? def : Integer.parseInt(v);
-  }
 
-  public static long getSystemLong(String name, long def) {
-    String v = System.getProperty(name);
-    if (v == null) {
-      v = System.getenv(convertEnvKey(name));
+    public static int getSystemInteger(String name, int def) {
+        String v = System.getProperty(name);
+        if (v == null) {
+            v = System.getenv(convertEnvKey(name));
+        }
+        return v == null ? def : Integer.parseInt(v);
     }
-    return v == null ? def : Long.parseLong(v);
-  }
 
-  public static String getSystem(String name, String def) {
-    String v = System.getProperty(name);
-    if (v == null) {
-      v = System.getenv(convertEnvKey(name));
+    public static long getSystemLong(String name, long def) {
+        String v = System.getProperty(name);
+        if (v == null) {
+            v = System.getenv(convertEnvKey(name));
+        }
+        return v == null ? def : Long.parseLong(v);
     }
-    return v == null ? def : v;
-  }
 
-  public static String getSystem(String name) {
-    return getSystem(name, null);
-  }
+    public static String getSystem(String name, String def) {
+        String v = System.getProperty(name);
+        if (v == null) {
+            v = System.getenv(convertEnvKey(name));
+        }
+        return v == null ? def : v;
+    }
 
-  private static String convertEnvKey(String key) {
-    return StringUtils.replace(key, ".", "_").toUpperCase();
-  }
+    public static String getSystem(String name) {
+        return getSystem(name, null);
+    }
+
+    private static String convertEnvKey(String key) {
+        return StringUtils.replace(key, ".", "_").toUpperCase();
+    }
 }

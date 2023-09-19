@@ -46,7 +46,7 @@ class HealthCheckUtilsTests {
         assertThat(originMap.keySet().toArray()[0]).isEqualTo("low");
         assertThat(originMap.keySet().toArray()[1]).isEqualTo("high");
         originMap = HealthCheckComparatorSupport.sortMapAccordingToValue(originMap,
-            AnnotationAwareOrderComparator.INSTANCE);
+                AnnotationAwareOrderComparator.INSTANCE);
         assertThat(originMap.keySet().toArray()[0]).isEqualTo("high");
         assertThat(originMap.keySet().toArray()[1]).isEqualTo("low");
     }
@@ -54,7 +54,7 @@ class HealthCheckUtilsTests {
     @Test
     public void getDefaultComparatorToUse() {
         assertThat(HealthCheckComparatorSupport.getComparatorToUse(null)).isEqualTo(
-            AnnotationAwareOrderComparator.INSTANCE);
+                AnnotationAwareOrderComparator.INSTANCE);
     }
 
     @Test

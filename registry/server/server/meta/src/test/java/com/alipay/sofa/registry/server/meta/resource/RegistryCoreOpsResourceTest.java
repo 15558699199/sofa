@@ -16,10 +16,6 @@
  */
 package com.alipay.sofa.registry.server.meta.resource;
 
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 import com.alipay.sofa.registry.common.model.CommonResponse;
 import com.alipay.sofa.registry.common.model.constants.ValueConstants;
 import com.alipay.sofa.registry.common.model.metaserver.Lease;
@@ -41,82 +37,87 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import static org.mockito.Mockito.*;
+
 @RunWith(MockitoJUnitRunner.class)
 public class RegistryCoreOpsResourceTest extends AbstractMetaServerTestBase {
 
-  @InjectMocks
-  private RegistryForbiddenServerManager registryForbiddenServerManager =
-      new DefaultForbiddenServerManager();
+    @InjectMocks
+    private RegistryForbiddenServerManager registryForbiddenServerManager =
+            new DefaultForbiddenServerManager();
 
-  @Spy private InMemoryProvideDataRepo provideDataService;
+    @Spy
+    private InMemoryProvideDataRepo provideDataService;
 
-  @Spy private InMemoryNodeOperatingService nodeOperatingService;
+    @Spy
+    private InMemoryNodeOperatingService nodeOperatingService;
 
-  @Mock private LeaderElector leaderElector;
+    @Mock
+    private LeaderElector leaderElector;
 
-  private RegistryCoreOpsResource resource;
+    private RegistryCoreOpsResource resource;
 
-  @Before
-  public void before() {
-    MockitoAnnotations.initMocks(RegistryForbiddenServerManager.class);
-    MockitoAnnotations.initMocks(NodeOperatingService.class);
+    @Before
+    public void before() {
+        MockitoAnnotations.initMocks(RegistryForbiddenServerManager.class);
+        MockitoAnnotations.initMocks(NodeOperatingService.class);
 
-    when(leaderElector.getLeaderInfo()).thenReturn(leaderInfo);
+        when(leaderElector.getLeaderInfo()).thenReturn(leaderInfo);
 
-    resource =
-        new RegistryCoreOpsResource()
-            .setRegistryForbiddenServerManager(registryForbiddenServerManager);
-    nodeOperatingService.setProvideDataService(provideDataService);
-  }
+        resource =
+                new RegistryCoreOpsResource()
+                        .setRegistryForbiddenServerManager(registryForbiddenServerManager);
+        nodeOperatingService.setProvideDataService(provideDataService);
+    }
 
-  @Test
-  public void testKickoffServer() {
-    CommonResponse response = resource.kickoffServer("testCell", "DATA", "fakeip");
-    Assert.assertFalse(response.isSuccess());
-    Assert.assertEquals("invalid ip address: fakeip", response.getMessage());
+    @Test
+    public void testKickoffServer() {
+        CommonResponse response = resource.kickoffServer("testCell", "DATA", "fakeip");
+        Assert.assertFalse(response.isSuccess());
+        Assert.assertEquals("invalid ip address: fakeip", response.getMessage());
 
-    response = resource.kickoffServer("testCell", "DATA", "127.0.0.1");
-    Assert.assertTrue(response.isSuccess());
-    Assert.assertFalse(
-        registryForbiddenServerManager.allowSelect(new Lease<>(new SimpleNode("127.0.0.1"), 100)));
-  }
+        response = resource.kickoffServer("testCell", "DATA", "127.0.0.1");
+        Assert.assertTrue(response.isSuccess());
+        Assert.assertFalse(
+                registryForbiddenServerManager.allowSelect(new Lease<>(new SimpleNode("127.0.0.1"), 100)));
+    }
 
-  @Test
-  public void testKickoffServerException() {
-    ProvideDataService provideDataService = mock(ProvideDataService.class);
-    registryForbiddenServerManager =
-        new DefaultForbiddenServerManager(provideDataService, nodeOperatingService);
-    resource =
-        new RegistryCoreOpsResource()
-            .setRegistryForbiddenServerManager(registryForbiddenServerManager);
+    @Test
+    public void testKickoffServerException() {
+        ProvideDataService provideDataService = mock(ProvideDataService.class);
+        registryForbiddenServerManager =
+                new DefaultForbiddenServerManager(provideDataService, nodeOperatingService);
+        resource =
+                new RegistryCoreOpsResource()
+                        .setRegistryForbiddenServerManager(registryForbiddenServerManager);
 
-    when(provideDataService.queryProvideData(ValueConstants.REGISTRY_SERVER_BLACK_LIST_DATA_ID))
-        .thenReturn(DBResponse.notfound().build());
+        when(provideDataService.queryProvideData(ValueConstants.REGISTRY_SERVER_BLACK_LIST_DATA_ID))
+                .thenReturn(DBResponse.notfound().build());
 
-    doThrow(new SofaRegistryRuntimeException("expected"))
-        .when(provideDataService)
-        .saveProvideData(mockPersistenceData(), System.currentTimeMillis());
-    CommonResponse response = resource.kickoffServer("testCell", "DATA", "127.0.0.1");
-    Assert.assertFalse(response.isSuccess());
-  }
+        doThrow(new SofaRegistryRuntimeException("expected"))
+                .when(provideDataService)
+                .saveProvideData(mockPersistenceData(), System.currentTimeMillis());
+        CommonResponse response = resource.kickoffServer("testCell", "DATA", "127.0.0.1");
+        Assert.assertFalse(response.isSuccess());
+    }
 
-  @Test
-  public void testRejoinServerGroup() {
-    CommonResponse response = resource.rejoinServerGroup("testCell", "DATA", "fakeip");
-    Assert.assertFalse(response.isSuccess());
-    Assert.assertEquals("invalid ip address: fakeip", response.getMessage());
+    @Test
+    public void testRejoinServerGroup() {
+        CommonResponse response = resource.rejoinServerGroup("testCell", "DATA", "fakeip");
+        Assert.assertFalse(response.isSuccess());
+        Assert.assertEquals("invalid ip address: fakeip", response.getMessage());
 
-    Assert.assertTrue(
-        registryForbiddenServerManager.allowSelect(new Lease<>(new SimpleNode("127.0.0.1"), 100)));
+        Assert.assertTrue(
+                registryForbiddenServerManager.allowSelect(new Lease<>(new SimpleNode("127.0.0.1"), 100)));
 
-    response = resource.kickoffServer("testCell", "DATA", "127.0.0.1");
-    Assert.assertTrue(response.isSuccess());
-    Assert.assertFalse(
-        registryForbiddenServerManager.allowSelect(new Lease<>(new SimpleNode("127.0.0.1"), 100)));
+        response = resource.kickoffServer("testCell", "DATA", "127.0.0.1");
+        Assert.assertTrue(response.isSuccess());
+        Assert.assertFalse(
+                registryForbiddenServerManager.allowSelect(new Lease<>(new SimpleNode("127.0.0.1"), 100)));
 
-    response = resource.rejoinServerGroup("testCell", "DATA", "127.0.0.1");
-    Assert.assertTrue(response.isSuccess());
-    Assert.assertTrue(
-        registryForbiddenServerManager.allowSelect(new Lease<>(new SimpleNode("127.0.0.1"), 100)));
-  }
+        response = resource.rejoinServerGroup("testCell", "DATA", "127.0.0.1");
+        Assert.assertTrue(response.isSuccess());
+        Assert.assertTrue(
+                registryForbiddenServerManager.allowSelect(new Lease<>(new SimpleNode("127.0.0.1"), 100)));
+    }
 }

@@ -24,12 +24,18 @@ package com.alipay.sofa.registry.client.constants;
  */
 public class ValueConstants {
 
-  /** The constant DEFAULT_GROUP. */
-  public static final String DEFAULT_GROUP = "DEFAULT_GROUP";
+    /**
+     * The constant DEFAULT_GROUP.
+     */
+    public static final String DEFAULT_GROUP = "DEFAULT_GROUP";
 
-  /** The constant DEFAULT_ZONE. */
-  public static final String DEFAULT_ZONE = "DEFAULT_ZONE";
+    /**
+     * The constant DEFAULT_ZONE.
+     */
+    public static final String DEFAULT_ZONE = "DEFAULT_ZONE";
 
-  /** The constant DEFAULT_DATA_CENTER. */
-  public static final String DEFAULT_DATA_CENTER = "DefaultDataCenter";
+    /**
+     * The constant DEFAULT_DATA_CENTER.
+     */
+    public static final String DEFAULT_DATA_CENTER = "DefaultDataCenter";
 }

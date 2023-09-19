@@ -48,8 +48,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class SofaModuleAutoConfigurationTests {
 
     private final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
-                                                             .withConfiguration(AutoConfigurations
-                                                                 .of(SofaModuleAutoConfiguration.class));
+            .withConfiguration(AutoConfigurations
+                    .of(SofaModuleAutoConfiguration.class));
 
     @Test
     public void registerIsleBeans() {

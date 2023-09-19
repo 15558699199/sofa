@@ -33,12 +33,7 @@ import com.alipay.sofa.rpc.core.response.SofaResponse;
 import com.alipay.sofa.rpc.log.LogCodes;
 import com.alipay.sofa.rpc.message.ResponseFuture;
 
-import static com.alipay.sofa.rpc.common.RpcConstants.CUSTOM_CALLER_APP;
-import static com.alipay.sofa.rpc.common.RpcConstants.HIDDEN_KEY_INVOKE_CONTEXT;
-import static com.alipay.sofa.rpc.common.RpcConstants.HIDDEN_KEY_PINPOINT;
-import static com.alipay.sofa.rpc.common.RpcConstants.INTERNAL_KEY_APP_NAME;
-import static com.alipay.sofa.rpc.common.RpcConstants.INTERNAL_KEY_PROTOCOL_NAME;
-import static com.alipay.sofa.rpc.common.RpcConstants.INTERNAL_KEY_RESULT_CODE;
+import static com.alipay.sofa.rpc.common.RpcConstants.*;
 
 /**
  * 默认调用端代理执行器
@@ -55,7 +50,7 @@ public class DefaultClientProxyInvoker extends ClientProxyInvoker {
     /**
      * 缓存序列化类型
      */
-    protected Byte   serializeType;
+    protected Byte serializeType;
 
     /**
      * 构造执行链
@@ -104,7 +99,7 @@ public class DefaultClientProxyInvoker extends ClientProxyInvoker {
                 request.setSofaResponseCallback(responseCallback);
                 invokeCtx.setResponseCallback(null); // 一次性用完
                 invokeCtx.put(RemotingConstants.INVOKE_CTX_IS_ASYNC_CHAIN,
-                    isSendableResponseCallback(responseCallback));
+                        isSendableResponseCallback(responseCallback));
             }
             // 如果用户设置了调用级别超时时间
             Integer timeout = invokeCtx.getTimeout();

@@ -65,15 +65,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Import(ExtensionTests.ExtensionTestConfiguration.class)
 public class ExtensionTests implements ExtensionClientAware, SofaRuntimeContextAware {
 
-    private ExtensionClient      extensionClient;
+    private ExtensionClient extensionClient;
 
-    private SofaRuntimeContext   sofaRuntimeContext;
-
-    @Autowired
-    private IExtension           iExtension;
+    private SofaRuntimeContext sofaRuntimeContext;
 
     @Autowired
-    private SimpleSpringBean     simpleSpringBean;
+    private IExtension iExtension;
+
+    @Autowired
+    private SimpleSpringBean simpleSpringBean;
 
     @Autowired
     private SimpleSpringListBean simpleSpringListBean1;
@@ -82,10 +82,10 @@ public class ExtensionTests implements ExtensionClientAware, SofaRuntimeContextA
     private SimpleSpringListBean simpleSpringListBean2;
 
     @Autowired
-    private SimpleSpringMapBean  springMapBean1;
+    private SimpleSpringMapBean springMapBean1;
 
     @Autowired
-    private SimpleSpringMapBean  springMapBean2;
+    private SimpleSpringMapBean springMapBean2;
 
     @Test
     public void xMap() throws Exception {
@@ -134,7 +134,7 @@ public class ExtensionTests implements ExtensionClientAware, SofaRuntimeContextA
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
         Document doc = dBuilder.parse(new File(Thread.currentThread().getContextClassLoader()
-            .getResource("spring/extension/extension.xml").toURI()));
+                .getResource("spring/extension/extension.xml").toURI()));
         ExtensionParam extensionParam = new ExtensionParam();
         extensionParam.setTargetName("clientValue");
         extensionParam.setTargetInstanceName("iExtension");
@@ -149,28 +149,28 @@ public class ExtensionTests implements ExtensionClientAware, SofaRuntimeContextA
         assertThat(iExtension).isNotNull();
         assertThat(iExtension.getSimpleExtensionDescriptor()).isNotNull();
         assertThat("SOFABoot Extension Test").isEqualTo(
-            iExtension.getSimpleExtensionDescriptor().getStringValue());
+                iExtension.getSimpleExtensionDescriptor().getStringValue());
         assertThat("value with path").isEqualTo(
-            iExtension.getSimpleExtensionDescriptor().getStringValueWithPath());
+                iExtension.getSimpleExtensionDescriptor().getStringValueWithPath());
         assertThat(Integer.valueOf(10)).isEqualTo(
-            iExtension.getSimpleExtensionDescriptor().getIntValue());
+                iExtension.getSimpleExtensionDescriptor().getIntValue());
         assertThat(Long.valueOf(20)).isEqualTo(
-            iExtension.getSimpleExtensionDescriptor().getLongValue());
+                iExtension.getSimpleExtensionDescriptor().getLongValue());
         assertThat(1.1f).isEqualTo(iExtension.getSimpleExtensionDescriptor().getFloatValue());
         assertThat(2.2d).isEqualTo(iExtension.getSimpleExtensionDescriptor().getDoubleValue());
         assertThat(Boolean.TRUE).isEqualTo(
-            iExtension.getSimpleExtensionDescriptor().getBooleanValue());
+                iExtension.getSimpleExtensionDescriptor().getBooleanValue());
         assertThat(
-            iExtension.getSimpleExtensionDescriptor().getDateValue().toString().contains("2019"))
-            .isTrue();
+                iExtension.getSimpleExtensionDescriptor().getDateValue().toString().contains("2019"))
+                .isTrue();
         assertThat("file").isEqualTo(
-            iExtension.getSimpleExtensionDescriptor().getFileValue().getName());
+                iExtension.getSimpleExtensionDescriptor().getFileValue().getName());
         assertThat(SimpleExtensionDescriptor.class.getName()).isEqualTo(
-            iExtension.getSimpleExtensionDescriptor().getClassValue().getName());
+                iExtension.getSimpleExtensionDescriptor().getClassValue().getName());
         assertThat("http://test").isEqualTo(
-            iExtension.getSimpleExtensionDescriptor().getUrlValue().toString());
+                iExtension.getSimpleExtensionDescriptor().getUrlValue().toString());
         assertThat("extension.xml").isEqualTo(
-            iExtension.getSimpleExtensionDescriptor().getResourceValue().toFile().getName());
+                iExtension.getSimpleExtensionDescriptor().getResourceValue().toFile().getName());
     }
 
     @Test
@@ -216,9 +216,9 @@ public class ExtensionTests implements ExtensionClientAware, SofaRuntimeContextA
     public void springMap() {
         assertThat(2).isEqualTo(iExtension.getSimpleSpringMapBeanMap().size());
         assertThat(springMapBean1).isEqualTo(
-            iExtension.getSimpleSpringMapBeanMap().get("testMapSpringKey1"));
+                iExtension.getSimpleSpringMapBeanMap().get("testMapSpringKey1"));
         assertThat(springMapBean2).isEqualTo(
-            iExtension.getSimpleSpringMapBeanMap().get("testMapSpringKey2"));
+                iExtension.getSimpleSpringMapBeanMap().get("testMapSpringKey2"));
     }
 
     @Test

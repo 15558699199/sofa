@@ -19,8 +19,8 @@ package com.alipay.sofa.registry.server.session.strategy.impl;
 import org.junit.Test;
 
 public class MetricsTest {
-  @Test
-  public void testMetrics() {
-    Metrics.Access.pubSize("registry", "SOFA", 100);
-  }
+    @Test
+    public void testMetrics() {
+        Metrics.Access.pubSize("registry", "SOFA", 100);
+    }
 }

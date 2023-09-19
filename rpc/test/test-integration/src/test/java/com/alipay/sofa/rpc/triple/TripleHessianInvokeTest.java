@@ -43,9 +43,9 @@ import java.util.function.Predicate;
  */
 public class TripleHessianInvokeTest {
 
-    private static final Logger        LOGGER = LoggerFactory.getLogger(TripleHessianInvokeTest.class);
-    public static final SofaTracer     tracer = new SofaTracer.Builder("TEST").build();
-    private static final AtomicInteger PORT   = new AtomicInteger(50062);
+    public static final SofaTracer tracer = new SofaTracer.Builder("TEST").build();
+    private static final Logger LOGGER = LoggerFactory.getLogger(TripleHessianInvokeTest.class);
+    private static final AtomicInteger PORT = new AtomicInteger(50062);
 
     @Before
     public void before() {
@@ -64,26 +64,26 @@ public class TripleHessianInvokeTest {
         int port = getPort();
 
         ServerConfig serverConfig = new ServerConfig()
-            .setProtocol(RpcConstants.PROTOCOL_TYPE_TRIPLE)
-            .setPort(port);
+                .setProtocol(RpcConstants.PROTOCOL_TYPE_TRIPLE)
+                .setPort(port);
 
         TripleHessianInterfaceImpl ref = new TripleHessianInterfaceImpl();
         ProviderConfig<TripleHessianInterface> providerConfig = getProviderConfig()
-            .setApplication(serverApp)
-            .setBootstrap(RpcConstants.PROTOCOL_TYPE_TRIPLE)
-            .setInterfaceId(TripleHessianInterface.class.getName())
-            .setRef(ref)
-            .setServer(serverConfig)
-            .setRegister(false);
+                .setApplication(serverApp)
+                .setBootstrap(RpcConstants.PROTOCOL_TYPE_TRIPLE)
+                .setInterfaceId(TripleHessianInterface.class.getName())
+                .setRef(ref)
+                .setServer(serverConfig)
+                .setRegister(false);
 
         providerConfig.export();
 
         ConsumerConfig<TripleHessianInterface> consumerConfig = new ConsumerConfig<TripleHessianInterface>();
         consumerConfig.setInterfaceId(TripleHessianInterface.class.getName())
-            .setProtocol(RpcConstants.PROTOCOL_TYPE_TRIPLE)
-            .setDirectUrl("127.0.0.1:" + port)
-            .setRegister(false)
-            .setApplication(clientApp);
+                .setProtocol(RpcConstants.PROTOCOL_TYPE_TRIPLE)
+                .setDirectUrl("127.0.0.1:" + port)
+                .setRegister(false)
+                .setApplication(clientApp);
 
         TripleHessianInterface helloService = consumerConfig.refer();
 
@@ -134,28 +134,28 @@ public class TripleHessianInvokeTest {
         int port = getPort();
 
         ServerConfig serverConfig = new ServerConfig()
-            .setProtocol(RpcConstants.PROTOCOL_TYPE_TRIPLE)
-            .setPort(port);
+                .setProtocol(RpcConstants.PROTOCOL_TYPE_TRIPLE)
+                .setPort(port);
 
         TripleHessianInterfaceImpl ref = new TripleHessianInterfaceImpl();
         ProviderConfig<TripleHessianInterface> providerConfig = getProviderConfig()
-            .setApplication(serverApp)
-            .setUniqueId(uniqueId)
-            .setBootstrap(RpcConstants.PROTOCOL_TYPE_TRIPLE)
-            .setInterfaceId(TripleHessianInterface.class.getName())
-            .setRef(ref)
-            .setServer(serverConfig)
-            .setRegister(false);
+                .setApplication(serverApp)
+                .setUniqueId(uniqueId)
+                .setBootstrap(RpcConstants.PROTOCOL_TYPE_TRIPLE)
+                .setInterfaceId(TripleHessianInterface.class.getName())
+                .setRef(ref)
+                .setServer(serverConfig)
+                .setRegister(false);
 
         providerConfig.export();
 
         ConsumerConfig<TripleHessianInterface> consumerConfig = new ConsumerConfig<TripleHessianInterface>();
         consumerConfig.setInterfaceId(TripleHessianInterface.class.getName())
-            .setProtocol(RpcConstants.PROTOCOL_TYPE_TRIPLE)
-            .setDirectUrl("127.0.0.1:" + port)
-            .setUniqueId(uniqueId)
-            .setRegister(false)
-            .setApplication(clientApp);
+                .setProtocol(RpcConstants.PROTOCOL_TYPE_TRIPLE)
+                .setDirectUrl("127.0.0.1:" + port)
+                .setUniqueId(uniqueId)
+                .setRegister(false)
+                .setApplication(clientApp);
 
         TripleHessianInterface helloService = consumerConfig.refer();
 
@@ -182,10 +182,10 @@ public class TripleHessianInvokeTest {
         // 测试没有设置 uniqueId 的情况，也能访问
         consumerConfig = new ConsumerConfig<TripleHessianInterface>();
         consumerConfig.setInterfaceId(TripleHessianInterface.class.getName())
-            .setProtocol(RpcConstants.PROTOCOL_TYPE_TRIPLE)
-            .setDirectUrl("127.0.0.1:" + port)
-            .setRegister(false)
-            .setApplication(clientApp);
+                .setProtocol(RpcConstants.PROTOCOL_TYPE_TRIPLE)
+                .setDirectUrl("127.0.0.1:" + port)
+                .setRegister(false)
+                .setApplication(clientApp);
 
         helloService = consumerConfig.refer();
 
@@ -225,18 +225,18 @@ public class TripleHessianInvokeTest {
         int port = getPort();
 
         ServerConfig serverConfig = new ServerConfig()
-            .setProtocol(RpcConstants.PROTOCOL_TYPE_TRIPLE)
-            .setPort(port);
+                .setProtocol(RpcConstants.PROTOCOL_TYPE_TRIPLE)
+                .setPort(port);
 
         TripleHessianInterfaceImpl ref = new TripleHessianInterfaceImpl();
         ProviderConfig<TripleHessianInterface> providerConfig = getProviderConfig()
-            .setApplication(serverApp)
-            .setUniqueId(uniqueId)
-            .setBootstrap(RpcConstants.PROTOCOL_TYPE_TRIPLE)
-            .setInterfaceId(TripleHessianInterface.class.getName())
-            .setRef(ref)
-            .setServer(serverConfig)
-            .setRegister(false);
+                .setApplication(serverApp)
+                .setUniqueId(uniqueId)
+                .setBootstrap(RpcConstants.PROTOCOL_TYPE_TRIPLE)
+                .setInterfaceId(TripleHessianInterface.class.getName())
+                .setRef(ref)
+                .setServer(serverConfig)
+                .setRegister(false);
 
         providerConfig.export();
 
@@ -250,18 +250,18 @@ public class TripleHessianInvokeTest {
         port = 50062;
 
         serverConfig = new ServerConfig()
-            .setProtocol(RpcConstants.PROTOCOL_TYPE_TRIPLE)
-            .setPort(port);
+                .setProtocol(RpcConstants.PROTOCOL_TYPE_TRIPLE)
+                .setPort(port);
 
         ref = new TripleHessianInterfaceImpl();
         ProviderConfig<TripleHessianInterface> providerConfig2 = getProviderConfig()
-            .setApplication(serverApp)
-            .setUniqueId(uniqueId)
-            .setBootstrap(RpcConstants.PROTOCOL_TYPE_TRIPLE)
-            .setInterfaceId(TripleHessianInterface.class.getName())
-            .setRef(ref)
-            .setServer(serverConfig)
-            .setRegister(false);
+                .setApplication(serverApp)
+                .setUniqueId(uniqueId)
+                .setBootstrap(RpcConstants.PROTOCOL_TYPE_TRIPLE)
+                .setInterfaceId(TripleHessianInterface.class.getName())
+                .setRef(ref)
+                .setServer(serverConfig)
+                .setRegister(false);
         providerConfig2.export();
 
         providerConfig2.unExport();
@@ -343,29 +343,29 @@ public class TripleHessianInvokeTest {
         ApplicationConfig serverApp = new ApplicationConfig().setAppName("triple-server");
         int port = getPort();
         ServerConfig serverConfig = new ServerConfig()
-            .setProtocol(RpcConstants.PROTOCOL_TYPE_TRIPLE)
-            .setCoreThreads(1)
-            .setMaxThreads(1)
-            .setQueues(10)
-            .setPort(port);
+                .setProtocol(RpcConstants.PROTOCOL_TYPE_TRIPLE)
+                .setCoreThreads(1)
+                .setMaxThreads(1)
+                .setQueues(10)
+                .setPort(port);
 
         TripleHessianInterfaceImpl ref = new TripleHessianInterfaceImpl();
         ProviderConfig<TripleHessianInterface> providerConfig = getProviderConfig()
-            .setApplication(serverApp)
-            .setBootstrap(RpcConstants.PROTOCOL_TYPE_TRIPLE)
-            .setInterfaceId(TripleHessianInterface.class.getName())
-            .setRef(ref)
-            .setServer(serverConfig)
-            .setRegister(false);
+                .setApplication(serverApp)
+                .setBootstrap(RpcConstants.PROTOCOL_TYPE_TRIPLE)
+                .setInterfaceId(TripleHessianInterface.class.getName())
+                .setRef(ref)
+                .setServer(serverConfig)
+                .setRegister(false);
         providerConfig.export();
 
         ConsumerConfig<TripleHessianInterface> consumerConfig = new ConsumerConfig<TripleHessianInterface>();
         consumerConfig.setInterfaceId(TripleHessianInterface.class.getName())
-            .setProtocol(RpcConstants.PROTOCOL_TYPE_TRIPLE)
-            .setDirectUrl("127.0.0.1:" + port)
-            .setTimeout(300000)
-            .setRegister(false)
-            .setApplication(clientApp);
+                .setProtocol(RpcConstants.PROTOCOL_TYPE_TRIPLE)
+                .setDirectUrl("127.0.0.1:" + port)
+                .setTimeout(300000)
+                .setRegister(false)
+                .setApplication(clientApp);
 
         TripleHessianInterface helloService = consumerConfig.refer();
 

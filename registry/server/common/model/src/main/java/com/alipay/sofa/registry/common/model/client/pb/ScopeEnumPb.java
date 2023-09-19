@@ -16,93 +16,106 @@
  */
 package com.alipay.sofa.registry.common.model.client.pb;
 
-/** Protobuf enum {@code ScopeEnumPb} */
+/**
+ * Protobuf enum {@code ScopeEnumPb}
+ */
 public enum ScopeEnumPb implements com.google.protobuf.ProtocolMessageEnum {
-  /** <code>zone = 0;</code> */
-  zone(0),
-  /** <code>dataCenter = 1;</code> */
-  dataCenter(1),
-  /** <code>global = 2;</code> */
-  global(2),
-  UNRECOGNIZED(-1),
-  ;
+    /**
+     * <code>zone = 0;</code>
+     */
+    zone(0),
+    /**
+     * <code>dataCenter = 1;</code>
+     */
+    dataCenter(1),
+    /**
+     * <code>global = 2;</code>
+     */
+    global(2),
+    UNRECOGNIZED(-1),
+    ;
 
-  /** <code>zone = 0;</code> */
-  public static final int zone_VALUE = 0;
-  /** <code>dataCenter = 1;</code> */
-  public static final int dataCenter_VALUE = 1;
-  /** <code>global = 2;</code> */
-  public static final int global_VALUE = 2;
+    /**
+     * <code>zone = 0;</code>
+     */
+    public static final int zone_VALUE = 0;
+    /**
+     * <code>dataCenter = 1;</code>
+     */
+    public static final int dataCenter_VALUE = 1;
+    /**
+     * <code>global = 2;</code>
+     */
+    public static final int global_VALUE = 2;
+    private static final com.google.protobuf.Internal.EnumLiteMap<ScopeEnumPb> internalValueMap =
+            new com.google.protobuf.Internal.EnumLiteMap<ScopeEnumPb>() {
+                public ScopeEnumPb findValueByNumber(int number) {
+                    return ScopeEnumPb.forNumber(number);
+                }
+            };
+    private static final ScopeEnumPb[] VALUES = values();
+    private final int value;
 
-  public final int getNumber() {
-    if (this == UNRECOGNIZED) {
-      throw new java.lang.IllegalArgumentException(
-          "Can't get the number of an unknown enum value.");
+    private ScopeEnumPb(int value) {
+        this.value = value;
     }
-    return value;
-  }
 
-  /** @deprecated Use {@link #forNumber(int)} instead. */
-  @java.lang.Deprecated
-  public static ScopeEnumPb valueOf(int value) {
-    return forNumber(value);
-  }
-
-  public static ScopeEnumPb forNumber(int value) {
-    switch (value) {
-      case 0:
-        return zone;
-      case 1:
-        return dataCenter;
-      case 2:
-        return global;
-      default:
-        return null;
+    /**
+     * @deprecated Use {@link #forNumber(int)} instead.
+     */
+    @java.lang.Deprecated
+    public static ScopeEnumPb valueOf(int value) {
+        return forNumber(value);
     }
-  }
 
-  public static com.google.protobuf.Internal.EnumLiteMap<ScopeEnumPb> internalGetValueMap() {
-    return internalValueMap;
-  }
-
-  private static final com.google.protobuf.Internal.EnumLiteMap<ScopeEnumPb> internalValueMap =
-      new com.google.protobuf.Internal.EnumLiteMap<ScopeEnumPb>() {
-        public ScopeEnumPb findValueByNumber(int number) {
-          return ScopeEnumPb.forNumber(number);
+    public static ScopeEnumPb forNumber(int value) {
+        switch (value) {
+            case 0:
+                return zone;
+            case 1:
+                return dataCenter;
+            case 2:
+                return global;
+            default:
+                return null;
         }
-      };
-
-  public final com.google.protobuf.Descriptors.EnumValueDescriptor getValueDescriptor() {
-    return getDescriptor().getValues().get(ordinal());
-  }
-
-  public final com.google.protobuf.Descriptors.EnumDescriptor getDescriptorForType() {
-    return getDescriptor();
-  }
-
-  public static final com.google.protobuf.Descriptors.EnumDescriptor getDescriptor() {
-    return com.alipay.sofa.registry.common.model.client.pb.ScopeEnumPbOuterClass.getDescriptor()
-        .getEnumTypes()
-        .get(0);
-  }
-
-  private static final ScopeEnumPb[] VALUES = values();
-
-  public static ScopeEnumPb valueOf(com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
-    if (desc.getType() != getDescriptor()) {
-      throw new java.lang.IllegalArgumentException("EnumValueDescriptor is not for this type.");
     }
-    if (desc.getIndex() == -1) {
-      return UNRECOGNIZED;
+
+    public static com.google.protobuf.Internal.EnumLiteMap<ScopeEnumPb> internalGetValueMap() {
+        return internalValueMap;
     }
-    return VALUES[desc.getIndex()];
-  }
 
-  private final int value;
+    public static final com.google.protobuf.Descriptors.EnumDescriptor getDescriptor() {
+        return com.alipay.sofa.registry.common.model.client.pb.ScopeEnumPbOuterClass.getDescriptor()
+                .getEnumTypes()
+                .get(0);
+    }
 
-  private ScopeEnumPb(int value) {
-    this.value = value;
-  }
+    public static ScopeEnumPb valueOf(com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+        if (desc.getType() != getDescriptor()) {
+            throw new java.lang.IllegalArgumentException("EnumValueDescriptor is not for this type.");
+        }
+        if (desc.getIndex() == -1) {
+            return UNRECOGNIZED;
+        }
+        return VALUES[desc.getIndex()];
+    }
 
-  // @@protoc_insertion_point(enum_scope:ScopeEnumPb)
+    public final int getNumber() {
+        if (this == UNRECOGNIZED) {
+            throw new java.lang.IllegalArgumentException(
+                    "Can't get the number of an unknown enum value.");
+        }
+        return value;
+    }
+
+    public final com.google.protobuf.Descriptors.EnumValueDescriptor getValueDescriptor() {
+        return getDescriptor().getValues().get(ordinal());
+    }
+
+    public final com.google.protobuf.Descriptors.EnumDescriptor getDescriptorForType() {
+        return getDescriptor();
+    }
+
+    // @@protoc_insertion_point(enum_scope:ScopeEnumPb)
 }

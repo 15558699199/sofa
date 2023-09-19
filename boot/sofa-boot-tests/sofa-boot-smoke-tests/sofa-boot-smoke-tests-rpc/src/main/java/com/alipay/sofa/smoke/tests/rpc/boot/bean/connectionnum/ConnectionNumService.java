@@ -16,11 +16,7 @@
  */
 package com.alipay.sofa.smoke.tests.rpc.boot.bean.connectionnum;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 
 @Path("/webapi")
 @Consumes("application/json;charset=UTF-8")

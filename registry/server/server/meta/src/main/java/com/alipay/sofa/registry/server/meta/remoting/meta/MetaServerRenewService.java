@@ -36,91 +36,90 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class MetaServerRenewService {
 
-  protected final Logger LOGGER = LoggerFactory.getLogger("META-RENEW");
+    protected final Logger LOGGER = LoggerFactory.getLogger("META-RENEW");
+    @Autowired
+    protected LocalMetaExchanger localMetaExchanger;
+    @Autowired
+    protected MetaServerConfig metaServerConfig;
+    @Autowired
+    private MetaLeaderService metaLeaderService;
+    @Autowired
+    private NodeConfig nodeConfig;
+    private Renewer renewer;
 
-  @Autowired private MetaLeaderService metaLeaderService;
+    public synchronized void startRenewer(int intervalMs) {
 
-  @Autowired private NodeConfig nodeConfig;
-
-  @Autowired protected LocalMetaExchanger localMetaExchanger;
-
-  @Autowired protected MetaServerConfig metaServerConfig;
-
-  private Renewer renewer;
-
-  public synchronized void startRenewer(int intervalMs) {
-
-    if (renewer != null) {
-      throw new IllegalStateException("has started renewer");
-    }
-    this.renewer = new Renewer(intervalMs);
-    ConcurrentUtils.createDaemonThread("metaNode-renewer", this.renewer).start();
-  }
-
-  private final class Renewer extends WakeUpLoopRunnable {
-    final int intervalMs;
-
-    Renewer(int intervalMs) {
-      this.intervalMs = intervalMs;
+        if (renewer != null) {
+            throw new IllegalStateException("has started renewer");
+        }
+        this.renewer = new Renewer(intervalMs);
+        ConcurrentUtils.createDaemonThread("metaNode-renewer", this.renewer).start();
     }
 
-    @Override
-    public void runUnthrowable() {
-      try {
+    public void renewNode() {
+        final String leaderIp = metaLeaderService.getLeader();
+        HeartbeatRequest heartbeatRequest =
+                new HeartbeatRequest<>(
+                        createNode(),
+                        -1L,
+                        nodeConfig.getLocalDataCenter(),
+                        System.currentTimeMillis(),
+                        null,
+                        null);
 
-        // heartbeat on leader
-        renewNode();
-      } catch (Throwable e) {
-        LOGGER.error("failed to renewNode", e);
-      }
+        boolean success = true;
+        final long startTimestamp = System.currentTimeMillis();
+        try {
+            GenericResponse resp =
+                    (GenericResponse)
+                            localMetaExchanger
+                                    .sendRequest(metaServerConfig.getLocalDataCenter(), heartbeatRequest)
+                                    .getResult();
+
+            if (resp == null || !resp.isSuccess()) {
+                success = false;
+                LOGGER.error(
+                        "[RenewNodeTask] renew meta node to metaLeader error, leader: {}, resp: {}",
+                        leaderIp,
+                        resp);
+            }
+        } catch (Throwable t) {
+            success = false;
+            LOGGER.error("[RenewNodeTask] renew node to metaLeader error, leader: {}", leaderIp, t);
+        } finally {
+            LOGGER.info(
+                    "[renewMetaLeader]{},leader={},span={}",
+                    success ? 'Y' : 'N',
+                    leaderIp,
+                    System.currentTimeMillis() - startTimestamp);
+        }
     }
 
-    @Override
-    public int getWaitingMillis() {
-      return intervalMs;
+    private MetaNode createNode() {
+        return new MetaNode(new URL(ServerEnv.IP), nodeConfig.getLocalDataCenter());
     }
-  }
 
-  public void renewNode() {
-    final String leaderIp = metaLeaderService.getLeader();
-    HeartbeatRequest heartbeatRequest =
-        new HeartbeatRequest<>(
-            createNode(),
-            -1L,
-            nodeConfig.getLocalDataCenter(),
-            System.currentTimeMillis(),
-            null,
-            null);
+    private final class Renewer extends WakeUpLoopRunnable {
+        final int intervalMs;
 
-    boolean success = true;
-    final long startTimestamp = System.currentTimeMillis();
-    try {
-      GenericResponse resp =
-          (GenericResponse)
-              localMetaExchanger
-                  .sendRequest(metaServerConfig.getLocalDataCenter(), heartbeatRequest)
-                  .getResult();
+        Renewer(int intervalMs) {
+            this.intervalMs = intervalMs;
+        }
 
-      if (resp == null || !resp.isSuccess()) {
-        success = false;
-        LOGGER.error(
-            "[RenewNodeTask] renew meta node to metaLeader error, leader: {}, resp: {}",
-            leaderIp,
-            resp);
-      }
-    } catch (Throwable t) {
-      success = false;
-      LOGGER.error("[RenewNodeTask] renew node to metaLeader error, leader: {}", leaderIp, t);
-    } finally {
-      LOGGER.info(
-          "[renewMetaLeader]{},leader={},span={}",
-          success ? 'Y' : 'N',
-          leaderIp,
-          System.currentTimeMillis() - startTimestamp);
+        @Override
+        public void runUnthrowable() {
+            try {
+
+                // heartbeat on leader
+                renewNode();
+            } catch (Throwable e) {
+                LOGGER.error("failed to renewNode", e);
+            }
+        }
+
+        @Override
+        public int getWaitingMillis() {
+            return intervalMs;
+        }
     }
-  }
-
-  private MetaNode createNode() {
-    return new MetaNode(new URL(ServerEnv.IP), nodeConfig.getLocalDataCenter());
-  }
 }

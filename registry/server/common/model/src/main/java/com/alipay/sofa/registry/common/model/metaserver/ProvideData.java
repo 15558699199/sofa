@@ -17,9 +17,10 @@
 package com.alipay.sofa.registry.common.model.metaserver;
 
 import com.alipay.sofa.registry.common.model.ServerDataBox;
-import java.io.Serializable;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.util.Assert;
+
+import java.io.Serializable;
 
 /**
  * @author shangyu.wh
@@ -27,79 +28,79 @@ import org.springframework.util.Assert;
  */
 public class ProvideData implements Serializable {
 
-  private final ServerDataBox provideData;
+    private final ServerDataBox provideData;
 
-  private final String dataInfoId;
+    private final String dataInfoId;
 
-  private final Long version;
+    private final Long version;
 
-  /**
-   * construtor
-   *
-   * @param provideData
-   * @param dataInfoId
-   * @param version
-   */
-  public ProvideData(ServerDataBox provideData, String dataInfoId, Long version) {
-    this.provideData = provideData;
-    this.dataInfoId = dataInfoId;
-    this.version = version;
-  }
-
-  /**
-   * Getter method for property <tt>provideData</tt>.
-   *
-   * @return property value of provideData
-   */
-  public ServerDataBox getProvideData() {
-    return provideData;
-  }
-
-  /**
-   * Getter method for property <tt>dataInfoId</tt>.
-   *
-   * @return property value of dataInfoId
-   */
-  public String getDataInfoId() {
-    return dataInfoId;
-  }
-
-  /**
-   * Getter method for property <tt>version</tt>.
-   *
-   * @return property value of version
-   */
-  public Long getVersion() {
-    return version;
-  }
-
-  public static String toString(ProvideData provideData) {
-    if (provideData == null || provideData.getProvideData() == null) {
-      return null;
+    /**
+     * construtor
+     *
+     * @param provideData
+     * @param dataInfoId
+     * @param version
+     */
+    public ProvideData(ServerDataBox provideData, String dataInfoId, Long version) {
+        this.provideData = provideData;
+        this.dataInfoId = dataInfoId;
+        this.version = version;
     }
-    return (String) provideData.getProvideData().getObject();
-  }
 
-  public static Boolean toBool(ProvideData provideData) {
-    String obj = ProvideData.toString(provideData);
-    Assert.isTrue(
-        StringUtils.equals("true", obj) || StringUtils.equals("false", obj),
-        String.format("provideDataKey: %s, value: %s toBool error.", provideData.dataInfoId, obj));
-    return obj != null ? Boolean.parseBoolean(obj) : null;
-  }
+    public static String toString(ProvideData provideData) {
+        if (provideData == null || provideData.getProvideData() == null) {
+            return null;
+        }
+        return (String) provideData.getProvideData().getObject();
+    }
 
-  public static Integer toInteger(ProvideData provideData) {
-    String obj = ProvideData.toString(provideData);
-    return obj != null ? Integer.valueOf(obj) : null;
-  }
+    public static Boolean toBool(ProvideData provideData) {
+        String obj = ProvideData.toString(provideData);
+        Assert.isTrue(
+                StringUtils.equals("true", obj) || StringUtils.equals("false", obj),
+                String.format("provideDataKey: %s, value: %s toBool error.", provideData.dataInfoId, obj));
+        return obj != null ? Boolean.parseBoolean(obj) : null;
+    }
 
-  @Override
-  public String toString() {
-    final StringBuilder sb = new StringBuilder("ProvideData{");
-    sb.append("provideData=").append(provideData);
-    sb.append(", dataInfoId='").append(dataInfoId).append('\'');
-    sb.append(", version=").append(version);
-    sb.append('}');
-    return sb.toString();
-  }
+    public static Integer toInteger(ProvideData provideData) {
+        String obj = ProvideData.toString(provideData);
+        return obj != null ? Integer.valueOf(obj) : null;
+    }
+
+    /**
+     * Getter method for property <tt>provideData</tt>.
+     *
+     * @return property value of provideData
+     */
+    public ServerDataBox getProvideData() {
+        return provideData;
+    }
+
+    /**
+     * Getter method for property <tt>dataInfoId</tt>.
+     *
+     * @return property value of dataInfoId
+     */
+    public String getDataInfoId() {
+        return dataInfoId;
+    }
+
+    /**
+     * Getter method for property <tt>version</tt>.
+     *
+     * @return property value of version
+     */
+    public Long getVersion() {
+        return version;
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("ProvideData{");
+        sb.append("provideData=").append(provideData);
+        sb.append(", dataInfoId='").append(dataInfoId).append('\'');
+        sb.append(", version=").append(version);
+        sb.append('}');
+        return sb.toString();
+    }
 }

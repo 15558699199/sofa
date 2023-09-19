@@ -23,8 +23,6 @@ import com.alipay.sofa.rpc.transport.AbstractByteBuf;
 import java.util.Map;
 
 /**
- *
- *
  * @author <a href="mailto:zhanggeng.zg@antfin.com">GengZhang</a>
  */
 @Extension(value = "test", code = 117)

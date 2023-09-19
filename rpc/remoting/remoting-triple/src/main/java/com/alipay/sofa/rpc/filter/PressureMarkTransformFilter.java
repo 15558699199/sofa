@@ -40,8 +40,8 @@ import static com.alipay.sofa.rpc.server.triple.TripleHeadKeys.HEAD_KEY_TRAFFIC_
 public class PressureMarkTransformFilter extends Filter {
 
     public static final String PRESSURE = "pressure";
-    public static final String MARK     = "mark";
-    public static final String T        = "T";
+    public static final String MARK = "mark";
+    public static final String T = "T";
 
     @Override
     public SofaResponse invoke(FilterInvoker invoker, SofaRequest request) throws SofaRpcException {

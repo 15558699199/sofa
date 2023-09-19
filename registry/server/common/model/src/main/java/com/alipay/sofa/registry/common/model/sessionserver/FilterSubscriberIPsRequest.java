@@ -19,19 +19,19 @@ package com.alipay.sofa.registry.common.model.sessionserver;
 import java.io.Serializable;
 
 public class FilterSubscriberIPsRequest implements Serializable {
-  private final String group;
-  private final int ipLimit;
+    private final String group;
+    private final int ipLimit;
 
-  public FilterSubscriberIPsRequest(String group, int ipLimit) {
-    this.group = group;
-    this.ipLimit = ipLimit;
-  }
+    public FilterSubscriberIPsRequest(String group, int ipLimit) {
+        this.group = group;
+        this.ipLimit = ipLimit;
+    }
 
-  public String getGroup() {
-    return group;
-  }
+    public String getGroup() {
+        return group;
+    }
 
-  public int getIpLimit() {
-    return ipLimit;
-  }
+    public int getIpLimit() {
+        return ipLimit;
+    }
 }

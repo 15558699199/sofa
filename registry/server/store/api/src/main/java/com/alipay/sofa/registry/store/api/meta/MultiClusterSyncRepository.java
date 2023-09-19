@@ -17,6 +17,7 @@
 package com.alipay.sofa.registry.store.api.meta;
 
 import com.alipay.sofa.registry.common.model.metaserver.MultiClusterSyncInfo;
+
 import java.util.Set;
 
 /**
@@ -25,37 +26,37 @@ import java.util.Set;
  */
 public interface MultiClusterSyncRepository {
 
-  /**
-   * insert
-   *
-   * @param syncInfo syncInfo
-   * @return boolean
-   */
-  boolean insert(MultiClusterSyncInfo syncInfo);
+    /**
+     * insert
+     *
+     * @param syncInfo syncInfo
+     * @return boolean
+     */
+    boolean insert(MultiClusterSyncInfo syncInfo);
 
-  /**
-   * update with cas
-   *
-   * @param syncInfo syncInfo
-   * @return boolean
-   */
-  boolean update(MultiClusterSyncInfo syncInfo, long expectVersion);
+    /**
+     * update with cas
+     *
+     * @param syncInfo syncInfo
+     * @return boolean
+     */
+    boolean update(MultiClusterSyncInfo syncInfo, long expectVersion);
 
-  /**
-   * query MultiClusterSyncInfo
-   *
-   * @return Set
-   */
-  public Set<MultiClusterSyncInfo> queryLocalSyncInfos();
+    /**
+     * query MultiClusterSyncInfo
+     *
+     * @return Set
+     */
+    public Set<MultiClusterSyncInfo> queryLocalSyncInfos();
 
-  /**
-   * remove provideData
-   *
-   * @param remoteDataCenter remoteDataCenter
-   * @param dataVersion dataVersion
-   * @return int
-   */
-  public int remove(String remoteDataCenter, long dataVersion);
+    /**
+     * remove provideData
+     *
+     * @param remoteDataCenter remoteDataCenter
+     * @param dataVersion      dataVersion
+     * @return int
+     */
+    public int remove(String remoteDataCenter, long dataVersion);
 
-  MultiClusterSyncInfo query(String remoteDataCenter);
+    MultiClusterSyncInfo query(String remoteDataCenter);
 }

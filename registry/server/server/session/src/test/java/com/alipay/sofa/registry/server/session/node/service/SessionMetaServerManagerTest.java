@@ -22,21 +22,21 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class SessionMetaServerManagerTest {
-  private SessionMetaServerManager sessionMetaServerManager;
-  private SessionServerConfig cfg;
+    private SessionMetaServerManager sessionMetaServerManager;
+    private SessionServerConfig cfg;
 
-  private void init() {
-    sessionMetaServerManager = new SessionMetaServerManager();
-    cfg = TestUtils.newSessionConfig("testDc");
-    sessionMetaServerManager.setSessionServerConfig(cfg);
-  }
+    private void init() {
+        sessionMetaServerManager = new SessionMetaServerManager();
+        cfg = TestUtils.newSessionConfig("testDc");
+        sessionMetaServerManager.setSessionServerConfig(cfg);
+    }
 
-  @Test
-  public void testConfig() {
-    init();
-    Assert.assertEquals(1, sessionMetaServerManager.getConnNum());
-    Assert.assertEquals(cfg.getMetaServerPort(), sessionMetaServerManager.getServerPort());
-    Assert.assertEquals(
-        cfg.getMetaNodeExchangeTimeoutMillis(), sessionMetaServerManager.getRpcTimeoutMillis());
-  }
+    @Test
+    public void testConfig() {
+        init();
+        Assert.assertEquals(1, sessionMetaServerManager.getConnNum());
+        Assert.assertEquals(cfg.getMetaServerPort(), sessionMetaServerManager.getServerPort());
+        Assert.assertEquals(
+                cfg.getMetaNodeExchangeTimeoutMillis(), sessionMetaServerManager.getRpcTimeoutMillis());
+    }
 }

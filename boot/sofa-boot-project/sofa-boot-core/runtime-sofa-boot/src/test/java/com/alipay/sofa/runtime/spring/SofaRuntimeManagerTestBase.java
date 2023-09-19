@@ -43,35 +43,35 @@ import java.util.HashSet;
  */
 public abstract class SofaRuntimeManagerTestBase {
 
-    protected ClientFactoryInternal   clientFactoryInternal;
+    protected ClientFactoryInternal clientFactoryInternal;
 
     protected BindingConverterFactory bindingConverterFactory;
 
-    protected BindingAdapterFactory   bindingAdapterFactory;
+    protected BindingAdapterFactory bindingAdapterFactory;
 
-    protected SofaRuntimeManager      sofaRuntimeManager;
+    protected SofaRuntimeManager sofaRuntimeManager;
 
-    protected SofaRuntimeContext      sofaRuntimeContext;
+    protected SofaRuntimeContext sofaRuntimeContext;
 
-    protected ComponentManager        componentManager;
+    protected ComponentManager componentManager;
 
     @BeforeEach
     public void init() {
         clientFactoryInternal = new ClientFactoryImpl();
         bindingConverterFactory = new BindingConverterFactoryImpl();
         bindingConverterFactory.addBindingConverters(new HashSet<>(SpringFactoriesLoader
-            .loadFactories(BindingConverter.class, null)));
+                .loadFactories(BindingConverter.class, null)));
         bindingAdapterFactory = new BindingAdapterFactoryImpl();
         bindingAdapterFactory.addBindingAdapters(new HashSet<>(SpringFactoriesLoader.loadFactories(
-            BindingAdapter.class, null)));
+                BindingAdapter.class, null)));
         sofaRuntimeManager = new StandardSofaRuntimeManager("testApp", Thread.currentThread()
-            .getContextClassLoader(), clientFactoryInternal);
+                .getContextClassLoader(), clientFactoryInternal);
         clientFactoryInternal.registerClient(ReferenceClient.class, new ReferenceClientImpl(
-            sofaRuntimeManager.getSofaRuntimeContext(), bindingConverterFactory,
-            bindingAdapterFactory));
+                sofaRuntimeManager.getSofaRuntimeContext(), bindingConverterFactory,
+                bindingAdapterFactory));
         clientFactoryInternal.registerClient(ServiceClient.class, new ServiceClientImpl(
-            sofaRuntimeManager.getSofaRuntimeContext(), bindingConverterFactory,
-            bindingAdapterFactory));
+                sofaRuntimeManager.getSofaRuntimeContext(), bindingConverterFactory,
+                bindingAdapterFactory));
         sofaRuntimeContext = sofaRuntimeManager.getSofaRuntimeContext();
         componentManager = sofaRuntimeManager.getComponentManager();
     }

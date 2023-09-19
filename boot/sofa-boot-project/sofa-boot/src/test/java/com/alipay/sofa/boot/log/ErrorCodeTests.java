@@ -32,6 +32,6 @@ public class ErrorCodeTests {
     public void convertErrorCode() {
         assertThat(ErrorCode.convert("00-00000")).isEqualTo("SOFA-BOOT-00-00000: All is well");
         assertThat(ErrorCode.convert("01-00002", "a", "b")).isEqualTo(
-            "SOFA-BOOT-01-00002: PreOut Binding [a] for [b] occur exception");
+                "SOFA-BOOT-01-00002: PreOut Binding [a] for [b] occur exception");
     }
 }

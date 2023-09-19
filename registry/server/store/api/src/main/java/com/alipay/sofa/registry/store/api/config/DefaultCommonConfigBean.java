@@ -21,11 +21,12 @@ import com.alipay.sofa.registry.log.LoggerFactory;
 import com.alipay.sofa.registry.store.api.meta.RecoverConfigRepository;
 import com.alipay.sofa.registry.store.api.spring.SpringContext;
 import com.google.common.annotations.VisibleForTesting;
-import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.CollectionUtils;
+
+import java.util.Set;
 
 /**
  * @author xiaojian.xj
@@ -33,109 +34,104 @@ import org.springframework.util.CollectionUtils;
  */
 public class DefaultCommonConfigBean implements DefaultCommonConfig {
 
-  private static final Logger LOG = LoggerFactory.getLogger(DefaultCommonConfigBean.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DefaultCommonConfigBean.class);
+    private static final String ALL_KEY = "ALL";
+    @Value("${nodes.localDataCenter:DefaultDataCenter}")
+    private String dataCenter;
+    @Value("${nodes.clusterId:}")
+    private String clusterId;
+    @Value("${persistence.profile.active:jdbc}")
+    private String persistenceProfileActive;
+    @Value("${nodes.recoverClusterId:}")
+    private String recoverClusterId;
+    @Autowired
+    private RecoverConfigRepository recoverConfigRepository;
 
-  @Value("${nodes.localDataCenter:DefaultDataCenter}")
-  private String dataCenter;
-
-  @Value("${nodes.clusterId:}")
-  private String clusterId;
-
-  @Value("${persistence.profile.active:jdbc}")
-  private String persistenceProfileActive;
-
-  @Value("${nodes.recoverClusterId:}")
-  private String recoverClusterId;
-
-  private static final String ALL_KEY = "ALL";
-
-  @Autowired private RecoverConfigRepository recoverConfigRepository;
-
-  @Override
-  public String getDefaultClusterId() {
-    if (StringUtils.isNotBlank(clusterId)) {
-      return clusterId;
-    }
-    return dataCenter;
-  }
-
-  private String getDefaultRecoverClusterId() {
-    if (StringUtils.isNotBlank(recoverClusterId)) {
-      return recoverClusterId;
-    }
-    return getDefaultClusterId();
-  }
-
-  @Override
-  public String getClusterId(String table) {
-    Set<String> keys = recoverConfigRepository.queryKey(table);
-    String recoverClusterId = getDefaultRecoverClusterId();
-    if (!CollectionUtils.isEmpty(keys) && keys.contains(ALL_KEY)) {
-      LOG.info("[GetClusterId]propertyTable:{}, clusterId:{}", table, recoverClusterId);
-      return getDefaultRecoverClusterId();
-    }
-    return getDefaultClusterId();
-  }
-
-  @Override
-  public String getClusterId(String table, String key) {
-    if (StringUtils.isEmpty(table)) {
-      throw new IllegalArgumentException("tableName is empty.");
-    }
-    if (StringUtils.isEmpty(key)) {
-      return getClusterId(table);
+    @Override
+    public String getDefaultClusterId() {
+        if (StringUtils.isNotBlank(clusterId)) {
+            return clusterId;
+        }
+        return dataCenter;
     }
 
-    Set<String> keys = recoverConfigRepository.queryKey(table);
-    String recoverClusterId = getDefaultRecoverClusterId();
-    if (!CollectionUtils.isEmpty(keys) && keys.contains(key)) {
-      LOG.info(
-          "[GetClusterId]propertyTable:{}, propertyKey:{}, clusterId:{}",
-          table,
-          key,
-          recoverClusterId);
-      return recoverClusterId;
+    private String getDefaultRecoverClusterId() {
+        if (StringUtils.isNotBlank(recoverClusterId)) {
+            return recoverClusterId;
+        }
+        return getDefaultClusterId();
     }
 
-    return getDefaultClusterId();
-  }
+    @Override
+    public String getClusterId(String table) {
+        Set<String> keys = recoverConfigRepository.queryKey(table);
+        String recoverClusterId = getDefaultRecoverClusterId();
+        if (!CollectionUtils.isEmpty(keys) && keys.contains(ALL_KEY)) {
+            LOG.info("[GetClusterId]propertyTable:{}, clusterId:{}", table, recoverClusterId);
+            return getDefaultRecoverClusterId();
+        }
+        return getDefaultClusterId();
+    }
 
-  @Override
-  public boolean isRecoverCluster() {
-    return !StringUtils.equals(getDefaultClusterId(), getDefaultRecoverClusterId());
-  }
+    @Override
+    public String getClusterId(String table, String key) {
+        if (StringUtils.isEmpty(table)) {
+            throw new IllegalArgumentException("tableName is empty.");
+        }
+        if (StringUtils.isEmpty(key)) {
+            return getClusterId(table);
+        }
 
-  @Override
-  public String getRecoverClusterId() {
-    return recoverClusterId;
-  }
+        Set<String> keys = recoverConfigRepository.queryKey(table);
+        String recoverClusterId = getDefaultRecoverClusterId();
+        if (!CollectionUtils.isEmpty(keys) && keys.contains(key)) {
+            LOG.info(
+                    "[GetClusterId]propertyTable:{}, propertyKey:{}, clusterId:{}",
+                    table,
+                    key,
+                    recoverClusterId);
+            return recoverClusterId;
+        }
 
-  /**
-   * Setter method for property <tt>clusterId</tt>.
-   *
-   * @param clusterId value to be assigned to property clusterId
-   */
-  @VisibleForTesting
-  public void setClusterId(String clusterId) {
-    this.clusterId = clusterId;
-  }
+        return getDefaultClusterId();
+    }
 
-  /**
-   * Setter method for property <tt>recoverClusterId</tt>.
-   *
-   * @param recoverClusterId value to be assigned to property recoverClusterId
-   */
-  @VisibleForTesting
-  public void setRecoverClusterId(String recoverClusterId) {
-    this.recoverClusterId = recoverClusterId;
-  }
+    @Override
+    public boolean isRecoverCluster() {
+        return !StringUtils.equals(getDefaultClusterId(), getDefaultRecoverClusterId());
+    }
 
-  @VisibleForTesting
-  public void setPersistenceProfileActive(String active) {
-    this.persistenceProfileActive = active;
-  }
+    @Override
+    public String getRecoverClusterId() {
+        return recoverClusterId;
+    }
 
-  public boolean isJdbc() {
-    return !SpringContext.META_STORE_API_RAFT.equals(persistenceProfileActive);
-  }
+    /**
+     * Setter method for property <tt>recoverClusterId</tt>.
+     *
+     * @param recoverClusterId value to be assigned to property recoverClusterId
+     */
+    @VisibleForTesting
+    public void setRecoverClusterId(String recoverClusterId) {
+        this.recoverClusterId = recoverClusterId;
+    }
+
+    /**
+     * Setter method for property <tt>clusterId</tt>.
+     *
+     * @param clusterId value to be assigned to property clusterId
+     */
+    @VisibleForTesting
+    public void setClusterId(String clusterId) {
+        this.clusterId = clusterId;
+    }
+
+    @VisibleForTesting
+    public void setPersistenceProfileActive(String active) {
+        this.persistenceProfileActive = active;
+    }
+
+    public boolean isJdbc() {
+        return !SpringContext.META_STORE_API_RAFT.equals(persistenceProfileActive);
+    }
 }

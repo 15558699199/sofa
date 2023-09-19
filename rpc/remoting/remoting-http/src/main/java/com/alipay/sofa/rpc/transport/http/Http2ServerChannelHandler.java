@@ -29,22 +29,8 @@ import com.alipay.sofa.rpc.server.http.HttpServerHandler;
 import com.alipay.sofa.rpc.transport.netty.NettyByteBuffer;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.http.FullHttpRequest;
-import io.netty.handler.codec.http.HttpHeaderNames;
-import io.netty.handler.codec.http.HttpMethod;
-import io.netty.handler.codec.http.HttpResponseStatus;
-import io.netty.handler.codec.http.HttpScheme;
-import io.netty.handler.codec.http.HttpServerUpgradeHandler;
-import io.netty.handler.codec.http2.DefaultHttp2Headers;
-import io.netty.handler.codec.http2.Http2Connection;
-import io.netty.handler.codec.http2.Http2ConnectionDecoder;
-import io.netty.handler.codec.http2.Http2ConnectionEncoder;
-import io.netty.handler.codec.http2.Http2ConnectionHandler;
-import io.netty.handler.codec.http2.Http2Flags;
-import io.netty.handler.codec.http2.Http2FrameListener;
-import io.netty.handler.codec.http2.Http2Headers;
-import io.netty.handler.codec.http2.Http2Settings;
-import io.netty.handler.codec.http2.Http2Stream;
+import io.netty.handler.codec.http.*;
+import io.netty.handler.codec.http2.*;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -59,15 +45,15 @@ public final class Http2ServerChannelHandler extends Http2ConnectionHandler impl
     /**
      * Logger for Http2ChannelHandler
      **/
-    private static final Logger               LOGGER           = LoggerFactory
-                                                                   .getLogger(Http2ServerChannelHandler.class);
+    private static final Logger LOGGER = LoggerFactory
+            .getLogger(Http2ServerChannelHandler.class);
 
-    private final Http2Connection.PropertyKey headerKey        = encoder().connection().newKey();
-    private final Http2Connection.PropertyKey messageKey       = encoder().connection().newKey();
+    private final Http2Connection.PropertyKey headerKey = encoder().connection().newKey();
+    private final Http2Connection.PropertyKey messageKey = encoder().connection().newKey();
 
-    private final HttpServerHandler           serverHandler;
+    private final HttpServerHandler serverHandler;
 
-    private boolean                           isUpgradeH2cMode = false;
+    private boolean isUpgradeH2cMode = false;
 
     Http2ServerChannelHandler(HttpServerHandler serverHandler, Http2ConnectionDecoder decoder,
                               Http2ConnectionEncoder encoder,
@@ -79,9 +65,9 @@ public final class Http2ServerChannelHandler extends Http2ConnectionHandler impl
     private static Http2Headers http1HeadersToHttp2Headers(FullHttpRequest request) {
         CharSequence host = request.headers().get(HttpHeaderNames.HOST);
         Http2Headers http2Headers = new DefaultHttp2Headers()
-            .method(HttpMethod.GET.asciiName())
-            .path(request.uri())
-            .scheme(HttpScheme.HTTP.name());
+                .method(HttpMethod.GET.asciiName())
+                .path(request.uri())
+                .scheme(HttpScheme.HTTP.name());
         if (host != null) {
             http2Headers.authority(host);
         }
@@ -193,8 +179,8 @@ public final class Http2ServerChannelHandler extends Http2ConnectionHandler impl
                 parseHttp2Request(http2Headers, sofaRequest);
             } catch (Exception e) {
                 String message = "Failed to parse http2 request for uri " + uri + " form "
-                    + NetUtils.channelToString(ctx.channel().remoteAddress(), ctx.channel().localAddress())
-                    + ", cause by: " + e.getMessage();
+                        + NetUtils.channelToString(ctx.channel().remoteAddress(), ctx.channel().localAddress())
+                        + ", cause by: " + e.getMessage();
                 if (LOGGER.isWarnEnabled()) {
                     LOGGER.warn(message, e);
                 }

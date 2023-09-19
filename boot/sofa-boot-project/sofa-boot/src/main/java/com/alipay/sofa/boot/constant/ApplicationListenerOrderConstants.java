@@ -32,7 +32,7 @@ public class ApplicationListenerOrderConstants {
     /**
      * 必须最先执行
      */
-    public static final int SOFA_BOOTSTRAP_RUN_LISTENER_ORDER         = Ordered.HIGHEST_PRECEDENCE;
+    public static final int SOFA_BOOTSTRAP_RUN_LISTENER_ORDER = Ordered.HIGHEST_PRECEDENCE;
 
     /**
      * LogEnvironmentPostProcessor 在此阶段初始化，Ordered.HIGHEST_PRECEDENCE + 10
@@ -44,13 +44,13 @@ public class ApplicationListenerOrderConstants {
      */
     public static final int SOFA_CONFIG_SOURCE_SUPPORT_LISTENER_ORDER = ENVIRONMENT_POST_PROCESSOR_LISTENER_ORDER + 3;
 
-    public static final int SOFA_TRACER_CONFIGURATION_LISTENER_ORDER  = Ordered.HIGHEST_PRECEDENCE + 50;
+    public static final int SOFA_TRACER_CONFIGURATION_LISTENER_ORDER = Ordered.HIGHEST_PRECEDENCE + 50;
 
     static {
         Assert
-            .isTrue(
-                ENVIRONMENT_POST_PROCESSOR_LISTENER_ORDER < SOFA_CONFIG_SOURCE_SUPPORT_LISTENER_ORDER,
-                "ENVIRONMENT_POST_PROCESSOR_LISTENER_ORDER must init before SofaConfigSourceSupportListener");
+                .isTrue(
+                        ENVIRONMENT_POST_PROCESSOR_LISTENER_ORDER < SOFA_CONFIG_SOURCE_SUPPORT_LISTENER_ORDER,
+                        "ENVIRONMENT_POST_PROCESSOR_LISTENER_ORDER must init before SofaConfigSourceSupportListener");
     }
 
     // ApplicationEnvironmentPreparedEvent order end

@@ -25,79 +25,82 @@ import com.alipay.sofa.registry.server.meta.MetaLeaderService;
 import com.alipay.sofa.registry.server.meta.remoting.notifier.Notifier;
 import com.alipay.sofa.registry.server.meta.slot.SlotManager;
 import com.google.common.annotations.VisibleForTesting;
-import java.util.List;
-import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
+import java.util.List;
+
 /**
  * @author chen.zhu
- *     <p>Dec 02, 2020
+ * <p>Dec 02, 2020
  */
 @Component
 public class DefaultSlotManager extends SimpleSlotManager implements SlotManager {
 
-  @Autowired(required = false)
-  private List<Notifier> notifiers;
+    @Autowired(required = false)
+    private List<Notifier> notifiers;
 
-  @Autowired private MetaLeaderService metaLeaderService;
+    @Autowired
+    private MetaLeaderService metaLeaderService;
 
-  public DefaultSlotManager() {}
-
-  public DefaultSlotManager(MetaLeaderService metaLeaderService) {
-    this.metaLeaderService = metaLeaderService;
-  }
-
-  @PostConstruct
-  public void postConstruct() throws Exception {
-    LifecycleHelper.initializeIfPossible(this);
-  }
-
-  @Override
-  protected void doInitialize() throws InitializeException {
-    super.doInitialize();
-    addObserver(new SlotTableChangeNotification());
-  }
-
-  @Override
-  public boolean refresh(SlotTable slotTable) {
-    // if we are not leader, could not refresh table
-    // this maybe happens in fgc:
-    // before arrange we are leader, but calc takes too much time
-    if (!metaLeaderService.amILeader()) {
-      throw new IllegalStateException(
-          "not leader, concurrent leader is:" + metaLeaderService.getLeader());
+    public DefaultSlotManager() {
     }
-    if (super.refresh(slotTable)) {
-      notifyObservers(slotTable);
-      return true;
-    }
-    return false;
-  }
 
-  private final class SlotTableChangeNotification implements UnblockingObserver {
+    public DefaultSlotManager(MetaLeaderService metaLeaderService) {
+        this.metaLeaderService = metaLeaderService;
+    }
+
+    @PostConstruct
+    public void postConstruct() throws Exception {
+        LifecycleHelper.initializeIfPossible(this);
+    }
 
     @Override
-    public void update(Observable source, Object message) {
-      if (message instanceof SlotTable) {
-        if (notifiers == null || notifiers.isEmpty()) {
-          return;
-        }
-        notifiers.forEach(
-            notifier -> {
-              try {
-                notifier.notifySlotTableChange((SlotTable) message);
-              } catch (Throwable th) {
-                logger.error("[notify] notifier [{}]", notifier.getClass().getSimpleName(), th);
-              }
-            });
-      }
+    protected void doInitialize() throws InitializeException {
+        super.doInitialize();
+        addObserver(new SlotTableChangeNotification());
     }
-  }
 
-  @VisibleForTesting
-  public SimpleSlotManager setNotifiers(List<Notifier> notifiers) {
-    this.notifiers = notifiers;
-    return this;
-  }
+    @Override
+    public boolean refresh(SlotTable slotTable) {
+        // if we are not leader, could not refresh table
+        // this maybe happens in fgc:
+        // before arrange we are leader, but calc takes too much time
+        if (!metaLeaderService.amILeader()) {
+            throw new IllegalStateException(
+                    "not leader, concurrent leader is:" + metaLeaderService.getLeader());
+        }
+        if (super.refresh(slotTable)) {
+            notifyObservers(slotTable);
+            return true;
+        }
+        return false;
+    }
+
+    @VisibleForTesting
+    public SimpleSlotManager setNotifiers(List<Notifier> notifiers) {
+        this.notifiers = notifiers;
+        return this;
+    }
+
+    private final class SlotTableChangeNotification implements UnblockingObserver {
+
+        @Override
+        public void update(Observable source, Object message) {
+            if (message instanceof SlotTable) {
+                if (notifiers == null || notifiers.isEmpty()) {
+                    return;
+                }
+                notifiers.forEach(
+                        notifier -> {
+                            try {
+                                notifier.notifySlotTableChange((SlotTable) message);
+                            } catch (Throwable th) {
+                                logger.error("[notify] notifier [{}]", notifier.getClass().getSimpleName(), th);
+                            }
+                        });
+            }
+        }
+    }
 }

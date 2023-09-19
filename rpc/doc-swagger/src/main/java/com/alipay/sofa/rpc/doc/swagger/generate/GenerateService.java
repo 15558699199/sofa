@@ -35,7 +35,7 @@ import java.util.Map;
 public class GenerateService {
 
     private String defaultProtocol = "bolt";
-    private String basePath        = "/rest/";
+    private String basePath = "/rest/";
 
     public GenerateService() {
     }

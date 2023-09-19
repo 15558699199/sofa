@@ -17,20 +17,13 @@
 package com.alipay.sofa.rpc.client;
 
 import com.alipay.sofa.rpc.common.RpcConstants;
-import java.util.concurrent.TimeUnit;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
- *
- *
  * @author <a href="mailto:zhanggeng.zg@antfin.com">GengZhang</a>
  */
 public class ProviderInfoTest {
@@ -52,11 +45,11 @@ public class ProviderInfoTest {
     public void testGetWeight() {
         //1s
         ProviderInfo provider = ProviderHelper
-            .toProviderInfo("bolt://10.15.232.229:12222?timeout=3333&serialization=hessian2&connections=1&warmupTime=100&warmupWeight=5&appName=test-server&weight=2000");
+                .toProviderInfo("bolt://10.15.232.229:12222?timeout=3333&serialization=hessian2&connections=1&warmupTime=100&warmupWeight=5&appName=test-server&weight=2000");
 
         long warmupTime = Long.parseLong(provider.getStaticAttr(ProviderInfoAttrs.ATTR_WARMUP_TIME));
         provider.setDynamicAttr(ProviderInfoAttrs.ATTR_WARMUP_WEIGHT,
-            Integer.parseInt(provider.getStaticAttr(ProviderInfoAttrs.ATTR_WARMUP_WEIGHT)));
+                Integer.parseInt(provider.getStaticAttr(ProviderInfoAttrs.ATTR_WARMUP_WEIGHT)));
         provider.setDynamicAttr(ProviderInfoAttrs.ATTR_WARMUP_TIME, warmupTime);
         provider.setDynamicAttr(ProviderInfoAttrs.ATTR_WARM_UP_END_TIME, System.currentTimeMillis() + warmupTime);
         provider.setStatus(ProviderStatus.WARMING_UP);

@@ -21,11 +21,7 @@ import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.core.annotation.AnnotationAwareOrderComparator;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Support for health check component comparator.
@@ -43,9 +39,9 @@ public class HealthCheckComparatorSupport {
         }
         if (beanFactory != null) {
             ObjectProvider<HealthCheckerComparatorProvider> objectProvider = beanFactory
-                .getBeanProvider(HealthCheckerComparatorProvider.class);
+                    .getBeanProvider(HealthCheckerComparatorProvider.class);
             HealthCheckerComparatorProvider healthCheckerComparatorProvider = objectProvider
-                .getIfUnique();
+                    .getIfUnique();
             if (healthCheckerComparatorProvider != null) {
                 comparatorToUse = healthCheckerComparatorProvider.getComparator();
             }

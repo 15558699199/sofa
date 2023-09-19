@@ -17,20 +17,21 @@
 package com.alipay.sofa.registry.server.session.store;
 
 import com.alipay.sofa.registry.common.model.Tuple;
+
 import java.util.Collection;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
 public interface Store<T> {
-  Map<String, T> get(String dataInfoId);
+    Map<String, T> get(String dataInfoId);
 
-  Map<String, T> getOrCreate(String dataInfoId);
+    Map<String, T> getOrCreate(String dataInfoId);
 
-  void forEach(BiConsumer<String, Map<String, T>> consumer);
+    void forEach(BiConsumer<String, Map<String, T>> consumer);
 
-  Map<String, Map<String, T>> copyMap();
+    Map<String, Map<String, T>> copyMap();
 
-  Tuple<Long, Long> count();
+    Tuple<Long, Long> count();
 
-  Collection<String> getDataInfoIds();
+    Collection<String> getDataInfoIds();
 }

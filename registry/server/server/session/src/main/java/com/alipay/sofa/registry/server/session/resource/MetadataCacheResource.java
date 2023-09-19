@@ -21,37 +21,39 @@ import com.alipay.sofa.registry.common.model.multi.cluster.DataCenterMetadata;
 import com.alipay.sofa.registry.log.Logger;
 import com.alipay.sofa.registry.log.LoggerFactory;
 import com.alipay.sofa.registry.server.session.multi.cluster.DataCenterMetadataCache;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * @author chen.zhu
- *     <p>Mar 22, 2021
+ * <p>Mar 22, 2021
  */
 @Path("openapi/v1/metadata")
 public class MetadataCacheResource {
 
-  private final Logger logger = LoggerFactory.getLogger(getClass());
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
-  @Autowired DataCenterMetadataCache dataCenterMetadataCache;
+    @Autowired
+    DataCenterMetadataCache dataCenterMetadataCache;
 
-  @GET
-  @Path("/cache")
-  @Produces(MediaType.APPLICATION_JSON)
-  public GenericResponse<Object> getMetadataCache(@QueryParam("dataCenter") String dataCenter) {
-    logger.info("[getMetadataCache] begin dataCenter={}", dataCenter);
-    try {
-      DataCenterMetadata metadata = dataCenterMetadataCache.metadataOf(dataCenter);
-      return new GenericResponse<>().fillSucceed(metadata);
-    } catch (Throwable th) {
-      logger.error("[getMetadataCache]", th);
-      return new GenericResponse<>().fillFailed(th.getMessage());
-    } finally {
-      logger.info("[getMetadataCache] end dataCenter={}", dataCenter);
+    @GET
+    @Path("/cache")
+    @Produces(MediaType.APPLICATION_JSON)
+    public GenericResponse<Object> getMetadataCache(@QueryParam("dataCenter") String dataCenter) {
+        logger.info("[getMetadataCache] begin dataCenter={}", dataCenter);
+        try {
+            DataCenterMetadata metadata = dataCenterMetadataCache.metadataOf(dataCenter);
+            return new GenericResponse<>().fillSucceed(metadata);
+        } catch (Throwable th) {
+            logger.error("[getMetadataCache]", th);
+            return new GenericResponse<>().fillFailed(th.getMessage());
+        } finally {
+            logger.info("[getMetadataCache] end dataCenter={}", dataCenter);
+        }
     }
-  }
 }

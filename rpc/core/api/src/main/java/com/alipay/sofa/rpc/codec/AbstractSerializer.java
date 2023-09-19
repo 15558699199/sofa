@@ -33,6 +33,18 @@ public abstract class AbstractSerializer implements Serializer {
 
     protected static Map<String, String> genericServiceMap = new ConcurrentHashMap<>();
 
+    //注册泛化接口对应的实际实现类型
+    public static void registerGenericService(String serviceName, String className) {
+        if (StringUtils.isNotBlank(serviceName) && StringUtils.isNotBlank(className)) {
+            genericServiceMap.put(serviceName, className);
+        }
+    }
+
+    @VisibleForTesting
+    public static void clear() {
+        genericServiceMap.clear();
+    }
+
     protected SofaRpcException buildSerializeError(String message) {
         return new SofaRpcException(getErrorCode(true), LogCodes.getLog(LogCodes.ERROR_SERIALIZER, message));
     }
@@ -60,17 +72,5 @@ public abstract class AbstractSerializer implements Serializer {
         } else {
             return RpcErrorType.UNKNOWN;
         }
-    }
-
-    //注册泛化接口对应的实际实现类型
-    public static void registerGenericService(String serviceName, String className) {
-        if (StringUtils.isNotBlank(serviceName) && StringUtils.isNotBlank(className)) {
-            genericServiceMap.put(serviceName, className);
-        }
-    }
-
-    @VisibleForTesting
-    public static void clear() {
-        genericServiceMap.clear();
     }
 }

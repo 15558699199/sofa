@@ -16,11 +16,6 @@
  */
 package com.alipay.sofa.registry.server.data.multi.cluster.sync.info;
 
-import static org.mockito.Matchers.anyCollection;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import com.alipay.sofa.registry.common.model.console.MultiSegmentSyncSwitch;
 import com.alipay.sofa.registry.common.model.metaserver.MultiClusterSyncInfo;
 import com.alipay.sofa.registry.common.model.slot.filter.MultiSyncDataAcceptorManager;
@@ -28,15 +23,19 @@ import com.alipay.sofa.registry.server.data.bootstrap.MultiClusterDataServerConf
 import com.alipay.sofa.registry.store.api.meta.MultiClusterSyncRepository;
 import com.alipay.sofa.registry.util.ConcurrentUtils;
 import com.google.common.collect.Sets;
-import java.util.Collections;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+
+import java.util.Collections;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+
+import static org.mockito.Matchers.anyCollection;
+import static org.mockito.Mockito.*;
 
 /**
  * @author xiaojian.xj
@@ -45,146 +44,146 @@ import org.mockito.runners.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class FetchMultiSyncServiceTest {
 
-  private static final String DATACENTER = "testdc";
-  private static final String REMOTE_DATACENTER_0 = "REMOTE_DATACENTER_0";
-  private static final String REMOTE_DATACENTER_1 = "REMOTE_DATACENTER_1";
-  private static final String REMOTE_DATACENTER_2 = "REMOTE_DATACENTER_2";
+    private static final String DATACENTER = "testdc";
+    private static final String REMOTE_DATACENTER_0 = "REMOTE_DATACENTER_0";
+    private static final String REMOTE_DATACENTER_1 = "REMOTE_DATACENTER_1";
+    private static final String REMOTE_DATACENTER_2 = "REMOTE_DATACENTER_2";
 
-  private static final MultiClusterSyncInfo syncInfo0_version1 =
-      new MultiClusterSyncInfo(
-          DATACENTER,
-          REMOTE_DATACENTER_0,
-          "aaa",
-          true,
-          true,
-          Collections.EMPTY_SET,
-          Collections.EMPTY_SET,
-          Collections.EMPTY_SET,
-          1);
+    private static final MultiClusterSyncInfo syncInfo0_version1 =
+            new MultiClusterSyncInfo(
+                    DATACENTER,
+                    REMOTE_DATACENTER_0,
+                    "aaa",
+                    true,
+                    true,
+                    Collections.EMPTY_SET,
+                    Collections.EMPTY_SET,
+                    Collections.EMPTY_SET,
+                    1);
 
-  private static final MultiClusterSyncInfo syncInfo1_version1 =
-      new MultiClusterSyncInfo(
-          DATACENTER,
-          REMOTE_DATACENTER_1,
-          "aaa",
-          true,
-          true,
-          Collections.EMPTY_SET,
-          Collections.EMPTY_SET,
-          Collections.EMPTY_SET,
-          1);
+    private static final MultiClusterSyncInfo syncInfo1_version1 =
+            new MultiClusterSyncInfo(
+                    DATACENTER,
+                    REMOTE_DATACENTER_1,
+                    "aaa",
+                    true,
+                    true,
+                    Collections.EMPTY_SET,
+                    Collections.EMPTY_SET,
+                    Collections.EMPTY_SET,
+                    1);
+    private static Set<MultiClusterSyncInfo> syncInfos_0_1 =
+            Sets.newHashSet(syncInfo0_version1, syncInfo1_version1);
+    private static final MultiClusterSyncInfo syncInfo0_version2 =
+            new MultiClusterSyncInfo(
+                    DATACENTER,
+                    REMOTE_DATACENTER_0,
+                    "bbb",
+                    false,
+                    false,
+                    Sets.newHashSet("111"),
+                    Sets.newHashSet("222"),
+                    Sets.newHashSet("333"),
+                    2);
+    private static final MultiClusterSyncInfo syncInfo2_version2 =
+            new MultiClusterSyncInfo(
+                    DATACENTER,
+                    REMOTE_DATACENTER_2,
+                    "aaa",
+                    true,
+                    true,
+                    Collections.EMPTY_SET,
+                    Collections.EMPTY_SET,
+                    Collections.EMPTY_SET,
+                    2);
+    private static Set<MultiClusterSyncInfo> syncInfos_0_2 =
+            Sets.newHashSet(syncInfo0_version2, syncInfo2_version2);
 
-  private static final MultiClusterSyncInfo syncInfo0_version2 =
-      new MultiClusterSyncInfo(
-          DATACENTER,
-          REMOTE_DATACENTER_0,
-          "bbb",
-          false,
-          false,
-          Sets.newHashSet("111"),
-          Sets.newHashSet("222"),
-          Sets.newHashSet("333"),
-          2);
+    @InjectMocks
+    private FetchMultiSyncService fetchMultiSyncService;
 
-  private static final MultiClusterSyncInfo syncInfo2_version2 =
-      new MultiClusterSyncInfo(
-          DATACENTER,
-          REMOTE_DATACENTER_2,
-          "aaa",
-          true,
-          true,
-          Collections.EMPTY_SET,
-          Collections.EMPTY_SET,
-          Collections.EMPTY_SET,
-          2);
+    @Mock
+    private MultiClusterDataServerConfig multiClusterDataServerConfig;
 
-  private static Set<MultiClusterSyncInfo> syncInfos_0_1 =
-      Sets.newHashSet(syncInfo0_version1, syncInfo1_version1);
+    @Mock
+    private MultiClusterSyncRepository multiClusterSyncRepository;
 
-  private static Set<MultiClusterSyncInfo> syncInfos_0_2 =
-      Sets.newHashSet(syncInfo0_version2, syncInfo2_version2);
+    @Mock
+    private MultiSyncDataAcceptorManager multiSyncDataAcceptorManager;
 
-  @InjectMocks private FetchMultiSyncService fetchMultiSyncService;
+    @Test
+    public void testFetchMultiSyncService() {
 
-  @Mock private MultiClusterDataServerConfig multiClusterDataServerConfig;
+        // [datacenter0=1,datacenter1=1]
+        when(multiClusterDataServerConfig.getMultiClusterConfigReloadMillis()).thenReturn(100);
+        when(multiClusterSyncRepository.queryLocalSyncInfos()).thenReturn(syncInfos_0_1);
+        fetchMultiSyncService.start();
 
-  @Mock private MultiClusterSyncRepository multiClusterSyncRepository;
+        ConcurrentUtils.sleepUninterruptibly(200, TimeUnit.MILLISECONDS);
+        verify(multiSyncDataAcceptorManager, times(1)).updateFrom(anyCollection());
 
-  @Mock private MultiSyncDataAcceptorManager multiSyncDataAcceptorManager;
+        Assert.assertTrue(fetchMultiSyncService.multiSync(REMOTE_DATACENTER_0));
+        Assert.assertTrue(fetchMultiSyncService.multiPush(REMOTE_DATACENTER_0));
+        Assert.assertTrue(fetchMultiSyncService.multiSync(REMOTE_DATACENTER_1));
+        Assert.assertTrue(fetchMultiSyncService.multiPush(REMOTE_DATACENTER_1));
+        Assert.assertFalse(fetchMultiSyncService.multiSync(REMOTE_DATACENTER_2));
+        Assert.assertFalse(fetchMultiSyncService.multiPush(REMOTE_DATACENTER_2));
 
-  @Test
-  public void testFetchMultiSyncService() {
+        MultiSegmentSyncSwitch multiSyncSwitch0 =
+                fetchMultiSyncService.getMultiSyncSwitch(REMOTE_DATACENTER_0);
+        MultiSegmentSyncSwitch multiSyncSwitch1 =
+                fetchMultiSyncService.getMultiSyncSwitch(REMOTE_DATACENTER_1);
+        MultiSegmentSyncSwitch multiSyncSwitch2 =
+                fetchMultiSyncService.getMultiSyncSwitch(REMOTE_DATACENTER_2);
+        verifySyncInfo(multiSyncSwitch0, syncInfo0_version1);
+        verifySyncInfo(multiSyncSwitch1, syncInfo1_version1);
+        Assert.assertNull(multiSyncSwitch2);
 
-    // [datacenter0=1,datacenter1=1]
-    when(multiClusterDataServerConfig.getMultiClusterConfigReloadMillis()).thenReturn(100);
-    when(multiClusterSyncRepository.queryLocalSyncInfos()).thenReturn(syncInfos_0_1);
-    fetchMultiSyncService.start();
+        // [datacenter0=2,datacenter1=2]
+        when(multiClusterSyncRepository.queryLocalSyncInfos()).thenReturn(syncInfos_0_2);
+        ConcurrentUtils.sleepUninterruptibly(200, TimeUnit.MILLISECONDS);
+        verify(multiSyncDataAcceptorManager, times(2)).updateFrom(anyCollection());
 
-    ConcurrentUtils.sleepUninterruptibly(200, TimeUnit.MILLISECONDS);
-    verify(multiSyncDataAcceptorManager, times(1)).updateFrom(anyCollection());
+        Assert.assertFalse(fetchMultiSyncService.multiSync(REMOTE_DATACENTER_0));
+        Assert.assertFalse(fetchMultiSyncService.multiPush(REMOTE_DATACENTER_0));
+        Assert.assertFalse(fetchMultiSyncService.multiSync(REMOTE_DATACENTER_1));
+        Assert.assertFalse(fetchMultiSyncService.multiPush(REMOTE_DATACENTER_1));
+        Assert.assertTrue(fetchMultiSyncService.multiSync(REMOTE_DATACENTER_2));
+        Assert.assertTrue(fetchMultiSyncService.multiPush(REMOTE_DATACENTER_2));
 
-    Assert.assertTrue(fetchMultiSyncService.multiSync(REMOTE_DATACENTER_0));
-    Assert.assertTrue(fetchMultiSyncService.multiPush(REMOTE_DATACENTER_0));
-    Assert.assertTrue(fetchMultiSyncService.multiSync(REMOTE_DATACENTER_1));
-    Assert.assertTrue(fetchMultiSyncService.multiPush(REMOTE_DATACENTER_1));
-    Assert.assertFalse(fetchMultiSyncService.multiSync(REMOTE_DATACENTER_2));
-    Assert.assertFalse(fetchMultiSyncService.multiPush(REMOTE_DATACENTER_2));
+        multiSyncSwitch0 = fetchMultiSyncService.getMultiSyncSwitch(REMOTE_DATACENTER_0);
+        multiSyncSwitch1 = fetchMultiSyncService.getMultiSyncSwitch(REMOTE_DATACENTER_1);
+        multiSyncSwitch2 = fetchMultiSyncService.getMultiSyncSwitch(REMOTE_DATACENTER_2);
+        verifySyncInfo(multiSyncSwitch0, syncInfo0_version2);
+        Assert.assertNull(multiSyncSwitch1);
+        verifySyncInfo(multiSyncSwitch2, syncInfo2_version2);
 
-    MultiSegmentSyncSwitch multiSyncSwitch0 =
-        fetchMultiSyncService.getMultiSyncSwitch(REMOTE_DATACENTER_0);
-    MultiSegmentSyncSwitch multiSyncSwitch1 =
-        fetchMultiSyncService.getMultiSyncSwitch(REMOTE_DATACENTER_1);
-    MultiSegmentSyncSwitch multiSyncSwitch2 =
-        fetchMultiSyncService.getMultiSyncSwitch(REMOTE_DATACENTER_2);
-    verifySyncInfo(multiSyncSwitch0, syncInfo0_version1);
-    verifySyncInfo(multiSyncSwitch1, syncInfo1_version1);
-    Assert.assertNull(multiSyncSwitch2);
+        // [datacenter0=1,datacenter1=1]
+        when(multiClusterSyncRepository.queryLocalSyncInfos()).thenReturn(syncInfos_0_1);
+        ConcurrentUtils.sleepUninterruptibly(200, TimeUnit.MILLISECONDS);
 
-    // [datacenter0=2,datacenter1=2]
-    when(multiClusterSyncRepository.queryLocalSyncInfos()).thenReturn(syncInfos_0_2);
-    ConcurrentUtils.sleepUninterruptibly(200, TimeUnit.MILLISECONDS);
-    verify(multiSyncDataAcceptorManager, times(2)).updateFrom(anyCollection());
+        Assert.assertFalse(fetchMultiSyncService.multiSync(REMOTE_DATACENTER_0));
+        Assert.assertFalse(fetchMultiSyncService.multiPush(REMOTE_DATACENTER_0));
+        Assert.assertFalse(fetchMultiSyncService.multiSync(REMOTE_DATACENTER_1));
+        Assert.assertFalse(fetchMultiSyncService.multiPush(REMOTE_DATACENTER_1));
+        Assert.assertTrue(fetchMultiSyncService.multiSync(REMOTE_DATACENTER_2));
+        Assert.assertTrue(fetchMultiSyncService.multiPush(REMOTE_DATACENTER_2));
 
-    Assert.assertFalse(fetchMultiSyncService.multiSync(REMOTE_DATACENTER_0));
-    Assert.assertFalse(fetchMultiSyncService.multiPush(REMOTE_DATACENTER_0));
-    Assert.assertFalse(fetchMultiSyncService.multiSync(REMOTE_DATACENTER_1));
-    Assert.assertFalse(fetchMultiSyncService.multiPush(REMOTE_DATACENTER_1));
-    Assert.assertTrue(fetchMultiSyncService.multiSync(REMOTE_DATACENTER_2));
-    Assert.assertTrue(fetchMultiSyncService.multiPush(REMOTE_DATACENTER_2));
+        multiSyncSwitch0 = fetchMultiSyncService.getMultiSyncSwitch(REMOTE_DATACENTER_0);
+        multiSyncSwitch1 = fetchMultiSyncService.getMultiSyncSwitch(REMOTE_DATACENTER_1);
+        multiSyncSwitch2 = fetchMultiSyncService.getMultiSyncSwitch(REMOTE_DATACENTER_2);
+        verifySyncInfo(multiSyncSwitch0, syncInfo0_version2);
+        Assert.assertNull(multiSyncSwitch1);
+        verifySyncInfo(multiSyncSwitch2, syncInfo2_version2);
+    }
 
-    multiSyncSwitch0 = fetchMultiSyncService.getMultiSyncSwitch(REMOTE_DATACENTER_0);
-    multiSyncSwitch1 = fetchMultiSyncService.getMultiSyncSwitch(REMOTE_DATACENTER_1);
-    multiSyncSwitch2 = fetchMultiSyncService.getMultiSyncSwitch(REMOTE_DATACENTER_2);
-    verifySyncInfo(multiSyncSwitch0, syncInfo0_version2);
-    Assert.assertNull(multiSyncSwitch1);
-    verifySyncInfo(multiSyncSwitch2, syncInfo2_version2);
-
-    // [datacenter0=1,datacenter1=1]
-    when(multiClusterSyncRepository.queryLocalSyncInfos()).thenReturn(syncInfos_0_1);
-    ConcurrentUtils.sleepUninterruptibly(200, TimeUnit.MILLISECONDS);
-
-    Assert.assertFalse(fetchMultiSyncService.multiSync(REMOTE_DATACENTER_0));
-    Assert.assertFalse(fetchMultiSyncService.multiPush(REMOTE_DATACENTER_0));
-    Assert.assertFalse(fetchMultiSyncService.multiSync(REMOTE_DATACENTER_1));
-    Assert.assertFalse(fetchMultiSyncService.multiPush(REMOTE_DATACENTER_1));
-    Assert.assertTrue(fetchMultiSyncService.multiSync(REMOTE_DATACENTER_2));
-    Assert.assertTrue(fetchMultiSyncService.multiPush(REMOTE_DATACENTER_2));
-
-    multiSyncSwitch0 = fetchMultiSyncService.getMultiSyncSwitch(REMOTE_DATACENTER_0);
-    multiSyncSwitch1 = fetchMultiSyncService.getMultiSyncSwitch(REMOTE_DATACENTER_1);
-    multiSyncSwitch2 = fetchMultiSyncService.getMultiSyncSwitch(REMOTE_DATACENTER_2);
-    verifySyncInfo(multiSyncSwitch0, syncInfo0_version2);
-    Assert.assertNull(multiSyncSwitch1);
-    verifySyncInfo(multiSyncSwitch2, syncInfo2_version2);
-  }
-
-  private void verifySyncInfo(MultiSegmentSyncSwitch syncSwitch, MultiClusterSyncInfo syncInfo) {
-    Assert.assertEquals(syncSwitch.isMultiSync(), syncInfo.isEnableSyncDatum());
-    Assert.assertEquals(syncSwitch.isMultiPush(), syncInfo.isEnablePush());
-    Assert.assertEquals(syncSwitch.getRemoteDataCenter(), syncInfo.getRemoteDataCenter());
-    Assert.assertEquals(syncSwitch.getSynPublisherGroups(), syncInfo.getSynPublisherGroups());
-    Assert.assertEquals(syncSwitch.getSyncDataInfoIds(), syncInfo.getSyncDataInfoIds());
-    Assert.assertEquals(syncSwitch.getIgnoreDataInfoIds(), syncInfo.getIgnoreDataInfoIds());
-    Assert.assertEquals(syncSwitch.getDataVersion(), syncInfo.getDataVersion());
-  }
+    private void verifySyncInfo(MultiSegmentSyncSwitch syncSwitch, MultiClusterSyncInfo syncInfo) {
+        Assert.assertEquals(syncSwitch.isMultiSync(), syncInfo.isEnableSyncDatum());
+        Assert.assertEquals(syncSwitch.isMultiPush(), syncInfo.isEnablePush());
+        Assert.assertEquals(syncSwitch.getRemoteDataCenter(), syncInfo.getRemoteDataCenter());
+        Assert.assertEquals(syncSwitch.getSynPublisherGroups(), syncInfo.getSynPublisherGroups());
+        Assert.assertEquals(syncSwitch.getSyncDataInfoIds(), syncInfo.getSyncDataInfoIds());
+        Assert.assertEquals(syncSwitch.getIgnoreDataInfoIds(), syncInfo.getIgnoreDataInfoIds());
+        Assert.assertEquals(syncSwitch.getDataVersion(), syncInfo.getDataVersion());
+    }
 }

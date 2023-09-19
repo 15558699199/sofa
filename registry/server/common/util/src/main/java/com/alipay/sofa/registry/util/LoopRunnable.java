@@ -25,65 +25,65 @@ import com.alipay.sofa.registry.log.LoggerFactory;
  * @version v 0.1 2020-11-30 16:51 yuzhi.lyz Exp $
  */
 public abstract class LoopRunnable implements Runnable, Suspendable {
-  private static final Logger LOGGER = LoggerFactory.getLogger(LoopRunnable.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(LoopRunnable.class);
 
-  private volatile boolean closed = false;
+    private volatile boolean closed = false;
 
-  private volatile boolean suspend = false;
+    private volatile boolean suspend = false;
 
-  public abstract void runUnthrowable();
+    public abstract void runUnthrowable();
 
-  public abstract void waitingUnthrowable();
+    public abstract void waitingUnthrowable();
 
-  public void close() {
-    closed = true;
-  }
-
-  @Override
-  public void suspend() {
-    this.suspend = true;
-  }
-
-  @Override
-  public void resume() {
-    this.suspend = false;
-  }
-
-  @Override
-  public boolean isSuspended() {
-    return suspend;
-  }
-
-  public boolean isClosed() {
-    return closed;
-  }
-
-  public void run() {
-    LOGGER.info("loop-run started {}", this.getClass().getSimpleName());
-    for (; ; ) {
-      try {
-        if (closed) {
-          LOGGER.warn("[closed] quit");
-          break;
-        }
-        if (suspend) {
-          LOGGER.warn("[suspend] break");
-        } else {
-          try {
-            runUnthrowable();
-          } catch (Throwable unexpect) {
-            LOGGER.error("run unexpect error", unexpect);
-          }
-        }
-        try {
-          waitingUnthrowable();
-        } catch (Throwable unexpect) {
-          LOGGER.error("waiting unexpect error", unexpect);
-        }
-      } catch (Throwable e) {
-        LOGGER.safeError("loop unexpect error", e);
-      }
+    public void close() {
+        closed = true;
     }
-    LOGGER.info("loop-run exit {}, closed={}", this.getClass().getSimpleName(), closed);
-  }
+
+    @Override
+    public void suspend() {
+        this.suspend = true;
+    }
+
+    @Override
+    public void resume() {
+        this.suspend = false;
+    }
+
+    @Override
+    public boolean isSuspended() {
+        return suspend;
+    }
+
+    public boolean isClosed() {
+        return closed;
+    }
+
+    public void run() {
+        LOGGER.info("loop-run started {}", this.getClass().getSimpleName());
+        for (; ; ) {
+            try {
+                if (closed) {
+                    LOGGER.warn("[closed] quit");
+                    break;
+                }
+                if (suspend) {
+                    LOGGER.warn("[suspend] break");
+                } else {
+                    try {
+                        runUnthrowable();
+                    } catch (Throwable unexpect) {
+                        LOGGER.error("run unexpect error", unexpect);
+                    }
+                }
+                try {
+                    waitingUnthrowable();
+                } catch (Throwable unexpect) {
+                    LOGGER.error("waiting unexpect error", unexpect);
+                }
+            } catch (Throwable e) {
+                LOGGER.safeError("loop unexpect error", e);
+            }
+        }
+        LOGGER.info("loop-run exit {}, closed={}", this.getClass().getSimpleName(), closed);
+    }
 }

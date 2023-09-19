@@ -16,8 +16,6 @@
  */
 package com.alipay.sofa.registry.server.meta.lease.filter;
 
-import static org.mockito.Mockito.*;
-
 import com.alipay.sofa.registry.common.model.Node.NodeType;
 import com.alipay.sofa.registry.common.model.Tuple;
 import com.alipay.sofa.registry.common.model.metaserver.DataOperation;
@@ -29,29 +27,31 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.mockito.Mockito.*;
+
 public class DefaultRegistryForbiddenServerManagerTest extends AbstractMetaServerTestBase {
 
-  private RegistryForbiddenServerManager registryForbiddenServerManager;
+    private RegistryForbiddenServerManager registryForbiddenServerManager;
 
-  private ProvideDataService provideDataService;
+    private ProvideDataService provideDataService;
 
-  private NodeOperatingService nodeOperatingService;
+    private NodeOperatingService nodeOperatingService;
 
-  @Before
-  public void beforeDefaultRegistryForbiddenServerManagerTest() {
-    provideDataService = spy(new InMemoryProvideDataRepo());
-    nodeOperatingService = mock(NodeOperatingService.class);
-    when(nodeOperatingService.queryOperateInfoAndVersion()).thenReturn(new Tuple<>(0l, null));
-    registryForbiddenServerManager =
-        new DefaultForbiddenServerManager(provideDataService, nodeOperatingService);
-  }
+    @Before
+    public void beforeDefaultRegistryForbiddenServerManagerTest() {
+        provideDataService = spy(new InMemoryProvideDataRepo());
+        nodeOperatingService = mock(NodeOperatingService.class);
+        when(nodeOperatingService.queryOperateInfoAndVersion()).thenReturn(new Tuple<>(0l, null));
+        registryForbiddenServerManager =
+                new DefaultForbiddenServerManager(provideDataService, nodeOperatingService);
+    }
 
-  @Test
-  public void testNormalCase() {
-    RegistryForbiddenServerRequest add =
-        new RegistryForbiddenServerRequest(
-            DataOperation.ADD, NodeType.DATA, "127.0.0.1", "testCell");
-    boolean success = registryForbiddenServerManager.addToBlacklist(add);
-    Assert.assertTrue(success);
-  }
+    @Test
+    public void testNormalCase() {
+        RegistryForbiddenServerRequest add =
+                new RegistryForbiddenServerRequest(
+                        DataOperation.ADD, NodeType.DATA, "127.0.0.1", "testCell");
+        boolean success = registryForbiddenServerManager.addToBlacklist(add);
+        Assert.assertTrue(success);
+    }
 }

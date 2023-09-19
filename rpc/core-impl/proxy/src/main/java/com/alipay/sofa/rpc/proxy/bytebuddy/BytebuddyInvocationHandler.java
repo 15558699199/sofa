@@ -50,12 +50,12 @@ public class BytebuddyInvocationHandler {
 
     @RuntimeType
     public Object byteBuddyInvoke(@This Object proxy, @Origin Method method, @AllArguments @RuntimeType Object[] args)
-        throws Throwable {
+            throws Throwable {
         String name = method.getName();
         if ("equals".equals(name)) {
             Object another = args[0];
             return proxy == another ||
-                (proxy.getClass().isInstance(another) && proxyInvoker.equals(BytebuddyProxy.parseInvoker(another)));
+                    (proxy.getClass().isInstance(another) && proxyInvoker.equals(BytebuddyProxy.parseInvoker(another)));
         } else if ("hashCode".equals(name)) {
             return proxyInvoker.hashCode();
         } else if ("toString".equals(name)) {
@@ -63,7 +63,7 @@ public class BytebuddyInvocationHandler {
         }
 
         SofaRequest request = MessageBuilder.buildSofaRequest(method.getDeclaringClass(), method,
-            method.getParameterTypes(), args);
+                method.getParameterTypes(), args);
         SofaResponse response = proxyInvoker.invoke(request);
 
         return response.getAppResponse();

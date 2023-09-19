@@ -37,7 +37,7 @@ public class RpcServerLookoutModel extends RpcAbstractLookoutModel {
     /**
      * Setter method for property <tt>callerApp</tt>.
      *
-     * @param callerApp  value to be assigned to property callerApp
+     * @param callerApp value to be assigned to property callerApp
      */
     public void setCallerApp(String callerApp) {
         this.callerApp = callerApp;
@@ -46,14 +46,14 @@ public class RpcServerLookoutModel extends RpcAbstractLookoutModel {
     @Override
     public String toString() {
         return "RpcServerLookoutModel{" +
-            "callerApp='" + callerApp + '\'' +
-            ", app='" + app + '\'' +
-            ", service='" + service + '\'' +
-            ", method='" + method + '\'' +
-            ", protocol='" + protocol + '\'' +
-            ", invokeType='" + invokeType + '\'' +
-            ", elapsedTime=" + elapsedTime +
-            ", success=" + success +
-            '}';
+                "callerApp='" + callerApp + '\'' +
+                ", app='" + app + '\'' +
+                ", service='" + service + '\'' +
+                ", method='" + method + '\'' +
+                ", protocol='" + protocol + '\'' +
+                ", invokeType='" + invokeType + '\'' +
+                ", elapsedTime=" + elapsedTime +
+                ", success=" + success +
+                '}';
     }
 }

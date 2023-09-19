@@ -37,7 +37,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ReadinessEndpointTests {
 
     @InjectMocks
-    private ReadinessEndpoint      readinessEndpoint;
+    private ReadinessEndpoint readinessEndpoint;
 
     @Mock
     private ReadinessCheckListener readinessCheckListener;

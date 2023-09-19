@@ -21,19 +21,7 @@ import com.alipay.sofa.rpc.client.ProviderInfo;
 import com.alipay.sofa.rpc.common.struct.ListDifference;
 import com.alipay.sofa.rpc.common.struct.SetDifference;
 import org.junit.Assert;
-import org.openjdk.jmh.annotations.Benchmark;
-import org.openjdk.jmh.annotations.BenchmarkMode;
-import org.openjdk.jmh.annotations.Fork;
-import org.openjdk.jmh.annotations.Measurement;
-import org.openjdk.jmh.annotations.Mode;
-import org.openjdk.jmh.annotations.OutputTimeUnit;
-import org.openjdk.jmh.annotations.Param;
-import org.openjdk.jmh.annotations.Scope;
-import org.openjdk.jmh.annotations.Setup;
-import org.openjdk.jmh.annotations.State;
-import org.openjdk.jmh.annotations.TearDown;
-import org.openjdk.jmh.annotations.Threads;
-import org.openjdk.jmh.annotations.Warmup;
+import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.profile.GCProfiler;
 import org.openjdk.jmh.results.format.ResultFormatType;
 import org.openjdk.jmh.runner.Runner;
@@ -41,15 +29,10 @@ import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
- *
  * @author xiaojian.xj
  * @version : CollectionDifferenceBenchMarkTest.java, v 0.1 2022年09月06日 21:45 xiaojian.xj Exp $
  */
@@ -67,15 +50,10 @@ public class CollectionDifferenceBenchMarkTest {
     private static final List<ProviderInfo> EXIST = new ArrayList<>();
 
     private static final List<ProviderInfo> UPDATE = new ArrayList<>();
-
+    private static final String TO_BE_ADD = String.format(URL_PATTERN, getRandomIp());
+    private static final String TO_BE_REMOVE = String.format(URL_PATTERN, getRandomIp());
     private static Set<ProviderInfo> EXIST_SET;
-
     private static Set<ProviderInfo> UPDATE_SET;
-
-    private static final String TO_BE_ADD =  String.format(URL_PATTERN, getRandomIp());
-
-    private static final String TO_BE_REMOVE =  String.format(URL_PATTERN, getRandomIp());
-
     @Param(value = {"1000", "5000", "10000", "20000"})
     private int LENGTH;
 
@@ -86,6 +64,11 @@ public class CollectionDifferenceBenchMarkTest {
                 .result("result.json")
                 .resultFormat(ResultFormatType.JSON).build();
         new Runner(opt).run();
+    }
+
+    public static String getRandomIp() {
+        Random r = new Random();
+        return r.nextInt(256) + "." + r.nextInt(256) + "." + r.nextInt(256) + "." + r.nextInt(256);
     }
 
     @Benchmark
@@ -108,7 +91,8 @@ public class CollectionDifferenceBenchMarkTest {
     public void prepareData() {
         Set<String> existUrl = new HashSet<>();
         for (int i = 0; i < LENGTH; i++) {
-            String url = String.format(URL_PATTERN, getRandomIp());;
+            String url = String.format(URL_PATTERN, getRandomIp());
+            ;
 
             while (existUrl.contains(url)) {
                 url = String.format(URL_PATTERN, getRandomIp());
@@ -128,10 +112,5 @@ public class CollectionDifferenceBenchMarkTest {
     public void clean() {
         EXIST.clear();
         UPDATE.clear();
-    }
-
-    public static String getRandomIp() {
-        Random r = new Random();
-        return r.nextInt(256) + "." + r.nextInt(256) + "." + r.nextInt(256) + "." + r.nextInt(256);
     }
 }

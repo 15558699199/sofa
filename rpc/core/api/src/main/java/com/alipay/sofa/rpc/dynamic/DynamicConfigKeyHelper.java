@@ -19,20 +19,18 @@ package com.alipay.sofa.rpc.dynamic;
 import com.alipay.sofa.rpc.common.utils.StringUtils;
 
 /**
- *
  * @author lepdou
  * @version $Id: DynamicConfigKeyHelper.java, v 0.1 2019年04月16日 下午12:01 lepdou Exp $
  */
 public class DynamicConfigKeyHelper {
 
-    private static final String KEY_SEPARATOR                        = ".";
-
-    public static final String  APP_CONSUMER_CONFIG_KEY_PREFIX       = "sofa.consumer";
-    public static final String  APP_PROVIDER_CONFIG_KEY_PREFIX       = "sofa.provider";
-    public static final String  SERVICE_CONSUMER_PROPERTY_KEY_PREFIX = "sofa.consumer.service";
-    public static final String  SERVICE_PROVIDER_PROPERTY_KEY_PREFIX = "sofa.provider.service";
-    public static final String  METHOD_CONSUMER_PROPERTY_KEY_PREFIX  = "sofa.consumer.method";
-    public static final String  METHOD_PROVIDER_PROPERTY_KEY_PREFIX  = "sofa.provider.method";
+    public static final String APP_CONSUMER_CONFIG_KEY_PREFIX = "sofa.consumer";
+    public static final String APP_PROVIDER_CONFIG_KEY_PREFIX = "sofa.provider";
+    public static final String SERVICE_CONSUMER_PROPERTY_KEY_PREFIX = "sofa.consumer.service";
+    public static final String SERVICE_PROVIDER_PROPERTY_KEY_PREFIX = "sofa.provider.service";
+    public static final String METHOD_CONSUMER_PROPERTY_KEY_PREFIX = "sofa.consumer.method";
+    public static final String METHOD_PROVIDER_PROPERTY_KEY_PREFIX = "sofa.provider.method";
+    private static final String KEY_SEPARATOR = ".";
 
     /**
      * The last field of key is actual property key
@@ -46,7 +44,7 @@ public class DynamicConfigKeyHelper {
 
     /**
      * Service property key format : sofa.consumer.service.{serivceName}.{configKey}
-     *
+     * <p>
      * For example : sofa.consumer.service.com.alipay.sofa.rpc.test.HelloService.timeout
      * service name = com.alipay.sofa.rpc.test.HelloService
      * config key   = timeout
@@ -60,12 +58,12 @@ public class DynamicConfigKeyHelper {
         }
 
         return serviceProKey.substring(SERVICE_CONSUMER_PROPERTY_KEY_PREFIX.length() + 1,
-            serviceProKey.lastIndexOf(KEY_SEPARATOR));
+                serviceProKey.lastIndexOf(KEY_SEPARATOR));
     }
 
     /**
      * Method property key format : sofa.consumer.method.{serivceName}.{methodName}.{configKey}
-     *
+     * <p>
      * Example : sofa.consumer.method.com.alipay.sofa.rpc.test.HelloService.sayHello.timeout
      * service name = com.alipay.sofa.rpc.test.HelloService
      * method name  = sayHello
@@ -80,14 +78,14 @@ public class DynamicConfigKeyHelper {
         }
 
         String serviceMethod = methodProKey.substring(METHOD_PROVIDER_PROPERTY_KEY_PREFIX.length() + 1,
-            methodProKey.lastIndexOf(KEY_SEPARATOR));
+                methodProKey.lastIndexOf(KEY_SEPARATOR));
 
         return serviceMethod.substring(0, serviceMethod.lastIndexOf(KEY_SEPARATOR));
     }
 
     /**
      * Method property key format : sofa.consumer.method.{serivceName}.{methodName}.{configKey}
-     *
+     * <p>
      * Example : sofa.consumer.method.com.alipay.sofa.rpc.test.HelloService.sayHello.timeout
      * service name = com.alipay.sofa.rpc.test.HelloService
      * method name  = sayHello
@@ -102,7 +100,7 @@ public class DynamicConfigKeyHelper {
         }
 
         String serviceMethod = methodProKey.substring(METHOD_PROVIDER_PROPERTY_KEY_PREFIX.length() + 1,
-            methodProKey.lastIndexOf(KEY_SEPARATOR));
+                methodProKey.lastIndexOf(KEY_SEPARATOR));
 
         return serviceMethod.substring(serviceMethod.lastIndexOf(KEY_SEPARATOR) + 1);
     }
@@ -126,7 +124,7 @@ public class DynamicConfigKeyHelper {
      */
     public static String buildConsumerMethodProKey(String serviceName, String methodName, String proKey) {
         return METHOD_CONSUMER_PROPERTY_KEY_PREFIX + KEY_SEPARATOR + serviceName + KEY_SEPARATOR + methodName +
-            KEY_SEPARATOR + proKey;
+                KEY_SEPARATOR + proKey;
     }
 
     /**
@@ -134,17 +132,17 @@ public class DynamicConfigKeyHelper {
      */
     public static String buildProviderMethodProKey(String serviceName, String methodName, String proKey) {
         return METHOD_PROVIDER_PROPERTY_KEY_PREFIX + KEY_SEPARATOR + serviceName + KEY_SEPARATOR + methodName +
-            KEY_SEPARATOR + proKey;
+                KEY_SEPARATOR + proKey;
     }
 
     public static boolean isServiceProKey(String key) {
         return !StringUtils.isBlank(key) && (key.startsWith(SERVICE_CONSUMER_PROPERTY_KEY_PREFIX) ||
-            key.startsWith(SERVICE_PROVIDER_PROPERTY_KEY_PREFIX));
+                key.startsWith(SERVICE_PROVIDER_PROPERTY_KEY_PREFIX));
     }
 
     public static boolean isMethodProKey(String key) {
         return !StringUtils.isBlank(key) && (key.startsWith(METHOD_CONSUMER_PROPERTY_KEY_PREFIX) ||
-            key.startsWith(METHOD_PROVIDER_PROPERTY_KEY_PREFIX));
+                key.startsWith(METHOD_PROVIDER_PROPERTY_KEY_PREFIX));
     }
 
     public static boolean isSofaProKey(String key) {

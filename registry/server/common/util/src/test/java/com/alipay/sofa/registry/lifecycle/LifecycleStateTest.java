@@ -21,22 +21,22 @@ import org.junit.Test;
 
 public class LifecycleStateTest {
 
-  @Test
-  public void testNext() {
-    Assert.assertEquals(
-        LifecycleState.LifecyclePhase.INITIALIZING.next(),
-        LifecycleState.LifecyclePhase.INITIALIZED);
-    Assert.assertEquals(
-        LifecycleState.LifecyclePhase.INITIALIZED.next(), LifecycleState.LifecyclePhase.STARTING);
-    Assert.assertEquals(
-        LifecycleState.LifecyclePhase.STARTING.next(), LifecycleState.LifecyclePhase.STARTED);
-    Assert.assertEquals(
-        LifecycleState.LifecyclePhase.STARTED.next(), LifecycleState.LifecyclePhase.STOPPING);
-    Assert.assertEquals(
-        LifecycleState.LifecyclePhase.STOPPING.next(), LifecycleState.LifecyclePhase.STOPPED);
-    Assert.assertEquals(
-        LifecycleState.LifecyclePhase.STOPPED.next(), LifecycleState.LifecyclePhase.DISPOSING);
-    Assert.assertEquals(
-        LifecycleState.LifecyclePhase.DISPOSING.next(), LifecycleState.LifecyclePhase.DISPOSED);
-  }
+    @Test
+    public void testNext() {
+        Assert.assertEquals(
+                LifecycleState.LifecyclePhase.INITIALIZING.next(),
+                LifecycleState.LifecyclePhase.INITIALIZED);
+        Assert.assertEquals(
+                LifecycleState.LifecyclePhase.INITIALIZED.next(), LifecycleState.LifecyclePhase.STARTING);
+        Assert.assertEquals(
+                LifecycleState.LifecyclePhase.STARTING.next(), LifecycleState.LifecyclePhase.STARTED);
+        Assert.assertEquals(
+                LifecycleState.LifecyclePhase.STARTED.next(), LifecycleState.LifecyclePhase.STOPPING);
+        Assert.assertEquals(
+                LifecycleState.LifecyclePhase.STOPPING.next(), LifecycleState.LifecyclePhase.STOPPED);
+        Assert.assertEquals(
+                LifecycleState.LifecyclePhase.STOPPED.next(), LifecycleState.LifecyclePhase.DISPOSING);
+        Assert.assertEquals(
+                LifecycleState.LifecyclePhase.DISPOSING.next(), LifecycleState.LifecyclePhase.DISPOSED);
+    }
 }

@@ -17,6 +17,7 @@
 package com.alipay.sofa.registry.client.auth;
 
 import com.alipay.sofa.registry.core.model.BaseRegister;
+
 import java.util.Map;
 
 /**
@@ -27,11 +28,11 @@ import java.util.Map;
  */
 public interface AuthManager {
 
-  /**
-   * Gets auth content.
-   *
-   * @param register the register
-   * @return the auth content
-   */
-  Map<String, String> getAuthContent(BaseRegister register);
+    /**
+     * Gets auth content.
+     *
+     * @param register the register
+     * @return the auth content
+     */
+    Map<String, String> getAuthContent(BaseRegister register);
 }

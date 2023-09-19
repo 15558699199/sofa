@@ -17,10 +17,10 @@
 package com.alipay.sofa.registry.util;
 
 public class StringUtils {
-  public static int sizeof(String s) {
-    if (s == null) {
-      return 0;
+    public static int sizeof(String s) {
+        if (s == null) {
+            return 0;
+        }
+        return s.length() * 2;
     }
-    return s.length() * 2;
-  }
 }

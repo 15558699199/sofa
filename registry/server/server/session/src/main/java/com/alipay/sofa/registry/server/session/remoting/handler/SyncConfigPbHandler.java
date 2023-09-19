@@ -26,8 +26,9 @@ import com.alipay.sofa.registry.remoting.RemotingException;
 import com.alipay.sofa.registry.server.session.converter.pb.SyncConfigRequestConvertor;
 import com.alipay.sofa.registry.server.session.converter.pb.SyncConfigResponseConvertor;
 import com.alipay.sofa.registry.server.shared.remoting.RemotingHelper;
-import java.util.concurrent.Executor;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.concurrent.Executor;
 
 /**
  * @author zhuoyu.sjw
@@ -35,56 +36,57 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class SyncConfigPbHandler extends AbstractClientDataRequestHandler<SyncConfigRequestPb> {
 
-  @Autowired SyncConfigHandler syncConfigHandler;
+    @Autowired
+    SyncConfigHandler syncConfigHandler;
 
-  @Override
-  protected Node.NodeType getConnectNodeType() {
-    return syncConfigHandler.getConnectNodeType();
-  }
-
-  /**
-   * Reply object.
-   *
-   * @param channel the channel
-   * @param message the message
-   * @return the object
-   * @throws RemotingException the remoting exception
-   */
-  @Override
-  public Object doHandle(Channel channel, SyncConfigRequestPb message) {
-    RemotingHelper.markProtobuf(channel);
-    Object response =
-        syncConfigHandler.doHandle(channel, SyncConfigRequestConvertor.convert2Java(message));
-    if (!(response instanceof SyncConfigResponse)) {
-      return fail();
+    static SyncConfigResponsePb fail() {
+        SyncConfigResponsePb.Builder builder = SyncConfigResponsePb.newBuilder();
+        return builder
+                .setResult(
+                        ResultPb.newBuilder()
+                                .setSuccess(false)
+                                .setMessage("Unknown sync config response type")
+                                .build())
+                .build();
     }
 
-    return SyncConfigResponseConvertor.convert2Pb((SyncConfigResponse) response);
-  }
+    @Override
+    protected Node.NodeType getConnectNodeType() {
+        return syncConfigHandler.getConnectNodeType();
+    }
 
-  static SyncConfigResponsePb fail() {
-    SyncConfigResponsePb.Builder builder = SyncConfigResponsePb.newBuilder();
-    return builder
-        .setResult(
-            ResultPb.newBuilder()
-                .setSuccess(false)
-                .setMessage("Unknown sync config response type")
-                .build())
-        .build();
-  }
+    /**
+     * Reply object.
+     *
+     * @param channel the channel
+     * @param message the message
+     * @return the object
+     * @throws RemotingException the remoting exception
+     */
+    @Override
+    public Object doHandle(Channel channel, SyncConfigRequestPb message) {
+        RemotingHelper.markProtobuf(channel);
+        Object response =
+                syncConfigHandler.doHandle(channel, SyncConfigRequestConvertor.convert2Java(message));
+        if (!(response instanceof SyncConfigResponse)) {
+            return fail();
+        }
 
-  /**
-   * Interest class.
-   *
-   * @return the class
-   */
-  @Override
-  public Class interest() {
-    return SyncConfigRequestPb.class;
-  }
+        return SyncConfigResponseConvertor.convert2Pb((SyncConfigResponse) response);
+    }
 
-  @Override
-  public Executor getExecutor() {
-    return syncConfigHandler.getExecutor();
-  }
+    /**
+     * Interest class.
+     *
+     * @return the class
+     */
+    @Override
+    public Class interest() {
+        return SyncConfigRequestPb.class;
+    }
+
+    @Override
+    public Executor getExecutor() {
+        return syncConfigHandler.getExecutor();
+    }
 }

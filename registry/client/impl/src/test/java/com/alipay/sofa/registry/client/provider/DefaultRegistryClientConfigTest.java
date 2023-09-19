@@ -20,32 +20,32 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class DefaultRegistryClientConfigTest {
-  @Test
-  public void test() {
-    DefaultRegistryClientConfig config1 = DefaultRegistryClientConfigBuilder.start().build();
-    Assert.assertFalse(config1.equals(null));
+    @Test
+    public void test() {
+        DefaultRegistryClientConfig config1 = DefaultRegistryClientConfigBuilder.start().build();
+        Assert.assertFalse(config1.equals(null));
 
-    Assert.assertTrue(config1.equals(config1));
-    Assert.assertEquals(config1.hashCode(), config1.hashCode());
+        Assert.assertTrue(config1.equals(config1));
+        Assert.assertEquals(config1.hashCode(), config1.hashCode());
 
-    DefaultRegistryClientConfig config2 = DefaultRegistryClientConfigBuilder.start().build();
+        DefaultRegistryClientConfig config2 = DefaultRegistryClientConfigBuilder.start().build();
 
-    config2.setAlgorithm("test");
-    Assert.assertEquals(config2.getAlgorithm(), "test");
+        config2.setAlgorithm("test");
+        Assert.assertEquals(config2.getAlgorithm(), "test");
 
-    config2.setEventBusEnable(false);
-    Assert.assertFalse(config2.isEventBusEnable());
+        config2.setEventBusEnable(false);
+        Assert.assertFalse(config2.isEventBusEnable());
 
-    config2.setAuthCacheInterval(100);
-    Assert.assertEquals(config2.getAuthCacheInterval(), 100);
-    // the setting props not impact equals
-    Assert.assertEquals(config1, config2);
-    Assert.assertEquals(config1.hashCode(), config2.hashCode());
+        config2.setAuthCacheInterval(100);
+        Assert.assertEquals(config2.getAuthCacheInterval(), 100);
+        // the setting props not impact equals
+        Assert.assertEquals(config1, config2);
+        Assert.assertEquals(config1.hashCode(), config2.hashCode());
 
-    DefaultRegistryClientConfig config3 =
-        DefaultRegistryClientConfigBuilder.start().setZone("xxx").build();
-    Assert.assertNotEquals(config1, config3);
+        DefaultRegistryClientConfig config3 =
+                DefaultRegistryClientConfigBuilder.start().setZone("xxx").build();
+        Assert.assertNotEquals(config1, config3);
 
-    Assert.assertTrue(config3.toString(), config3.toString().contains("xxx"));
-  }
+        Assert.assertTrue(config3.toString(), config3.toString().contains("xxx"));
+    }
 }

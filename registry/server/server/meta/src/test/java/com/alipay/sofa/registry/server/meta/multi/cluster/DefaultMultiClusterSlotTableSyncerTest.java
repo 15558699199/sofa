@@ -16,12 +16,6 @@
  */
 package com.alipay.sofa.registry.server.meta.multi.cluster;
 
-import static org.mockito.Matchers.anyObject;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import com.alipay.sofa.registry.common.model.GenericResponse;
 import com.alipay.sofa.registry.common.model.multi.cluster.DataCenterMetadata;
 import com.alipay.sofa.registry.common.model.slot.SlotTable;
@@ -36,11 +30,6 @@ import com.alipay.sofa.registry.task.KeyedThreadPoolExecutor;
 import com.alipay.sofa.registry.test.TestUtils;
 import com.alipay.sofa.registry.util.ConcurrentUtils;
 import com.google.common.collect.Sets;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -49,6 +38,16 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.*;
+
 /**
  * @author xiaojian.xj
  * @version : DefaultMultiClusterSlotTableSyncerTest.java, v 0.1 2023年02月17日 11:27 xiaojian.xj Exp $
@@ -56,325 +55,323 @@ import org.mockito.runners.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class DefaultMultiClusterSlotTableSyncerTest {
 
-  @InjectMocks private DefaultMultiClusterSlotTableSyncer defaultMultiClusterSlotTableSyncer;
+    private static final String TEST_DC = "test-dc1";
+    private static final String TEST_DC_1 = "test-dc1";
+    private static final String TEST_DC_2 = "test-dc2";
+    private static final Set<String> REMOTES_1 = Sets.newHashSet(TEST_DC_1);
+    private static final Set<String> REMOTES_1_2 = Sets.newHashSet(TEST_DC_1, TEST_DC_2);
+    private static final String META_LEADER = "192.168.1.1";
+    private static final long META_LEADER_EPOCH = System.currentTimeMillis();
+    private static final int TABLE_EPOCH = 1;
+    private static final int SLOT_LEADER_EPOCH = 1;
+    private static final SlotTable SLOT_TABLE_0_1 =
+            TestUtils.newTable_0_1(TABLE_EPOCH, SLOT_LEADER_EPOCH);
+    private static final DataCenterMetadata METADATA =
+            new DataCenterMetadata(TEST_DC, Sets.newHashSet("zone1", "zone2"));
+    private static final KeyedThreadPoolExecutor executor =
+            new KeyedThreadPoolExecutor("RemoteSlotSyncerExecutor", 10, 10);
+    @InjectMocks
+    private DefaultMultiClusterSlotTableSyncer defaultMultiClusterSlotTableSyncer;
+    @Mock
+    private MetaLeaderService metaLeaderService;
+    @Mock
+    private MultiClusterMetaServerConfig multiClusterMetaServerConfig;
+    @Mock
+    private RemoteClusterMetaExchanger remoteClusterMetaExchanger;
+    @Mock
+    private ExecutorManager executorManager;
 
-  @Mock private MetaLeaderService metaLeaderService;
+    @Before
+    public void init() {
+        when(multiClusterMetaServerConfig.getMultiClusterConfigReloadMillis()).thenReturn(100);
+        when(multiClusterMetaServerConfig.getRemoteSlotSyncerMillis()).thenReturn(100);
+        when(executorManager.getMultiClusterConfigReloadExecutor())
+                .thenReturn(
+                        new ThreadPoolExecutor(10, 10, 60, TimeUnit.SECONDS, new LinkedBlockingQueue<>()));
 
-  @Mock private MultiClusterMetaServerConfig multiClusterMetaServerConfig;
+        when(multiClusterMetaServerConfig.getRemoteSlotSyncerExecutorPoolSize()).thenReturn(10);
+        when(multiClusterMetaServerConfig.getRemoteSlotSyncerExecutorQueueSize()).thenReturn(10);
 
-  @Mock private RemoteClusterMetaExchanger remoteClusterMetaExchanger;
+        defaultMultiClusterSlotTableSyncer.init();
+        defaultMultiClusterSlotTableSyncer.becomeLeader();
+        when(executorManager.getRemoteSlotSyncerExecutor()).thenReturn(executor);
+    }
 
-  @Mock private ExecutorManager executorManager;
+    @Test
+    public void testSyncSlotTable() {
 
-  private static final String TEST_DC = "test-dc1";
-  private static final String TEST_DC_1 = "test-dc1";
-  private static final String TEST_DC_2 = "test-dc2";
-  private static final Set<String> REMOTES_1 = Sets.newHashSet(TEST_DC_1);
-  private static final Set<String> REMOTES_1_2 = Sets.newHashSet(TEST_DC_1, TEST_DC_2);
+        // TEST_DC_1,TEST_DC_2
+        when(remoteClusterMetaExchanger.getAllRemoteClusters()).thenReturn(REMOTES_1_2);
+        when(remoteClusterMetaExchanger.sendRequest(anyString(), anyObject()))
+                .thenReturn(() -> createUpgradeGenericResponse());
+        when(remoteClusterMetaExchanger.learn(anyString(), anyObject())).thenReturn(true);
 
-  private static final String META_LEADER = "192.168.1.1";
-  private static final long META_LEADER_EPOCH = System.currentTimeMillis();
-  private static final int TABLE_EPOCH = 1;
-  private static final int SLOT_LEADER_EPOCH = 1;
-  private static final SlotTable SLOT_TABLE_0_1 =
-      TestUtils.newTable_0_1(TABLE_EPOCH, SLOT_LEADER_EPOCH);
-  private static final DataCenterMetadata METADATA =
-      new DataCenterMetadata(TEST_DC, Sets.newHashSet("zone1", "zone2"));
+        when(metaLeaderService.amILeader()).thenReturn(true);
+        when(metaLeaderService.amIStableAsLeader()).thenReturn(true);
+        ConcurrentUtils.sleepUninterruptibly(500, TimeUnit.MILLISECONDS);
+        Map<String, RemoteClusterSlotState> multiClusterSlotTable =
+                defaultMultiClusterSlotTableSyncer.getMultiClusterSlotTable();
+        Assert.assertEquals(1, multiClusterSlotTable.size());
 
-  private static final KeyedThreadPoolExecutor executor =
-      new KeyedThreadPoolExecutor("RemoteSlotSyncerExecutor", 10, 10);
+        // check TEST_DC
+        RemoteClusterSlotState state = multiClusterSlotTable.get(TEST_DC);
+        Assert.assertEquals(SLOT_TABLE_0_1, state.slotTable);
+        Assert.assertEquals(METADATA, state.dataCenterMetadata);
 
-  @Before
-  public void init() {
-    when(multiClusterMetaServerConfig.getMultiClusterConfigReloadMillis()).thenReturn(100);
-    when(multiClusterMetaServerConfig.getRemoteSlotSyncerMillis()).thenReturn(100);
-    when(executorManager.getMultiClusterConfigReloadExecutor())
-        .thenReturn(
-            new ThreadPoolExecutor(10, 10, 60, TimeUnit.SECONDS, new LinkedBlockingQueue<>()));
+        // check TEST_DC_1
+        state = defaultMultiClusterSlotTableSyncer.getRemoteClusterSlotState().get(TEST_DC_1);
+        Assert.assertEquals(SLOT_TABLE_0_1, state.slotTable);
+        Assert.assertEquals(METADATA, state.dataCenterMetadata);
+        Assert.assertTrue(state.task.isSuccess());
 
-    when(multiClusterMetaServerConfig.getRemoteSlotSyncerExecutorPoolSize()).thenReturn(10);
-    when(multiClusterMetaServerConfig.getRemoteSlotSyncerExecutorQueueSize()).thenReturn(10);
+        // check TEST_DC_2
+        state = defaultMultiClusterSlotTableSyncer.getRemoteClusterSlotState().get(TEST_DC_2);
+        Assert.assertEquals(SLOT_TABLE_0_1, state.slotTable);
+        Assert.assertEquals(METADATA, state.dataCenterMetadata);
+        Assert.assertTrue(state.task.isSuccess());
 
-    defaultMultiClusterSlotTableSyncer.init();
-    defaultMultiClusterSlotTableSyncer.becomeLeader();
-    when(executorManager.getRemoteSlotSyncerExecutor()).thenReturn(executor);
-  }
+        // TEST_DC_1
+        when(remoteClusterMetaExchanger.getAllRemoteClusters()).thenReturn(REMOTES_1);
+        ConcurrentUtils.sleepUninterruptibly(500, TimeUnit.MILLISECONDS);
+        multiClusterSlotTable = defaultMultiClusterSlotTableSyncer.getMultiClusterSlotTable();
+        Assert.assertEquals(1, multiClusterSlotTable.size());
 
-  @Test
-  public void testSyncSlotTable() {
+        // check TEST_DC
+        state = multiClusterSlotTable.get(TEST_DC);
+        Assert.assertEquals(SLOT_TABLE_0_1, state.slotTable);
+        Assert.assertEquals(METADATA, state.dataCenterMetadata);
 
-    // TEST_DC_1,TEST_DC_2
-    when(remoteClusterMetaExchanger.getAllRemoteClusters()).thenReturn(REMOTES_1_2);
-    when(remoteClusterMetaExchanger.sendRequest(anyString(), anyObject()))
-        .thenReturn(() -> createUpgradeGenericResponse());
-    when(remoteClusterMetaExchanger.learn(anyString(), anyObject())).thenReturn(true);
+        // check TEST_DC_1
+        state = defaultMultiClusterSlotTableSyncer.getRemoteClusterSlotState().get(TEST_DC_1);
+        Assert.assertEquals(SLOT_TABLE_0_1, state.slotTable);
+        Assert.assertEquals(METADATA, state.dataCenterMetadata);
+        Assert.assertTrue(state.task.isSuccess());
 
-    when(metaLeaderService.amILeader()).thenReturn(true);
-    when(metaLeaderService.amIStableAsLeader()).thenReturn(true);
-    ConcurrentUtils.sleepUninterruptibly(500, TimeUnit.MILLISECONDS);
-    Map<String, RemoteClusterSlotState> multiClusterSlotTable =
+        // check TEST_DC_2
+        state = defaultMultiClusterSlotTableSyncer.getRemoteClusterSlotState().get(TEST_DC_2);
+        Assert.assertNull(state);
+    }
+
+    @Test
+    public void testMetaNotLeader() {
+        // TEST_DC_1
+        when(remoteClusterMetaExchanger.getAllRemoteClusters()).thenReturn(REMOTES_1);
+        when(remoteClusterMetaExchanger.sendRequest(anyString(), anyObject()))
+                .thenReturn(() -> createUpgradeGenericResponse());
+        when(remoteClusterMetaExchanger.learn(anyString(), anyObject())).thenReturn(true);
+        when(metaLeaderService.amILeader()).thenReturn(false);
+        when(metaLeaderService.amIStableAsLeader()).thenReturn(true);
+
+        ConcurrentUtils.sleepUninterruptibly(500, TimeUnit.MILLISECONDS);
+        Map<String, RemoteClusterSlotState> multiClusterSlotTable =
+                defaultMultiClusterSlotTableSyncer.getMultiClusterSlotTable();
+        System.out.println(multiClusterSlotTable);
+        Assert.assertEquals(0, multiClusterSlotTable.size());
+        Assert.assertNull(
+                defaultMultiClusterSlotTableSyncer.getRemoteClusterSlotState().get(TEST_DC_1));
+
+        when(metaLeaderService.amILeader()).thenReturn(true);
+    }
+
+    @Test(expected = MetaLeaderNotWarmupException.class)
+    public void testMetaNotWarmupException() {
+        when(metaLeaderService.amIStableAsLeader()).thenReturn(false);
         defaultMultiClusterSlotTableSyncer.getMultiClusterSlotTable();
-    Assert.assertEquals(1, multiClusterSlotTable.size());
+    }
 
-    // check TEST_DC
-    RemoteClusterSlotState state = multiClusterSlotTable.get(TEST_DC);
-    Assert.assertEquals(SLOT_TABLE_0_1, state.slotTable);
-    Assert.assertEquals(METADATA, state.dataCenterMetadata);
+    @Test
+    public void testSendRequestError() {
+        when(remoteClusterMetaExchanger.sendRequest(anyString(), anyObject()))
+                .thenThrow(new RuntimeException("expected exception."));
 
-    // check TEST_DC_1
-    state = defaultMultiClusterSlotTableSyncer.getRemoteClusterSlotState().get(TEST_DC_1);
-    Assert.assertEquals(SLOT_TABLE_0_1, state.slotTable);
-    Assert.assertEquals(METADATA, state.dataCenterMetadata);
-    Assert.assertTrue(state.task.isSuccess());
+        // TEST_DC_1
+        when(remoteClusterMetaExchanger.getAllRemoteClusters()).thenReturn(REMOTES_1);
+        when(remoteClusterMetaExchanger.learn(anyString(), anyObject())).thenReturn(true);
 
-    // check TEST_DC_2
-    state = defaultMultiClusterSlotTableSyncer.getRemoteClusterSlotState().get(TEST_DC_2);
-    Assert.assertEquals(SLOT_TABLE_0_1, state.slotTable);
-    Assert.assertEquals(METADATA, state.dataCenterMetadata);
-    Assert.assertTrue(state.task.isSuccess());
+        when(metaLeaderService.amILeader()).thenReturn(true);
+        when(metaLeaderService.amIStableAsLeader()).thenReturn(true);
 
-    // TEST_DC_1
-    when(remoteClusterMetaExchanger.getAllRemoteClusters()).thenReturn(REMOTES_1);
-    ConcurrentUtils.sleepUninterruptibly(500, TimeUnit.MILLISECONDS);
-    multiClusterSlotTable = defaultMultiClusterSlotTableSyncer.getMultiClusterSlotTable();
-    Assert.assertEquals(1, multiClusterSlotTable.size());
+        ConcurrentUtils.sleepUninterruptibly(500, TimeUnit.MILLISECONDS);
+        Map<String, RemoteClusterSlotState> multiClusterSlotTable =
+                defaultMultiClusterSlotTableSyncer.getMultiClusterSlotTable();
+        Assert.assertEquals(0, multiClusterSlotTable.size());
 
-    // check TEST_DC
-    state = multiClusterSlotTable.get(TEST_DC);
-    Assert.assertEquals(SLOT_TABLE_0_1, state.slotTable);
-    Assert.assertEquals(METADATA, state.dataCenterMetadata);
+        // check TEST_DC_1
+        RemoteClusterSlotState state =
+                defaultMultiClusterSlotTableSyncer.getRemoteClusterSlotState().get(TEST_DC_1);
+        Assert.assertEquals(SlotTable.INIT, state.slotTable);
+        Assert.assertNull(state.dataCenterMetadata);
+        Assert.assertTrue(state.task.isSuccess());
+        Assert.assertTrue(state.failCount.get() > 0);
+    }
 
-    // check TEST_DC_1
-    state = defaultMultiClusterSlotTableSyncer.getRemoteClusterSlotState().get(TEST_DC_1);
-    Assert.assertEquals(SLOT_TABLE_0_1, state.slotTable);
-    Assert.assertEquals(METADATA, state.dataCenterMetadata);
-    Assert.assertTrue(state.task.isSuccess());
+    @Test
+    public void testHandleWrongResponse() {
+        when(remoteClusterMetaExchanger.sendRequest(anyString(), anyObject()))
+                .thenReturn(() -> RemoteClusterSlotSyncResponse.wrongLeader("1.1.1.1", 1));
 
-    // check TEST_DC_2
-    state = defaultMultiClusterSlotTableSyncer.getRemoteClusterSlotState().get(TEST_DC_2);
-    Assert.assertNull(state);
-  }
+        // TEST_DC_1
+        when(remoteClusterMetaExchanger.getAllRemoteClusters()).thenReturn(REMOTES_1);
+        when(remoteClusterMetaExchanger.learn(anyString(), anyObject())).thenReturn(true);
 
-  @Test
-  public void testMetaNotLeader() {
-    // TEST_DC_1
-    when(remoteClusterMetaExchanger.getAllRemoteClusters()).thenReturn(REMOTES_1);
-    when(remoteClusterMetaExchanger.sendRequest(anyString(), anyObject()))
-        .thenReturn(() -> createUpgradeGenericResponse());
-    when(remoteClusterMetaExchanger.learn(anyString(), anyObject())).thenReturn(true);
-    when(metaLeaderService.amILeader()).thenReturn(false);
-    when(metaLeaderService.amIStableAsLeader()).thenReturn(true);
+        when(metaLeaderService.amILeader()).thenReturn(true);
+        when(metaLeaderService.amIStableAsLeader()).thenReturn(true);
 
-    ConcurrentUtils.sleepUninterruptibly(500, TimeUnit.MILLISECONDS);
-    Map<String, RemoteClusterSlotState> multiClusterSlotTable =
-        defaultMultiClusterSlotTableSyncer.getMultiClusterSlotTable();
-    System.out.println(multiClusterSlotTable);
-    Assert.assertEquals(0, multiClusterSlotTable.size());
-    Assert.assertNull(
-        defaultMultiClusterSlotTableSyncer.getRemoteClusterSlotState().get(TEST_DC_1));
+        ConcurrentUtils.sleepUninterruptibly(500, TimeUnit.MILLISECONDS);
+        Map<String, RemoteClusterSlotState> multiClusterSlotTable =
+                defaultMultiClusterSlotTableSyncer.getMultiClusterSlotTable();
+        Assert.assertEquals(0, multiClusterSlotTable.size());
 
-    when(metaLeaderService.amILeader()).thenReturn(true);
-  }
+        // check TEST_DC_1
+        RemoteClusterSlotState state =
+                defaultMultiClusterSlotTableSyncer.getRemoteClusterSlotState().get(TEST_DC_1);
+        Assert.assertEquals(SlotTable.INIT, state.slotTable);
+        Assert.assertNull(state.dataCenterMetadata);
+        Assert.assertTrue(state.task.isSuccess());
+        Assert.assertTrue(state.failCount.get() > 0);
+    }
 
-  @Test(expected = MetaLeaderNotWarmupException.class)
-  public void testMetaNotWarmupException() {
-    when(metaLeaderService.amIStableAsLeader()).thenReturn(false);
-    defaultMultiClusterSlotTableSyncer.getMultiClusterSlotTable();
-  }
+    @Test
+    public void testHandleNullDataResponse() {
+        when(remoteClusterMetaExchanger.sendRequest(anyString(), anyObject()))
+                .thenReturn(() -> createEmptyDataGenericResponse());
 
-  @Test
-  public void testSendRequestError() {
-    when(remoteClusterMetaExchanger.sendRequest(anyString(), anyObject()))
-        .thenThrow(new RuntimeException("expected exception."));
+        // TEST_DC_1
+        when(remoteClusterMetaExchanger.getAllRemoteClusters()).thenReturn(REMOTES_1);
+        when(remoteClusterMetaExchanger.learn(anyString(), anyObject())).thenReturn(true);
 
-    // TEST_DC_1
-    when(remoteClusterMetaExchanger.getAllRemoteClusters()).thenReturn(REMOTES_1);
-    when(remoteClusterMetaExchanger.learn(anyString(), anyObject())).thenReturn(true);
+        when(metaLeaderService.amILeader()).thenReturn(true);
+        when(metaLeaderService.amIStableAsLeader()).thenReturn(true);
 
-    when(metaLeaderService.amILeader()).thenReturn(true);
-    when(metaLeaderService.amIStableAsLeader()).thenReturn(true);
+        ConcurrentUtils.sleepUninterruptibly(500, TimeUnit.MILLISECONDS);
 
-    ConcurrentUtils.sleepUninterruptibly(500, TimeUnit.MILLISECONDS);
-    Map<String, RemoteClusterSlotState> multiClusterSlotTable =
-        defaultMultiClusterSlotTableSyncer.getMultiClusterSlotTable();
-    Assert.assertEquals(0, multiClusterSlotTable.size());
+        Map<String, RemoteClusterSlotState> multiClusterSlotTable =
+                defaultMultiClusterSlotTableSyncer.getMultiClusterSlotTable();
+        Assert.assertEquals(0, multiClusterSlotTable.size());
 
-    // check TEST_DC_1
-    RemoteClusterSlotState state =
-        defaultMultiClusterSlotTableSyncer.getRemoteClusterSlotState().get(TEST_DC_1);
-    Assert.assertEquals(SlotTable.INIT, state.slotTable);
-    Assert.assertNull(state.dataCenterMetadata);
-    Assert.assertTrue(state.task.isSuccess());
-    Assert.assertTrue(state.failCount.get() > 0);
-  }
+        // check TEST_DC_1
+        RemoteClusterSlotState state =
+                defaultMultiClusterSlotTableSyncer.getRemoteClusterSlotState().get(TEST_DC_1);
+        Assert.assertEquals(SlotTable.INIT, state.slotTable);
+        Assert.assertNull(state.dataCenterMetadata);
+        Assert.assertTrue(state.task.isSuccess());
+        Assert.assertTrue(state.failCount.get() > 0);
+    }
 
-  @Test
-  public void testHandleWrongResponse() {
-    when(remoteClusterMetaExchanger.sendRequest(anyString(), anyObject()))
-        .thenReturn(() -> RemoteClusterSlotSyncResponse.wrongLeader("1.1.1.1", 1));
+    @Test
+    public void testHandleWrongLeaderResponse() {
+        when(remoteClusterMetaExchanger.sendRequest(anyString(), anyObject()))
+                .thenReturn(() -> createWrongLeaderGenericResponse());
 
-    // TEST_DC_1
-    when(remoteClusterMetaExchanger.getAllRemoteClusters()).thenReturn(REMOTES_1);
-    when(remoteClusterMetaExchanger.learn(anyString(), anyObject())).thenReturn(true);
+        // TEST_DC_1
+        when(remoteClusterMetaExchanger.getAllRemoteClusters()).thenReturn(REMOTES_1);
+        when(remoteClusterMetaExchanger.learn(anyString(), anyObject())).thenReturn(true);
 
-    when(metaLeaderService.amILeader()).thenReturn(true);
-    when(metaLeaderService.amIStableAsLeader()).thenReturn(true);
+        when(metaLeaderService.amILeader()).thenReturn(true);
+        when(metaLeaderService.amIStableAsLeader()).thenReturn(true);
 
-    ConcurrentUtils.sleepUninterruptibly(500, TimeUnit.MILLISECONDS);
-    Map<String, RemoteClusterSlotState> multiClusterSlotTable =
-        defaultMultiClusterSlotTableSyncer.getMultiClusterSlotTable();
-    Assert.assertEquals(0, multiClusterSlotTable.size());
+        ConcurrentUtils.sleepUninterruptibly(500, TimeUnit.MILLISECONDS);
+        Map<String, RemoteClusterSlotState> multiClusterSlotTable =
+                defaultMultiClusterSlotTableSyncer.getMultiClusterSlotTable();
+        Assert.assertEquals(0, multiClusterSlotTable.size());
 
-    // check TEST_DC_1
-    RemoteClusterSlotState state =
-        defaultMultiClusterSlotTableSyncer.getRemoteClusterSlotState().get(TEST_DC_1);
-    Assert.assertEquals(SlotTable.INIT, state.slotTable);
-    Assert.assertNull(state.dataCenterMetadata);
-    Assert.assertTrue(state.task.isSuccess());
-    Assert.assertTrue(state.failCount.get() > 0);
-  }
+        // check TEST_DC_1
+        RemoteClusterSlotState state =
+                defaultMultiClusterSlotTableSyncer.getRemoteClusterSlotState().get(TEST_DC_1);
+        Assert.assertEquals(SlotTable.INIT, state.slotTable);
+        Assert.assertNull(state.dataCenterMetadata);
+        Assert.assertTrue(state.task.isSuccess());
+        Assert.assertTrue(state.failCount.get() > 0);
+    }
 
-  @Test
-  public void testHandleNullDataResponse() {
-    when(remoteClusterMetaExchanger.sendRequest(anyString(), anyObject()))
-        .thenReturn(() -> createEmptyDataGenericResponse());
+    @Test
+    public void testHandleLeaderNotWarmupResponse() {
+        when(remoteClusterMetaExchanger.sendRequest(anyString(), anyObject()))
+                .thenReturn(() -> createLeaderNotWarmupedGenericResponse());
 
-    // TEST_DC_1
-    when(remoteClusterMetaExchanger.getAllRemoteClusters()).thenReturn(REMOTES_1);
-    when(remoteClusterMetaExchanger.learn(anyString(), anyObject())).thenReturn(true);
+        // TEST_DC_1
+        when(remoteClusterMetaExchanger.getAllRemoteClusters()).thenReturn(REMOTES_1);
+        when(remoteClusterMetaExchanger.learn(anyString(), anyObject())).thenReturn(true);
 
-    when(metaLeaderService.amILeader()).thenReturn(true);
-    when(metaLeaderService.amIStableAsLeader()).thenReturn(true);
+        when(metaLeaderService.amILeader()).thenReturn(true);
+        when(metaLeaderService.amIStableAsLeader()).thenReturn(true);
 
-    ConcurrentUtils.sleepUninterruptibly(500, TimeUnit.MILLISECONDS);
+        ConcurrentUtils.sleepUninterruptibly(500, TimeUnit.MILLISECONDS);
+        Map<String, RemoteClusterSlotState> multiClusterSlotTable =
+                defaultMultiClusterSlotTableSyncer.getMultiClusterSlotTable();
+        Assert.assertEquals(0, multiClusterSlotTable.size());
 
-    Map<String, RemoteClusterSlotState> multiClusterSlotTable =
-        defaultMultiClusterSlotTableSyncer.getMultiClusterSlotTable();
-    Assert.assertEquals(0, multiClusterSlotTable.size());
+        // check TEST_DC_1
+        RemoteClusterSlotState state =
+                defaultMultiClusterSlotTableSyncer.getRemoteClusterSlotState().get(TEST_DC_1);
+        Assert.assertEquals(SlotTable.INIT, state.slotTable);
+        Assert.assertNull(state.dataCenterMetadata);
+        Assert.assertTrue(state.task.isSuccess());
+        Assert.assertEquals(0, state.failCount.get());
+    }
 
-    // check TEST_DC_1
-    RemoteClusterSlotState state =
-        defaultMultiClusterSlotTableSyncer.getRemoteClusterSlotState().get(TEST_DC_1);
-    Assert.assertEquals(SlotTable.INIT, state.slotTable);
-    Assert.assertNull(state.dataCenterMetadata);
-    Assert.assertTrue(state.task.isSuccess());
-    Assert.assertTrue(state.failCount.get() > 0);
-  }
+    @Test
+    public void testResetMetaLeader() {
+        when(remoteClusterMetaExchanger.sendRequest(anyString(), anyObject()))
+                .thenReturn(() -> createWrongLeaderGenericResponse());
 
-  @Test
-  public void testHandleWrongLeaderResponse() {
-    when(remoteClusterMetaExchanger.sendRequest(anyString(), anyObject()))
-        .thenReturn(() -> createWrongLeaderGenericResponse());
+        // TEST_DC_1
+        when(remoteClusterMetaExchanger.getAllRemoteClusters()).thenReturn(REMOTES_1);
+        when(remoteClusterMetaExchanger.learn(anyString(), anyObject())).thenReturn(true);
 
-    // TEST_DC_1
-    when(remoteClusterMetaExchanger.getAllRemoteClusters()).thenReturn(REMOTES_1);
-    when(remoteClusterMetaExchanger.learn(anyString(), anyObject())).thenReturn(true);
+        when(metaLeaderService.amILeader()).thenReturn(true);
+        when(metaLeaderService.amIStableAsLeader()).thenReturn(true);
 
-    when(metaLeaderService.amILeader()).thenReturn(true);
-    when(metaLeaderService.amIStableAsLeader()).thenReturn(true);
+        ConcurrentUtils.sleepUninterruptibly(1000, TimeUnit.MILLISECONDS);
+        Map<String, RemoteClusterSlotState> multiClusterSlotTable =
+                defaultMultiClusterSlotTableSyncer.getMultiClusterSlotTable();
+        Assert.assertEquals(0, multiClusterSlotTable.size());
 
-    ConcurrentUtils.sleepUninterruptibly(500, TimeUnit.MILLISECONDS);
-    Map<String, RemoteClusterSlotState> multiClusterSlotTable =
-        defaultMultiClusterSlotTableSyncer.getMultiClusterSlotTable();
-    Assert.assertEquals(0, multiClusterSlotTable.size());
+        // check TEST_DC_1
+        RemoteClusterSlotState state =
+                defaultMultiClusterSlotTableSyncer.getRemoteClusterSlotState().get(TEST_DC_1);
+        Assert.assertEquals(SlotTable.INIT, state.slotTable);
+        Assert.assertNull(state.dataCenterMetadata);
+        Assert.assertTrue(state.task.isSuccess());
+        verify(remoteClusterMetaExchanger, times(1)).resetLeader(anyString());
+    }
 
-    // check TEST_DC_1
-    RemoteClusterSlotState state =
-        defaultMultiClusterSlotTableSyncer.getRemoteClusterSlotState().get(TEST_DC_1);
-    Assert.assertEquals(SlotTable.INIT, state.slotTable);
-    Assert.assertNull(state.dataCenterMetadata);
-    Assert.assertTrue(state.task.isSuccess());
-    Assert.assertTrue(state.failCount.get() > 0);
-  }
+    private GenericResponse<RemoteClusterSlotSyncResponse> createUpgradeGenericResponse() {
+        GenericResponse<RemoteClusterSlotSyncResponse> genericResponse = new GenericResponse<>();
+        genericResponse.setSuccess(true);
+        genericResponse.setData(
+                RemoteClusterSlotSyncResponse.upgrade(
+                        META_LEADER, META_LEADER_EPOCH, SLOT_TABLE_0_1, METADATA));
+        return genericResponse;
+    }
 
-  @Test
-  public void testHandleLeaderNotWarmupResponse() {
-    when(remoteClusterMetaExchanger.sendRequest(anyString(), anyObject()))
-        .thenReturn(() -> createLeaderNotWarmupedGenericResponse());
+    private GenericResponse<RemoteClusterSlotSyncResponse> createWrongLeaderGenericResponse() {
+        GenericResponse<RemoteClusterSlotSyncResponse> genericResponse = new GenericResponse<>();
+        genericResponse.setSuccess(false);
+        genericResponse.setData(
+                RemoteClusterSlotSyncResponse.wrongLeader(META_LEADER + 1, META_LEADER_EPOCH + 1));
+        return genericResponse;
+    }
 
-    // TEST_DC_1
-    when(remoteClusterMetaExchanger.getAllRemoteClusters()).thenReturn(REMOTES_1);
-    when(remoteClusterMetaExchanger.learn(anyString(), anyObject())).thenReturn(true);
+    private GenericResponse<RemoteClusterSlotSyncResponse> createLeaderNotWarmupedGenericResponse() {
+        GenericResponse<RemoteClusterSlotSyncResponse> genericResponse = new GenericResponse<>();
+        genericResponse.setSuccess(false);
+        genericResponse.setData(
+                RemoteClusterSlotSyncResponse.leaderNotWarmuped(META_LEADER + 1, META_LEADER_EPOCH + 1));
+        return genericResponse;
+    }
 
-    when(metaLeaderService.amILeader()).thenReturn(true);
-    when(metaLeaderService.amIStableAsLeader()).thenReturn(true);
+    private GenericResponse<RemoteClusterSlotSyncResponse> createNotUpgradeGenericResponse() {
+        GenericResponse<RemoteClusterSlotSyncResponse> genericResponse = new GenericResponse<>();
+        genericResponse.setSuccess(false);
+        genericResponse.setData(
+                RemoteClusterSlotSyncResponse.notUpgrade(META_LEADER, META_LEADER_EPOCH, METADATA));
+        return genericResponse;
+    }
 
-    ConcurrentUtils.sleepUninterruptibly(500, TimeUnit.MILLISECONDS);
-    Map<String, RemoteClusterSlotState> multiClusterSlotTable =
-        defaultMultiClusterSlotTableSyncer.getMultiClusterSlotTable();
-    Assert.assertEquals(0, multiClusterSlotTable.size());
-
-    // check TEST_DC_1
-    RemoteClusterSlotState state =
-        defaultMultiClusterSlotTableSyncer.getRemoteClusterSlotState().get(TEST_DC_1);
-    Assert.assertEquals(SlotTable.INIT, state.slotTable);
-    Assert.assertNull(state.dataCenterMetadata);
-    Assert.assertTrue(state.task.isSuccess());
-    Assert.assertEquals(0, state.failCount.get());
-  }
-
-  @Test
-  public void testResetMetaLeader() {
-    when(remoteClusterMetaExchanger.sendRequest(anyString(), anyObject()))
-        .thenReturn(() -> createWrongLeaderGenericResponse());
-
-    // TEST_DC_1
-    when(remoteClusterMetaExchanger.getAllRemoteClusters()).thenReturn(REMOTES_1);
-    when(remoteClusterMetaExchanger.learn(anyString(), anyObject())).thenReturn(true);
-
-    when(metaLeaderService.amILeader()).thenReturn(true);
-    when(metaLeaderService.amIStableAsLeader()).thenReturn(true);
-
-    ConcurrentUtils.sleepUninterruptibly(1000, TimeUnit.MILLISECONDS);
-    Map<String, RemoteClusterSlotState> multiClusterSlotTable =
-        defaultMultiClusterSlotTableSyncer.getMultiClusterSlotTable();
-    Assert.assertEquals(0, multiClusterSlotTable.size());
-
-    // check TEST_DC_1
-    RemoteClusterSlotState state =
-        defaultMultiClusterSlotTableSyncer.getRemoteClusterSlotState().get(TEST_DC_1);
-    Assert.assertEquals(SlotTable.INIT, state.slotTable);
-    Assert.assertNull(state.dataCenterMetadata);
-    Assert.assertTrue(state.task.isSuccess());
-    verify(remoteClusterMetaExchanger, times(1)).resetLeader(anyString());
-  }
-
-  private GenericResponse<RemoteClusterSlotSyncResponse> createUpgradeGenericResponse() {
-    GenericResponse<RemoteClusterSlotSyncResponse> genericResponse = new GenericResponse<>();
-    genericResponse.setSuccess(true);
-    genericResponse.setData(
-        RemoteClusterSlotSyncResponse.upgrade(
-            META_LEADER, META_LEADER_EPOCH, SLOT_TABLE_0_1, METADATA));
-    return genericResponse;
-  }
-
-  private GenericResponse<RemoteClusterSlotSyncResponse> createWrongLeaderGenericResponse() {
-    GenericResponse<RemoteClusterSlotSyncResponse> genericResponse = new GenericResponse<>();
-    genericResponse.setSuccess(false);
-    genericResponse.setData(
-        RemoteClusterSlotSyncResponse.wrongLeader(META_LEADER + 1, META_LEADER_EPOCH + 1));
-    return genericResponse;
-  }
-
-  private GenericResponse<RemoteClusterSlotSyncResponse> createLeaderNotWarmupedGenericResponse() {
-    GenericResponse<RemoteClusterSlotSyncResponse> genericResponse = new GenericResponse<>();
-    genericResponse.setSuccess(false);
-    genericResponse.setData(
-        RemoteClusterSlotSyncResponse.leaderNotWarmuped(META_LEADER + 1, META_LEADER_EPOCH + 1));
-    return genericResponse;
-  }
-
-  private GenericResponse<RemoteClusterSlotSyncResponse> createNotUpgradeGenericResponse() {
-    GenericResponse<RemoteClusterSlotSyncResponse> genericResponse = new GenericResponse<>();
-    genericResponse.setSuccess(false);
-    genericResponse.setData(
-        RemoteClusterSlotSyncResponse.notUpgrade(META_LEADER, META_LEADER_EPOCH, METADATA));
-    return genericResponse;
-  }
-
-  private GenericResponse<RemoteClusterSlotSyncResponse> createEmptyDataGenericResponse() {
-    GenericResponse<RemoteClusterSlotSyncResponse> genericResponse = new GenericResponse<>();
-    genericResponse.setSuccess(false);
-    return genericResponse;
-  }
+    private GenericResponse<RemoteClusterSlotSyncResponse> createEmptyDataGenericResponse() {
+        GenericResponse<RemoteClusterSlotSyncResponse> genericResponse = new GenericResponse<>();
+        genericResponse.setSuccess(false);
+        return genericResponse;
+    }
 }

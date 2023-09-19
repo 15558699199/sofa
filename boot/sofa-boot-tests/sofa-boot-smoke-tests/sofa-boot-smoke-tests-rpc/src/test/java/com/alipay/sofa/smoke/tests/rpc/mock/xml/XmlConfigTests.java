@@ -17,8 +17,8 @@
 package com.alipay.sofa.smoke.tests.rpc.mock.xml;
 
 import com.alipay.sofa.rpc.common.json.JSON;
-import com.alipay.sofa.smoke.tests.rpc.boot.bean.invoke.HelloSyncService;
 import com.alipay.sofa.smoke.tests.rpc.boot.RpcSofaBootApplication;
+import com.alipay.sofa.smoke.tests.rpc.boot.bean.invoke.HelloSyncService;
 import com.alipay.sofa.smoke.tests.rpc.mock.HttpMockServer;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,16 +41,15 @@ public class XmlConfigTests {
     @Autowired
     @Qualifier("xmlLocalMock")
     private HelloSyncService xmlLocalMock;
+    @Autowired
+    @Qualifier("xmlRemoteMock")
+    private HelloSyncService xmlRemoteMock;
 
     @Test
     public void xmlLocalMock() {
         String xml = xmlLocalMock.saySync("xml");
         assertThat(xml).isEqualTo("xml");
     }
-
-    @Autowired
-    @Qualifier("xmlRemoteMock")
-    private HelloSyncService xmlRemoteMock;
 
     @Test
     public void xmlRemote() {

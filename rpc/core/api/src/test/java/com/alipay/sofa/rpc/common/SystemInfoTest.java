@@ -22,8 +22,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- *
- *
  * @author <a href="mailto:zhanggeng.zg@antfin.com">GengZhang</a>
  */
 public class SystemInfoTest {

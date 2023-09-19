@@ -28,13 +28,10 @@ import com.alipay.sofa.registry.server.meta.provide.data.ProvideDataService;
 import com.alipay.sofa.registry.server.meta.resource.filter.LeaderAwareRestController;
 import com.alipay.sofa.registry.store.api.DBResponse;
 import com.google.common.annotations.VisibleForTesting;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.MediaType;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
 
 /**
  * @author shangyu.wh
@@ -44,117 +41,119 @@ import org.springframework.beans.factory.annotation.Autowired;
 @LeaderAwareRestController
 public class ProvideDataResource {
 
-  private static final Logger DB_LOGGER =
-      LoggerFactory.getLogger(ProvideDataResource.class, "[DBService]");
+    private static final Logger DB_LOGGER =
+            LoggerFactory.getLogger(ProvideDataResource.class, "[DBService]");
 
-  private static final Logger taskLogger =
-      LoggerFactory.getLogger(ProvideDataResource.class, "[Task]");
+    private static final Logger taskLogger =
+            LoggerFactory.getLogger(ProvideDataResource.class, "[Task]");
 
-  @Autowired private ProvideDataService provideDataService;
+    @Autowired
+    private ProvideDataService provideDataService;
 
-  @Autowired private DefaultProvideDataNotifier provideDataNotifier;
+    @Autowired
+    private DefaultProvideDataNotifier provideDataNotifier;
 
-  @GET
-  @Path("query")
-  @Produces(MediaType.APPLICATION_JSON)
-  public GenericResponse<PersistenceData> query(@QueryParam("dataInfoId") String dataInfoId) {
-    DBResponse<PersistenceData> queryResponse = provideDataService.queryProvideData(dataInfoId);
-    return new GenericResponse<PersistenceData>().fillSucceed(queryResponse.getEntity());
-  }
-
-  @POST
-  @Path("put")
-  @Produces(MediaType.APPLICATION_JSON)
-  public Result put(PersistenceData data) {
-
-    checkObj(data, "PersistenceData");
-    checkString(data.getData());
-    checkObj(data.getVersion(), "version");
-
-    String dataInfoId =
-        DataInfo.toDataInfoId(data.getDataId(), data.getInstanceId(), data.getGroup());
-
-    boolean ret;
-    try {
-      ret = provideDataService.saveProvideData(data);
-      DB_LOGGER.info("put Persistence Data {} to DB result {}!", data, ret);
-    } catch (Throwable e) {
-      DB_LOGGER.error("error put Persistence Data {} to DB!", data, e);
-      throw new RuntimeException("Put Persistence Data " + data + " to DB error!", e);
+    @GET
+    @Path("query")
+    @Produces(MediaType.APPLICATION_JSON)
+    public GenericResponse<PersistenceData> query(@QueryParam("dataInfoId") String dataInfoId) {
+        DBResponse<PersistenceData> queryResponse = provideDataService.queryProvideData(dataInfoId);
+        return new GenericResponse<PersistenceData>().fillSucceed(queryResponse.getEntity());
     }
 
-    if (ret) {
-      fireDataChangeNotify(data.getVersion(), dataInfoId);
+    @POST
+    @Path("put")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Result put(PersistenceData data) {
+
+        checkObj(data, "PersistenceData");
+        checkString(data.getData());
+        checkObj(data.getVersion(), "version");
+
+        String dataInfoId =
+                DataInfo.toDataInfoId(data.getDataId(), data.getInstanceId(), data.getGroup());
+
+        boolean ret;
+        try {
+            ret = provideDataService.saveProvideData(data);
+            DB_LOGGER.info("put Persistence Data {} to DB result {}!", data, ret);
+        } catch (Throwable e) {
+            DB_LOGGER.error("error put Persistence Data {} to DB!", data, e);
+            throw new RuntimeException("Put Persistence Data " + data + " to DB error!", e);
+        }
+
+        if (ret) {
+            fireDataChangeNotify(data.getVersion(), dataInfoId);
+        }
+
+        Result result = new Result();
+        result.setSuccess(ret);
+        return result;
     }
 
-    Result result = new Result();
-    result.setSuccess(ret);
-    return result;
-  }
+    @POST
+    @Path("remove")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Result remove(PersistenceData data) {
 
-  @POST
-  @Path("remove")
-  @Produces(MediaType.APPLICATION_JSON)
-  public Result remove(PersistenceData data) {
+        checkObj(data, "PersistenceData");
+        checkObj(data.getVersion(), "version");
 
-    checkObj(data, "PersistenceData");
-    checkObj(data.getVersion(), "version");
+        String dataInfoId =
+                DataInfo.toDataInfoId(data.getDataId(), data.getInstanceId(), data.getGroup());
 
-    String dataInfoId =
-        DataInfo.toDataInfoId(data.getDataId(), data.getInstanceId(), data.getGroup());
+        boolean ret;
+        try {
+            ret = provideDataService.removeProvideData(dataInfoId);
+            DB_LOGGER.info("remove Persistence Data {} from DB result {}!", data, ret);
+        } catch (Exception e) {
+            DB_LOGGER.error("error remove Persistence Data {} from DB!", data);
+            throw new RuntimeException("Remove Persistence Data " + data + " from DB error!");
+        }
 
-    boolean ret;
-    try {
-      ret = provideDataService.removeProvideData(dataInfoId);
-      DB_LOGGER.info("remove Persistence Data {} from DB result {}!", data, ret);
-    } catch (Exception e) {
-      DB_LOGGER.error("error remove Persistence Data {} from DB!", data);
-      throw new RuntimeException("Remove Persistence Data " + data + " from DB error!");
+        if (ret) {
+            fireDataChangeNotify(data.getVersion(), dataInfoId);
+        }
+
+        Result result = new Result();
+        result.setSuccess(ret);
+        return result;
     }
 
-    if (ret) {
-      fireDataChangeNotify(data.getVersion(), dataInfoId);
+    private void fireDataChangeNotify(Long version, String dataInfoId) {
+
+        ProvideDataChangeEvent provideDataChangeEvent = new ProvideDataChangeEvent(dataInfoId, version);
+
+        if (taskLogger.isInfoEnabled()) {
+            taskLogger.info(
+                    "send PERSISTENCE_DATA_CHANGE_NOTIFY_TASK notifyProvideDataChange: {}",
+                    provideDataChangeEvent);
+        }
+        provideDataNotifier.notifyProvideDataChange(provideDataChangeEvent);
     }
 
-    Result result = new Result();
-    result.setSuccess(ret);
-    return result;
-  }
-
-  private void fireDataChangeNotify(Long version, String dataInfoId) {
-
-    ProvideDataChangeEvent provideDataChangeEvent = new ProvideDataChangeEvent(dataInfoId, version);
-
-    if (taskLogger.isInfoEnabled()) {
-      taskLogger.info(
-          "send PERSISTENCE_DATA_CHANGE_NOTIFY_TASK notifyProvideDataChange: {}",
-          provideDataChangeEvent);
+    private void checkString(String input) {
+        if (input == null || input.isEmpty()) {
+            throw new IllegalArgumentException("Error String data input:" + input);
+        }
     }
-    provideDataNotifier.notifyProvideDataChange(provideDataChangeEvent);
-  }
 
-  private void checkString(String input) {
-    if (input == null || input.isEmpty()) {
-      throw new IllegalArgumentException("Error String data input:" + input);
+    private void checkObj(Object input, String objName) {
+        if (input == null) {
+            throw new IllegalArgumentException("Error null Object " + objName + " data input!");
+        }
     }
-  }
 
-  private void checkObj(Object input, String objName) {
-    if (input == null) {
-      throw new IllegalArgumentException("Error null Object " + objName + " data input!");
+    @VisibleForTesting
+    protected ProvideDataResource setProvideDataService(ProvideDataService provideDataService) {
+        this.provideDataService = provideDataService;
+        return this;
     }
-  }
 
-  @VisibleForTesting
-  protected ProvideDataResource setProvideDataService(ProvideDataService provideDataService) {
-    this.provideDataService = provideDataService;
-    return this;
-  }
-
-  @VisibleForTesting
-  protected ProvideDataResource setProvideDataNotifier(
-      DefaultProvideDataNotifier provideDataNotifier) {
-    this.provideDataNotifier = provideDataNotifier;
-    return this;
-  }
+    @VisibleForTesting
+    protected ProvideDataResource setProvideDataNotifier(
+            DefaultProvideDataNotifier provideDataNotifier) {
+        this.provideDataNotifier = provideDataNotifier;
+        return this;
+    }
 }

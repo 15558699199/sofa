@@ -20,10 +20,11 @@ import com.alipay.sofa.registry.common.model.console.PersistenceData;
 import com.alipay.sofa.registry.common.model.console.PersistenceDataBuilder;
 import com.alipay.sofa.registry.common.model.store.DataInfo;
 import com.alipay.sofa.registry.jdbc.domain.ProvideDataDomain;
+import org.springframework.util.CollectionUtils;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.springframework.util.CollectionUtils;
 
 /**
  * @author xiaojian.xj
@@ -31,43 +32,43 @@ import org.springframework.util.CollectionUtils;
  */
 public class ProvideDataDomainConvertor {
 
-  public static ProvideDataDomain convert2ProvideData(
-      PersistenceData persistenceData, String dataCenter) {
-    if (persistenceData == null) {
-      return null;
+    public static ProvideDataDomain convert2ProvideData(
+            PersistenceData persistenceData, String dataCenter) {
+        if (persistenceData == null) {
+            return null;
+        }
+
+        return new ProvideDataDomain(
+                dataCenter,
+                PersistenceDataBuilder.getDataInfoId(persistenceData),
+                persistenceData.getData(),
+                persistenceData.getVersion());
     }
 
-    return new ProvideDataDomain(
-        dataCenter,
-        PersistenceDataBuilder.getDataInfoId(persistenceData),
-        persistenceData.getData(),
-        persistenceData.getVersion());
-  }
+    public static PersistenceData convert2PersistenceData(ProvideDataDomain provideData) {
 
-  public static PersistenceData convert2PersistenceData(ProvideDataDomain provideData) {
+        if (provideData == null) {
+            return null;
+        }
 
-    if (provideData == null) {
-      return null;
+        DataInfo dataInfo = DataInfo.valueOf(provideData.getDataKey());
+        PersistenceData persistenceData = new PersistenceData();
+        persistenceData.setDataId(dataInfo.getDataId());
+        persistenceData.setGroup(dataInfo.getGroup());
+        persistenceData.setInstanceId(dataInfo.getInstanceId());
+        persistenceData.setData(provideData.getDataValue());
+        persistenceData.setVersion(provideData.getDataVersion());
+        return persistenceData;
     }
 
-    DataInfo dataInfo = DataInfo.valueOf(provideData.getDataKey());
-    PersistenceData persistenceData = new PersistenceData();
-    persistenceData.setDataId(dataInfo.getDataId());
-    persistenceData.setGroup(dataInfo.getGroup());
-    persistenceData.setInstanceId(dataInfo.getInstanceId());
-    persistenceData.setData(provideData.getDataValue());
-    persistenceData.setVersion(provideData.getDataVersion());
-    return persistenceData;
-  }
+    public static List<PersistenceData> convert2PersistenceDatas(
+            List<ProvideDataDomain> provideDataDomains) {
 
-  public static List<PersistenceData> convert2PersistenceDatas(
-      List<ProvideDataDomain> provideDataDomains) {
-
-    if (CollectionUtils.isEmpty(provideDataDomains)) {
-      return Collections.emptyList();
+        if (CollectionUtils.isEmpty(provideDataDomains)) {
+            return Collections.emptyList();
+        }
+        return provideDataDomains.stream()
+                .map(ProvideDataDomainConvertor::convert2PersistenceData)
+                .collect(Collectors.toList());
     }
-    return provideDataDomains.stream()
-        .map(ProvideDataDomainConvertor::convert2PersistenceData)
-        .collect(Collectors.toList());
-  }
 }

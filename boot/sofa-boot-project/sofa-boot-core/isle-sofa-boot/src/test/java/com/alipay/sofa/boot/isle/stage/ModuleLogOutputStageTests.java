@@ -38,7 +38,7 @@ import static org.mockito.Mockito.when;
  * @author huzijie
  * @version ModuleLogOutputStageTests.java, v 0.1 2023年04月07日 12:11 PM huzijie Exp $
  */
-@ExtendWith({ MockitoExtension.class, OutputCaptureExtension.class })
+@ExtendWith({MockitoExtension.class, OutputCaptureExtension.class})
 public class ModuleLogOutputStageTests {
 
     static {
@@ -69,9 +69,9 @@ public class ModuleLogOutputStageTests {
         stage.logInstalledModules();
 
         assertThat(capturedOutput.getOut())
-            .contains("Spring context initialize success module list").contains("dd1 [100 ms]")
-            .contains("dd2 [200 ms]").contains("xml1").contains("xml2").contains("xml3")
-            .contains("totalTime = 300 ms");
+                .contains("Spring context initialize success module list").contains("dd1 [100 ms]")
+                .contains("dd2 [200 ms]").contains("xml1").contains("xml2").contains("xml3")
+                .contains("totalTime = 300 ms");
     }
 
     @Test
@@ -90,7 +90,7 @@ public class ModuleLogOutputStageTests {
         stage.logFailedModules();
 
         assertThat(capturedOutput.getOut())
-            .contains("Spring context initialize failed module list").contains("dd1")
-            .contains("dd2");
+                .contains("Spring context initialize failed module list").contains("dd1")
+                .contains("dd2");
     }
 }

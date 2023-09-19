@@ -33,15 +33,15 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author <a href="mailto:leizhiyuan@gmail.com">leizhiyuan</a>
  */
 public class RpcStartApplicationListener implements ApplicationContextAware,
-                                        ApplicationListener<ContextRefreshedEvent>, Ordered {
+        ApplicationListener<ContextRefreshedEvent>, Ordered {
 
     private final AtomicBoolean published = new AtomicBoolean(false);
 
-    private final AtomicBoolean success   = new AtomicBoolean(false);
+    private final AtomicBoolean success = new AtomicBoolean(false);
 
-    private ApplicationContext  applicationContext;
+    private ApplicationContext applicationContext;
 
-    private boolean             enableAutoPublish;
+    private boolean enableAutoPublish;
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {

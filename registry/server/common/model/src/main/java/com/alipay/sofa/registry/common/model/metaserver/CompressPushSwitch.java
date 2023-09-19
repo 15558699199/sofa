@@ -20,97 +20,99 @@ import com.alipay.sofa.registry.compress.CompressConstants;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
+import org.springframework.util.CollectionUtils;
+
 import java.util.Collections;
 import java.util.Set;
-import org.springframework.util.CollectionUtils;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CompressPushSwitch {
-  private boolean enabled = false;
+    private boolean enabled = false;
 
-  @JsonSetter(nulls = Nulls.SKIP)
-  private int compressMinSize = CompressConstants.defaultCompressPushMinSize;
+    @JsonSetter(nulls = Nulls.SKIP)
+    private int compressMinSize = CompressConstants.defaultCompressPushMinSize;
 
-  @JsonSetter(nulls = Nulls.SKIP)
-  private Set<String> forbidEncodes = Collections.emptySet();
+    @JsonSetter(nulls = Nulls.SKIP)
+    private Set<String> forbidEncodes = Collections.emptySet();
 
-  @JsonSetter(nulls = Nulls.SKIP)
-  private Set<String> enabledSessions = Collections.emptySet();
+    @JsonSetter(nulls = Nulls.SKIP)
+    private Set<String> enabledSessions = Collections.emptySet();
 
-  @JsonSetter(nulls = Nulls.SKIP)
-  private Set<String> enabledClients = Collections.emptySet();
+    @JsonSetter(nulls = Nulls.SKIP)
+    private Set<String> enabledClients = Collections.emptySet();
 
-  public CompressPushSwitch() {}
-
-  public static CompressPushSwitch defaultSwitch() {
-    return new CompressPushSwitch();
-  }
-
-  public boolean isEnabled() {
-    return enabled;
-  }
-
-  public void setEnabled(boolean enabled) {
-    this.enabled = enabled;
-  }
-
-  public long getCompressMinSize() {
-    return compressMinSize;
-  }
-
-  public void setCompressMinSize(int size) {
-    compressMinSize = size;
-  }
-
-  public Set<String> getForbidEncodes() {
-    return forbidEncodes;
-  }
-
-  public Set<String> getEnabledSessions() {
-    return enabledSessions;
-  }
-
-  public void setForbidEncodes(Set<String> encodes) {
-    if (CollectionUtils.isEmpty(encodes)) {
-      forbidEncodes = Collections.emptySet();
-    } else {
-      forbidEncodes = encodes;
+    public CompressPushSwitch() {
     }
-  }
 
-  public void setEnabledSessions(Set<String> sessions) {
-    if (CollectionUtils.isEmpty(sessions)) {
-      enabledSessions = Collections.emptySet();
-    } else {
-      enabledSessions = sessions;
+    public static CompressPushSwitch defaultSwitch() {
+        return new CompressPushSwitch();
     }
-  }
 
-  public Set<String> getEnabledClients() {
-    return enabledClients;
-  }
-
-  public void setEnabledClients(Set<String> clients) {
-    if (CollectionUtils.isEmpty(clients)) {
-      enabledClients = Collections.emptySet();
-    } else {
-      enabledClients = clients;
+    public boolean isEnabled() {
+        return enabled;
     }
-  }
 
-  @Override
-  public String toString() {
-    return "CompressPushSwitch{"
-        + "enabled="
-        + enabled
-        + ", compressMinSize="
-        + compressMinSize
-        + ", forbidEncodes="
-        + forbidEncodes
-        + ", enabledSessions="
-        + enabledSessions
-        + ", enabledClients="
-        + enabledClients
-        + '}';
-  }
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public long getCompressMinSize() {
+        return compressMinSize;
+    }
+
+    public void setCompressMinSize(int size) {
+        compressMinSize = size;
+    }
+
+    public Set<String> getForbidEncodes() {
+        return forbidEncodes;
+    }
+
+    public void setForbidEncodes(Set<String> encodes) {
+        if (CollectionUtils.isEmpty(encodes)) {
+            forbidEncodes = Collections.emptySet();
+        } else {
+            forbidEncodes = encodes;
+        }
+    }
+
+    public Set<String> getEnabledSessions() {
+        return enabledSessions;
+    }
+
+    public void setEnabledSessions(Set<String> sessions) {
+        if (CollectionUtils.isEmpty(sessions)) {
+            enabledSessions = Collections.emptySet();
+        } else {
+            enabledSessions = sessions;
+        }
+    }
+
+    public Set<String> getEnabledClients() {
+        return enabledClients;
+    }
+
+    public void setEnabledClients(Set<String> clients) {
+        if (CollectionUtils.isEmpty(clients)) {
+            enabledClients = Collections.emptySet();
+        } else {
+            enabledClients = clients;
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "CompressPushSwitch{"
+                + "enabled="
+                + enabled
+                + ", compressMinSize="
+                + compressMinSize
+                + ", forbidEncodes="
+                + forbidEncodes
+                + ", enabledSessions="
+                + enabledSessions
+                + ", enabledClients="
+                + enabledClients
+                + '}';
+    }
 }

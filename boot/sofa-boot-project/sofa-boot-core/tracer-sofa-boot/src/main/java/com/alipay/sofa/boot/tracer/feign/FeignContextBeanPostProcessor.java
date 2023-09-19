@@ -33,7 +33,7 @@ public class FeignContextBeanPostProcessor implements BeanPostProcessor {
 
     @Override
     public Object postProcessBeforeInitialization(Object bean, String beanName)
-                                                                               throws BeansException {
+            throws BeansException {
         if (bean instanceof FeignClientFactory && !(bean instanceof SofaTracerFeignClientFactory)) {
             return new SofaTracerFeignClientFactory((FeignClientFactory) bean);
         }

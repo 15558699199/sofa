@@ -21,11 +21,7 @@ import com.alipay.sofa.runtime.spi.binding.BindingAdapter;
 import com.alipay.sofa.runtime.spi.binding.BindingAdapterFactory;
 import org.springframework.core.annotation.AnnotationAwareOrderComparator;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Base implementation of {@link BindingAdapterFactory}.
@@ -52,7 +48,7 @@ public class BindingAdapterFactoryImpl implements BindingAdapterFactory {
 
         for (BindingAdapter bindingAdapter : sortedBindingAdapters) {
             bindingTypeBindingAdapterMap.putIfAbsent(bindingAdapter.getBindingType(),
-                bindingAdapter);
+                    bindingAdapter);
         }
     }
 }

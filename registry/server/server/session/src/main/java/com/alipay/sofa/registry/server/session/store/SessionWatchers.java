@@ -26,23 +26,23 @@ import com.alipay.sofa.registry.log.LoggerFactory;
  * @version $Id: SessionWatchers.java, v 0.1 2018-04-17 19:00 shangyu.wh Exp $
  */
 public class SessionWatchers extends AbstractDataManager<Watcher> implements Watchers {
-  private static final Logger LOGGER = LoggerFactory.getLogger(SessionWatchers.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SessionWatchers.class);
 
-  private final Store<Watcher> store = new SimpleStore<>(1024 * 16, 32);
+    private final Store<Watcher> store = new SimpleStore<>(1024 * 16, 32);
 
-  public SessionWatchers() {
-    super(LOGGER);
-  }
+    public SessionWatchers() {
+        super(LOGGER);
+    }
 
-  @Override
-  public boolean add(Watcher watcher) {
-    Watcher.internWatcher(watcher);
-    Tuple<Watcher, Boolean> ret = addData(watcher);
-    return ret.o2;
-  }
+    @Override
+    public boolean add(Watcher watcher) {
+        Watcher.internWatcher(watcher);
+        Tuple<Watcher, Boolean> ret = addData(watcher);
+        return ret.o2;
+    }
 
-  @Override
-  protected Store<Watcher> getStore() {
-    return store;
-  }
+    @Override
+    protected Store<Watcher> getStore() {
+        return store;
+    }
 }

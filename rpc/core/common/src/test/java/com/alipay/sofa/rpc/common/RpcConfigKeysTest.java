@@ -30,18 +30,18 @@ public class RpcConfigKeysTest {
     @Test
     public void testDefaultValue() {
         Assert.assertEquals(RpcConfigKeys.MESH_HTTP_CONNECTION_TIMEOUT.getDefaultValue(),
-            SofaConfigs.getOrDefault(RpcConfigKeys.MESH_HTTP_CONNECTION_TIMEOUT));
+                SofaConfigs.getOrDefault(RpcConfigKeys.MESH_HTTP_CONNECTION_TIMEOUT));
         Assert.assertEquals(RpcConfigKeys.MESH_HTTP_READ_TIMEOUT.getDefaultValue(),
-            SofaConfigs.getOrDefault(RpcConfigKeys.MESH_HTTP_READ_TIMEOUT));
+                SofaConfigs.getOrDefault(RpcConfigKeys.MESH_HTTP_READ_TIMEOUT));
         Assert.assertEquals(RpcConfigKeys.TRACER_EXPOSE_TYPE.getDefaultValue(),
-            SofaConfigs.getOrDefault(RpcConfigKeys.TRACER_EXPOSE_TYPE));
+                SofaConfigs.getOrDefault(RpcConfigKeys.TRACER_EXPOSE_TYPE));
         Assert.assertEquals(RpcConfigKeys.REMOTING_HTTP_SSL_ENABLE.getDefaultValue(),
-            SofaConfigs.getOrDefault(RpcConfigKeys.REMOTING_HTTP_SSL_ENABLE));
+                SofaConfigs.getOrDefault(RpcConfigKeys.REMOTING_HTTP_SSL_ENABLE));
         Assert.assertEquals(RpcConfigKeys.CERTIFICATE_PATH.getDefaultValue(),
-            SofaConfigs.getOrDefault(RpcConfigKeys.CERTIFICATE_PATH));
+                SofaConfigs.getOrDefault(RpcConfigKeys.CERTIFICATE_PATH));
         Assert.assertEquals(RpcConfigKeys.PRIVATE_KEY_PATH.getDefaultValue(),
-            SofaConfigs.getOrDefault(RpcConfigKeys.PRIVATE_KEY_PATH));
+                SofaConfigs.getOrDefault(RpcConfigKeys.PRIVATE_KEY_PATH));
         Assert.assertEquals(RpcConfigKeys.TRIPLE_EXPOSE_OLD_UNIQUE_ID_SERVICE.getDefaultValue(),
-            SofaConfigs.getOrDefault(RpcConfigKeys.TRIPLE_EXPOSE_OLD_UNIQUE_ID_SERVICE));
+                SofaConfigs.getOrDefault(RpcConfigKeys.TRIPLE_EXPOSE_OLD_UNIQUE_ID_SERVICE));
     }
 }

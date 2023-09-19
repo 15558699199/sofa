@@ -17,7 +17,6 @@
 package com.alipay.sofa.rpc.client.aft.bean;
 
 /**
- *
  * @author <a href="mailto:lw111072@antfin.com">liangen</a>
  */
 public class HelloServiceImpl implements FaultHelloService {

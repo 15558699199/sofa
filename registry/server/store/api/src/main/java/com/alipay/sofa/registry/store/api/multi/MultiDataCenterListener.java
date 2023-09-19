@@ -24,7 +24,7 @@ import java.util.Set;
  */
 public interface MultiDataCenterListener {
 
-  Set<String> dataCenters();
+    Set<String> dataCenters();
 
-  void setDataCenters(Set<String> dataCenters);
+    void setDataCenters(Set<String> dataCenters);
 }

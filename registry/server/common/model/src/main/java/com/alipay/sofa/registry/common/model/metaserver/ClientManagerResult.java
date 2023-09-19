@@ -22,39 +22,40 @@ package com.alipay.sofa.registry.common.model.metaserver;
  */
 public class ClientManagerResult {
 
-  public static final long FAIL_VERSION = -1L;
+    public static final long FAIL_VERSION = -1L;
 
-  private final boolean success;
+    private final boolean success;
 
-  private final long version;
+    private final long version;
 
-  public ClientManagerResult(boolean success, long version) {
-    this.success = success;
-    this.version = version;
-  }
+    public ClientManagerResult(boolean success, long version) {
+        this.success = success;
+        this.version = version;
+    }
 
-  public static ClientManagerResult buildSuccess(long version) {
-    return new ClientManagerResult(true, version);
-  }
+    public static ClientManagerResult buildSuccess(long version) {
+        return new ClientManagerResult(true, version);
+    }
 
-  public static ClientManagerResult buildFailRet() {
-    return new ClientManagerResult(false, FAIL_VERSION);
-  }
+    public static ClientManagerResult buildFailRet() {
+        return new ClientManagerResult(false, FAIL_VERSION);
+    }
 
-  public boolean isSuccess() {
-    return success;
-  }
-  /**
-   * Getter method for property <tt>version</tt>.
-   *
-   * @return property value of version
-   */
-  public long getVersion() {
-    return version;
-  }
+    public boolean isSuccess() {
+        return success;
+    }
 
-  @Override
-  public String toString() {
-    return "ClientManagerResult{" + "success=" + success + ", version=" + version + '}';
-  }
+    /**
+     * Getter method for property <tt>version</tt>.
+     *
+     * @return property value of version
+     */
+    public long getVersion() {
+        return version;
+    }
+
+    @Override
+    public String toString() {
+        return "ClientManagerResult{" + "success=" + success + ", version=" + version + '}';
+    }
 }

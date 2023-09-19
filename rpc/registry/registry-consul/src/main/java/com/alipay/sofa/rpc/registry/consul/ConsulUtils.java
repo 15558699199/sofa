@@ -38,6 +38,7 @@ public class ConsulUtils {
 
     /**
      * Key can only contain A-Z a-z 0-9 _ and -.
+     *
      * @param key
      * @return
      */
@@ -65,6 +66,6 @@ public class ConsulUtils {
 
     public static String buildServiceId(ProviderConfig config, ServerConfig server) {
         return String.join("-", buildUniqueName(config, server.getProtocol()), getServerHost(server),
-            String.valueOf(server.getPort()));
+                String.valueOf(server.getPort()));
     }
 }

@@ -54,101 +54,88 @@ import java.util.stream.Collectors;
  * @author huzijie
  */
 public class ReadinessCheckListener implements ApplicationContextAware, Ordered,
-                                   GenericApplicationListener, StartupReporterAware {
+        GenericApplicationListener, StartupReporterAware {
 
-    private static final Logger                   logger                                    = SofaBootLoggerFactory
-                                                                                                .getLogger(ReadinessCheckListener.class);
-
-    public static final String                    READINESS_CHECK_STAGE                     = "ReadinessCheckStage";
-
-    public static final String                    READINESS_HEALTH_CHECK_EXECUTOR_BEAN_NAME = "readinessHealthCheckExecutor";
-
+    public static final String READINESS_CHECK_STAGE = "ReadinessCheckStage";
+    public static final String READINESS_HEALTH_CHECK_EXECUTOR_BEAN_NAME = "readinessHealthCheckExecutor";
     /**
      * health check not ready result key
      */
-    public static final String                    HEALTH_CHECK_NOT_READY_KEY                = "HEALTH-CHECK-NOT-READY";
-
+    public static final String HEALTH_CHECK_NOT_READY_KEY = "HEALTH-CHECK-NOT-READY";
     /**
      * health check not ready result
      */
-    public static final String                    HEALTH_CHECK_NOT_READY_MSG                = "App is still in startup process, please try later!";
-
+    public static final String HEALTH_CHECK_NOT_READY_MSG = "App is still in startup process, please try later!";
+    private static final Logger logger = SofaBootLoggerFactory
+            .getLogger(ReadinessCheckListener.class);
     /**
      * processor for {@link HealthChecker}
      */
-    private final HealthCheckerProcessor          healthCheckerProcessor;
+    private final HealthCheckerProcessor healthCheckerProcessor;
 
     /**
      * processor for {@link org.springframework.boot.actuate.health.HealthIndicator}
      */
-    private final HealthIndicatorProcessor        healthIndicatorProcessor;
+    private final HealthIndicatorProcessor healthIndicatorProcessor;
 
     /**
      * processor for {@link ReadinessCheckCallback}
      */
     private final ReadinessCheckCallbackProcessor readinessCheckCallbackProcessor;
-
-    /**
-     * Check result for healthCheckerProcessor
-     */
-    private boolean                               healthCheckerStatus                       = true;
-
     /**
      * Check result details for healthCheckerProcessor
      */
-    private final Map<String, Health>             healthCheckerDetails                      = new HashMap<>();
-
+    private final Map<String, Health> healthCheckerDetails = new HashMap<>();
     /**
      * Check result for healthIndicatorProcessor
      */
-    private boolean                               healthIndicatorStatus                     = true;
-
-    /**
-     * Check result for healthIndicatorProcessor
-     */
-    private final Map<String, Health>             healthIndicatorDetails                    = new HashMap<>();
-
-    /**
-     * Check result for readinessCheckCallbackProcessor
-     */
-    private boolean                               healthCallbackStatus                      = true;
-
+    private final Map<String, Health> healthIndicatorDetails = new HashMap<>();
     /**
      * Check result details for readinessCheckCallbackProcessor
      */
-    private final Map<String, Health>             healthCallbackDetails                     = new HashMap<>();
-
+    private final Map<String, Health> healthCallbackDetails = new HashMap<>();
     /**
      * ReadinessCheckCallbackProcessor trigger status
      */
-    private final AtomicBoolean                   readinessCallbackTriggered                = new AtomicBoolean(
-                                                                                                false);
-
+    private final AtomicBoolean readinessCallbackTriggered = new AtomicBoolean(
+            false);
+    /**
+     * Check result for healthCheckerProcessor
+     */
+    private boolean healthCheckerStatus = true;
+    /**
+     * Check result for healthIndicatorProcessor
+     */
+    private boolean healthIndicatorStatus = true;
+    /**
+     * Check result for readinessCheckCallbackProcessor
+     */
+    private boolean healthCallbackStatus = true;
     /**
      * Readiness check finish status
      */
-    private boolean                               readinessCheckFinish                      = false;
+    private boolean readinessCheckFinish = false;
 
     /**
      * Readiness check result
      */
-    private ReadinessState                        readinessState;
+    private ReadinessState readinessState;
 
-    private ApplicationContext                    applicationContext;
+    private ApplicationContext applicationContext;
 
-    private StartupReporter                       startupReporter;
+    private StartupReporter startupReporter;
 
-    private boolean                               skipAll                                   = false;
+    private boolean skipAll = false;
 
-    private boolean                               skipHealthChecker                         = false;
+    private boolean skipHealthChecker = false;
 
-    private boolean                               skipHealthIndicator                       = false;
+    private boolean skipHealthIndicator = false;
 
-    private boolean                               manualReadinessCallback                   = false;
+    private boolean manualReadinessCallback = false;
 
-    private boolean                               throwExceptionWhenHealthCheckFailed       = false;
+    private boolean throwExceptionWhenHealthCheckFailed = false;
 
-    private ThreadPoolExecutor                    healthCheckExecutor;
+    private ThreadPoolExecutor healthCheckExecutor;
 
     public ReadinessCheckListener(HealthCheckerProcessor healthCheckerProcessor,
                                   HealthIndicatorProcessor healthIndicatorProcessor,
@@ -176,7 +163,7 @@ public class ReadinessCheckListener implements ApplicationContextAware, Ordered,
         }
 
         return ContextRefreshedEvent.class.isAssignableFrom(eventClass)
-               || AvailabilityChangeEvent.class.isAssignableFrom(eventClass);
+                || AvailabilityChangeEvent.class.isAssignableFrom(eventClass);
     }
 
     @Override
@@ -212,19 +199,19 @@ public class ReadinessCheckListener implements ApplicationContextAware, Ordered,
 
             // add healthCheckerStats
             List<BaseStat> healthCheckerStats = healthCheckerProcessor
-                .getHealthCheckerStartupStatList();
+                    .getHealthCheckerStartupStatList();
             baseStatList.addAll(healthCheckerStats);
             healthCheckerStats.clear();
 
             // add healthIndicatorStats
             List<BaseStat> healthIndicatorStats = healthIndicatorProcessor
-                .getHealthIndicatorStartupStatList();
+                    .getHealthIndicatorStartupStatList();
             baseStatList.addAll(healthIndicatorStats);
             healthIndicatorStats.clear();
 
             // add readinessCheckCallbackStartupStats
             List<BaseStat> readinessCheckCallbackStartupStats = readinessCheckCallbackProcessor
-                .getReadinessCheckCallbackStartupStatList();
+                    .getReadinessCheckCallbackStartupStatList();
             baseStatList.addAll(readinessCheckCallbackStartupStats);
             readinessCheckCallbackStartupStats.clear();
 
@@ -244,7 +231,7 @@ public class ReadinessCheckListener implements ApplicationContextAware, Ordered,
                 // it means application is in critical state if it is
                 if (readinessState == null) {
                     AvailabilityChangeEvent.publish(applicationContext,
-                        ReadinessState.REFUSING_TRAFFIC);
+                            ReadinessState.REFUSING_TRAFFIC);
                 } else {
                     AvailabilityChangeEvent.publish(applicationContext, readinessState);
                 }
@@ -264,26 +251,26 @@ public class ReadinessCheckListener implements ApplicationContextAware, Ordered,
                 logger.warn("Skip HealthChecker health check.");
             } else {
                 healthCheckerStatus = healthCheckerProcessor
-                    .readinessHealthCheck(healthCheckerDetails);
+                        .readinessHealthCheck(healthCheckerDetails);
             }
             if (isSkipHealthIndicator()) {
                 logger.warn("Skip HealthIndicator health check.");
             } else {
                 healthIndicatorStatus = healthIndicatorProcessor
-                    .readinessHealthCheck(healthIndicatorDetails);
+                        .readinessHealthCheck(healthIndicatorDetails);
             }
         }
 
         if (manualReadinessCallback) {
             logger
-                .info("Manual readiness callback is set to true, skip normal readiness callback. "
-                      + "You can trigger all readiness callbacks through URL: actuator/triggerReadinessCallback");
+                    .info("Manual readiness callback is set to true, skip normal readiness callback. "
+                            + "You can trigger all readiness callbacks through URL: actuator/triggerReadinessCallback");
         } else {
             if (healthCheckerStatus && healthIndicatorStatus) {
                 readinessCallbackTriggered.set(true);
                 logger.info("Invoking all readiness check callbacks...");
                 healthCallbackStatus = readinessCheckCallbackProcessor
-                    .readinessCheckCallback(healthCallbackDetails);
+                        .readinessCheckCallback(healthCallbackDetails);
             }
         }
         determineReadinessState();
@@ -296,10 +283,10 @@ public class ReadinessCheckListener implements ApplicationContextAware, Ordered,
             if (readinessCallbackTriggered.compareAndSet(false, true)) {
                 logger.info("Invoking all readiness callbacks...");
                 healthCallbackStatus = readinessCheckCallbackProcessor
-                    .readinessCheckCallback(healthCallbackDetails);
+                        .readinessCheckCallback(healthCallbackDetails);
                 determineReadinessState();
                 return new ManualReadinessCallbackResult(true,
-                    "Readiness callbacks invoked successfully with result: " + healthCallbackStatus);
+                        "Readiness callbacks invoked successfully with result: " + healthCallbackStatus);
             } else {
                 logger.warn("Readiness callbacks are already triggered! Action skipped.");
                 return ManualReadinessCallbackResult.SKIPPED;
@@ -319,7 +306,7 @@ public class ReadinessCheckListener implements ApplicationContextAware, Ordered,
             logger.error(ErrorCode.convert("01-20000"));
             if (throwExceptionWhenHealthCheckFailed) {
                 throw new HealthCheckException(
-                    "Application health check is failed and health check insulator switch is turned on!");
+                        "Application health check is failed and health check insulator switch is turned on!");
             }
         }
         AvailabilityChangeEvent.publish(applicationContext, readinessState);
@@ -460,14 +447,14 @@ public class ReadinessCheckListener implements ApplicationContextAware, Ordered,
 
     public static class ManualReadinessCallbackResult {
         public static ManualReadinessCallbackResult STAGE_ONE_FAILED = new ManualReadinessCallbackResult(
-                                                                         false,
-                                                                         "Health checker or indicator failed.");
-        public static ManualReadinessCallbackResult SKIPPED          = new ManualReadinessCallbackResult(
-                                                                         false,
-                                                                         "Readiness callbacks are already triggered.");
+                false,
+                "Health checker or indicator failed.");
+        public static ManualReadinessCallbackResult SKIPPED = new ManualReadinessCallbackResult(
+                false,
+                "Readiness callbacks are already triggered.");
 
-        private boolean                             success;
-        private String                              details;
+        private boolean success;
+        private String details;
 
         public ManualReadinessCallbackResult() {
         }

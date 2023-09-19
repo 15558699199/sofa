@@ -20,6 +20,7 @@ import com.alipay.sofa.registry.common.model.client.pb.MetaHeartbeatRequest;
 import com.alipay.sofa.registry.common.model.client.pb.MetaHeartbeatResponse;
 import com.alipay.sofa.registry.remoting.Channel;
 import com.alipay.sofa.registry.util.ParaCheckUtil;
+
 import java.util.List;
 
 /**
@@ -27,23 +28,23 @@ import java.util.List;
  * @version $Id: MetaRevisionHeartbeatPbHandler.java, v 0.1 2021年02月04日 22:49 xiaojian.xj Exp $
  */
 public class MetaRevisionHeartbeatPbHandler
-    extends AbstractClientMetadataRequestHandler<MetaHeartbeatRequest> {
+        extends AbstractClientMetadataRequestHandler<MetaHeartbeatRequest> {
 
-  @Override
-  public void checkParam(MetaHeartbeatRequest request) {
-    ParaCheckUtil.checkNotNull(request, "request");
-    ParaCheckUtil.checkNotEmpty(request.getRevisionsList(), "request.revisions");
-  }
+    @Override
+    public void checkParam(MetaHeartbeatRequest request) {
+        ParaCheckUtil.checkNotNull(request, "request");
+        ParaCheckUtil.checkNotEmpty(request.getRevisionsList(), "request.revisions");
+    }
 
-  @Override
-  public Object doHandle(Channel channel, MetaHeartbeatRequest request) {
-    List<String> revisions = request.getRevisionsList();
-    MetaHeartbeatResponse response = appRevisionHandlerStrategy.heartbeat(revisions);
-    return response;
-  }
+    @Override
+    public Object doHandle(Channel channel, MetaHeartbeatRequest request) {
+        List<String> revisions = request.getRevisionsList();
+        MetaHeartbeatResponse response = appRevisionHandlerStrategy.heartbeat(revisions);
+        return response;
+    }
 
-  @Override
-  public Class interest() {
-    return MetaHeartbeatRequest.class;
-  }
+    @Override
+    public Class interest() {
+        return MetaHeartbeatRequest.class;
+    }
 }

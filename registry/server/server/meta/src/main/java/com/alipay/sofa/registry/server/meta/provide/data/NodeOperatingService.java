@@ -33,34 +33,36 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class NodeOperatingService {
 
-  @Autowired protected ProvideDataService provideDataService;
+    @Autowired
+    protected ProvideDataService provideDataService;
 
-  public NodeOperatingService() {}
-
-  public NodeOperatingService(ProvideDataService provideDataService) {
-    this.provideDataService = provideDataService;
-  }
-
-  public Tuple<Long, NodeServerOperateInfo> queryOperateInfoAndVersion() {
-    DBResponse<PersistenceData> response =
-        provideDataService.queryProvideData(ValueConstants.NODE_SERVER_OPERATING_DATA_ID);
-
-    if (response.getOperationStatus() == OperationStatus.NOTFOUND) {
-      return null;
+    public NodeOperatingService() {
     }
 
-    String entityData = PersistenceDataBuilder.getEntityData(response.getEntity());
-    NodeServerOperateInfo read = JsonUtils.read(entityData, NodeServerOperateInfo.class);
-    return new Tuple<>(response.getEntity().getVersion(), read);
-  }
+    public NodeOperatingService(ProvideDataService provideDataService) {
+        this.provideDataService = provideDataService;
+    }
 
-  /**
-   * Setter method for property <tt>provideDataService</tt>.
-   *
-   * @param provideDataService value to be assigned to property provideDataService
-   */
-  @VisibleForTesting
-  public void setProvideDataService(ProvideDataService provideDataService) {
-    this.provideDataService = provideDataService;
-  }
+    public Tuple<Long, NodeServerOperateInfo> queryOperateInfoAndVersion() {
+        DBResponse<PersistenceData> response =
+                provideDataService.queryProvideData(ValueConstants.NODE_SERVER_OPERATING_DATA_ID);
+
+        if (response.getOperationStatus() == OperationStatus.NOTFOUND) {
+            return null;
+        }
+
+        String entityData = PersistenceDataBuilder.getEntityData(response.getEntity());
+        NodeServerOperateInfo read = JsonUtils.read(entityData, NodeServerOperateInfo.class);
+        return new Tuple<>(response.getEntity().getVersion(), read);
+    }
+
+    /**
+     * Setter method for property <tt>provideDataService</tt>.
+     *
+     * @param provideDataService value to be assigned to property provideDataService
+     */
+    @VisibleForTesting
+    public void setProvideDataService(ProvideDataService provideDataService) {
+        this.provideDataService = provideDataService;
+    }
 }

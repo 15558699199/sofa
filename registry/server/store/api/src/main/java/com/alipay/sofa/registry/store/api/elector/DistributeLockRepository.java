@@ -24,5 +24,5 @@ import com.alipay.sofa.registry.common.model.elector.DistributeLockInfo;
  */
 public interface DistributeLockRepository {
 
-  DistributeLockInfo queryDistLock(String lockName);
+    DistributeLockInfo queryDistLock(String lockName);
 }

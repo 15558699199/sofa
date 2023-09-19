@@ -32,10 +32,11 @@ import com.alipay.sofa.registry.server.session.store.Interests;
 import com.alipay.sofa.registry.server.shared.remoting.AbstractClientHandler;
 import com.alipay.sofa.registry.server.shared.remoting.RemotingHelper;
 import com.alipay.sofa.registry.util.ParaCheckUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.Executor;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * @author kezhu.wukz
@@ -44,75 +45,83 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class DataChangeRequestHandler extends AbstractClientHandler<DataChangeRequest> {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(DataChangeRequestHandler.class);
-  /** store subscribers */
-  @Autowired Interests sessionInterests;
+    private static final Logger LOGGER = LoggerFactory.getLogger(DataChangeRequestHandler.class);
+    /**
+     * store subscribers
+     */
+    @Autowired
+    Interests sessionInterests;
 
-  @Autowired SessionServerConfig sessionServerConfig;
+    @Autowired
+    SessionServerConfig sessionServerConfig;
 
-  @Autowired ExecutorManager executorManager;
+    @Autowired
+    ExecutorManager executorManager;
 
-  @Autowired FirePushService firePushService;
+    @Autowired
+    FirePushService firePushService;
 
-  @Autowired PushSwitchService pushSwitchService;
+    @Autowired
+    PushSwitchService pushSwitchService;
 
-  @Autowired CacheService sessionCacheService;
+    @Autowired
+    CacheService sessionCacheService;
 
-  @Override
-  protected NodeType getConnectNodeType() {
-    return NodeType.DATA;
-  }
-
-  @Override
-  public Executor getExecutor() {
-    return executorManager.getDataChangeRequestExecutor();
-  }
-
-  @Override
-  public void checkParam(DataChangeRequest request) {
-    ParaCheckUtil.checkNotNull(request, "DataChangeRequest");
-    ParaCheckUtil.checkNotBlank(request.getDataCenter(), "request.dataCenter");
-    ParaCheckUtil.checkNotNull(request.getDataInfoIds(), "request.dataInfoIds");
-  }
-
-  @Override
-  public Object doHandle(Channel channel, DataChangeRequest dataChangeRequest) {
-    if (!pushSwitchService.canLocalDataCenterPush()) {
-      return null;
+    @Override
+    protected NodeType getConnectNodeType() {
+        return NodeType.DATA;
     }
-    final String dataNode = RemotingHelper.getRemoteHostAddress(channel);
-    final String dataCenter = dataChangeRequest.getDataCenter();
-    final long changeTimestamp = System.currentTimeMillis();
-    for (Map.Entry<String, DatumVersion> e : dataChangeRequest.getDataInfoIds().entrySet()) {
 
-      final String dataInfoId = e.getKey();
-      if (!pushSwitchService.canPushMulti(Collections.singleton(dataCenter))) {
-        continue;
-      }
-      final DatumVersion version = e.getValue();
-      Interests.InterestVersionCheck check =
-          sessionInterests.checkInterestVersion(dataCenter, dataInfoId, version.getValue());
-      if (!check.interested) {
-        if (check != Interests.InterestVersionCheck.NoSub) {
-          // log exclude NoSub
-          LOGGER.info("[SkipChange]{},{}, ver={}, {}", dataInfoId, dataCenter, version, check);
+    @Override
+    public Executor getExecutor() {
+        return executorManager.getDataChangeRequestExecutor();
+    }
+
+    @Override
+    public void checkParam(DataChangeRequest request) {
+        ParaCheckUtil.checkNotNull(request, "DataChangeRequest");
+        ParaCheckUtil.checkNotBlank(request.getDataCenter(), "request.dataCenter");
+        ParaCheckUtil.checkNotNull(request.getDataInfoIds(), "request.dataInfoIds");
+    }
+
+    @Override
+    public Object doHandle(Channel channel, DataChangeRequest dataChangeRequest) {
+        if (!pushSwitchService.canLocalDataCenterPush()) {
+            return null;
         }
-        continue;
-      }
-      final TriggerPushContext changeCtx =
-          new TriggerPushContext(
-              dataCenter,
-              version.getValue(),
-              dataNode,
-              changeTimestamp,
-              dataChangeRequest.getTimes());
-      firePushService.fireOnChange(dataInfoId, changeCtx);
-    }
-    return null;
-  }
+        final String dataNode = RemotingHelper.getRemoteHostAddress(channel);
+        final String dataCenter = dataChangeRequest.getDataCenter();
+        final long changeTimestamp = System.currentTimeMillis();
+        for (Map.Entry<String, DatumVersion> e : dataChangeRequest.getDataInfoIds().entrySet()) {
 
-  @Override
-  public Class interest() {
-    return DataChangeRequest.class;
-  }
+            final String dataInfoId = e.getKey();
+            if (!pushSwitchService.canPushMulti(Collections.singleton(dataCenter))) {
+                continue;
+            }
+            final DatumVersion version = e.getValue();
+            Interests.InterestVersionCheck check =
+                    sessionInterests.checkInterestVersion(dataCenter, dataInfoId, version.getValue());
+            if (!check.interested) {
+                if (check != Interests.InterestVersionCheck.NoSub) {
+                    // log exclude NoSub
+                    LOGGER.info("[SkipChange]{},{}, ver={}, {}", dataInfoId, dataCenter, version, check);
+                }
+                continue;
+            }
+            final TriggerPushContext changeCtx =
+                    new TriggerPushContext(
+                            dataCenter,
+                            version.getValue(),
+                            dataNode,
+                            changeTimestamp,
+                            dataChangeRequest.getTimes());
+            firePushService.fireOnChange(dataInfoId, changeCtx);
+        }
+        return null;
+    }
+
+    @Override
+    public Class interest() {
+        return DataChangeRequest.class;
+    }
 }

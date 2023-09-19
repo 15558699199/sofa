@@ -43,7 +43,7 @@ import java.lang.annotation.Target;
  * @author xunfang 23/5/23
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE, ElementType.METHOD })
+@Target({ElementType.TYPE, ElementType.METHOD})
 @SofaService
 @Component
 public @interface SofaServiceBean {
@@ -57,5 +57,5 @@ public @interface SofaServiceBean {
     String uniqueId() default "";
 
     @AliasFor(annotation = SofaService.class)
-    SofaServiceBinding[] bindings() default { @SofaServiceBinding };
+    SofaServiceBinding[] bindings() default {@SofaServiceBinding};
 }

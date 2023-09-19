@@ -16,55 +16,56 @@
  */
 package com.alipay.sofa.registry.util;
 
-import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 public class WakeUpLoopRunnableTest {
-  @Test
-  public void test() throws Exception {
-    MockLoop loop = new MockLoop();
-    loop.suspend();
-    Thread t = ConcurrentUtils.createDaemonThread("loop-test", loop);
-    t.start();
-    loop.wakeup();
-    Thread.sleep(100);
-    Assert.assertEquals(0, loop.count.get());
-    Assert.assertTrue(loop.isSuspended());
-    loop.resume();
-    loop.wakeup();
-    Assert.assertFalse(loop.isSuspended());
-    Thread.sleep(100);
-    int loopCount = loop.count.get();
-    Assert.assertTrue("loopCount:" + loopCount, loopCount != 0);
+    @Test
+    public void test() throws Exception {
+        MockLoop loop = new MockLoop();
+        loop.suspend();
+        Thread t = ConcurrentUtils.createDaemonThread("loop-test", loop);
+        t.start();
+        loop.wakeup();
+        Thread.sleep(100);
+        Assert.assertEquals(0, loop.count.get());
+        Assert.assertTrue(loop.isSuspended());
+        loop.resume();
+        loop.wakeup();
+        Assert.assertFalse(loop.isSuspended());
+        Thread.sleep(100);
+        int loopCount = loop.count.get();
+        Assert.assertTrue("loopCount:" + loopCount, loopCount != 0);
 
-    loop.runException = true;
-    loop.wakeup();
-    Thread.sleep(100);
-    Assert.assertTrue(t.isAlive());
+        loop.runException = true;
+        loop.wakeup();
+        Thread.sleep(100);
+        Assert.assertTrue(t.isAlive());
 
-    loop.close();
-    Assert.assertTrue(loop.isClosed());
-    Thread.sleep(200);
+        loop.close();
+        Assert.assertTrue(loop.isClosed());
+        Thread.sleep(200);
 
-    Assert.assertFalse(t.isAlive());
-  }
-
-  private static final class MockLoop extends WakeUpLoopRunnable {
-    final AtomicInteger count = new AtomicInteger();
-    boolean runException;
-
-    @Override
-    public void runUnthrowable() {
-      count.incrementAndGet();
-      if (runException) {
-        throw new RuntimeException();
-      }
+        Assert.assertFalse(t.isAlive());
     }
 
-    @Override
-    public int getWaitingMillis() {
-      return 10;
+    private static final class MockLoop extends WakeUpLoopRunnable {
+        final AtomicInteger count = new AtomicInteger();
+        boolean runException;
+
+        @Override
+        public void runUnthrowable() {
+            count.incrementAndGet();
+            if (runException) {
+                throw new RuntimeException();
+            }
+        }
+
+        @Override
+        public int getWaitingMillis() {
+            return 10;
+        }
     }
-  }
 }

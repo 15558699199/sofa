@@ -23,14 +23,7 @@ import com.alipay.sofa.boot.isle.profile.SofaModuleProfileChecker;
 import org.springframework.context.ApplicationContext;
 import org.springframework.lang.NonNull;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -40,27 +33,47 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public class ApplicationRuntimeModel implements IsleDeploymentModel {
 
-    public static final String                      APPLICATION_RUNTIME_MODEL_NAME = "APPLICATION_RUNTIME_MODEL";
-    /** deploys */
-    private final List<DeploymentDescriptor>        deploys                        = new ArrayList<>();
-    /** inactive deploys */
-    private final List<DeploymentDescriptor>        inactiveDeploys                = new ArrayList<>();
-    /** failed deployments */
-    private final List<DeploymentDescriptor>        failed                         = new CopyOnWriteArrayList<>();
-    /** installed deployments */
-    private final List<DeploymentDescriptor>        installed                      = new CopyOnWriteArrayList<>();
-    /** module name to deployment */
-    private final Map<String, DeploymentDescriptor> deploymentMap                  = new LinkedHashMap<>();
-    /** deploy registry */
-    private final DeployRegistry                    deployRegistry                 = new DeployRegistry();
-    /** no spring powered deploys name*/
-    private final Set<String>                       noSpringPoweredDeploys         = new HashSet<>();
-    /** module deployment validator */
-    private ModuleDeploymentValidator               moduleDeploymentValidator;
-    /** module profiles checker */
-    protected SofaModuleProfileChecker              sofaModuleProfileChecker;
-    /** resolved deployments */
-    private List<DeploymentDescriptor>              resolvedDeployments;
+    public static final String APPLICATION_RUNTIME_MODEL_NAME = "APPLICATION_RUNTIME_MODEL";
+    /**
+     * deploys
+     */
+    private final List<DeploymentDescriptor> deploys = new ArrayList<>();
+    /**
+     * inactive deploys
+     */
+    private final List<DeploymentDescriptor> inactiveDeploys = new ArrayList<>();
+    /**
+     * failed deployments
+     */
+    private final List<DeploymentDescriptor> failed = new CopyOnWriteArrayList<>();
+    /**
+     * installed deployments
+     */
+    private final List<DeploymentDescriptor> installed = new CopyOnWriteArrayList<>();
+    /**
+     * module name to deployment
+     */
+    private final Map<String, DeploymentDescriptor> deploymentMap = new LinkedHashMap<>();
+    /**
+     * deploy registry
+     */
+    private final DeployRegistry deployRegistry = new DeployRegistry();
+    /**
+     * no spring powered deploys name
+     */
+    private final Set<String> noSpringPoweredDeploys = new HashSet<>();
+    /**
+     * module profiles checker
+     */
+    protected SofaModuleProfileChecker sofaModuleProfileChecker;
+    /**
+     * module deployment validator
+     */
+    private ModuleDeploymentValidator moduleDeploymentValidator;
+    /**
+     * resolved deployments
+     */
+    private List<DeploymentDescriptor> resolvedDeployments;
 
     public boolean isModuleDeployment(DeploymentDescriptor deploymentDescriptor) {
         return this.moduleDeploymentValidator.isModuleDeployment(deploymentDescriptor);

@@ -28,7 +28,6 @@ import com.alipay.sofa.rpc.test.HelloService;
  * <p></p>
  * <p>
  *
- *
  * @author <a href=mailto:bner666@gmail.com>ZhangLibin</a>
  */
 public class PolarisBoltClientMain {
@@ -41,19 +40,19 @@ public class PolarisBoltClientMain {
     public static void main(String[] args) throws InterruptedException {
 
         RegistryConfig registryConfig = new RegistryConfig()
-            .setProtocol("polaris")
-            .setAddress("127.0.0.1:8091");
+                .setProtocol("polaris")
+                .setAddress("127.0.0.1:8091");
 
         ConsumerConfig<HelloService> consumerConfig = new ConsumerConfig<HelloService>()
-            .setInterfaceId(HelloService.class.getName())
-            .setRegistry(registryConfig)
-            .setTimeout(3000);
+                .setInterfaceId(HelloService.class.getName())
+                .setRegistry(registryConfig)
+                .setTimeout(3000);
         HelloService helloService = consumerConfig.refer();
 
         ConsumerConfig<EchoService> consumerConfig2 = new ConsumerConfig<EchoService>()
-            .setInterfaceId(EchoService.class.getName())
-            .setRegistry(registryConfig)
-            .setTimeout(3000);
+                .setInterfaceId(EchoService.class.getName())
+                .setRegistry(registryConfig)
+                .setTimeout(3000);
         EchoService echoService = consumerConfig2.refer();
 
         LOGGER.warn("started at pid {}", RpcRuntimeContext.PID);

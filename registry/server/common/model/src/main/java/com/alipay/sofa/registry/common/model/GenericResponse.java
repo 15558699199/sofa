@@ -24,63 +24,63 @@ package com.alipay.sofa.registry.common.model;
  */
 public class GenericResponse<T> extends CommonResponse {
 
-  private static final long serialVersionUID = -3986568405174281303L;
+    private static final long serialVersionUID = -3986568405174281303L;
 
-  private T data;
+    private T data;
 
-  /**
-   * get success response
-   *
-   * @param data data
-   * @return GenericResponse
-   */
-  public GenericResponse<T> fillSucceed(T data) {
-    this.setSuccess(true);
-    this.setData(data);
-    return this;
-  }
+    /**
+     * get success response
+     *
+     * @param data data
+     * @return GenericResponse
+     */
+    public GenericResponse<T> fillSucceed(T data) {
+        this.setSuccess(true);
+        this.setData(data);
+        return this;
+    }
 
-  /**
-   * get fail response
-   *
-   * @param msg msg
-   * @return GenericResponse
-   */
-  public GenericResponse<T> fillFailed(String msg) {
-    this.setSuccess(false);
-    this.setMessage(msg);
-    return this;
-  }
+    /**
+     * get fail response
+     *
+     * @param msg msg
+     * @return GenericResponse
+     */
+    public GenericResponse<T> fillFailed(String msg) {
+        this.setSuccess(false);
+        this.setMessage(msg);
+        return this;
+    }
 
-  /**
-   * get fail response
-   *
-   * @param data data
-   * @return GenericResponse
-   */
-  public GenericResponse<T> fillFailData(T data) {
-    this.setSuccess(false);
-    this.setData(data);
-    return this;
-  }
+    /**
+     * get fail response
+     *
+     * @param data data
+     * @return GenericResponse
+     */
+    public GenericResponse<T> fillFailData(T data) {
+        this.setSuccess(false);
+        this.setData(data);
+        return this;
+    }
 
-  /**
-   * Getter method for property <tt>data</tt>.
-   *
-   * @return property value of data
-   */
-  public T getData() {
-    return data;
-  }
+    /**
+     * Getter method for property <tt>data</tt>.
+     *
+     * @return property value of data
+     */
+    public T getData() {
+        return data;
+    }
 
-  /**
-   * Setter method for property <tt>data</tt>.
-   *
-   * @param data value to be assigned to property data
-   * @return GenericResponse
-   */
-  public GenericResponse<T> setData(T data) {
-    this.data = data;
-    return this;
-  }
+    /**
+     * Setter method for property <tt>data</tt>.
+     *
+     * @param data value to be assigned to property data
+     * @return GenericResponse
+     */
+    public GenericResponse<T> setData(T data) {
+        this.data = data;
+        return this;
+    }
 }

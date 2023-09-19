@@ -17,7 +17,7 @@
 package com.alipay.sofa.rpc.protobuf;
 
 /**
- * 
+ *
  */
 public interface ProtoService {
 

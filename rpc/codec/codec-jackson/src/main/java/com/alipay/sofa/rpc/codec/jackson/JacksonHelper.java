@@ -16,10 +16,6 @@
  */
 package com.alipay.sofa.rpc.codec.jackson;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
-import java.util.concurrent.ConcurrentHashMap;
-
 import com.alipay.sofa.rpc.common.utils.ClassUtils;
 import com.alipay.sofa.rpc.config.ConfigUniqueNameGenerator;
 import com.alipay.sofa.rpc.core.exception.SofaRpcRuntimeException;
@@ -27,22 +23,26 @@ import com.alipay.sofa.rpc.log.LogCodes;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+import java.util.concurrent.ConcurrentHashMap;
+
 /**
  * @author <a href="mailto:zhiyuan.lzy@antfin.com">zhiyuan.lzy</a>
  */
 public class JacksonHelper {
 
-    private ObjectMapper                          mapper             = new ObjectMapper();
+    private ObjectMapper mapper = new ObjectMapper();
 
     /**
      * Request service and method cache {service+method:class}
      */
-    private ConcurrentHashMap<String, JavaType[]> requestClassCache  = new ConcurrentHashMap<String, JavaType[]>();
+    private ConcurrentHashMap<String, JavaType[]> requestClassCache = new ConcurrentHashMap<String, JavaType[]>();
 
     /**
      * Response service and method cache {service+method:class}
      */
-    private ConcurrentHashMap<String, JavaType>   responseClassCache = new ConcurrentHashMap<String, JavaType>();
+    private ConcurrentHashMap<String, JavaType> responseClassCache = new ConcurrentHashMap<String, JavaType>();
 
     /**
      * Fetch request class for cache according  service and method
@@ -112,7 +112,7 @@ public class JacksonHelper {
         }
         if (jsonMethod == null) {
             throw new SofaRpcRuntimeException(LogCodes.getLog(LogCodes.ERROR_METHOD_NOT_FOUND, clazz.getName(),
-                methodName));
+                    methodName));
         }
 
         // parse request types

@@ -23,25 +23,25 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class SyncConfigResponseConvertorTest {
-  @Test
-  public void test() {
-    Assert.assertNull(SyncConfigResponseConvertor.convert2Pb(null));
-    Assert.assertNull(SyncConfigResponseConvertor.convert2Java(null));
-    SyncConfigResponse registerJava = new SyncConfigResponse();
+    @Test
+    public void test() {
+        Assert.assertNull(SyncConfigResponseConvertor.convert2Pb(null));
+        Assert.assertNull(SyncConfigResponseConvertor.convert2Java(null));
+        SyncConfigResponse registerJava = new SyncConfigResponse();
 
-    registerJava.setRetryInterval(100);
-    registerJava.setAvailableSegments(Lists.newArrayList("testSeg"));
-    registerJava.setMessage("testMsg");
-    registerJava.setSuccess(true);
+        registerJava.setRetryInterval(100);
+        registerJava.setAvailableSegments(Lists.newArrayList("testSeg"));
+        registerJava.setMessage("testMsg");
+        registerJava.setSuccess(true);
 
-    SyncConfigResponsePb pb = SyncConfigResponseConvertor.convert2Pb(registerJava);
-    SyncConfigResponse convertJava = SyncConfigResponseConvertor.convert2Java(pb);
+        SyncConfigResponsePb pb = SyncConfigResponseConvertor.convert2Pb(registerJava);
+        SyncConfigResponse convertJava = SyncConfigResponseConvertor.convert2Java(pb);
 
-    Assert.assertEquals(registerJava.getRetryInterval(), convertJava.getRetryInterval());
-    Assert.assertEquals(registerJava.getMessage(), convertJava.getMessage());
-    Assert.assertEquals(registerJava.isSuccess(), convertJava.isSuccess());
-    Assert.assertEquals(registerJava.getAvailableSegments(), convertJava.getAvailableSegments());
+        Assert.assertEquals(registerJava.getRetryInterval(), convertJava.getRetryInterval());
+        Assert.assertEquals(registerJava.getMessage(), convertJava.getMessage());
+        Assert.assertEquals(registerJava.isSuccess(), convertJava.isSuccess());
+        Assert.assertEquals(registerJava.getAvailableSegments(), convertJava.getAvailableSegments());
 
-    Assert.assertEquals(registerJava.toString(), convertJava.toString());
-  }
+        Assert.assertEquals(registerJava.toString(), convertJava.toString());
+    }
 }

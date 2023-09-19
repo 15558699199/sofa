@@ -21,8 +21,9 @@ import com.alipay.sofa.registry.log.LoggerFactory;
 import org.apache.logging.log4j.core.async.Hack;
 
 public final class PushLog {
-  public static final Logger LOGGER =
-      Hack.hackLoggerDisruptor(LoggerFactory.getLogger(PushLog.class));
+    public static final Logger LOGGER =
+            Hack.hackLoggerDisruptor(LoggerFactory.getLogger(PushLog.class));
 
-  private PushLog() {}
+    private PushLog() {
+    }
 }

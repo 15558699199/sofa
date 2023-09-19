@@ -20,35 +20,36 @@ import com.alipay.sofa.registry.lifecycle.LifecycleController;
 import com.alipay.sofa.registry.lifecycle.LifecycleState;
 import com.alipay.sofa.registry.observer.Observable;
 import com.alipay.sofa.registry.observer.UnblockingObserver;
-import java.util.concurrent.atomic.AtomicBoolean;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 public class AbstractLifecycleObservableTest {
-  @Test
-  public void test() {
-    LifecycleState lifecycleState = Mockito.mock(LifecycleState.class);
-    LifecycleController lifecycleController = Mockito.mock(LifecycleController.class);
-    AbstractLifecycleObservable observable =
-        new AbstractLifecycleObservable(lifecycleState, lifecycleController);
-    final AtomicBoolean called = new AtomicBoolean();
-    UnblockingObserver o =
-        new UnblockingObserver() {
-          @Override
-          public void update(Observable source, Object message) {
-            called.set(true);
-            throw new RuntimeException();
-          }
-        };
-    observable.addObserver(o);
-    Assert.assertEquals(1, observable.observers.size());
-    observable.removeObserver(o);
-    Assert.assertEquals(0, observable.observers.size());
-    observable.removeObserver(o);
-    observable.addObserver(o);
-    Assert.assertFalse(called.get());
-    observable.notifyObservers("test");
-    Assert.assertTrue(called.get());
-  }
+    @Test
+    public void test() {
+        LifecycleState lifecycleState = Mockito.mock(LifecycleState.class);
+        LifecycleController lifecycleController = Mockito.mock(LifecycleController.class);
+        AbstractLifecycleObservable observable =
+                new AbstractLifecycleObservable(lifecycleState, lifecycleController);
+        final AtomicBoolean called = new AtomicBoolean();
+        UnblockingObserver o =
+                new UnblockingObserver() {
+                    @Override
+                    public void update(Observable source, Object message) {
+                        called.set(true);
+                        throw new RuntimeException();
+                    }
+                };
+        observable.addObserver(o);
+        Assert.assertEquals(1, observable.observers.size());
+        observable.removeObserver(o);
+        Assert.assertEquals(0, observable.observers.size());
+        observable.removeObserver(o);
+        observable.addObserver(o);
+        Assert.assertFalse(called.get());
+        observable.notifyObservers("test");
+        Assert.assertTrue(called.get());
+    }
 }

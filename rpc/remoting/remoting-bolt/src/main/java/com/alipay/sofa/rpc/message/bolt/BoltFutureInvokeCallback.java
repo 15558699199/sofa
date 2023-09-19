@@ -75,7 +75,7 @@ public class BoltFutureInvokeCallback extends AbstractInvokeCallback {
 
             if (EventBus.isEnable(ClientAsyncReceiveEvent.class)) {
                 EventBus.post(new ClientAsyncReceiveEvent(consumerConfig, providerInfo,
-                    request, response, null));
+                        request, response, null));
             }
 
             pickupBaggage(response);
@@ -94,7 +94,7 @@ public class BoltFutureInvokeCallback extends AbstractInvokeCallback {
             Object appResp = response.getAppResponse();
             if (response.isError()) { // rpc层异常
                 SofaRpcException sofaRpcException = new SofaRpcException(
-                    RpcErrorType.SERVER_UNDECLARED_ERROR, response.getErrorMsg());
+                        RpcErrorType.SERVER_UNDECLARED_ERROR, response.getErrorMsg());
                 rpcFuture.setFailure(sofaRpcException);
             } else if (appResp instanceof Throwable) { // 业务层异常
                 throwable = (Throwable) appResp;
@@ -121,7 +121,7 @@ public class BoltFutureInvokeCallback extends AbstractInvokeCallback {
 
             if (EventBus.isEnable(ClientAsyncReceiveEvent.class)) {
                 EventBus.post(new ClientAsyncReceiveEvent(consumerConfig, providerInfo,
-                    request, null, e));
+                        request, null, e));
             }
 
             // do async filter after respond server

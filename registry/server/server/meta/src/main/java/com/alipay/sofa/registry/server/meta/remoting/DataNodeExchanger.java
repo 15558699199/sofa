@@ -28,27 +28,28 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class DataNodeExchanger extends ServerSideExchanger {
 
-  @Autowired private MetaServerConfig metaServerConfig;
+    @Autowired
+    private MetaServerConfig metaServerConfig;
 
-  @Override
-  public int getRpcTimeoutMillis() {
-    return metaServerConfig.getDataNodeExchangeTimeoutMillis();
-  }
+    @Override
+    public int getRpcTimeoutMillis() {
+        return metaServerConfig.getDataNodeExchangeTimeoutMillis();
+    }
 
-  @Override
-  public int getServerPort() {
-    return metaServerConfig.getDataServerPort();
-  }
+    @Override
+    public int getServerPort() {
+        return metaServerConfig.getDataServerPort();
+    }
 
-  @VisibleForTesting
-  public DataNodeExchanger setMetaServerConfig(MetaServerConfig metaServerConfig) {
-    this.metaServerConfig = metaServerConfig;
-    return this;
-  }
+    @VisibleForTesting
+    public DataNodeExchanger setMetaServerConfig(MetaServerConfig metaServerConfig) {
+        this.metaServerConfig = metaServerConfig;
+        return this;
+    }
 
-  @VisibleForTesting
-  public DataNodeExchanger setBoltExchange(Exchange boltExchange) {
-    this.boltExchange = boltExchange;
-    return this;
-  }
+    @VisibleForTesting
+    public DataNodeExchanger setBoltExchange(Exchange boltExchange) {
+        this.boltExchange = boltExchange;
+        return this;
+    }
 }

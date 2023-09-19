@@ -38,87 +38,88 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @version $Id: FetchSystemPropertyRequestHandler.java, v 0.1 2021-05-06 15:12 xiaojian.xj Exp $
  */
 public class FetchSystemPropertyRequestHandler
-    extends BaseMetaServerHandler<FetchSystemPropertyRequest> {
+        extends BaseMetaServerHandler<FetchSystemPropertyRequest> {
 
-  private static final Logger DB_LOGGER =
-      LoggerFactory.getLogger(FetchSystemPropertyRequestHandler.class, "[DBService]");
+    private static final Logger DB_LOGGER =
+            LoggerFactory.getLogger(FetchSystemPropertyRequestHandler.class, "[DBService]");
 
-  @Autowired private ProvideDataService provideDataService;
+    @Autowired
+    private ProvideDataService provideDataService;
 
-  @Override
-  public void checkParam(FetchSystemPropertyRequest request) {
-    ParaCheckUtil.checkNotNull(request, "fetchSystemPropertyRequest");
-    ParaCheckUtil.checkNotBlank(request.getDataInfoId(), "dataInfoId");
-  }
-
-  @Override
-  public Object doHandle(Channel channel, FetchSystemPropertyRequest request) {
-    try {
-      DB_LOGGER.info("get system data {}", request);
-
-      return fetchSystemData(request);
-    } catch (Exception e) {
-      DB_LOGGER.error("get system data {} from db error!", request.getDataInfoId(), e);
-      throw new RuntimeException("Get system data from db error!", e);
+    @Override
+    public void checkParam(FetchSystemPropertyRequest request) {
+        ParaCheckUtil.checkNotNull(request, "fetchSystemPropertyRequest");
+        ParaCheckUtil.checkNotBlank(request.getDataInfoId(), "dataInfoId");
     }
-  }
 
-  private Object fetchSystemData(FetchSystemPropertyRequest request) {
-    DBResponse<PersistenceData> ret = provideDataService.queryProvideData(request.getDataInfoId());
-    OperationStatus status = ret.getOperationStatus();
-    PersistenceData persistenceData = ret.getEntity();
+    @Override
+    public Object doHandle(Channel channel, FetchSystemPropertyRequest request) {
+        try {
+            DB_LOGGER.info("get system data {}", request);
 
-    if (status == OperationStatus.NOTFOUND) {
-      FetchSystemPropertyResult result = new FetchSystemPropertyResult(false);
-      DB_LOGGER.warn("has not found system data from DB dataInfoId:{}", request.getDataInfoId());
-      return result;
+            return fetchSystemData(request);
+        } catch (Exception e) {
+            DB_LOGGER.error("get system data {} from db error!", request.getDataInfoId(), e);
+            throw new RuntimeException("Get system data from db error!", e);
+        }
     }
-    ProvideData data =
-        new ProvideData(
-            new ServerDataBox(persistenceData.getData()),
-            request.getDataInfoId(),
-            persistenceData.getVersion());
 
-    return processResult(request, status, data);
-  }
+    private Object fetchSystemData(FetchSystemPropertyRequest request) {
+        DBResponse<PersistenceData> ret = provideDataService.queryProvideData(request.getDataInfoId());
+        OperationStatus status = ret.getOperationStatus();
+        PersistenceData persistenceData = ret.getEntity();
 
-  private Object processResult(
-      FetchSystemPropertyRequest request, OperationStatus status, ProvideData data) {
-    if (status == OperationStatus.SUCCESS) {
-      FetchSystemPropertyResult result;
-      if (data.getVersion() > request.getVersion()) {
-        result = new FetchSystemPropertyResult(true, data);
-      } else {
-        result = new FetchSystemPropertyResult(false);
-      }
-      DB_LOGGER.info(
-          "[fetchSystemProperty]dataInfoId={} req={} res={}",
-          request.getDataInfoId(),
-          request.getVersion(),
-          data.getVersion());
+        if (status == OperationStatus.NOTFOUND) {
+            FetchSystemPropertyResult result = new FetchSystemPropertyResult(false);
+            DB_LOGGER.warn("has not found system data from DB dataInfoId:{}", request.getDataInfoId());
+            return result;
+        }
+        ProvideData data =
+                new ProvideData(
+                        new ServerDataBox(persistenceData.getData()),
+                        request.getDataInfoId(),
+                        persistenceData.getVersion());
 
-      return result;
-    } else {
-      DB_LOGGER.error("get Data DB status error!");
-      throw new RuntimeException("Get Data DB status error!");
+        return processResult(request, status, data);
     }
-  }
 
-  @Override
-  public Class interest() {
-    return FetchSystemPropertyRequest.class;
-  }
+    private Object processResult(
+            FetchSystemPropertyRequest request, OperationStatus status, ProvideData data) {
+        if (status == OperationStatus.SUCCESS) {
+            FetchSystemPropertyResult result;
+            if (data.getVersion() > request.getVersion()) {
+                result = new FetchSystemPropertyResult(true, data);
+            } else {
+                result = new FetchSystemPropertyResult(false);
+            }
+            DB_LOGGER.info(
+                    "[fetchSystemProperty]dataInfoId={} req={} res={}",
+                    request.getDataInfoId(),
+                    request.getVersion(),
+                    data.getVersion());
 
-  /**
-   * Setter method for property <tt>provideDataService</tt>.
-   *
-   * @param provideDataService value to be assigned to property provideDataService
-   * @return FetchSystemPropertyRequestHandler
-   */
-  @VisibleForTesting
-  public FetchSystemPropertyRequestHandler setProvideDataService(
-      ProvideDataService provideDataService) {
-    this.provideDataService = provideDataService;
-    return this;
-  }
+            return result;
+        } else {
+            DB_LOGGER.error("get Data DB status error!");
+            throw new RuntimeException("Get Data DB status error!");
+        }
+    }
+
+    @Override
+    public Class interest() {
+        return FetchSystemPropertyRequest.class;
+    }
+
+    /**
+     * Setter method for property <tt>provideDataService</tt>.
+     *
+     * @param provideDataService value to be assigned to property provideDataService
+     * @return FetchSystemPropertyRequestHandler
+     */
+    @VisibleForTesting
+    public FetchSystemPropertyRequestHandler setProvideDataService(
+            ProvideDataService provideDataService) {
+        this.provideDataService = provideDataService;
+        return this;
+    }
 }

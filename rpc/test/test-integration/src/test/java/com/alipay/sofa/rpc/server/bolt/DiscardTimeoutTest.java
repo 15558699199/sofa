@@ -42,22 +42,22 @@ public class DiscardTimeoutTest extends ActivelyDestroyTest {
     public void testAll() {
 
         ServerConfig serverConfig = new ServerConfig()
-            .setStopTimeout(0).setPort(22222)
-            .setQueues(5).setCoreThreads(1).setMaxThreads(1);
+                .setStopTimeout(0).setPort(22222)
+                .setQueues(5).setCoreThreads(1).setMaxThreads(1);
 
         // 发布一个服务，每个请求要执行2秒
         ProviderConfig<HelloService> providerConfig = new ProviderConfig<HelloService>()
-            .setInterfaceId(HelloService.class.getName())
-            .setRef(new HelloServiceImpl(2000))
-            .setServer(serverConfig)
-            .setRegister(false);
+                .setInterfaceId(HelloService.class.getName())
+                .setRef(new HelloServiceImpl(2000))
+                .setServer(serverConfig)
+                .setRegister(false);
         providerConfig.export();
 
         ConsumerConfig<HelloService> consumerConfig = new ConsumerConfig<HelloService>()
-            .setInterfaceId(HelloService.class.getName())
-            .setTimeout(5000)
-            .setDirectUrl("bolt://127.0.0.1:22222")
-            .setRegister(false);
+                .setInterfaceId(HelloService.class.getName())
+                .setTimeout(5000)
+                .setDirectUrl("bolt://127.0.0.1:22222")
+                .setRegister(false);
 
         final HelloService helloService = consumerConfig.refer();
 

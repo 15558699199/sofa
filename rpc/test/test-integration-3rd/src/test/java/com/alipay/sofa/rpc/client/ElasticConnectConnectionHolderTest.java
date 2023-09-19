@@ -39,61 +39,61 @@ import java.util.concurrent.TimeUnit;
  */
 public class ElasticConnectConnectionHolderTest extends BaseZkTest {
 
-    private static ServerConfig   serverConfig1;
-    private static ServerConfig   serverConfig2;
-    private static ServerConfig   serverConfig3;
-    private static ServerConfig   serverConfig4;
+    private static ServerConfig serverConfig1;
+    private static ServerConfig serverConfig2;
+    private static ServerConfig serverConfig3;
+    private static ServerConfig serverConfig4;
     private static RegistryConfig registryConfig;
 
     @BeforeClass
     public static void startServer() throws Exception {
 
         registryConfig = new RegistryConfig()
-            .setProtocol(RpcConstants.REGISTRY_PROTOCOL_ZK)
-            .setAddress("127.0.0.1:2181");
+                .setProtocol(RpcConstants.REGISTRY_PROTOCOL_ZK)
+                .setAddress("127.0.0.1:2181");
 
         serverConfig1 = new ServerConfig()
-            .setStopTimeout(0)
-            .setPort(22223);
+                .setStopTimeout(0)
+                .setPort(22223);
         ProviderConfig<HelloService> providerConfig = new ProviderConfig<HelloService>()
-            .setInterfaceId(HelloService.class.getName())
-            .setRef(new HelloServiceImpl())
-            .setServer(serverConfig1)
-            .setRepeatedExportLimit(-1)
-            .setRegistry(registryConfig);
+                .setInterfaceId(HelloService.class.getName())
+                .setRef(new HelloServiceImpl())
+                .setServer(serverConfig1)
+                .setRepeatedExportLimit(-1)
+                .setRegistry(registryConfig);
         providerConfig.export();
 
         serverConfig2 = new ServerConfig()
-            .setStopTimeout(0)
-            .setPort(22224);
+                .setStopTimeout(0)
+                .setPort(22224);
         ProviderConfig<HelloService> providerConfig2 = new ProviderConfig<HelloService>()
-            .setInterfaceId(HelloService.class.getName())
-            .setRef(new HelloServiceImpl())
-            .setServer(serverConfig2)
-            .setRepeatedExportLimit(-1)
-            .setRegistry(registryConfig);
+                .setInterfaceId(HelloService.class.getName())
+                .setRef(new HelloServiceImpl())
+                .setServer(serverConfig2)
+                .setRepeatedExportLimit(-1)
+                .setRegistry(registryConfig);
         providerConfig2.export();
 
         serverConfig3 = new ServerConfig()
-            .setStopTimeout(0)
-            .setPort(22225);
+                .setStopTimeout(0)
+                .setPort(22225);
         ProviderConfig<HelloService> providerConfig3 = new ProviderConfig<HelloService>()
-            .setInterfaceId(HelloService.class.getName())
-            .setRef(new HelloServiceImpl())
-            .setServer(serverConfig3)
-            .setRepeatedExportLimit(-1)
-            .setRegistry(registryConfig);
+                .setInterfaceId(HelloService.class.getName())
+                .setRef(new HelloServiceImpl())
+                .setServer(serverConfig3)
+                .setRepeatedExportLimit(-1)
+                .setRegistry(registryConfig);
         providerConfig3.export();
 
         serverConfig4 = new ServerConfig()
-            .setStopTimeout(0)
-            .setPort(22226);
+                .setStopTimeout(0)
+                .setPort(22226);
         ProviderConfig<HelloService> providerConfig4 = new ProviderConfig<HelloService>()
-            .setInterfaceId(HelloService.class.getName())
-            .setRef(new HelloServiceImpl())
-            .setServer(serverConfig4)
-            .setRepeatedExportLimit(-1)
-            .setRegistry(registryConfig);
+                .setInterfaceId(HelloService.class.getName())
+                .setRef(new HelloServiceImpl())
+                .setServer(serverConfig4)
+                .setRepeatedExportLimit(-1)
+                .setRegistry(registryConfig);
         providerConfig4.export();
     }
 
@@ -112,13 +112,13 @@ public class ElasticConnectConnectionHolderTest extends BaseZkTest {
         //use connect.elastic.precent first unless connect.elastic.precent = 0
 
         ConsumerConfig<HelloService> consumerConfig = new ConsumerConfig<HelloService>()
-            .setInterfaceId(HelloService.class.getName())
-            .setConnectionHolder("elastic")
-            .setRegistry(registryConfig);
+                .setInterfaceId(HelloService.class.getName())
+                .setConnectionHolder("elastic")
+                .setRegistry(registryConfig);
         HelloService helloService = consumerConfig.refer();
 
         ClientProxyInvoker invoker = (ClientProxyInvoker) ProxyFactory.getInvoker(helloService,
-            consumerConfig.getProxy());
+                consumerConfig.getProxy());
         Cluster cluster = invoker.getCluster();
         Assert.assertTrue(cluster.getConnectionHolder() instanceof ElasticConnectionHolder);
         ElasticConnectionHolder holder = (ElasticConnectionHolder) cluster.getConnectionHolder();

@@ -6,8 +6,8 @@ option go_package = "pb";
 import "ResultPb.proto";
 
 message SyncConfigResponsePb {
-    ResultPb result = 1;
-    repeated string availableSegments = 2;
-    int32 retryInterval = 3;
+  ResultPb result = 1;
+  repeated string availableSegments = 2;
+  int32 retryInterval = 3;
 }
 

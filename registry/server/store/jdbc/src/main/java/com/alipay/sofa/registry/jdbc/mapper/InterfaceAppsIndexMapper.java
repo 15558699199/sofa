@@ -17,9 +17,10 @@
 package com.alipay.sofa.registry.jdbc.mapper;
 
 import com.alipay.sofa.registry.jdbc.domain.InterfaceAppsIndexDomain;
+import org.apache.ibatis.annotations.Param;
+
 import java.util.List;
 import java.util.Set;
-import org.apache.ibatis.annotations.Param;
 
 /**
  * @author xiaojian.xj
@@ -27,32 +28,32 @@ import org.apache.ibatis.annotations.Param;
  */
 public interface InterfaceAppsIndexMapper {
 
-  /**
-   * insert on replace
-   *
-   * @param domain domain
-   * @return int
-   */
-  int replace(InterfaceAppsIndexDomain domain);
+    /**
+     * insert on replace
+     *
+     * @param domain domain
+     * @return int
+     */
+    int replace(InterfaceAppsIndexDomain domain);
 
-  /**
-   * insert
-   *
-   * @param domain domain
-   * @return effect rows number
-   */
-  int update(InterfaceAppsIndexDomain domain);
+    /**
+     * insert
+     *
+     * @param domain domain
+     * @return effect rows number
+     */
+    int update(InterfaceAppsIndexDomain domain);
 
-  /**
-   * query domains which gmt_modified is after than maxUpdate
-   *
-   * @param dataCenters dataCenters
-   * @param maxId maxId
-   * @param limitCount limitCount
-   * @return List
-   */
-  List<InterfaceAppsIndexDomain> queryLargeThan(
-      @Param("dataCenters") Set<String> dataCenters,
-      @Param("maxId") long maxId,
-      @Param("limitCount") int limitCount);
+    /**
+     * query domains which gmt_modified is after than maxUpdate
+     *
+     * @param dataCenters dataCenters
+     * @param maxId       maxId
+     * @param limitCount  limitCount
+     * @return List
+     */
+    List<InterfaceAppsIndexDomain> queryLargeThan(
+            @Param("dataCenters") Set<String> dataCenters,
+            @Param("maxId") long maxId,
+            @Param("limitCount") int limitCount);
 }

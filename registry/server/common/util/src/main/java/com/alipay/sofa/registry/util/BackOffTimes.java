@@ -19,25 +19,25 @@ package com.alipay.sofa.registry.util;
 import java.util.concurrent.ThreadLocalRandom;
 
 public final class BackOffTimes {
-  private static final int[] RANDOM_MILLIS;
+    private static final int[] RANDOM_MILLIS;
 
-  static {
-    RANDOM_MILLIS = new int[30];
-    for (int i = 0; i < RANDOM_MILLIS.length; i++) {
-      RANDOM_MILLIS[i] = 50 + i * 10;
+    static {
+        RANDOM_MILLIS = new int[30];
+        for (int i = 0; i < RANDOM_MILLIS.length; i++) {
+            RANDOM_MILLIS[i] = 50 + i * 10;
+        }
     }
-  }
 
-  public static int getBackOffMillis(int retry, int initMillis, int incrementMillis) {
-    final int idx = ThreadLocalRandom.current().nextInt(RANDOM_MILLIS.length);
-    final int rand = RANDOM_MILLIS[idx];
-    if (retry <= 1) {
-      return initMillis + rand;
+    public static int getBackOffMillis(int retry, int initMillis, int incrementMillis) {
+        final int idx = ThreadLocalRandom.current().nextInt(RANDOM_MILLIS.length);
+        final int rand = RANDOM_MILLIS[idx];
+        if (retry <= 1) {
+            return initMillis + rand;
+        }
+        return initMillis + (incrementMillis * (retry - 1)) + rand;
     }
-    return initMillis + (incrementMillis * (retry - 1)) + rand;
-  }
 
-  public static int maxBackOffRandoms() {
-    return RANDOM_MILLIS[RANDOM_MILLIS.length - 1];
-  }
+    public static int maxBackOffRandoms() {
+        return RANDOM_MILLIS[RANDOM_MILLIS.length - 1];
+    }
 }

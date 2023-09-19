@@ -36,32 +36,32 @@ import org.springframework.core.Ordered;
  */
 @SingletonSofaPostProcessor
 public class RuntimeContextBeanFactoryPostProcessor implements BeanFactoryPostProcessor,
-                                                   ApplicationContextAware, InitializingBean,
-                                                   Ordered {
+        ApplicationContextAware, InitializingBean,
+        Ordered {
 
-    protected BindingAdapterFactory                    bindingAdapterFactory;
+    protected BindingAdapterFactory bindingAdapterFactory;
 
-    protected BindingConverterFactory                  bindingConverterFactory;
+    protected BindingConverterFactory bindingConverterFactory;
 
-    protected SofaRuntimeManager                       sofaRuntimeManager;
+    protected SofaRuntimeManager sofaRuntimeManager;
 
-    protected ApplicationContext                       applicationContext;
+    protected ApplicationContext applicationContext;
 
-    protected SofaRuntimeAwareProcessor                sofaRuntimeAwareProcessor;
+    protected SofaRuntimeAwareProcessor sofaRuntimeAwareProcessor;
 
     protected ClientFactoryAnnotationBeanPostProcessor clientFactoryAnnotationBeanPostProcessor;
 
     @Override
     public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory)
-                                                                                   throws BeansException {
+            throws BeansException {
         // make sure those BeanPostProcessor work on other BeanPostProcessor
         beanFactory.addBeanPostProcessor(sofaRuntimeAwareProcessor);
         beanFactory.addBeanPostProcessor(clientFactoryAnnotationBeanPostProcessor);
 
         // none singleton bean
         ReferenceAnnotationBeanPostProcessor referenceAnnotationBeanPostProcessor = new ReferenceAnnotationBeanPostProcessor(
-            sofaRuntimeManager.getSofaRuntimeContext(), bindingAdapterFactory,
-            bindingConverterFactory);
+                sofaRuntimeManager.getSofaRuntimeContext(), bindingAdapterFactory,
+                bindingConverterFactory);
         referenceAnnotationBeanPostProcessor.setApplicationContext(applicationContext);
         beanFactory.addBeanPostProcessor(referenceAnnotationBeanPostProcessor);
     }
@@ -70,11 +70,11 @@ public class RuntimeContextBeanFactoryPostProcessor implements BeanFactoryPostPr
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
         this.bindingAdapterFactory = applicationContext.getBean("bindingAdapterFactory",
-            BindingAdapterFactory.class);
+                BindingAdapterFactory.class);
         this.bindingConverterFactory = applicationContext.getBean("bindingConverterFactory",
-            BindingConverterFactory.class);
+                BindingConverterFactory.class);
         this.sofaRuntimeManager = applicationContext.getBean("sofaRuntimeManager",
-            SofaRuntimeManager.class);
+                SofaRuntimeManager.class);
     }
 
     @Override
@@ -86,6 +86,6 @@ public class RuntimeContextBeanFactoryPostProcessor implements BeanFactoryPostPr
     public void afterPropertiesSet() throws Exception {
         this.sofaRuntimeAwareProcessor = new SofaRuntimeAwareProcessor(sofaRuntimeManager);
         this.clientFactoryAnnotationBeanPostProcessor = new ClientFactoryAnnotationBeanPostProcessor(
-            sofaRuntimeManager.getClientFactoryInternal());
+                sofaRuntimeManager.getClientFactoryInternal());
     }
 }

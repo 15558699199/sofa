@@ -24,37 +24,42 @@ package com.alipay.sofa.registry.client.api.exception;
  */
 public class RegistryClientException extends RuntimeException {
 
-  /** UID */
-  private static final long serialVersionUID = -1068018180829676315L;
+    /**
+     * UID
+     */
+    private static final long serialVersionUID = -1068018180829676315L;
 
-  /** Instantiates a new Registry client exception. */
-  public RegistryClientException() {}
+    /**
+     * Instantiates a new Registry client exception.
+     */
+    public RegistryClientException() {
+    }
 
-  /**
-   * Instantiates a new Registry client exception.
-   *
-   * @param message the message
-   */
-  public RegistryClientException(String message) {
-    super(message);
-  }
+    /**
+     * Instantiates a new Registry client exception.
+     *
+     * @param message the message
+     */
+    public RegistryClientException(String message) {
+        super(message);
+    }
 
-  /**
-   * Instantiates a new Registry client exception.
-   *
-   * @param message the message
-   * @param cause the cause
-   */
-  public RegistryClientException(String message, Throwable cause) {
-    super(message, cause);
-  }
+    /**
+     * Instantiates a new Registry client exception.
+     *
+     * @param message the message
+     * @param cause   the cause
+     */
+    public RegistryClientException(String message, Throwable cause) {
+        super(message, cause);
+    }
 
-  /**
-   * Instantiates a new Registry client exception.
-   *
-   * @param cause the cause
-   */
-  public RegistryClientException(Throwable cause) {
-    super(cause);
-  }
+    /**
+     * Instantiates a new Registry client exception.
+     *
+     * @param cause the cause
+     */
+    public RegistryClientException(Throwable cause) {
+        super(cause);
+    }
 }

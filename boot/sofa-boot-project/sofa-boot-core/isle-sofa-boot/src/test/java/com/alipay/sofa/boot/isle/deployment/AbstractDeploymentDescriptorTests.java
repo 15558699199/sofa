@@ -27,13 +27,7 @@ import org.springframework.core.io.UrlResource;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Properties;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -48,29 +42,23 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class AbstractDeploymentDescriptorTests {
 
-    private final DeploymentDescriptorFactory       deploymentDescriptorFactory       = new DeploymentDescriptorFactory();
+    private final DeploymentDescriptorFactory deploymentDescriptorFactory = new DeploymentDescriptorFactory();
 
     private final DeploymentDescriptorConfiguration deploymentDescriptorConfiguration = new DeploymentDescriptorConfiguration(
-                                                                                          Collections
-                                                                                              .singletonList(DeploymentDescriptorConfiguration.MODULE_NAME),
-                                                                                          Collections
-                                                                                              .singletonList(DeploymentDescriptorConfiguration.REQUIRE_MODULE));
-
+            Collections
+                    .singletonList(DeploymentDescriptorConfiguration.MODULE_NAME),
+            Collections
+                    .singletonList(DeploymentDescriptorConfiguration.REQUIRE_MODULE));
+    private final URL url = new URL(
+            "jar:file:/path/to/sofa-module.jar!/META-INF/sofa/sofa-module.properties");
+    private final ClassLoader classLoader = ClassLoader
+            .getSystemClassLoader();
     @Mock
-    private Resource                                resource1;
-
+    private Resource resource1;
     @Mock
-    private Resource                                resource2;
-
-    private final URL                               url                               = new URL(
-                                                                                          "jar:file:/path/to/sofa-module.jar!/META-INF/sofa/sofa-module.properties");
-
-    private Properties                              properties;
-
-    private final ClassLoader                       classLoader                       = ClassLoader
-                                                                                          .getSystemClassLoader();
-
-    private AbstractDeploymentDescriptor            descriptor;
+    private Resource resource2;
+    private Properties properties;
+    private AbstractDeploymentDescriptor descriptor;
 
     public AbstractDeploymentDescriptorTests() throws MalformedURLException {
     }
@@ -85,7 +73,7 @@ public class AbstractDeploymentDescriptorTests {
         properties.setProperty("Module-Name", "sample-module");
         properties.setProperty("Require-Module", "module1,module2");
         descriptor = new AbstractDeploymentDescriptor(url, properties,
-            deploymentDescriptorConfiguration, classLoader) {
+                deploymentDescriptorConfiguration, classLoader) {
 
             @Override
             protected void loadSpringXMLs() {
@@ -107,7 +95,7 @@ public class AbstractDeploymentDescriptorTests {
     @Test
     public void getRequiredModules() {
         assertThat(descriptor.getRequiredModules()).containsExactly("module1", "module2",
-            "parent-module");
+                "parent-module");
     }
 
     @Test
@@ -204,15 +192,15 @@ public class AbstractDeploymentDescriptorTests {
     public void whiteSpacePath() throws Exception {
         ClassLoader classLoader = this.getClass().getClassLoader();
         Enumeration<URL> urls = classLoader
-            .getResources("white space/" + DeploymentDescriptorConfiguration.SOFA_MODULE_FILE);
+                .getResources("white space/" + DeploymentDescriptorConfiguration.SOFA_MODULE_FILE);
         while (urls != null && urls.hasMoreElements()) {
             URL url = urls.nextElement();
             UrlResource urlResource = new UrlResource(url);
             Properties props = new Properties();
             props.load(urlResource.getInputStream());
             DeploymentDescriptor dd = deploymentDescriptorFactory.build(url, props,
-                deploymentDescriptorConfiguration, classLoader,
-                DeploymentDescriptorConfiguration.SOFA_MODULE_FILE);
+                    deploymentDescriptorConfiguration, classLoader,
+                    DeploymentDescriptorConfiguration.SOFA_MODULE_FILE);
             assertThat(dd.isSpringPowered()).isTrue();
         }
     }

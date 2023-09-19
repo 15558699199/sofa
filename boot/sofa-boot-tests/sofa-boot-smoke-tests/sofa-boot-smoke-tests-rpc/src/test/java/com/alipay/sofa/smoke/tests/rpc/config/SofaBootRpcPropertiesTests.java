@@ -32,19 +32,19 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Integration tests for {@link SofaBootRpcProperties}.
  */
 @SpringBootTest(classes = RpcSofaBootApplication.class, properties = {
-                                                                      "sofa.boot.rpc"
-                                                                              + ".bolt.port=5000",
-                                                                      "com_alipay_sofa_rpc_bolt_thread_pool_max_size=600",
-                                                                      "sofa.boot.rpc"
-                                                                              + ".registries.zk1=zookeeper://xxxx",
-                                                                      "sofa.boot.rpc"
-                                                                              + ".consumer.repeated.reference.limit=10",
-                                                                      "sofa.boot.rpc"
-                                                                              + ".rest.allowed.origins=a.com" })
+        "sofa.boot.rpc"
+                + ".bolt.port=5000",
+        "com_alipay_sofa_rpc_bolt_thread_pool_max_size=600",
+        "sofa.boot.rpc"
+                + ".registries.zk1=zookeeper://xxxx",
+        "sofa.boot.rpc"
+                + ".consumer.repeated.reference.limit=10",
+        "sofa.boot.rpc"
+                + ".rest.allowed.origins=a.com"})
 public class SofaBootRpcPropertiesTests {
 
     @Autowired
-    private SofaBootRpcProperties   sofaBootRpcProperties;
+    private SofaBootRpcProperties sofaBootRpcProperties;
 
     @Autowired
     private ConsumerConfigContainer consumerConfigContainer;

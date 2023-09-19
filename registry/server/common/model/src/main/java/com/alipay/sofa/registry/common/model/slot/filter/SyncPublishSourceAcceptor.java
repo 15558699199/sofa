@@ -20,8 +20,9 @@ import com.alipay.sofa.registry.common.model.PublishSource;
 import com.alipay.sofa.registry.common.model.constants.MultiValueConstants;
 import com.alipay.sofa.registry.util.ParaCheckUtil;
 import com.google.common.base.Objects;
-import java.util.Set;
 import org.springframework.util.CollectionUtils;
+
+import java.util.Set;
 
 /**
  * @author xiaojian.xj
@@ -29,53 +30,53 @@ import org.springframework.util.CollectionUtils;
  */
 public class SyncPublishSourceAcceptor implements SyncSlotAcceptor {
 
-  private static final String NAME = MultiValueConstants.SYNC_PUBLISH_SOURCE_ACCEPTOR;
-  private final Set<PublishSource> filters;
+    private static final String NAME = MultiValueConstants.SYNC_PUBLISH_SOURCE_ACCEPTOR;
+    private final Set<PublishSource> filters;
 
-  public SyncPublishSourceAcceptor(Set<PublishSource> filters) {
-    this.filters = filters;
-  }
-
-  @Override
-  public boolean accept(SyncAcceptorRequest request) {
-
-    return false;
-  }
-
-  @Override
-  public boolean filterOut(SyncAcceptorRequest request) {
-    ParaCheckUtil.checkNotNull(request, "SyncAcceptorRequest");
-    if (CollectionUtils.isEmpty(filters)) {
-      return false;
+    public SyncPublishSourceAcceptor(Set<PublishSource> filters) {
+        this.filters = filters;
     }
 
-    return filters.contains(request.getSource());
-  }
+    @Override
+    public boolean accept(SyncAcceptorRequest request) {
 
-  @Override
-  public String name() {
-    return NAME;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
+        return false;
     }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
+
+    @Override
+    public boolean filterOut(SyncAcceptorRequest request) {
+        ParaCheckUtil.checkNotNull(request, "SyncAcceptorRequest");
+        if (CollectionUtils.isEmpty(filters)) {
+            return false;
+        }
+
+        return filters.contains(request.getSource());
     }
-    SyncPublishSourceAcceptor that = (SyncPublishSourceAcceptor) o;
-    return Objects.equal(NAME, that.NAME);
-  }
 
-  @Override
-  public int hashCode() {
-    return Objects.hashCode(NAME);
-  }
+    @Override
+    public String name() {
+        return NAME;
+    }
 
-  @Override
-  public String toString() {
-    return "SyncPublishSourceAcceptor{" + "filters=" + filters + '}';
-  }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        SyncPublishSourceAcceptor that = (SyncPublishSourceAcceptor) o;
+        return Objects.equal(NAME, that.NAME);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(NAME);
+    }
+
+    @Override
+    public String toString() {
+        return "SyncPublishSourceAcceptor{" + "filters=" + filters + '}';
+    }
 }

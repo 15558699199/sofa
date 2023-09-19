@@ -19,7 +19,6 @@ package com.alipay.sofa.rpc.server.http;
 import com.alipay.sofa.rpc.ext.Extension;
 
 /**
- *
  * @author <a href="mailto:zhanggeng.zg@antfin.com">GengZhang</a>
  * @since 5.4.0
  */

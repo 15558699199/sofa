@@ -28,25 +28,27 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @version $Id: GetSlotTableStatusRequestHandler.java, v 0.1 2021年07月05日 9:35 PM xiaojian.xj Exp $
  */
 public class GetSlotTableStatusRequestHandler
-    extends BaseMetaServerHandler<GetSlotTableStatusRequest> {
+        extends BaseMetaServerHandler<GetSlotTableStatusRequest> {
 
-  @Autowired SlotTableStatusService slotTableStatusService;
+    @Autowired
+    SlotTableStatusService slotTableStatusService;
 
-  @Autowired MetaLeaderService metaLeaderService;
+    @Autowired
+    MetaLeaderService metaLeaderService;
 
-  @Override
-  public Object doHandle(Channel channel, GetSlotTableStatusRequest request) {
+    @Override
+    public Object doHandle(Channel channel, GetSlotTableStatusRequest request) {
 
-    if (!metaLeaderService.amIStableAsLeader()) {
-      return null;
+        if (!metaLeaderService.amIStableAsLeader()) {
+            return null;
+        }
+
+        SlotTableStatusResponse slotTableStatus = slotTableStatusService.getSlotTableStatus();
+        return slotTableStatus;
     }
 
-    SlotTableStatusResponse slotTableStatus = slotTableStatusService.getSlotTableStatus();
-    return slotTableStatus;
-  }
-
-  @Override
-  public Class interest() {
-    return GetSlotTableStatusRequest.class;
-  }
+    @Override
+    public Class interest() {
+        return GetSlotTableStatusRequest.class;
+    }
 }

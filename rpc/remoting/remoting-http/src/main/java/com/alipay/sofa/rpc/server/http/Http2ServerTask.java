@@ -35,7 +35,7 @@ import static io.netty.handler.codec.http.HttpHeaderNames.CONTENT_TYPE;
  */
 public class Http2ServerTask extends AbstractHttpServerTask {
 
-    protected final Integer                streamId;
+    protected final Integer streamId;
     protected final Http2ConnectionEncoder encoder;
 
     public Http2ServerTask(HttpServerHandler serverHandler, SofaRequest request,

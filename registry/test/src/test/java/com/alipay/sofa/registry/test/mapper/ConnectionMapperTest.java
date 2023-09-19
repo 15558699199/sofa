@@ -26,18 +26,18 @@ import org.junit.Test;
  */
 public class ConnectionMapperTest {
 
-  @Test
-  public void simpleTestForMap() {
-    String connectId = "1.1.1.1:1234";
-    String clientIp = "2.2.2.2";
-    ConnectionMapper connectionMapper = new ConnectionMapper();
-    // add
+    @Test
+    public void simpleTestForMap() {
+        String connectId = "1.1.1.1:1234";
+        String clientIp = "2.2.2.2";
+        ConnectionMapper connectionMapper = new ConnectionMapper();
+        // add
 
-    connectionMapper.add(connectId, clientIp);
-    Assert.assertTrue(connectionMapper.contains(connectId));
-    Assert.assertEquals(clientIp, connectionMapper.get(connectId));
-    // remove
-    connectionMapper.remove(connectId);
-    Assert.assertFalse(connectionMapper.contains(connectId));
-  }
+        connectionMapper.add(connectId, clientIp);
+        Assert.assertTrue(connectionMapper.contains(connectId));
+        Assert.assertEquals(clientIp, connectionMapper.get(connectId));
+        // remove
+        connectionMapper.remove(connectId);
+        Assert.assertFalse(connectionMapper.contains(connectId));
+    }
 }

@@ -25,23 +25,25 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = MultiClusterSessionServerConfigBean.PREFIX)
 public class MultiClusterSessionServerConfigBean implements MultiClusterSessionServerConfig {
 
-  /** The constant PREFIX. */
-  public static final String PREFIX = "session.remote.server";
+    /**
+     * The constant PREFIX.
+     */
+    public static final String PREFIX = "session.remote.server";
 
-  private volatile int multiClusterConfigReloadSecs = 60;
+    private volatile int multiClusterConfigReloadSecs = 60;
 
-  @Override
-  public long getMultiClusterConfigReloadSecs() {
-    return multiClusterConfigReloadSecs;
-  }
+    @Override
+    public long getMultiClusterConfigReloadSecs() {
+        return multiClusterConfigReloadSecs;
+    }
 
-  /**
-   * Setter method for property <tt>multiClusterConfigReloadSecs</tt>.
-   *
-   * @param multiClusterConfigReloadSecs value to be assigned to property
-   *     multiClusterConfigReloadSecs
-   */
-  public void setMultiClusterConfigReloadSecs(int multiClusterConfigReloadSecs) {
-    this.multiClusterConfigReloadSecs = multiClusterConfigReloadSecs;
-  }
+    /**
+     * Setter method for property <tt>multiClusterConfigReloadSecs</tt>.
+     *
+     * @param multiClusterConfigReloadSecs value to be assigned to property
+     *                                     multiClusterConfigReloadSecs
+     */
+    public void setMultiClusterConfigReloadSecs(int multiClusterConfigReloadSecs) {
+        this.multiClusterConfigReloadSecs = multiClusterConfigReloadSecs;
+    }
 }

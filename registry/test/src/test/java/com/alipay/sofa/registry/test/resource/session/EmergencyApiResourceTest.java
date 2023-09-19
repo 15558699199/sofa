@@ -16,9 +16,6 @@
  */
 package com.alipay.sofa.registry.test.resource.session;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 import com.alipay.sofa.registry.common.model.CommonResponse;
 import com.alipay.sofa.registry.common.model.console.PersistenceData;
 import com.alipay.sofa.registry.common.model.console.PersistenceDataBuilder;
@@ -35,6 +32,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 /**
  * @author xiaojian.xj
  * @version : EmergencyApiResourceTest.java, v 0.1 2021年10月25日 20:47 xiaojian.xj Exp $
@@ -42,110 +42,110 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 public class EmergencyApiResourceTest extends BaseIntegrationTest {
 
-  private MetaServerService metaServerService = mock(MetaServerService.class);
+    private MetaServerService metaServerService = mock(MetaServerService.class);
 
-  @Test
-  public void testClosePushByRepository() throws Exception {
-    startServerIfNecessary();
-    EmergencyApiResource emergencyApiResource =
-        (EmergencyApiResource) sessionApplicationContext.getBean("emergencyApiResource");
-    ProvideDataRepository provideDataRepository =
-        (ProvideDataRepository) sessionApplicationContext.getBean("provideDataJdbcRepository");
+    @Test
+    public void testClosePushByRepository() throws Exception {
+        startServerIfNecessary();
+        EmergencyApiResource emergencyApiResource =
+                (EmergencyApiResource) sessionApplicationContext.getBean("emergencyApiResource");
+        ProvideDataRepository provideDataRepository =
+                (ProvideDataRepository) sessionApplicationContext.getBean("provideDataJdbcRepository");
 
-    PersistenceData persistenceData =
-        provideDataRepository.get(ValueConstants.STOP_PUSH_DATA_SWITCH_DATA_ID);
-    Assert.assertEquals(persistenceData.getData(), "false");
-    emergencyApiResource.setMetaNodeService(metaServerService);
-    when(metaServerService.renewNode()).thenReturn(false);
-    when(metaServerService.getMetaServerLeader()).thenReturn("1.1.1.1");
+        PersistenceData persistenceData =
+                provideDataRepository.get(ValueConstants.STOP_PUSH_DATA_SWITCH_DATA_ID);
+        Assert.assertEquals(persistenceData.getData(), "false");
+        emergencyApiResource.setMetaNodeService(metaServerService);
+        when(metaServerService.renewNode()).thenReturn(false);
+        when(metaServerService.getMetaServerLeader()).thenReturn("1.1.1.1");
 
-    CommonResponse commonResponse = emergencyApiResource.closePushByRepository();
-    Assert.assertTrue(commonResponse.isSuccess());
-    persistenceData = provideDataRepository.get(ValueConstants.STOP_PUSH_DATA_SWITCH_DATA_ID);
-    Assert.assertEquals(persistenceData.getData(), "true");
+        CommonResponse commonResponse = emergencyApiResource.closePushByRepository();
+        Assert.assertTrue(commonResponse.isSuccess());
+        persistenceData = provideDataRepository.get(ValueConstants.STOP_PUSH_DATA_SWITCH_DATA_ID);
+        Assert.assertEquals(persistenceData.getData(), "true");
 
-    Thread.sleep(5000);
-    openPush();
-    Thread.sleep(5000);
-    persistenceData = provideDataRepository.get(ValueConstants.STOP_PUSH_DATA_SWITCH_DATA_ID);
-    Assert.assertEquals(persistenceData.getData(), "false");
-  }
+        Thread.sleep(5000);
+        openPush();
+        Thread.sleep(5000);
+        persistenceData = provideDataRepository.get(ValueConstants.STOP_PUSH_DATA_SWITCH_DATA_ID);
+        Assert.assertEquals(persistenceData.getData(), "false");
+    }
 
-  @Test
-  public void shutdownByRepository() throws Exception {
-    startServerIfNecessary();
+    @Test
+    public void shutdownByRepository() throws Exception {
+        startServerIfNecessary();
 
-    String token = "6c62lk8dmQoE5B8X";
-    EmergencyApiResource emergencyApiResource =
-        (EmergencyApiResource) sessionApplicationContext.getBean("emergencyApiResource");
-    ProvideDataRepository provideDataRepository =
-        (ProvideDataRepository) sessionApplicationContext.getBean("provideDataJdbcRepository");
-    FetchShutdownService fetchShutdownService =
-        (FetchShutdownService) sessionApplicationContext.getBean("fetchShutdownService");
+        String token = "6c62lk8dmQoE5B8X";
+        EmergencyApiResource emergencyApiResource =
+                (EmergencyApiResource) sessionApplicationContext.getBean("emergencyApiResource");
+        ProvideDataRepository provideDataRepository =
+                (ProvideDataRepository) sessionApplicationContext.getBean("provideDataJdbcRepository");
+        FetchShutdownService fetchShutdownService =
+                (FetchShutdownService) sessionApplicationContext.getBean("fetchShutdownService");
 
-    SessionServerBootstrap sessionServerBootstrap = mock(SessionServerBootstrap.class);
-    fetchShutdownService.setSessionServerBootstrap(sessionServerBootstrap);
+        SessionServerBootstrap sessionServerBootstrap = mock(SessionServerBootstrap.class);
+        fetchShutdownService.setSessionServerBootstrap(sessionServerBootstrap);
 
-    PersistenceData stopPush =
-        provideDataRepository.get(ValueConstants.STOP_PUSH_DATA_SWITCH_DATA_ID);
-    Assert.assertEquals(stopPush.getData(), "false");
-    CommonResponse commonResponse = emergencyApiResource.shutdownByRepository(token);
-    Assert.assertFalse(commonResponse.isSuccess());
+        PersistenceData stopPush =
+                provideDataRepository.get(ValueConstants.STOP_PUSH_DATA_SWITCH_DATA_ID);
+        Assert.assertEquals(stopPush.getData(), "false");
+        CommonResponse commonResponse = emergencyApiResource.shutdownByRepository(token);
+        Assert.assertFalse(commonResponse.isSuccess());
 
-    Thread.sleep(5000);
-    closePush();
-    Thread.sleep(5000);
+        Thread.sleep(5000);
+        closePush();
+        Thread.sleep(5000);
 
-    stopPush = provideDataRepository.get(ValueConstants.STOP_PUSH_DATA_SWITCH_DATA_ID);
-    Assert.assertEquals(stopPush.getData(), "true");
+        stopPush = provideDataRepository.get(ValueConstants.STOP_PUSH_DATA_SWITCH_DATA_ID);
+        Assert.assertEquals(stopPush.getData(), "true");
 
-    emergencyApiResource.setMetaNodeService(metaServerService);
-    when(metaServerService.renewNode()).thenReturn(false);
-    when(metaServerService.getMetaServerLeader()).thenReturn("1.1.1.1");
+        emergencyApiResource.setMetaNodeService(metaServerService);
+        when(metaServerService.renewNode()).thenReturn(false);
+        when(metaServerService.getMetaServerLeader()).thenReturn("1.1.1.1");
 
-    commonResponse = emergencyApiResource.shutdownByRepository(token);
-    Assert.assertTrue(commonResponse.isSuccess());
+        commonResponse = emergencyApiResource.shutdownByRepository(token);
+        Assert.assertTrue(commonResponse.isSuccess());
 
-    PersistenceData shutdown = provideDataRepository.get(ValueConstants.SHUTDOWN_SWITCH_DATA_ID);
-    Assert.assertEquals(shutdown.getData(), "true");
+        PersistenceData shutdown = provideDataRepository.get(ValueConstants.SHUTDOWN_SWITCH_DATA_ID);
+        Assert.assertEquals(shutdown.getData(), "true");
 
-    openPush();
-    Thread.sleep(5000);
+        openPush();
+        Thread.sleep(5000);
 
-    stopPush = provideDataRepository.get(ValueConstants.STOP_PUSH_DATA_SWITCH_DATA_ID);
-    Assert.assertEquals(stopPush.getData(), "false");
+        stopPush = provideDataRepository.get(ValueConstants.STOP_PUSH_DATA_SWITCH_DATA_ID);
+        Assert.assertEquals(stopPush.getData(), "false");
 
-    PersistenceData shutdownUpdate =
-        PersistenceDataBuilder.createPersistenceData(
-            ValueConstants.SHUTDOWN_SWITCH_DATA_ID, "false");
-    provideDataRepository.put(shutdownUpdate, shutdown.getVersion());
+        PersistenceData shutdownUpdate =
+                PersistenceDataBuilder.createPersistenceData(
+                        ValueConstants.SHUTDOWN_SWITCH_DATA_ID, "false");
+        provideDataRepository.put(shutdownUpdate, shutdown.getVersion());
 
-    shutdown = provideDataRepository.get(ValueConstants.SHUTDOWN_SWITCH_DATA_ID);
-    Assert.assertEquals(shutdown.getData(), "false");
-  }
+        shutdown = provideDataRepository.get(ValueConstants.SHUTDOWN_SWITCH_DATA_ID);
+        Assert.assertEquals(shutdown.getData(), "false");
+    }
 
-  @Test
-  public void stopZoneClosePush() throws Exception {
-    startServerIfNecessary();
+    @Test
+    public void stopZoneClosePush() throws Exception {
+        startServerIfNecessary();
 
-    EmergencyApiResource emergencyApiResource =
-        (EmergencyApiResource) sessionApplicationContext.getBean("emergencyApiResource");
-    ProvideDataRepository provideDataRepository =
-        (ProvideDataRepository) sessionApplicationContext.getBean("provideDataJdbcRepository");
+        EmergencyApiResource emergencyApiResource =
+                (EmergencyApiResource) sessionApplicationContext.getBean("emergencyApiResource");
+        ProvideDataRepository provideDataRepository =
+                (ProvideDataRepository) sessionApplicationContext.getBean("provideDataJdbcRepository");
 
-    CommonResponse commonResponse = emergencyApiResource.zoneClosePush();
-    Assert.assertTrue(commonResponse.isSuccess());
+        CommonResponse commonResponse = emergencyApiResource.zoneClosePush();
+        Assert.assertTrue(commonResponse.isSuccess());
 
-    FetchStopPushService fetchStopPushService =
-        (FetchStopPushService) sessionApplicationContext.getBean("fetchStopPushService");
-    Assert.assertTrue(fetchStopPushService.isStopPushSwitch());
+        FetchStopPushService fetchStopPushService =
+                (FetchStopPushService) sessionApplicationContext.getBean("fetchStopPushService");
+        Assert.assertTrue(fetchStopPushService.isStopPushSwitch());
 
-    Thread.sleep(5000);
-    openPush();
-    Thread.sleep(5000);
+        Thread.sleep(5000);
+        openPush();
+        Thread.sleep(5000);
 
-    PersistenceData persistenceData =
-        provideDataRepository.get(ValueConstants.STOP_PUSH_DATA_SWITCH_DATA_ID);
-    Assert.assertEquals(persistenceData.getData(), "false");
-  }
+        PersistenceData persistenceData =
+                provideDataRepository.get(ValueConstants.STOP_PUSH_DATA_SWITCH_DATA_ID);
+        Assert.assertEquals(persistenceData.getData(), "false");
+    }
 }

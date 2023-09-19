@@ -45,7 +45,7 @@ public class MultipleClassLoaderSofaSerializerFactory extends SingleClassLoaderS
     protected void putDeserializerToCachedType(String type, Deserializer deserializer) {
 
         ConcurrentMap<ClassLoader, Deserializer> concurrentMap = cachedTypeDeserializerMap
-            .get(type);
+                .get(type);
 
         if (concurrentMap == null) {
             ConcurrentMap<ClassLoader, Deserializer> newMap = new ConcurrentHashMap<ClassLoader, Deserializer>();

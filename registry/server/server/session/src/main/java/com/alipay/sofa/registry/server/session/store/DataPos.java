@@ -17,44 +17,45 @@
 package com.alipay.sofa.registry.server.session.store;
 
 import com.alipay.sofa.registry.common.model.store.BaseInfo;
+
 import java.util.Objects;
 
 public class DataPos {
-  private final String registerId;
-  private final String dataInfoId;
-  private int hash;
+    private final String registerId;
+    private final String dataInfoId;
+    private int hash;
 
-  public DataPos(String dataInfoId, String registerId) {
-    this.dataInfoId = dataInfoId;
-    this.registerId = registerId;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    DataPos dataPos = (DataPos) o;
-    return Objects.equals(registerId, dataPos.registerId)
-        && Objects.equals(dataInfoId, dataPos.dataInfoId);
-  }
-
-  @Override
-  public int hashCode() {
-    if (hash == 0) {
-      hash = Objects.hash(dataInfoId, registerId);
+    public DataPos(String dataInfoId, String registerId) {
+        this.dataInfoId = dataInfoId;
+        this.registerId = registerId;
     }
-    return hash;
-  }
 
-  public static DataPos of(BaseInfo info) {
-    return new DataPos(info.getDataInfoId(), info.getRegisterId());
-  }
+    public static DataPos of(BaseInfo info) {
+        return new DataPos(info.getDataInfoId(), info.getRegisterId());
+    }
 
-  public String getDataInfoId() {
-    return dataInfoId;
-  }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        DataPos dataPos = (DataPos) o;
+        return Objects.equals(registerId, dataPos.registerId)
+                && Objects.equals(dataInfoId, dataPos.dataInfoId);
+    }
 
-  public String getRegisterId() {
-    return registerId;
-  }
+    @Override
+    public int hashCode() {
+        if (hash == 0) {
+            hash = Objects.hash(dataInfoId, registerId);
+        }
+        return hash;
+    }
+
+    public String getDataInfoId() {
+        return dataInfoId;
+    }
+
+    public String getRegisterId() {
+        return registerId;
+    }
 }

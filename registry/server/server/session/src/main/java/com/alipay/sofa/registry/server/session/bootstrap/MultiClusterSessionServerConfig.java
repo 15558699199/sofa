@@ -21,5 +21,5 @@ package com.alipay.sofa.registry.server.session.bootstrap;
  * @version : MultiClusterSessionServerConfig.java, v 0.1 2022年07月29日 15:31 xiaojian.xj Exp $
  */
 public interface MultiClusterSessionServerConfig {
-  long getMultiClusterConfigReloadSecs();
+    long getMultiClusterConfigReloadSecs();
 }

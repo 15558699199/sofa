@@ -8,7 +8,12 @@
 
 ## Overview
 
-SOFARPC is a high-performance, high-extensibility, production-level Java RPC framework. In Ant Financial, SOFARPC has been used for more than ten years and developing for five generations. SOFARPC is dedicated to simplify RPC calls between applications, and provide convenient, no code intrusion, stable, and efficient point-to-point remote service invocation solutions for applications. For user and developer easy to improve features, SOFARPC provides a wealth of model abstraction and extensible interfaces, including filter, routing, load balancing, and so on. At the same time, it provides a rich MicroService governance solution around the SOFARPC framework and its surrounding components.
+SOFARPC is a high-performance, high-extensibility, production-level Java RPC framework. In Ant Financial, SOFARPC has
+been used for more than ten years and developing for five generations. SOFARPC is dedicated to simplify RPC calls
+between applications, and provide convenient, no code intrusion, stable, and efficient point-to-point remote service
+invocation solutions for applications. For user and developer easy to improve features, SOFARPC provides a wealth of
+model abstraction and extensible interfaces, including filter, routing, load balancing, and so on. At the same time, it
+provides a rich MicroService governance solution around the SOFARPC framework and its surrounding components.
 
 ![SOFARPC Architecture](./resource/sofa-rpc-architecture.png)
 
@@ -24,14 +29,14 @@ SOFARPC is a high-performance, high-extensibility, production-level Java RPC fra
 
 ## Related Projects
 
-- [sofa-rpc-boot-project](https://github.com/sofastack/sofa-rpc-boot-projects) SOFABoot projects for SOFARPC, include starter and samples.
+- [sofa-rpc-boot-project](https://github.com/sofastack/sofa-rpc-boot-projects) SOFABoot projects for SOFARPC, include
+  starter and samples.
 
 ## Requirements
 
 Build-time requirement: JDK 8 or above and Maven 3.2.5 or above.
 
 Runtime requirement: JDK 8 or above.
-
 
 ## Documents
 
@@ -41,7 +46,7 @@ Runtime requirement: JDK 8 or above.
 - [Release Notes](https://www.sofastack.tech/sofa-rpc/docs/ReleaseNotes?lang=en)
 - [Road Map](https://www.sofastack.tech/sofa-rpc/docs/RoadMap?lang=en)
 
-## Contribution 
+## Contribution
 
 [How to Contributing](https://www.sofastack.tech/sofa-rpc/docs/Contributing?lang=en)
 
@@ -53,4 +58,6 @@ Runtime requirement: JDK 8 or above.
 
 ## License
 
-SOFARPC is licensed under the [Apache License 2.0](https://github.com/sofastack/sofa-rpc/blob/master/LICENSE), and SOFARPC uses some third-party components, you can view their open source license here [NOTICE](https://www.sofastack.tech/sofa-rpc/docs/NOTICE?lang=en).
+SOFARPC is licensed under the [Apache License 2.0](https://github.com/sofastack/sofa-rpc/blob/master/LICENSE), and
+SOFARPC uses some third-party components, you can view their open source license
+here [NOTICE](https://www.sofastack.tech/sofa-rpc/docs/NOTICE?lang=en).

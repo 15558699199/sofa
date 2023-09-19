@@ -17,7 +17,6 @@
 package com.alipay.sofa.rpc.auth;
 
 /**
- *
  * @author lepdou
  * @version $Id: AuthRuleItem.java, v 0.1 2019年04月11日 下午7:53 lepdou Exp $
  */

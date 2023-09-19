@@ -37,11 +37,11 @@ import org.springframework.core.PriorityOrdered;
  */
 @SingletonSofaPostProcessor
 public class ProxyBeanFactoryPostProcessor implements BeanDefinitionRegistryPostProcessor,
-                                          PriorityOrdered {
+        PriorityOrdered {
 
     @Override
     public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry)
-                                                                                  throws BeansException {
+            throws BeansException {
         boolean updateProxyBean = false;
         for (String beanName : registry.getBeanDefinitionNames()) {
             String transformedBeanName = BeanFactoryUtils.transformedBeanName(beanName);
@@ -50,20 +50,20 @@ public class ProxyBeanFactoryPostProcessor implements BeanDefinitionRegistryPost
                 if (ProxyFactoryBean.class.getName().equals(beanDefinition.getBeanClassName())) {
                     beanDefinition.setBeanClassName(SofaProxyFactoryBean.class.getName());
                     Object proxyInterfaces = beanDefinition.getPropertyValues().get(
-                        "proxyInterfaces");
+                            "proxyInterfaces");
                     if (proxyInterfaces == null) {
                         proxyInterfaces = beanDefinition.getPropertyValues().get("interfaces");
                     }
                     beanDefinition.getConstructorArgumentValues().addIndexedArgumentValue(0,
-                        proxyInterfaces);
+                            proxyInterfaces);
                     beanDefinition.getConstructorArgumentValues().addIndexedArgumentValue(1,
-                        beanDefinition.getPropertyValues().get("targetName"));
+                            beanDefinition.getPropertyValues().get("targetName"));
                     beanDefinition.getConstructorArgumentValues().addIndexedArgumentValue(2,
-                        beanDefinition.getPropertyValues().get("targetClass"));
+                            beanDefinition.getPropertyValues().get("targetClass"));
                     // must be true
                     if (registry instanceof ConfigurableListableBeanFactory) {
                         beanDefinition.getConstructorArgumentValues().addIndexedArgumentValue(3,
-                            registry);
+                                registry);
                     }
                     updateProxyBean = true;
                 }
@@ -77,7 +77,7 @@ public class ProxyBeanFactoryPostProcessor implements BeanDefinitionRegistryPost
 
     @Override
     public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory)
-                                                                                   throws BeansException {
+            throws BeansException {
 
     }
 

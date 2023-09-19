@@ -16,9 +16,6 @@
  */
 package com.alipay.sofa.registry.server.session.remoting.handler;
 
-import static org.mockito.Matchers.anyList;
-import static org.mockito.Mockito.*;
-
 import com.alipay.sofa.registry.common.model.Node;
 import com.alipay.sofa.registry.common.model.client.pb.MetaHeartbeatRequest;
 import com.alipay.sofa.registry.remoting.ChannelHandler;
@@ -28,36 +25,39 @@ import com.alipay.sofa.registry.server.session.strategy.AppRevisionHandlerStrate
 import org.junit.Assert;
 import org.junit.Test;
 
+import static org.mockito.Matchers.anyList;
+import static org.mockito.Mockito.*;
+
 public class MetaRevisionHeartbeatPbHandlerTest {
-  @Test
-  public void testCheckParam() {
-    MetaRevisionHeartbeatPbHandler handler = newHandler();
-    handler.checkParam(request());
-  }
+    private static MetaHeartbeatRequest request() {
+        MetaHeartbeatRequest.Builder builder = MetaHeartbeatRequest.newBuilder();
+        builder.addRevisions("testRevision");
+        return builder.build();
+    }
 
-  private MetaRevisionHeartbeatPbHandler newHandler() {
-    MetaRevisionHeartbeatPbHandler handler = new MetaRevisionHeartbeatPbHandler();
-    handler.executorManager = new ExecutorManager(TestUtils.newSessionConfig("testDc"));
-    Assert.assertNotNull(handler.getExecutor());
-    Assert.assertEquals(handler.interest(), MetaHeartbeatRequest.class);
-    Assert.assertEquals(handler.getConnectNodeType(), Node.NodeType.CLIENT);
-    Assert.assertEquals(handler.getType(), ChannelHandler.HandlerType.PROCESSER);
-    Assert.assertEquals(handler.getInvokeType(), ChannelHandler.InvokeType.SYNC);
-    handler.appRevisionHandlerStrategy = mock(AppRevisionHandlerStrategy.class);
-    return handler;
-  }
+    @Test
+    public void testCheckParam() {
+        MetaRevisionHeartbeatPbHandler handler = newHandler();
+        handler.checkParam(request());
+    }
 
-  @Test
-  public void testHandle() {
-    MetaRevisionHeartbeatPbHandler handler = newHandler();
+    private MetaRevisionHeartbeatPbHandler newHandler() {
+        MetaRevisionHeartbeatPbHandler handler = new MetaRevisionHeartbeatPbHandler();
+        handler.executorManager = new ExecutorManager(TestUtils.newSessionConfig("testDc"));
+        Assert.assertNotNull(handler.getExecutor());
+        Assert.assertEquals(handler.interest(), MetaHeartbeatRequest.class);
+        Assert.assertEquals(handler.getConnectNodeType(), Node.NodeType.CLIENT);
+        Assert.assertEquals(handler.getType(), ChannelHandler.HandlerType.PROCESSER);
+        Assert.assertEquals(handler.getInvokeType(), ChannelHandler.InvokeType.SYNC);
+        handler.appRevisionHandlerStrategy = mock(AppRevisionHandlerStrategy.class);
+        return handler;
+    }
 
-    handler.doHandle(null, request());
-    verify(handler.appRevisionHandlerStrategy, times(1)).heartbeat(anyList());
-  }
+    @Test
+    public void testHandle() {
+        MetaRevisionHeartbeatPbHandler handler = newHandler();
 
-  private static MetaHeartbeatRequest request() {
-    MetaHeartbeatRequest.Builder builder = MetaHeartbeatRequest.newBuilder();
-    builder.addRevisions("testRevision");
-    return builder.build();
-  }
+        handler.doHandle(null, request());
+        verify(handler.appRevisionHandlerStrategy, times(1)).heartbeat(anyList());
+    }
 }

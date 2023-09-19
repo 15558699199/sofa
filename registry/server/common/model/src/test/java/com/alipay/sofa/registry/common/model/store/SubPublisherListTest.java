@@ -24,19 +24,19 @@ import org.junit.Test;
 
 public class SubPublisherListTest {
 
-  @Test
-  public void test() {
-    SubPublisher pub =
-        new SubPublisher(
-            "registerId",
-            "cell",
-            Lists.newArrayList(new ServerDataBox(new byte[] {1, 2, 3})),
-            "clientId",
-            1,
-            "srcAddr",
-            1234,
-            PublishSource.CLIENT);
-    SubPublisherList l = new SubPublisherList(Lists.newArrayList(pub));
-    Assert.assertEquals(105, l.size());
-  }
+    @Test
+    public void test() {
+        SubPublisher pub =
+                new SubPublisher(
+                        "registerId",
+                        "cell",
+                        Lists.newArrayList(new ServerDataBox(new byte[]{1, 2, 3})),
+                        "clientId",
+                        1,
+                        "srcAddr",
+                        1234,
+                        PublishSource.CLIENT);
+        SubPublisherList l = new SubPublisherList(Lists.newArrayList(pub));
+        Assert.assertEquals(105, l.size());
+    }
 }

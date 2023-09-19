@@ -19,19 +19,19 @@ package com.alipay.sofa.registry.common.model.metaserver.cleaner;
 import java.io.Serializable;
 
 public class BaseSliceRequest implements Serializable {
-  private final int slotNum;
-  private final int slotId;
+    private final int slotNum;
+    private final int slotId;
 
-  public BaseSliceRequest(int slotNum, int slotId) {
-    this.slotNum = slotNum;
-    this.slotId = slotId;
-  }
+    public BaseSliceRequest(int slotNum, int slotId) {
+        this.slotNum = slotNum;
+        this.slotId = slotId;
+    }
 
-  public int getSlotNum() {
-    return slotNum;
-  }
+    public int getSlotNum() {
+        return slotNum;
+    }
 
-  public int getSlotId() {
-    return slotId;
-  }
+    public int getSlotId() {
+        return slotId;
+    }
 }

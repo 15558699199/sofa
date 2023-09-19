@@ -31,12 +31,12 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
 public class DataApplication {
 
-  private static final Logger CRITICAL_LOGGER = LoggerFactory.getLogger("CRITICAL-ERROR");
+    private static final Logger CRITICAL_LOGGER = LoggerFactory.getLogger("CRITICAL-ERROR");
 
-  public static void main(String[] args) {
-    // setup DefaultUncaughtExceptionHandler
-    Thread.setDefaultUncaughtExceptionHandler(
-        (t, e) -> CRITICAL_LOGGER.safeError("UncaughtException in Thread {}", t.getName(), e));
-    SpringApplication.run(DataApplication.class, args);
-  }
+    public static void main(String[] args) {
+        // setup DefaultUncaughtExceptionHandler
+        Thread.setDefaultUncaughtExceptionHandler(
+                (t, e) -> CRITICAL_LOGGER.safeError("UncaughtException in Thread {}", t.getName(), e));
+        SpringApplication.run(DataApplication.class, args);
+    }
 }

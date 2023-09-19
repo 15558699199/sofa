@@ -33,8 +33,8 @@ import org.springframework.context.annotation.Bean;
  * @author huzijie
  **/
 @AutoConfiguration(before = FeignAutoConfiguration.class)
-@ConditionalOnClass({ Client.class, FeignContextBeanPostProcessor.class,
-                     SofaTracerFeignClientFactory.class })
+@ConditionalOnClass({Client.class, FeignContextBeanPostProcessor.class,
+        SofaTracerFeignClientFactory.class})
 @ConditionalOnProperty(name = "sofa.boot.tracer.feign.enabled", havingValue = "true", matchIfMissing = true)
 public class FeignClientAutoConfiguration {
 

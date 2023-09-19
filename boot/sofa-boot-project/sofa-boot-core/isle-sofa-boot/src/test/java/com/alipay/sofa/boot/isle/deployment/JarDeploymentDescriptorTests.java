@@ -39,13 +39,13 @@ public class JarDeploymentDescriptorTests {
         URL url = new URL("jar:file://" + path + "!/");
         Properties properties = new Properties();
         DeploymentDescriptorConfiguration configuration = new DeploymentDescriptorConfiguration(
-            null, null);
+                null, null);
         ClassLoader classLoader = getClass().getClassLoader();
 
         // When
         DeploymentDescriptorFactory factory = new DeploymentDescriptorFactory();
         DeploymentDescriptor descriptor = factory.build(url, properties, configuration,
-            classLoader, "test-module.properties");
+                classLoader, "test-module.properties");
 
         // Then
         assertThat(descriptor.getSpringResources().size()).isEqualTo(1);

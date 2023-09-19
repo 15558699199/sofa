@@ -41,7 +41,7 @@ public class InvocationStatFactory {
     /**
      * Listeners of InvocationStat
      */
-    static final ConcurrentHashSet<InvocationStatListener>              LISTENERS = new ConcurrentHashSet<InvocationStatListener>();
+    static final ConcurrentHashSet<InvocationStatListener> LISTENERS = new ConcurrentHashSet<InvocationStatListener>();
 
     /**
      * 得到调用统计器
@@ -129,11 +129,29 @@ public class InvocationStatFactory {
     }
 
     /**
-     * Destroy 
+     * Destroy
      */
     public static void destroy() {
         ALL_STATS.clear();
         LISTENERS.clear();
+    }
+
+    /**
+     * Add InvocationStatListener implement
+     *
+     * @param listener InvocationStatListener
+     */
+    public static void addListener(InvocationStatListener listener) {
+        LISTENERS.add(listener);
+    }
+
+    /**
+     * Remove InvocationStatListener implement
+     *
+     * @param listener InvocationStatListener
+     */
+    public static void removeListener(InvocationStatListener listener) {
+        LISTENERS.remove(listener);
     }
 
     /**
@@ -154,23 +172,5 @@ public class InvocationStatFactory {
          * @param invocationStat InvocationStat
          */
         public void onRemoveInvocationStat(InvocationStat invocationStat);
-    }
-
-    /**
-     * Add InvocationStatListener implement
-     *
-     * @param listener InvocationStatListener
-     */
-    public static void addListener(InvocationStatListener listener) {
-        LISTENERS.add(listener);
-    }
-
-    /**
-     * Remove InvocationStatListener implement
-     *
-     * @param listener InvocationStatListener
-     */
-    public static void removeListener(InvocationStatListener listener) {
-        LISTENERS.remove(listener);
     }
 }

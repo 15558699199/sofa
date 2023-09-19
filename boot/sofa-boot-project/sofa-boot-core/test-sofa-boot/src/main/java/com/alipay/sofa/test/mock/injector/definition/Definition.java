@@ -29,23 +29,23 @@ import org.springframework.util.ObjectUtils;
  */
 public abstract class Definition {
 
-    private static final int          MULTIPLIER = 31;
+    private static final int MULTIPLIER = 31;
 
-    private final String              name;
+    private final String name;
 
-    private final ResolvableType      type;
+    private final ResolvableType type;
 
-    private final String              module;
+    private final String module;
 
-    private final String              field;
+    private final String field;
 
-    private final MockReset           reset;
+    private final MockReset reset;
 
     private final QualifierDefinition qualifier;
 
-    private final ResolvableType      mockType;
+    private final ResolvableType mockType;
 
-    protected Object                  mockInstance;
+    protected Object mockInstance;
 
     public Definition(ResolvableType mockType, String name, ResolvableType type, String module,
                       String field, MockReset reset, QualifierDefinition qualifier) {

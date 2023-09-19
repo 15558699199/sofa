@@ -22,7 +22,7 @@ package com.alipay.sofa.registry.jdbc.exception;
  */
 public class InterfaceAppQueryException extends RuntimeException {
 
-  public InterfaceAppQueryException(String service) {
-    super(String.format("query apps by service: %s error.", service));
-  }
+    public InterfaceAppQueryException(String service) {
+        super(String.format("query apps by service: %s error.", service));
+    }
 }

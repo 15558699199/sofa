@@ -19,32 +19,32 @@ package com.alipay.sofa.registry.concurrent;
 import java.io.ByteArrayOutputStream;
 
 public class ThreadLocalByteArrayOutputStream {
-  private static final int maxBufferSize = 1024 * 1024 * 16;
-  private static final int initSize = 1024 * 16;
-  private static final transient ThreadLocal<SizeBAOS> builder =
-      ThreadLocal.withInitial(() -> new SizeBAOS(initSize));
+    private static final int maxBufferSize = 1024 * 1024 * 16;
+    private static final int initSize = 1024 * 16;
+    private static final transient ThreadLocal<SizeBAOS> builder =
+            ThreadLocal.withInitial(() -> new SizeBAOS(initSize));
 
-  public static ByteArrayOutputStream get() {
-    SizeBAOS b = builder.get();
-    b.reset();
-    return b;
-  }
-
-  private static class SizeBAOS extends ByteArrayOutputStream {
-    public SizeBAOS(int size) {
-      super(size);
+    public static ByteArrayOutputStream get() {
+        SizeBAOS b = builder.get();
+        b.reset();
+        return b;
     }
 
-    public int size() {
-      return buf.length;
-    }
+    private static class SizeBAOS extends ByteArrayOutputStream {
+        public SizeBAOS(int size) {
+            super(size);
+        }
 
-    @Override
-    public synchronized void reset() {
-      if (size() > maxBufferSize) {
-        buf = new byte[initSize];
-      }
-      super.reset();
+        public int size() {
+            return buf.length;
+        }
+
+        @Override
+        public synchronized void reset() {
+            if (size() > maxBufferSize) {
+                buf = new byte[initSize];
+            }
+            super.reset();
+        }
     }
-  }
 }

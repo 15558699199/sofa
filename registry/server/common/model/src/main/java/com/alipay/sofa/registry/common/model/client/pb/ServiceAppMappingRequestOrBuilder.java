@@ -17,16 +17,27 @@
 package com.alipay.sofa.registry.common.model.client.pb;
 
 public interface ServiceAppMappingRequestOrBuilder
-    extends
-    // @@protoc_insertion_point(interface_extends:ServiceAppMappingRequest)
-    com.google.protobuf.MessageOrBuilder {
+        extends
+        // @@protoc_insertion_point(interface_extends:ServiceAppMappingRequest)
+        com.google.protobuf.MessageOrBuilder {
 
-  /** <code>repeated string serviceIds = 1;</code> */
-  java.util.List<java.lang.String> getServiceIdsList();
-  /** <code>repeated string serviceIds = 1;</code> */
-  int getServiceIdsCount();
-  /** <code>repeated string serviceIds = 1;</code> */
-  java.lang.String getServiceIds(int index);
-  /** <code>repeated string serviceIds = 1;</code> */
-  com.google.protobuf.ByteString getServiceIdsBytes(int index);
+    /**
+     * <code>repeated string serviceIds = 1;</code>
+     */
+    java.util.List<java.lang.String> getServiceIdsList();
+
+    /**
+     * <code>repeated string serviceIds = 1;</code>
+     */
+    int getServiceIdsCount();
+
+    /**
+     * <code>repeated string serviceIds = 1;</code>
+     */
+    java.lang.String getServiceIds(int index);
+
+    /**
+     * <code>repeated string serviceIds = 1;</code>
+     */
+    com.google.protobuf.ByteString getServiceIdsBytes(int index);
 }

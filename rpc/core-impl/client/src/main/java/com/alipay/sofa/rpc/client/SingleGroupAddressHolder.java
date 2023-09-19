@@ -37,20 +37,20 @@ public class SingleGroupAddressHolder extends AddressHolder {
     /**
      * 配置的直连地址列表
      */
-    protected ProviderGroup        directUrlGroup;
+    protected ProviderGroup directUrlGroup;
     /**
      * 注册中心来的地址列表
      */
-    protected ProviderGroup        registryGroup;
+    protected ProviderGroup registryGroup;
 
     /**
      * 地址变化的锁
      */
-    private ReentrantReadWriteLock lock  = new ReentrantReadWriteLock();
+    private ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
     // 读锁，允许并发读
-    private Lock                   rLock = lock.readLock();
+    private Lock rLock = lock.readLock();
     // 写锁，写的时候不允许读
-    private Lock                   wLock = lock.writeLock();
+    private Lock wLock = lock.writeLock();
 
     /**
      * 构造函数
@@ -79,7 +79,7 @@ public class SingleGroupAddressHolder extends AddressHolder {
         rLock.lock();
         try {
             return RpcConstants.ADDRESS_DIRECT_GROUP.equals(groupName) ? directUrlGroup
-                : registryGroup;
+                    : registryGroup;
         } finally {
             rLock.unlock();
         }
@@ -139,7 +139,7 @@ public class SingleGroupAddressHolder extends AddressHolder {
         wLock.lock();
         try {
             getProviderGroup(providerGroup.getName())
-                .setProviderInfos(new ArrayList<ProviderInfo>(providerGroup.getProviderInfos()));
+                    .setProviderInfos(new ArrayList<ProviderInfo>(providerGroup.getProviderInfos()));
         } finally {
             wLock.unlock();
         }

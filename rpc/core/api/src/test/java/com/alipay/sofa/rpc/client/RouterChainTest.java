@@ -31,11 +31,7 @@ import org.junit.Test;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -61,7 +57,7 @@ public class RouterChainTest {
 
         // build test data
         SofaRequest request = new SofaRequest();
-        request.setMethodArgs(new String[] { "xxx" });
+        request.setMethodArgs(new String[]{"xxx"});
         request.setInvokeType("sync");
         List<ProviderInfo> providerInfos = new ArrayList<ProviderInfo>();
         ProviderInfo providerInfo = new ProviderInfo();
@@ -71,7 +67,7 @@ public class RouterChainTest {
 
         chain.route(request, providerInfos);
         Assert.assertEquals("r0>r7>r2>r4",
-            RpcInternalContext.getContext().getAttachment(RpcConstants.INTERNAL_KEY_ROUTER_RECORD));
+                RpcInternalContext.getContext().getAttachment(RpcConstants.INTERNAL_KEY_ROUTER_RECORD));
     }
 
     @Test

@@ -36,7 +36,7 @@ import java.util.List;
 public class SofaBootNamespaceHandler extends NamespaceHandlerSupport {
 
     private static final Logger logger = SofaBootLoggerFactory
-                                           .getLogger(SofaBootNamespaceHandler.class);
+            .getLogger(SofaBootNamespaceHandler.class);
 
     @Override
     public void init() {
@@ -47,15 +47,15 @@ public class SofaBootNamespaceHandler extends NamespaceHandlerSupport {
     private void registerTagParser(SofaBootTagNameSupport tagNameSupport) {
         if (tagNameSupport instanceof BeanDefinitionParser) {
             registerBeanDefinitionParser(tagNameSupport.supportTagName(),
-                (BeanDefinitionParser) tagNameSupport);
+                    (BeanDefinitionParser) tagNameSupport);
         } else if (tagNameSupport instanceof BeanDefinitionDecorator) {
             registerBeanDefinitionDecoratorForAttribute(tagNameSupport.supportTagName(),
-                (BeanDefinitionDecorator) tagNameSupport);
+                    (BeanDefinitionDecorator) tagNameSupport);
         } else {
             logger
-                .error(
-                    "{} class supported [{}] parser are not instance of BeanDefinitionParser or BeanDefinitionDecorator",
-                    tagNameSupport.getClass().getName(), tagNameSupport.supportTagName());
+                    .error(
+                            "{} class supported [{}] parser are not instance of BeanDefinitionParser or BeanDefinitionDecorator",
+                            tagNameSupport.getClass().getName(), tagNameSupport.supportTagName());
         }
     }
 }

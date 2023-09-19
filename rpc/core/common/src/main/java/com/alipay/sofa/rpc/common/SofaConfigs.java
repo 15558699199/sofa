@@ -45,20 +45,20 @@ public final class SofaConfigs {
     /**
      * loader变化的锁
      */
-    private static ReentrantReadWriteLock           lock           = new ReentrantReadWriteLock();
+    private static ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
     /**
-     * 读锁，允许并发读 
+     * 读锁，允许并发读
      */
-    private static Lock                             rLock          = lock.readLock();
+    private static Lock rLock = lock.readLock();
     /**
-     * 写锁，写的时候不允许读 
+     * 写锁，写的时候不允许读
      */
-    private static Lock                             wLock          = lock.writeLock();
+    private static Lock wLock = lock.writeLock();
 
     /**
      * rpc-config.properties
      */
-    private static Properties                       config;
+    private static Properties config;
 
     /**
      * 初始化 config/rpc-config.properties
@@ -73,7 +73,7 @@ public final class SofaConfigs {
                 InputStream ins = SofaConfigs.class.getClassLoader().getResourceAsStream(rpcConfig);
                 if (ins == null) {
                     ins = Thread.currentThread().getContextClassLoader()
-                        .getResourceAsStream(rpcConfig);
+                            .getResourceAsStream(rpcConfig);
                 }
 
                 config = new Properties();
@@ -177,7 +177,7 @@ public final class SofaConfigs {
         try {
             for (ExternalConfigLoader configLoader : CONFIG_LOADERS) {
                 ret = appName == null ? configLoader.getValue(key)
-                    : configLoader.getValue(appName, key);
+                        : configLoader.getValue(appName, key);
                 if (StringUtils.isNotEmpty(ret)) {
                     return ret;
                 }

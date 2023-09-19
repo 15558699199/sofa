@@ -24,12 +24,13 @@ import com.alipay.sofa.registry.server.meta.multi.cluster.remote.RemoteClusterSl
 import com.alipay.sofa.registry.server.meta.resource.MultiClusterSyncResource;
 import com.alipay.sofa.registry.server.meta.resource.MultiDatumResource;
 import com.alipay.sofa.registry.server.shared.remoting.AbstractServerHandler;
-import java.util.ArrayList;
-import java.util.Collection;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * @author xiaojian.xj
@@ -39,49 +40,49 @@ import org.springframework.context.annotation.Configuration;
 @EnableConfigurationProperties
 public class MultiClusterMetaServerConfiguration {
 
-  @Configuration
-  public static class MultiClusterConfiguration {
+    @Configuration
+    public static class MultiClusterConfiguration {
 
-    @Bean
-    @ConditionalOnMissingBean
-    public MultiClusterMetaServerConfig multiClusterMetaServerConfig() {
-      return new MultiClusterMetaServerConfigBean();
+        @Bean
+        @ConditionalOnMissingBean
+        public MultiClusterMetaServerConfig multiClusterMetaServerConfig() {
+            return new MultiClusterMetaServerConfigBean();
+        }
+
+        @Bean
+        public DefaultMultiClusterSlotTableSyncer multiClusterSlotTableSyncer() {
+            return new DefaultMultiClusterSlotTableSyncer();
+        }
+
+        @Bean
+        public RemoteClusterMetaExchanger remoteClusterMetaExchanger() {
+            return new RemoteClusterMetaExchanger();
+        }
+
+        @Bean
+        public MultiClusterSyncResource multiClusterSyncResource() {
+            return new MultiClusterSyncResource();
+        }
+
+        @Bean
+        public MultiDatumResource multiDatumResource() {
+            return new MultiDatumResource();
+        }
     }
 
-    @Bean
-    public DefaultMultiClusterSlotTableSyncer multiClusterSlotTableSyncer() {
-      return new DefaultMultiClusterSlotTableSyncer();
-    }
+    @Configuration
+    public static class MultiClusterRemotingConfiguration {
 
-    @Bean
-    public RemoteClusterMetaExchanger remoteClusterMetaExchanger() {
-      return new RemoteClusterMetaExchanger();
-    }
+        @Bean(name = "remoteMetaServerHandlers")
+        public Collection<AbstractServerHandler> metaServerHandlers() {
+            Collection<AbstractServerHandler> list = new ArrayList<>();
+            list.add(remoteClusterSlotSyncHandler());
+            return list;
+        }
 
-    @Bean
-    public MultiClusterSyncResource multiClusterSyncResource() {
-      return new MultiClusterSyncResource();
+        @Bean
+        public RemoteClusterSlotSyncHandler remoteClusterSlotSyncHandler() {
+            return new RemoteClusterSlotSyncHandler();
+        }
     }
-
-    @Bean
-    public MultiDatumResource multiDatumResource() {
-      return new MultiDatumResource();
-    }
-  }
-
-  @Configuration
-  public static class MultiClusterRemotingConfiguration {
-
-    @Bean(name = "remoteMetaServerHandlers")
-    public Collection<AbstractServerHandler> metaServerHandlers() {
-      Collection<AbstractServerHandler> list = new ArrayList<>();
-      list.add(remoteClusterSlotSyncHandler());
-      return list;
-    }
-
-    @Bean
-    public RemoteClusterSlotSyncHandler remoteClusterSlotSyncHandler() {
-      return new RemoteClusterSlotSyncHandler();
-    }
-  }
 }

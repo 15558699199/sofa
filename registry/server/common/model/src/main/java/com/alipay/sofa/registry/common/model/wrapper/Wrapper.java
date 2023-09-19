@@ -24,7 +24,7 @@ import java.util.function.Supplier;
  */
 public interface Wrapper<T, R> {
 
-  R call();
+    R call();
 
-  Supplier<T> getParameterSupplier();
+    Supplier<T> getParameterSupplier();
 }

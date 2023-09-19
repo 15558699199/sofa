@@ -53,7 +53,7 @@ public class DefaultSofaModuleProfileCheckerTests {
         props.setProperty(DeploymentDescriptorConfiguration.MODULE_NAME, "com.alipay.dal");
         props.setProperty(DeploymentDescriptorConfiguration.MODULE_PROFILE, "dev");
         assertThat(sofaModuleProfileChecker.acceptModule(SampleDeploymentDescriptor.create(props)))
-            .isTrue();
+                .isTrue();
     }
 
     @Test
@@ -63,7 +63,7 @@ public class DefaultSofaModuleProfileCheckerTests {
         props.setProperty(DeploymentDescriptorConfiguration.MODULE_NAME, "com.alipay.dal");
         props.setProperty(DeploymentDescriptorConfiguration.MODULE_PROFILE, "product");
         assertThat(sofaModuleProfileChecker.acceptModule(SampleDeploymentDescriptor.create(props)))
-            .isTrue();
+                .isTrue();
     }
 
     @Test
@@ -73,11 +73,11 @@ public class DefaultSofaModuleProfileCheckerTests {
         props.setProperty(DeploymentDescriptorConfiguration.MODULE_NAME, "com.alipay.dal");
         props.setProperty(DeploymentDescriptorConfiguration.MODULE_PROFILE, "!dev");
         assertThat(sofaModuleProfileChecker.acceptModule(SampleDeploymentDescriptor.create(props)))
-            .isFalse();
+                .isFalse();
 
         props.setProperty(DeploymentDescriptorConfiguration.MODULE_PROFILE, "!test");
         assertThat(sofaModuleProfileChecker.acceptModule(SampleDeploymentDescriptor.create(props)))
-            .isTrue();
+                .isTrue();
     }
 
     @Test
@@ -87,7 +87,7 @@ public class DefaultSofaModuleProfileCheckerTests {
         props.setProperty(DeploymentDescriptorConfiguration.MODULE_NAME, "com.alipay.dal");
         props.setProperty(DeploymentDescriptorConfiguration.MODULE_PROFILE, "dev,grey");
         assertThat(sofaModuleProfileChecker.acceptModule(SampleDeploymentDescriptor.create(props)))
-            .isTrue();
+                .isTrue();
     }
 
     @Test
@@ -97,7 +97,7 @@ public class DefaultSofaModuleProfileCheckerTests {
         props.setProperty(DeploymentDescriptorConfiguration.MODULE_NAME, "com.alipay.dal");
         props.setProperty(DeploymentDescriptorConfiguration.MODULE_PROFILE, "test,grey");
         assertThat(sofaModuleProfileChecker.acceptModule(SampleDeploymentDescriptor.create(props)))
-            .isFalse();
+                .isFalse();
     }
 
     @Test
@@ -106,7 +106,7 @@ public class DefaultSofaModuleProfileCheckerTests {
         Properties props = new Properties();
         props.setProperty(DeploymentDescriptorConfiguration.MODULE_NAME, "com.alipay.dal");
         assertThat(sofaModuleProfileChecker.acceptModule(SampleDeploymentDescriptor.create(props)))
-            .isTrue();
+                .isTrue();
     }
 
     @Test

@@ -16,14 +16,6 @@
  */
 package com.alipay.sofa.registry.server.data.multi.cluster.dataserver.handler;
 
-import static com.alipay.sofa.registry.server.data.TestBaseUtils.randPublishers;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import com.alipay.sofa.registry.common.model.GenericResponse;
 import com.alipay.sofa.registry.common.model.PublisherDigestUtil;
 import com.alipay.sofa.registry.common.model.PublisherUtils;
@@ -39,8 +31,6 @@ import com.alipay.sofa.registry.server.data.bootstrap.DataServerConfig;
 import com.alipay.sofa.registry.server.data.cache.DatumStorageDelegate;
 import com.alipay.sofa.registry.server.data.slot.SlotManager;
 import com.google.common.collect.Maps;
-import java.util.Collections;
-import java.util.Map;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -48,73 +38,79 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.util.Collections;
+import java.util.Map;
+
+import static com.alipay.sofa.registry.server.data.TestBaseUtils.randPublishers;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
+
 /**
  * @author xiaojian.xj
  * @version : MultiClusterSlotDiffDigestRequestHandlerTest.java, v 0.1 2023年02月08日 16:39 xiaojian.xj
- *     Exp $
+ * Exp $
  */
 @RunWith(MockitoJUnitRunner.class)
 public class MultiClusterSlotDiffDigestRequestHandlerTest {
 
-  private static final String DC = "DC";
-  private static final SyncSlotAcceptorManager ACCEPT_ALL = request -> true;
+    private static final String DC = "DC";
+    private static final SyncSlotAcceptorManager ACCEPT_ALL = request -> true;
+    @Mock
+    protected SlotManager slotManager;
+    @Mock
+    protected DataServerConfig dataServerConfig;
+    @InjectMocks
+    private MultiClusterSlotDiffDigestRequestHandler multiClusterSlotDiffDigestRequestHandler;
+    @Mock
+    private DatumStorageDelegate datumStorageDelegate;
 
-  @InjectMocks
-  private MultiClusterSlotDiffDigestRequestHandler multiClusterSlotDiffDigestRequestHandler;
+    private static DataSlotDiffDigestRequest request(
+            int slotId, Map<String, DatumDigest> datumDigest) {
+        return new DataSlotDiffDigestRequest(DC, 1, slotId, 1, datumDigest, ACCEPT_ALL);
+    }
 
-  @Mock protected SlotManager slotManager;
+    @Test
+    public void testHandle() {
+        DataSlotDiffDigestRequest request = request(1, Collections.emptyMap());
 
-  @Mock protected DataServerConfig dataServerConfig;
+        // not slot leader
+        when(slotManager.isLeader(anyString(), anyInt())).thenReturn(false);
+        GenericResponse response =
+                (GenericResponse) multiClusterSlotDiffDigestRequestHandler.doHandle(null, request);
+        Assert.assertFalse(response.isSuccess());
+        verify(slotManager, times(0)).triggerUpdateSlotTable(anyLong());
+        verify(slotManager, times(0)).checkSlotAccess(anyString(), anyInt(), anyLong(), anyLong());
 
-  @Mock private DatumStorageDelegate datumStorageDelegate;
+        // slot leader but Migrating
+        when(slotManager.isLeader(anyString(), anyInt())).thenReturn(true);
+        when(slotManager.checkSlotAccess(anyString(), anyInt(), anyLong(), anyLong()))
+                .thenReturn(
+                        new SlotAccess(
+                                1, System.currentTimeMillis(), Status.Migrating, System.currentTimeMillis()));
+        response = (GenericResponse) multiClusterSlotDiffDigestRequestHandler.doHandle(null, request);
+        Assert.assertFalse(response.isSuccess());
+        verify(slotManager, times(0)).triggerUpdateSlotTable(anyLong());
+        verify(slotManager, times(1)).checkSlotAccess(anyString(), anyInt(), anyLong(), anyLong());
 
-  private static DataSlotDiffDigestRequest request(
-      int slotId, Map<String, DatumDigest> datumDigest) {
-    return new DataSlotDiffDigestRequest(DC, 1, slotId, 1, datumDigest, ACCEPT_ALL);
-  }
+        // slot leader and accept
+        when(slotManager.checkSlotAccess(anyString(), anyInt(), anyLong(), anyLong()))
+                .thenReturn(
+                        new SlotAccess(
+                                1, System.currentTimeMillis(), Status.Accept, System.currentTimeMillis()));
+        Map<String, Integer> m = Maps.newHashMap();
+        m.put("a", 100);
+        m.put("b", 200);
+        Map<String, Map<String, Publisher>> publishers = randPublishers(m);
+        Map<String, DatumSummary> summaryMap = PublisherUtils.getDatumSummary(publishers, ACCEPT_ALL);
+        Map<String, DatumDigest> digestMap = PublisherDigestUtil.digest(summaryMap);
+        when(datumStorageDelegate.getPublishers(anyString(), anyInt())).thenReturn(publishers);
 
-  @Test
-  public void testHandle() {
-    DataSlotDiffDigestRequest request = request(1, Collections.emptyMap());
-
-    // not slot leader
-    when(slotManager.isLeader(anyString(), anyInt())).thenReturn(false);
-    GenericResponse response =
-        (GenericResponse) multiClusterSlotDiffDigestRequestHandler.doHandle(null, request);
-    Assert.assertFalse(response.isSuccess());
-    verify(slotManager, times(0)).triggerUpdateSlotTable(anyLong());
-    verify(slotManager, times(0)).checkSlotAccess(anyString(), anyInt(), anyLong(), anyLong());
-
-    // slot leader but Migrating
-    when(slotManager.isLeader(anyString(), anyInt())).thenReturn(true);
-    when(slotManager.checkSlotAccess(anyString(), anyInt(), anyLong(), anyLong()))
-        .thenReturn(
-            new SlotAccess(
-                1, System.currentTimeMillis(), Status.Migrating, System.currentTimeMillis()));
-    response = (GenericResponse) multiClusterSlotDiffDigestRequestHandler.doHandle(null, request);
-    Assert.assertFalse(response.isSuccess());
-    verify(slotManager, times(0)).triggerUpdateSlotTable(anyLong());
-    verify(slotManager, times(1)).checkSlotAccess(anyString(), anyInt(), anyLong(), anyLong());
-
-    // slot leader and accept
-    when(slotManager.checkSlotAccess(anyString(), anyInt(), anyLong(), anyLong()))
-        .thenReturn(
-            new SlotAccess(
-                1, System.currentTimeMillis(), Status.Accept, System.currentTimeMillis()));
-    Map<String, Integer> m = Maps.newHashMap();
-    m.put("a", 100);
-    m.put("b", 200);
-    Map<String, Map<String, Publisher>> publishers = randPublishers(m);
-    Map<String, DatumSummary> summaryMap = PublisherUtils.getDatumSummary(publishers, ACCEPT_ALL);
-    Map<String, DatumDigest> digestMap = PublisherDigestUtil.digest(summaryMap);
-    when(datumStorageDelegate.getPublishers(anyString(), anyInt())).thenReturn(publishers);
-
-    request = request(1, digestMap);
-    response = (GenericResponse) multiClusterSlotDiffDigestRequestHandler.doHandle(null, request);
-    Assert.assertTrue(response.isSuccess());
-    DataSlotDiffDigestResult result = (DataSlotDiffDigestResult) response.getData();
-    Assert.assertTrue(result.getAddedDataInfoIds().isEmpty());
-    Assert.assertTrue(result.getRemovedDataInfoIds().isEmpty());
-    verify(slotManager, times(3)).checkSlotAccess(anyString(), anyInt(), anyLong(), anyLong());
-  }
+        request = request(1, digestMap);
+        response = (GenericResponse) multiClusterSlotDiffDigestRequestHandler.doHandle(null, request);
+        Assert.assertTrue(response.isSuccess());
+        DataSlotDiffDigestResult result = (DataSlotDiffDigestResult) response.getData();
+        Assert.assertTrue(result.getAddedDataInfoIds().isEmpty());
+        Assert.assertTrue(result.getRemovedDataInfoIds().isEmpty());
+        verify(slotManager, times(3)).checkSlotAccess(anyString(), anyInt(), anyLong(), anyLong());
+    }
 }

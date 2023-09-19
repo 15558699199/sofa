@@ -16,11 +16,7 @@
  */
 package com.alipay.sofa.boot.actuator.autoconfigure.health;
 
-import com.alipay.sofa.boot.actuator.health.HealthCheckerProcessor;
-import com.alipay.sofa.boot.actuator.health.HealthIndicatorProcessor;
-import com.alipay.sofa.boot.actuator.health.ReadinessCheckCallbackProcessor;
-import com.alipay.sofa.boot.actuator.health.ReadinessCheckListener;
-import com.alipay.sofa.boot.actuator.health.ReadinessEndpoint;
+import com.alipay.sofa.boot.actuator.health.*;
 import com.alipay.sofa.boot.constant.SofaBootConstants;
 import com.alipay.sofa.boot.log.SofaBootLoggerFactory;
 import com.alipay.sofa.common.thread.NamedThreadFactory;
@@ -50,7 +46,7 @@ import java.util.concurrent.TimeUnit;
 public class ReadinessAutoConfiguration {
 
     private static final Logger LOGGER = SofaBootLoggerFactory
-                                           .getLogger(ReadinessAutoConfiguration.class);
+            .getLogger(ReadinessAutoConfiguration.class);
 
     @Bean
     @ConditionalOnMissingBean(value = ReadinessCheckListener.class)
@@ -60,15 +56,15 @@ public class ReadinessAutoConfiguration {
                                                          ThreadPoolExecutor readinessHealthCheckExecutor,
                                                          HealthProperties healthCheckProperties) {
         ReadinessCheckListener readinessCheckListener = new ReadinessCheckListener(
-            healthCheckerProcessor, healthIndicatorProcessor, afterReadinessCheckCallbackProcessor);
+                healthCheckerProcessor, healthIndicatorProcessor, afterReadinessCheckCallbackProcessor);
         readinessCheckListener.setManualReadinessCallback(healthCheckProperties
-            .isManualReadinessCallback());
+                .isManualReadinessCallback());
         readinessCheckListener.setThrowExceptionWhenHealthCheckFailed(healthCheckProperties
-            .isInsulator());
+                .isInsulator());
         readinessCheckListener.setSkipAll(healthCheckProperties.isSkipAll());
         readinessCheckListener.setSkipHealthChecker(healthCheckProperties.isSkipHealthChecker());
         readinessCheckListener
-            .setSkipHealthIndicator(healthCheckProperties.isSkipHealthIndicator());
+                .setSkipHealthIndicator(healthCheckProperties.isSkipHealthIndicator());
         readinessCheckListener.setHealthCheckExecutor(readinessHealthCheckExecutor);
         return readinessCheckListener;
     }
@@ -81,11 +77,11 @@ public class ReadinessAutoConfiguration {
         healthCheckerProcessor.setHealthCheckExecutor(readinessHealthCheckExecutor);
         healthCheckerProcessor.setParallelCheck(healthCheckProperties.isParallelCheck());
         healthCheckerProcessor.setParallelCheckTimeout(healthCheckProperties
-            .getParallelCheckTimeout());
+                .getParallelCheckTimeout());
         healthCheckerProcessor.setGlobalTimeout(healthCheckProperties
-            .getGlobalHealthCheckerTimeout());
+                .getGlobalHealthCheckerTimeout());
         healthCheckerProcessor.setHealthCheckerConfigs(healthCheckProperties
-            .getHealthCheckerConfig());
+                .getHealthCheckerConfig());
         return healthCheckerProcessor;
     }
 
@@ -96,14 +92,14 @@ public class ReadinessAutoConfiguration {
         HealthIndicatorProcessor healthIndicatorProcessor = new HealthIndicatorProcessor();
         healthIndicatorProcessor.setHealthCheckExecutor(readinessHealthCheckExecutor);
         healthIndicatorProcessor.initExcludedIndicators(healthCheckProperties
-            .getExcludedIndicators());
+                .getExcludedIndicators());
         healthIndicatorProcessor.setParallelCheck(healthCheckProperties.isParallelCheck());
         healthIndicatorProcessor.setParallelCheckTimeout(healthCheckProperties
-            .getParallelCheckTimeout());
+                .getParallelCheckTimeout());
         healthIndicatorProcessor.setGlobalTimeout(healthCheckProperties
-            .getGlobalHealthIndicatorTimeout());
+                .getGlobalHealthIndicatorTimeout());
         healthIndicatorProcessor.setHealthIndicatorConfig(healthCheckProperties
-            .getHealthIndicatorConfig());
+                .getHealthIndicatorConfig());
         return healthIndicatorProcessor;
     }
 
@@ -123,10 +119,10 @@ public class ReadinessAutoConfiguration {
             threadPoolSize = 1;
         }
         LOGGER.info("Create health-check thread pool, corePoolSize: {}, maxPoolSize: {}.",
-            threadPoolSize, threadPoolSize);
+                threadPoolSize, threadPoolSize);
         return new SofaThreadPoolExecutor(threadPoolSize, threadPoolSize, 30, TimeUnit.SECONDS,
-            new SynchronousQueue<>(), new NamedThreadFactory("health-check"),
-            new ThreadPoolExecutor.CallerRunsPolicy(), "health-check",
-            SofaBootConstants.SOFA_BOOT_SPACE_NAME);
+                new SynchronousQueue<>(), new NamedThreadFactory("health-check"),
+                new ThreadPoolExecutor.CallerRunsPolicy(), "health-check",
+                SofaBootConstants.SOFA_BOOT_SPACE_NAME);
     }
 }

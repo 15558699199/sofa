@@ -19,18 +19,7 @@ package com.alipay.sofa.rpc.registry.mesh;
 import com.alipay.sofa.rpc.common.json.JSON;
 import com.alipay.sofa.rpc.registry.mesh.client.MeshApiClient;
 import com.alipay.sofa.rpc.registry.mesh.mock.HttpMockServer;
-import com.alipay.sofa.rpc.registry.mesh.model.ApplicationInfoRequest;
-import com.alipay.sofa.rpc.registry.mesh.model.ApplicationInfoResult;
-import com.alipay.sofa.rpc.registry.mesh.model.MeshEndpoint;
-import com.alipay.sofa.rpc.registry.mesh.model.ProviderMetaInfo;
-import com.alipay.sofa.rpc.registry.mesh.model.PublishServiceRequest;
-import com.alipay.sofa.rpc.registry.mesh.model.PublishServiceResult;
-import com.alipay.sofa.rpc.registry.mesh.model.SubscribeServiceRequest;
-import com.alipay.sofa.rpc.registry.mesh.model.SubscribeServiceResult;
-import com.alipay.sofa.rpc.registry.mesh.model.UnPublishServiceRequest;
-import com.alipay.sofa.rpc.registry.mesh.model.UnPublishServiceResult;
-import com.alipay.sofa.rpc.registry.mesh.model.UnSubscribeServiceRequest;
-import com.alipay.sofa.rpc.registry.mesh.model.UnSubscribeServiceResult;
+import com.alipay.sofa.rpc.registry.mesh.model.*;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -41,7 +30,7 @@ import org.junit.Test;
  */
 public class MeshApiClientTest extends BaseMeshTest {
 
-    private MeshApiClient  meshApiClient;
+    private MeshApiClient meshApiClient;
 
     private HttpMockServer httpMockServer;
 

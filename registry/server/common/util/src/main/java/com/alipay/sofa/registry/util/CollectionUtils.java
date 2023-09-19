@@ -29,48 +29,49 @@ import java.util.concurrent.ThreadLocalRandom;
  * @version $Id : CollectionUtils.java, v 0.1 2018-04-12 14:54 zhuoyu.sjw Exp $$
  */
 public final class CollectionUtils {
-  private CollectionUtils() {}
-
-  /**
-   * Gets random.
-   *
-   * @param <E> the type parameter
-   * @param e the e
-   * @return the random
-   */
-  public static <E> E getRandom(List<E> e) {
-    if (e.isEmpty()) {
-      return null;
+    private CollectionUtils() {
     }
-    int idx = ThreadLocalRandom.current().nextInt(e.size());
-    return e.get(idx);
-  }
 
-  public static <K, V> Map<K, V> toSingletonMap(Map<K, V> m) {
-    if (m.size() != 1) {
-      return m;
+    /**
+     * Gets random.
+     *
+     * @param <E> the type parameter
+     * @param e   the e
+     * @return the random
+     */
+    public static <E> E getRandom(List<E> e) {
+        if (e.isEmpty()) {
+            return null;
+        }
+        int idx = ThreadLocalRandom.current().nextInt(e.size());
+        return e.get(idx);
     }
-    Map.Entry<K, V> one = m.entrySet().iterator().next();
-    return Collections.singletonMap(one.getKey(), one.getValue());
-  }
 
-  public static <T> int fuzzyTotalSize(Collection<T> items, SizeGetter<T> sizeGetter) {
-    if (org.springframework.util.CollectionUtils.isEmpty(items)) {
-      return 0;
+    public static <K, V> Map<K, V> toSingletonMap(Map<K, V> m) {
+        if (m.size() != 1) {
+            return m;
+        }
+        Map.Entry<K, V> one = m.entrySet().iterator().next();
+        return Collections.singletonMap(one.getKey(), one.getValue());
     }
-    int maxPerSize = 0;
-    int samples = 3;
-    for (T item : items) {
-      maxPerSize = Math.max(sizeGetter.getSize(item), maxPerSize);
-      samples--;
-      if (samples <= 0) {
-        break;
-      }
-    }
-    return maxPerSize * items.size();
-  }
 
-  public interface SizeGetter<T> {
-    int getSize(T t);
-  }
+    public static <T> int fuzzyTotalSize(Collection<T> items, SizeGetter<T> sizeGetter) {
+        if (org.springframework.util.CollectionUtils.isEmpty(items)) {
+            return 0;
+        }
+        int maxPerSize = 0;
+        int samples = 3;
+        for (T item : items) {
+            maxPerSize = Math.max(sizeGetter.getSize(item), maxPerSize);
+            samples--;
+            if (samples <= 0) {
+                break;
+            }
+        }
+        return maxPerSize * items.size();
+    }
+
+    public interface SizeGetter<T> {
+        int getSize(T t);
+    }
 }

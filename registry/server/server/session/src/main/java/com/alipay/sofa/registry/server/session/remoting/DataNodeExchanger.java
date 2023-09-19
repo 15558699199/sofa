@@ -27,10 +27,11 @@ import com.alipay.sofa.registry.remoting.exchange.message.Request;
 import com.alipay.sofa.registry.remoting.exchange.message.Response;
 import com.alipay.sofa.registry.server.session.bootstrap.SessionServerConfig;
 import com.alipay.sofa.registry.server.shared.remoting.ClientSideExchanger;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * The type Data node exchanger.
@@ -40,57 +41,60 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class DataNodeExchanger extends ClientSideExchanger {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(DataNodeExchanger.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DataNodeExchanger.class);
 
-  @Autowired private SessionServerConfig sessionServerConfig;
+    @Autowired
+    private SessionServerConfig sessionServerConfig;
 
-  public DataNodeExchanger() {
-    super(Exchange.DATA_SERVER_TYPE);
-  }
-
-  /** @see DataNodeExchanger#request(Request) */
-  @Override
-  public Response request(Request request) throws RequestException {
-    URL url = request.getRequestUrl();
-    try {
-      return super.request(request);
-    } catch (RequestException e) {
-      LOGGER.error(
-          "Error when request DataNode! Request url={}, request={}",
-          url,
-          request.getRequestBody(),
-          e);
-      throw e;
+    public DataNodeExchanger() {
+        super(Exchange.DATA_SERVER_TYPE);
     }
-  }
 
-  @Override
-  public Client connectServer() {
-    Set<String> ips = serverIps;
-    int count = tryConnectAllServer(ips);
-    if (count != ips.size()) {
-      throw new RuntimeException("failed to connect all dataServers: " + ips);
+    /**
+     * @see DataNodeExchanger#request(Request)
+     */
+    @Override
+    public Response request(Request request) throws RequestException {
+        URL url = request.getRequestUrl();
+        try {
+            return super.request(request);
+        } catch (RequestException e) {
+            LOGGER.error(
+                    "Error when request DataNode! Request url={}, request={}",
+                    url,
+                    request.getRequestBody(),
+                    e);
+            throw e;
+        }
     }
-    return getClient();
-  }
 
-  @Override
-  protected Collection<ChannelHandler> getClientHandlers() {
-    return Collections.emptyList();
-  }
+    @Override
+    public Client connectServer() {
+        Set<String> ips = serverIps;
+        int count = tryConnectAllServer(ips);
+        if (count != ips.size()) {
+            throw new RuntimeException("failed to connect all dataServers: " + ips);
+        }
+        return getClient();
+    }
 
-  @Override
-  public int getRpcTimeoutMillis() {
-    return sessionServerConfig.getDataNodeExchangeTimeoutMillis();
-  }
+    @Override
+    protected Collection<ChannelHandler> getClientHandlers() {
+        return Collections.emptyList();
+    }
 
-  @Override
-  public int getServerPort() {
-    return sessionServerConfig.getDataServerPort();
-  }
+    @Override
+    public int getRpcTimeoutMillis() {
+        return sessionServerConfig.getDataNodeExchangeTimeoutMillis();
+    }
 
-  @Override
-  public int getConnNum() {
-    return sessionServerConfig.getDataClientConnNum();
-  }
+    @Override
+    public int getServerPort() {
+        return sessionServerConfig.getDataServerPort();
+    }
+
+    @Override
+    public int getConnNum() {
+        return sessionServerConfig.getDataClientConnNum();
+    }
 }

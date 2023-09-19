@@ -21,10 +21,10 @@ import org.junit.Test;
 
 public class EventTypeConstantsTest {
 
-  @Test
-  public void test() {
-    Assert.assertEquals('R', EventTypeConstants.getEventTypeFlag(EventTypeConstants.REGISTER));
-    Assert.assertEquals('U', EventTypeConstants.getEventTypeFlag(EventTypeConstants.UNREGISTER));
-    Assert.assertEquals('N', EventTypeConstants.getEventTypeFlag("xxx"));
-  }
+    @Test
+    public void test() {
+        Assert.assertEquals('R', EventTypeConstants.getEventTypeFlag(EventTypeConstants.REGISTER));
+        Assert.assertEquals('U', EventTypeConstants.getEventTypeFlag(EventTypeConstants.UNREGISTER));
+        Assert.assertEquals('N', EventTypeConstants.getEventTypeFlag("xxx"));
+    }
 }

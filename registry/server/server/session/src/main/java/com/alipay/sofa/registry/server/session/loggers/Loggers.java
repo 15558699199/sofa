@@ -20,9 +20,9 @@ import com.alipay.sofa.registry.log.Logger;
 import com.alipay.sofa.registry.log.LoggerFactory;
 
 public final class Loggers {
-  private Loggers() {}
-
-  public static final Logger CLIENT_DISABLE_LOG = LoggerFactory.getLogger("CLIENT-DISABLE");
-  public static final Logger CLIENT_OFF_LOG = LoggerFactory.getLogger("CLIENT-OFF");
-  public static final Logger BLACK_LIST_LOG = LoggerFactory.getLogger("BLACK-LIST");
+    public static final Logger CLIENT_DISABLE_LOG = LoggerFactory.getLogger("CLIENT-DISABLE");
+    public static final Logger CLIENT_OFF_LOG = LoggerFactory.getLogger("CLIENT-OFF");
+    public static final Logger BLACK_LIST_LOG = LoggerFactory.getLogger("BLACK-LIST");
+    private Loggers() {
+    }
 }

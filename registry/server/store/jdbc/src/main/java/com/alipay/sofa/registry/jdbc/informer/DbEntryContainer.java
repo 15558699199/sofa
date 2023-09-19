@@ -19,5 +19,5 @@ package com.alipay.sofa.registry.jdbc.informer;
 import com.alipay.sofa.registry.store.api.meta.DbEntry;
 
 public interface DbEntryContainer<T extends DbEntry> {
-  void onEntry(T entry);
+    void onEntry(T entry);
 }

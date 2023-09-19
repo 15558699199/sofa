@@ -16,10 +16,10 @@
  */
 /**
  * Adaptive Fault Tolerance
- *
+ * <p>
  * Collection Data
- *     --> Build Measure Model
- *     --> Do Measure (Get Result)
- *     --> Regulate measure result to do degrade or recover
+ * --> Build Measure Model
+ * --> Do Measure (Get Result)
+ * --> Regulate measure result to do degrade or recover
  */
 package com.alipay.sofa.rpc.client.aft;

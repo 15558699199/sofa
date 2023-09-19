@@ -19,19 +19,20 @@ package com.alipay.sofa.registry.server.shared.util;
 import com.alipay.sofa.registry.common.model.metaserver.nodes.SessionNode;
 import com.alipay.sofa.registry.common.model.store.URL;
 import com.google.common.collect.Lists;
-import java.util.Collections;
-import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.Collections;
+import java.util.List;
+
 public class NodeUtilsTest {
-  @Test
-  public void test() {
-    Assert.assertTrue(NodeUtils.transferNodeToIpList(Collections.EMPTY_LIST).isEmpty());
-    SessionNode node1 = new SessionNode(new URL("xx", 12), "test", null);
-    SessionNode node2 = new SessionNode(new URL("xyz", 34), "test", null);
-    List<String> list = NodeUtils.transferNodeToIpList(Lists.newArrayList(node1, node2));
-    Assert.assertEquals(list.get(0), "xx");
-    Assert.assertEquals(list.get(1), "xyz");
-  }
+    @Test
+    public void test() {
+        Assert.assertTrue(NodeUtils.transferNodeToIpList(Collections.EMPTY_LIST).isEmpty());
+        SessionNode node1 = new SessionNode(new URL("xx", 12), "test", null);
+        SessionNode node2 = new SessionNode(new URL("xyz", 34), "test", null);
+        List<String> list = NodeUtils.transferNodeToIpList(Lists.newArrayList(node1, node2));
+        Assert.assertEquals(list.get(0), "xx");
+        Assert.assertEquals(list.get(1), "xyz");
+    }
 }

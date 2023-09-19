@@ -38,8 +38,8 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @version SofaHttpCodeStatusMapperTests.java, v 0.1 2023年03月14日 5:53 PM huzijie Exp $
  */
 @SpringBootTest(classes = ActuatorSofaBootApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = {
-                                                                                                                                       "management.endpoints.web.exposure.include=readiness",
-                                                                                                                                       "sofa.boot.actuator.health.status.http-mapping.down=510" })
+        "management.endpoints.web.exposure.include=readiness",
+        "sofa.boot.actuator.health.status.http-mapping.down=510"})
 @Import(ReadienssHttpCodeStatusMapperTests.ErrorHealthChecker.class)
 public class ReadienssHttpCodeStatusMapperTests {
 
@@ -49,8 +49,8 @@ public class ReadienssHttpCodeStatusMapperTests {
     @Test
     public void health() {
         ResponseEntity<ReadienssHttpCodeStatusMapperTests.HealthResponse> response = restTemplate
-            .getForEntity("/actuator/readiness",
-                ReadienssHttpCodeStatusMapperTests.HealthResponse.class);
+                .getForEntity("/actuator/readiness",
+                        ReadienssHttpCodeStatusMapperTests.HealthResponse.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_EXTENDED);
         ReadienssHttpCodeStatusMapperTests.HealthResponse health = response.getBody();
         assertThat(health).isNotNull();
@@ -72,7 +72,7 @@ public class ReadienssHttpCodeStatusMapperTests {
 
     private static class HealthResponse {
 
-        private String              status;
+        private String status;
 
         private Map<String, Object> details;
 

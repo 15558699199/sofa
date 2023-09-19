@@ -25,29 +25,29 @@ import com.alipay.sofa.registry.core.model.SyncConfigRequest;
  */
 public class SyncConfigRequestConvertor {
 
-  public static SyncConfigRequest convert2Java(SyncConfigRequestPb syncConfigRequestPb) {
+    public static SyncConfigRequest convert2Java(SyncConfigRequestPb syncConfigRequestPb) {
 
-    if (syncConfigRequestPb == null) {
-      return null;
+        if (syncConfigRequestPb == null) {
+            return null;
+        }
+
+        SyncConfigRequest syncConfigRequest = new SyncConfigRequest();
+        syncConfigRequest.setZone(syncConfigRequestPb.getZone());
+        syncConfigRequest.setDataCenter(syncConfigRequestPb.getDataCenter());
+
+        return syncConfigRequest;
     }
 
-    SyncConfigRequest syncConfigRequest = new SyncConfigRequest();
-    syncConfigRequest.setZone(syncConfigRequestPb.getZone());
-    syncConfigRequest.setDataCenter(syncConfigRequestPb.getDataCenter());
+    public static SyncConfigRequestPb convert2Pb(SyncConfigRequest syncConfigRequestJava) {
 
-    return syncConfigRequest;
-  }
+        if (syncConfigRequestJava == null) {
+            return null;
+        }
 
-  public static SyncConfigRequestPb convert2Pb(SyncConfigRequest syncConfigRequestJava) {
+        SyncConfigRequestPb.Builder builder = SyncConfigRequestPb.newBuilder();
+        builder.setZone(syncConfigRequestJava.getZone());
+        builder.setDataCenter(syncConfigRequestJava.getDataCenter());
 
-    if (syncConfigRequestJava == null) {
-      return null;
+        return builder.build();
     }
-
-    SyncConfigRequestPb.Builder builder = SyncConfigRequestPb.newBuilder();
-    builder.setZone(syncConfigRequestJava.getZone());
-    builder.setDataCenter(syncConfigRequestJava.getDataCenter());
-
-    return builder.build();
-  }
 }

@@ -23,15 +23,16 @@ import java.sql.Timestamp;
  * @version $Id: TimestampUtil.java, v 0.1 2021年03月01日 15:55 xiaojian.xj Exp $
  */
 public final class TimestampUtil {
-  private TimestampUtil() {}
+    private TimestampUtil() {
+    }
 
-  public static long getNanosLong(Timestamp timestamp) {
-    return timestamp.getTime() / 1000 * 1000000000 + timestamp.getNanos();
-  }
+    public static long getNanosLong(Timestamp timestamp) {
+        return timestamp.getTime() / 1000 * 1000000000 + timestamp.getNanos();
+    }
 
-  public static Timestamp fromNanosLong(long nanos) {
-    Timestamp ts = new Timestamp(nanos / 1000000);
-    ts.setNanos((int) (nanos % 1000000000));
-    return ts;
-  }
+    public static Timestamp fromNanosLong(long nanos) {
+        Timestamp ts = new Timestamp(nanos / 1000000);
+        ts.setNanos((int) (nanos % 1000000000));
+        return ts;
+    }
 }

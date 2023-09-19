@@ -32,47 +32,47 @@ public class StringUtils {
      *
      * @since 5.0.0
      */
-    public static final String   EMPTY              = "";
+    public static final String EMPTY = "";
 
     /**
      * The context path separator String {@code "/"}.
      */
-    public static final String   CONTEXT_SEP        = "/";
+    public static final String CONTEXT_SEP = "/";
 
     /**
      * The string {@code "*"}.
      *
      * @since 5.3.1
      */
-    public static final String   ALL                = "*";
+    public static final String ALL = "*";
 
     /**
      * The string {@code "default"}.
      *
      * @since 5.3.1
      */
-    public static final String   DEFAULT            = "default";
+    public static final String DEFAULT = "default";
 
     /**
      * The string {@code "true"}.
      *
      * @since 5.4.0
      */
-    public static final String   TRUE               = "true";
+    public static final String TRUE = "true";
 
     /**
      * The string {@code "false"}.
      *
      * @since 5.4.0
      */
-    public static final String   FALSE              = "false";
+    public static final String FALSE = "false";
 
     /**
      * The string {@code "null"}.
      *
      * @since 5.4.0
      */
-    public static final String   NULL               = "null";
+    public static final String NULL = "null";
 
     /**
      * 空数组
@@ -324,7 +324,7 @@ public class StringUtils {
      */
     public static String[] split(String src, String separator) {
         if (isEmpty(separator)) {
-            return new String[] { src };
+            return new String[]{src};
         }
         if (isEmpty(src)) {
             return StringUtils.EMPTY_STRING_ARRAY;
@@ -438,10 +438,10 @@ public class StringUtils {
      * StringUtils.substringBefore("abc", null)  = "abc"
      * </pre>
      *
-     * @param str  the String to get a substring from, may be null
-     * @param separator  the String to search for, may be null
+     * @param str       the String to get a substring from, may be null
+     * @param separator the String to search for, may be null
      * @return the substring before the first occurrence of the separator,
-     *  <code>null</code> if null String input
+     * <code>null</code> if null String input
      * @since 2.0
      */
     public static String substringBefore(String str, String separator) {

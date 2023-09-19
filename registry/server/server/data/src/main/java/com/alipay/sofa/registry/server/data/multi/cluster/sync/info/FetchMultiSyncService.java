@@ -27,12 +27,13 @@ import com.alipay.sofa.registry.util.ConcurrentUtils;
 import com.alipay.sofa.registry.util.WakeUpLoopRunnable;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import java.util.Map;
-import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.util.CollectionUtils;
+
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author xiaojian.xj
@@ -40,123 +41,120 @@ import org.springframework.util.CollectionUtils;
  */
 public class FetchMultiSyncService implements ApplicationListener<ContextRefreshedEvent> {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(FetchMultiSyncService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(FetchMultiSyncService.class);
+    private static final boolean INIT = false;
+    private final Worker worker = new Worker();
+    @Autowired
+    private MultiClusterDataServerConfig multiClusterDataServerConfig;
+    @Autowired
+    private MultiClusterSyncRepository multiClusterSyncRepository;
+    @Autowired
+    private MultiSyncDataAcceptorManager multiSyncDataAcceptorManager;
+    private Map<String, MultiSegmentSyncSwitch> syncMap = Maps.newHashMap();
 
-  @Autowired private MultiClusterDataServerConfig multiClusterDataServerConfig;
-
-  @Autowired private MultiClusterSyncRepository multiClusterSyncRepository;
-
-  @Autowired private MultiSyncDataAcceptorManager multiSyncDataAcceptorManager;
-
-  private final Worker worker = new Worker();
-
-  private Map<String, MultiSegmentSyncSwitch> syncMap = Maps.newHashMap();
-
-  private static final boolean INIT = false;
-
-  public synchronized boolean multiSync(String dataCenter) {
-    MultiSegmentSyncSwitch multiSegmentSyncSwitch = syncMap.get(dataCenter);
-    if (multiSegmentSyncSwitch == null) {
-      return INIT;
-    }
-
-    return multiSegmentSyncSwitch.isMultiSync();
-  }
-
-  public synchronized boolean multiPush(String dataCenter) {
-    MultiSegmentSyncSwitch multiSegmentSyncSwitch = syncMap.get(dataCenter);
-    if (multiSegmentSyncSwitch == null) {
-      return INIT;
-    }
-
-    return multiSegmentSyncSwitch.isMultiPush();
-  }
-
-  public synchronized MultiSegmentSyncSwitch getMultiSyncSwitch(String dataCenter) {
-    return syncMap.get(dataCenter);
-  }
-
-  public synchronized void setSyncMap(Map<String, MultiSegmentSyncSwitch> syncMap) {
-    this.syncMap = syncMap;
-  }
-
-  private synchronized Set<String> syncingDataCenter() {
-    return syncMap.keySet();
-  }
-
-  /**
-   * Handle an application event.
-   *
-   * @param event the event to respond to
-   */
-  @Override
-  public void onApplicationEvent(ContextRefreshedEvent event) {
-    start();
-  }
-
-  public void start() {
-    ConcurrentUtils.createDaemonThread("FetchMultiSyncInfo-Worker", worker).start();
-  }
-
-  private class Worker extends WakeUpLoopRunnable {
-
-    @Override
-    public void runUnthrowable() {
-      Set<MultiClusterSyncInfo> multiClusterSyncInfos =
-          multiClusterSyncRepository.queryLocalSyncInfos();
-
-      boolean change = false;
-      Map<String, MultiSegmentSyncSwitch> syncMap =
-          Maps.newHashMapWithExpectedSize(multiClusterSyncInfos.size());
-      for (MultiClusterSyncInfo multiClusterSyncInfo : multiClusterSyncInfos) {
-        MultiSegmentSyncSwitch exist =
-            getMultiSyncSwitch(multiClusterSyncInfo.getRemoteDataCenter());
-        if (exist != null && exist.getDataVersion() > multiClusterSyncInfo.getDataVersion()) {
-          LOGGER.error(
-              "[FetchMultiSyncService]load config error, exist:{}, load:{}",
-              exist,
-              multiClusterSyncInfo);
-          return;
+    public synchronized boolean multiSync(String dataCenter) {
+        MultiSegmentSyncSwitch multiSegmentSyncSwitch = syncMap.get(dataCenter);
+        if (multiSegmentSyncSwitch == null) {
+            return INIT;
         }
 
-        if (exist == null || multiClusterSyncInfo.getDataVersion() > exist.getDataVersion()) {
-          LOGGER.info(
-              "[FetchMultiSyncService.addOrUpdate]dataCenter:{},remoteDataCenter:{}, config update from:{} to {}",
-              multiClusterSyncInfo.getDataCenter(),
-              multiClusterSyncInfo.getRemoteDataCenter(),
-              exist,
-              multiClusterSyncInfo);
-          change = true;
+        return multiSegmentSyncSwitch.isMultiSync();
+    }
+
+    public synchronized boolean multiPush(String dataCenter) {
+        MultiSegmentSyncSwitch multiSegmentSyncSwitch = syncMap.get(dataCenter);
+        if (multiSegmentSyncSwitch == null) {
+            return INIT;
         }
-        syncMap.put(multiClusterSyncInfo.getRemoteDataCenter(), from(multiClusterSyncInfo));
-      }
 
-      Set<String> remove = Sets.difference(syncingDataCenter(), syncMap.keySet());
-      if (!CollectionUtils.isEmpty(remove)) {
-        change = true;
-        LOGGER.info("[FetchMultiSyncService.remove]remove dataCenters:{}", remove);
-      }
-      if (change) {
-        multiSyncDataAcceptorManager.updateFrom(syncMap.values());
-        setSyncMap(syncMap);
-      }
+        return multiSegmentSyncSwitch.isMultiPush();
     }
 
+    public synchronized MultiSegmentSyncSwitch getMultiSyncSwitch(String dataCenter) {
+        return syncMap.get(dataCenter);
+    }
+
+    public synchronized void setSyncMap(Map<String, MultiSegmentSyncSwitch> syncMap) {
+        this.syncMap = syncMap;
+    }
+
+    private synchronized Set<String> syncingDataCenter() {
+        return syncMap.keySet();
+    }
+
+    /**
+     * Handle an application event.
+     *
+     * @param event the event to respond to
+     */
     @Override
-    public int getWaitingMillis() {
-      return multiClusterDataServerConfig.getMultiClusterConfigReloadMillis();
+    public void onApplicationEvent(ContextRefreshedEvent event) {
+        start();
     }
-  }
 
-  private MultiSegmentSyncSwitch from(MultiClusterSyncInfo multiClusterSyncInfo) {
+    public void start() {
+        ConcurrentUtils.createDaemonThread("FetchMultiSyncInfo-Worker", worker).start();
+    }
 
-    return new MultiSegmentSyncSwitch(
-        multiClusterSyncInfo.isEnableSyncDatum(),
-        multiClusterSyncInfo.isEnablePush(),
-        multiClusterSyncInfo.getRemoteDataCenter(),
-        multiClusterSyncInfo.getSynPublisherGroups(),
-        multiClusterSyncInfo.getSyncDataInfoIds(),
-        multiClusterSyncInfo.getIgnoreDataInfoIds(),
-        multiClusterSyncInfo.getDataVersion());
-  }
+    private MultiSegmentSyncSwitch from(MultiClusterSyncInfo multiClusterSyncInfo) {
+
+        return new MultiSegmentSyncSwitch(
+                multiClusterSyncInfo.isEnableSyncDatum(),
+                multiClusterSyncInfo.isEnablePush(),
+                multiClusterSyncInfo.getRemoteDataCenter(),
+                multiClusterSyncInfo.getSynPublisherGroups(),
+                multiClusterSyncInfo.getSyncDataInfoIds(),
+                multiClusterSyncInfo.getIgnoreDataInfoIds(),
+                multiClusterSyncInfo.getDataVersion());
+    }
+
+    private class Worker extends WakeUpLoopRunnable {
+
+        @Override
+        public void runUnthrowable() {
+            Set<MultiClusterSyncInfo> multiClusterSyncInfos =
+                    multiClusterSyncRepository.queryLocalSyncInfos();
+
+            boolean change = false;
+            Map<String, MultiSegmentSyncSwitch> syncMap =
+                    Maps.newHashMapWithExpectedSize(multiClusterSyncInfos.size());
+            for (MultiClusterSyncInfo multiClusterSyncInfo : multiClusterSyncInfos) {
+                MultiSegmentSyncSwitch exist =
+                        getMultiSyncSwitch(multiClusterSyncInfo.getRemoteDataCenter());
+                if (exist != null && exist.getDataVersion() > multiClusterSyncInfo.getDataVersion()) {
+                    LOGGER.error(
+                            "[FetchMultiSyncService]load config error, exist:{}, load:{}",
+                            exist,
+                            multiClusterSyncInfo);
+                    return;
+                }
+
+                if (exist == null || multiClusterSyncInfo.getDataVersion() > exist.getDataVersion()) {
+                    LOGGER.info(
+                            "[FetchMultiSyncService.addOrUpdate]dataCenter:{},remoteDataCenter:{}, config update from:{} to {}",
+                            multiClusterSyncInfo.getDataCenter(),
+                            multiClusterSyncInfo.getRemoteDataCenter(),
+                            exist,
+                            multiClusterSyncInfo);
+                    change = true;
+                }
+                syncMap.put(multiClusterSyncInfo.getRemoteDataCenter(), from(multiClusterSyncInfo));
+            }
+
+            Set<String> remove = Sets.difference(syncingDataCenter(), syncMap.keySet());
+            if (!CollectionUtils.isEmpty(remove)) {
+                change = true;
+                LOGGER.info("[FetchMultiSyncService.remove]remove dataCenters:{}", remove);
+            }
+            if (change) {
+                multiSyncDataAcceptorManager.updateFrom(syncMap.values());
+                setSyncMap(syncMap);
+            }
+        }
+
+        @Override
+        public int getWaitingMillis() {
+            return multiClusterDataServerConfig.getMultiClusterConfigReloadMillis();
+        }
+    }
 }

@@ -17,6 +17,6 @@
 package com.alipay.sofa.registry.common.model;
 
 public enum PublishSource {
-  CLIENT,
-  DATUM_SYNCER,
+    CLIENT,
+    DATUM_SYNCER,
 }

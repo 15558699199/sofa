@@ -34,22 +34,22 @@ public class BoltProtobufTest extends ActivelyDestroyTest {
     @Test
     public void testAll() {
         ServerConfig serverConfig = new ServerConfig()
-            .setProtocol("bolt") // 设置一个协议，默认bolt
-            .setPort(12200) // 设置一个端口，默认12200
-            .setDaemon(false); // 非守护线程
+                .setProtocol("bolt") // 设置一个协议，默认bolt
+                .setPort(12200) // 设置一个端口，默认12200
+                .setDaemon(false); // 非守护线程
 
         ProviderConfig<ProtobufService> providerConfig = new ProviderConfig<ProtobufService>()
-            .setInterfaceId(ProtobufService.class.getName()) // 指定接口
-            .setRef(new ProtobufServiceImpl()) // 指定实现
-            .setServer(serverConfig); // 指定服务端
+                .setInterfaceId(ProtobufService.class.getName()) // 指定接口
+                .setRef(new ProtobufServiceImpl()) // 指定实现
+                .setServer(serverConfig); // 指定服务端
         providerConfig.export(); // 发布服务
 
         ConsumerConfig<ProtobufService> consumerConfig = new ConsumerConfig<ProtobufService>()
-            .setInterfaceId(ProtobufService.class.getName()) // 指定接口
-            .setProtocol("bolt") // 指定协议
-            .setDirectUrl("bolt://127.0.0.1:12200") // 指定直连地址
-            .setSerialization("protobuf") // 指定序列化协议，默认为hessian
-            .setConnectTimeout(10 * 1000);
+                .setInterfaceId(ProtobufService.class.getName()) // 指定接口
+                .setProtocol("bolt") // 指定协议
+                .setDirectUrl("bolt://127.0.0.1:12200") // 指定直连地址
+                .setSerialization("protobuf") // 指定序列化协议，默认为hessian
+                .setConnectTimeout(10 * 1000);
         ProtobufService helloService = consumerConfig.refer();
 
         EchoRequest request = EchoRequest.newBuilder().setName("sofa").setGroup(Group.A).build();

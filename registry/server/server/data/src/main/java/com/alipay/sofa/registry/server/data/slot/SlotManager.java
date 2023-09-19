@@ -18,6 +18,7 @@ package com.alipay.sofa.registry.server.data.slot;
 
 import com.alipay.sofa.registry.common.model.slot.BaseSlotStatus;
 import com.alipay.sofa.registry.common.model.slot.SlotTable;
+
 import java.util.List;
 import java.util.Set;
 
@@ -27,15 +28,15 @@ import java.util.Set;
  */
 public interface SlotManager extends SlotAccessor {
 
-  boolean hasSlot();
+    boolean hasSlot();
 
-  List<BaseSlotStatus> getSlotStatuses();
+    List<BaseSlotStatus> getSlotStatuses();
 
-  boolean updateSlotTable(SlotTable slotTable);
+    boolean updateSlotTable(SlotTable slotTable);
 
-  long getSlotTableEpoch();
+    long getSlotTableEpoch();
 
-  void triggerUpdateSlotTable(long epoch);
+    void triggerUpdateSlotTable(long epoch);
 
-  Set<Integer> leaderSlotIds();
+    Set<Integer> leaderSlotIds();
 }

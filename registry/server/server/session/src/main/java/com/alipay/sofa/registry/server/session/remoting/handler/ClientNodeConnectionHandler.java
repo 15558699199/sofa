@@ -28,76 +28,75 @@ import com.alipay.sofa.registry.util.AtomicSet;
 import com.alipay.sofa.registry.util.ConcurrentUtils;
 import com.alipay.sofa.registry.util.WakeUpLoopRunnable;
 import com.google.common.collect.Lists;
-import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.util.CollectionUtils;
+
+import java.util.Set;
 
 /**
  * @author shangyu.wh
  * @version $Id: ServerConnectionLisener.java, v 0.1 2017-11-30 15:04 shangyu.wh Exp $
  */
 public class ClientNodeConnectionHandler extends ListenServerChannelHandler
-    implements ApplicationListener<ContextRefreshedEvent> {
-  private final Logger LOG = LoggerFactory.getLogger("SRV-CONNECT");
+        implements ApplicationListener<ContextRefreshedEvent> {
+    private final Logger LOG = LoggerFactory.getLogger("SRV-CONNECT");
+    private final AtomicSet<ConnectId> pendingClientOff = new AtomicSet<>();
+    private final ClientOffWorker worker = new ClientOffWorker();
+    @Autowired
+    Registry sessionRegistry;
+    @Autowired
+    ExecutorManager executorManager;
+    private volatile boolean stopped = false;
 
-  @Autowired Registry sessionRegistry;
-
-  @Autowired ExecutorManager executorManager;
-
-  private final AtomicSet<ConnectId> pendingClientOff = new AtomicSet<>();
-  private final ClientOffWorker worker = new ClientOffWorker();
-
-  private volatile boolean stopped = false;
-
-  @Override
-  public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
-    start();
-  }
-
-  public void start() {
-    ConcurrentUtils.createDaemonThread("ClientOff-Worker", worker).start();
-  }
-
-  @Override
-  public void disconnected(Channel channel) {
-    if (stopped) {
-      return;
-    }
-    super.disconnected(channel);
-    fireCancelClient(channel);
-  }
-
-  public void stop() {
-    this.stopped = true;
-  }
-
-  @Override
-  protected Node.NodeType getConnectNodeType() {
-    return Node.NodeType.CLIENT;
-  }
-
-  void fireCancelClient(Channel channel) {
-    pendingClientOff.add(ConnectId.of(channel.getRemoteAddress(), channel.getLocalAddress()));
-    worker.wakeup();
-  }
-
-  private class ClientOffWorker extends WakeUpLoopRunnable {
     @Override
-    public void runUnthrowable() {
-      Set<ConnectId> connectIds = pendingClientOff.getAndReset();
-      if (!CollectionUtils.isEmpty(connectIds)) {
-        long start = System.currentTimeMillis();
-        sessionRegistry.clean(Lists.newArrayList(connectIds));
-        long span = System.currentTimeMillis() - start;
-        LOG.info("disconnect size={},span={}", connectIds.size(), span);
-      }
+    public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
+        start();
+    }
+
+    public void start() {
+        ConcurrentUtils.createDaemonThread("ClientOff-Worker", worker).start();
     }
 
     @Override
-    public int getWaitingMillis() {
-      return 5000;
+    public void disconnected(Channel channel) {
+        if (stopped) {
+            return;
+        }
+        super.disconnected(channel);
+        fireCancelClient(channel);
     }
-  }
+
+    public void stop() {
+        this.stopped = true;
+    }
+
+    @Override
+    protected Node.NodeType getConnectNodeType() {
+        return Node.NodeType.CLIENT;
+    }
+
+    void fireCancelClient(Channel channel) {
+        pendingClientOff.add(ConnectId.of(channel.getRemoteAddress(), channel.getLocalAddress()));
+        worker.wakeup();
+    }
+
+    private class ClientOffWorker extends WakeUpLoopRunnable {
+        @Override
+        public void runUnthrowable() {
+            Set<ConnectId> connectIds = pendingClientOff.getAndReset();
+            if (!CollectionUtils.isEmpty(connectIds)) {
+                long start = System.currentTimeMillis();
+                sessionRegistry.clean(Lists.newArrayList(connectIds));
+                long span = System.currentTimeMillis() - start;
+                LOG.info("disconnect size={},span={}", connectIds.size(), span);
+            }
+        }
+
+        @Override
+        public int getWaitingMillis() {
+            return 5000;
+        }
+    }
 }

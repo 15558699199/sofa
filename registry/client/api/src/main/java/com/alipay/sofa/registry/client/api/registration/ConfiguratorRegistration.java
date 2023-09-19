@@ -26,56 +26,58 @@ import com.alipay.sofa.registry.client.api.ConfigDataObserver;
  */
 public class ConfiguratorRegistration extends BaseRegistration {
 
-  private ConfigDataObserver configDataObserver;
+    private ConfigDataObserver configDataObserver;
 
-  /**
-   * Instantiates a new Configurator registration.
-   *
-   * @param dataId the data id
-   * @param configDataObserver the config data observer
-   */
-  public ConfiguratorRegistration(String dataId, ConfigDataObserver configDataObserver) {
-    this.dataId = dataId;
-    this.configDataObserver = configDataObserver;
-  }
+    /**
+     * Instantiates a new Configurator registration.
+     *
+     * @param dataId             the data id
+     * @param configDataObserver the config data observer
+     */
+    public ConfiguratorRegistration(String dataId, ConfigDataObserver configDataObserver) {
+        this.dataId = dataId;
+        this.configDataObserver = configDataObserver;
+    }
 
-  /**
-   * Getter method for property <tt>configDataObserver</tt>.
-   *
-   * @return property value of configDataObserver
-   */
-  public ConfigDataObserver getConfigDataObserver() {
-    return configDataObserver;
-  }
+    /**
+     * Getter method for property <tt>configDataObserver</tt>.
+     *
+     * @return property value of configDataObserver
+     */
+    public ConfigDataObserver getConfigDataObserver() {
+        return configDataObserver;
+    }
 
-  /**
-   * Setter method for property <tt>configDataObserver</tt>.
-   *
-   * @param configDataObserver value to be assigned to property configDataObserver
-   */
-  public void setConfigDataObserver(ConfigDataObserver configDataObserver) {
-    this.configDataObserver = configDataObserver;
-  }
+    /**
+     * Setter method for property <tt>configDataObserver</tt>.
+     *
+     * @param configDataObserver value to be assigned to property configDataObserver
+     */
+    public void setConfigDataObserver(ConfigDataObserver configDataObserver) {
+        this.configDataObserver = configDataObserver;
+    }
 
-  /** @see Object#toString() */
-  @Override
-  public String toString() {
-    return "ConfiguratorRegistration{"
-        + "dataId='"
-        + dataId
-        + '\''
-        + ", group='"
-        + group
-        + '\''
-        + ", appName='"
-        + appName
-        + '\''
-        + ", instanceId='"
-        + instanceId
-        + '\''
-        + ", ip='"
-        + ip
-        + '\''
-        + '}';
-  }
+    /**
+     * @see Object#toString()
+     */
+    @Override
+    public String toString() {
+        return "ConfiguratorRegistration{"
+                + "dataId='"
+                + dataId
+                + '\''
+                + ", group='"
+                + group
+                + '\''
+                + ", appName='"
+                + appName
+                + '\''
+                + ", instanceId='"
+                + instanceId
+                + '\''
+                + ", ip='"
+                + ip
+                + '\''
+                + '}';
+    }
 }

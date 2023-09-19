@@ -27,9 +27,9 @@ import org.jboss.resteasy.plugins.server.netty.NettyHttpResponse;
  */
 public class RestServerSendEvent implements Event {
 
-    private final NettyHttpRequest  request;
+    private final NettyHttpRequest request;
     private final NettyHttpResponse response;
-    private final Throwable         throwable;
+    private final Throwable throwable;
 
     public RestServerSendEvent(NettyHttpRequest request, NettyHttpResponse response, Throwable throwable) {
         this.request = request;

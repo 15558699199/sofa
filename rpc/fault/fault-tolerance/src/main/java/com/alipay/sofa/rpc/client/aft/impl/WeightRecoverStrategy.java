@@ -18,11 +18,7 @@ package com.alipay.sofa.rpc.client.aft.impl;
 
 import com.alipay.sofa.rpc.client.ProviderInfo;
 import com.alipay.sofa.rpc.client.ProviderStatus;
-import com.alipay.sofa.rpc.client.aft.FaultToleranceConfigManager;
-import com.alipay.sofa.rpc.client.aft.InvocationStatDimension;
-import com.alipay.sofa.rpc.client.aft.MeasureResultDetail;
-import com.alipay.sofa.rpc.client.aft.ProviderInfoWeightManager;
-import com.alipay.sofa.rpc.client.aft.RecoverStrategy;
+import com.alipay.sofa.rpc.client.aft.*;
 import com.alipay.sofa.rpc.common.utils.CalculateUtils;
 import com.alipay.sofa.rpc.ext.Extension;
 import com.alipay.sofa.rpc.log.Logger;
@@ -63,20 +59,20 @@ public class WeightRecoverStrategy implements RecoverStrategy {
             ProviderInfoWeightManager.recoverOriginWeight(providerInfo, originWeight);
             if (LOGGER.isInfoEnabled(appName)) {
                 LOGGER.infoWithApp(appName, "the weight was recovered to origin value. serviceUniqueName:["
-                    + statDimension.getService() + "],ip:["
-                    + statDimension.getIp() + "],origin weight:["
-                    + currentWeight + "],recover weight:["
-                    + originWeight + "].");
+                        + statDimension.getService() + "],ip:["
+                        + statDimension.getIp() + "],origin weight:["
+                        + currentWeight + "],recover weight:["
+                        + originWeight + "].");
             }
         } else {
             measureResultDetail.setRecoveredOriginWeight(false);
             boolean success = ProviderInfoWeightManager.recoverWeight(providerInfo, recoverWeight);
             if (success && LOGGER.isInfoEnabled(appName)) {
                 LOGGER.infoWithApp(appName, "the weight was recovered. serviceUniqueName:["
-                    + statDimension.getService() + "],ip:["
-                    + statDimension.getIp() + "],origin weight:["
-                    + currentWeight + "],recover weight:["
-                    + recoverWeight + "].");
+                        + statDimension.getService() + "],ip:["
+                        + statDimension.getIp() + "],origin weight:["
+                        + currentWeight + "],recover weight:["
+                        + recoverWeight + "].");
             }
         }
     }

@@ -63,24 +63,24 @@ public class OnMasterBizCondition extends SpringBootCondition {
         // is master biz, return directly
         if (contextClassLoader.equals(((Biz) masterBiz).getBizClassLoader())) {
             return new ConditionOutcome(true,
-                "Current context classloader equals master biz classloader.");
+                    "Current context classloader equals master biz classloader.");
         }
 
         // if not master biz, should be determine by extensionCondition
         List<AnnotationAttributes> allAnnotationAttributes = annotationAttributesFromMultiValueMap(metadata
-            .getAllAnnotationAttributes(ConditionalOnMasterBiz.class.getName()));
+                .getAllAnnotationAttributes(ConditionalOnMasterBiz.class.getName()));
         for (AnnotationAttributes annotationAttributes : allAnnotationAttributes) {
             Spec spec = new Spec(annotationAttributes);
             String extensionCondition = spec.getExtensionCondition();
             String property = context.getEnvironment().getProperty(extensionCondition);
             if ("true".equalsIgnoreCase(property)) {
                 return new ConditionOutcome(true,
-                    "Current context classloader not equals master biz classloader, but allow by extension condition.");
+                        "Current context classloader not equals master biz classloader, but allow by extension condition.");
             }
         }
 
         return new ConditionOutcome(false,
-            "Current context classloader not equals master biz classloader.");
+                "Current context classloader not equals master biz classloader.");
     }
 
     private List<AnnotationAttributes> annotationAttributesFromMultiValueMap(
@@ -91,8 +91,7 @@ public class OnMasterBizCondition extends SpringBootCondition {
                 Map<String, Object> map;
                 if (i < maps.size()) {
                     map = maps.get(i);
-                }
-                else {
+                } else {
                     map = new HashMap<>();
                     maps.add(map);
                 }

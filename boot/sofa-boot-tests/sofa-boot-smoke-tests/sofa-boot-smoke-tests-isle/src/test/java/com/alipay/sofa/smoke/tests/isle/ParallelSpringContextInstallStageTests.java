@@ -27,5 +27,5 @@ import org.springframework.test.context.TestPropertySource;
  */
 @TestPropertySource(properties = "sofa.boot.isle.moduleStartUpParallel=true")
 public class ParallelSpringContextInstallStageTests extends
-                                                   SpringContextInstallStageIntegrationTestBase {
+        SpringContextInstallStageIntegrationTestBase {
 }

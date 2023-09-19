@@ -22,8 +22,9 @@ import com.alipay.sofa.registry.core.model.SubscriberRegister;
 import com.alipay.sofa.registry.remoting.Channel;
 import com.alipay.sofa.registry.server.session.strategy.SubscriberHandlerStrategy;
 import com.alipay.sofa.registry.util.ParaCheckUtil;
-import java.util.concurrent.Executor;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.concurrent.Executor;
 
 /**
  * @author shangyu.wh
@@ -31,30 +32,31 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class SubscriberHandler extends AbstractClientDataRequestHandler<SubscriberRegister> {
 
-  @Autowired SubscriberHandlerStrategy subscriberHandlerStrategy;
+    @Autowired
+    SubscriberHandlerStrategy subscriberHandlerStrategy;
 
-  @Override
-  public Object doHandle(Channel channel, SubscriberRegister subscriberRegister) {
-    RegisterResponse registerResponse = new RegisterResponse();
-    subscriberHandlerStrategy.handleSubscriberRegister(
-        channel, subscriberRegister, registerResponse);
-    return registerResponse;
-  }
-
-  @Override
-  public void checkParam(SubscriberRegister subscriberRegister) {
-    if (subscriberRegister.acceptMulti()) {
-      ParaCheckUtil.checkEquals(subscriberRegister.getScope(), ScopeEnum.global.name(), "scope");
+    @Override
+    public Object doHandle(Channel channel, SubscriberRegister subscriberRegister) {
+        RegisterResponse registerResponse = new RegisterResponse();
+        subscriberHandlerStrategy.handleSubscriberRegister(
+                channel, subscriberRegister, registerResponse);
+        return registerResponse;
     }
-  }
 
-  @Override
-  public Class interest() {
-    return SubscriberRegister.class;
-  }
+    @Override
+    public void checkParam(SubscriberRegister subscriberRegister) {
+        if (subscriberRegister.acceptMulti()) {
+            ParaCheckUtil.checkEquals(subscriberRegister.getScope(), ScopeEnum.global.name(), "scope");
+        }
+    }
 
-  @Override
-  public Executor getExecutor() {
-    return executorManager.getAccessSubExecutor();
-  }
+    @Override
+    public Class interest() {
+        return SubscriberRegister.class;
+    }
+
+    @Override
+    public Executor getExecutor() {
+        return executorManager.getAccessSubExecutor();
+    }
 }

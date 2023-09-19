@@ -19,34 +19,37 @@ package com.alipay.sofa.registry.remoting.exchange.message;
 import com.alipay.sofa.registry.common.model.store.URL;
 import com.alipay.sofa.registry.remoting.CallbackHandler;
 import com.alipay.sofa.registry.remoting.Channel;
-import java.util.concurrent.Executor;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.concurrent.Executor;
+
 public class SimpleRequestTest {
-  @Test
-  public void test() {
-    Object obj = new Object();
-    URL url = new URL("192.168.1.1", 8888);
-    SimpleRequest req = new SimpleRequest(obj, url);
-    Assert.assertEquals(req.getRequestBody(), obj);
-    Assert.assertEquals(req.getRequestUrl(), url);
-    Assert.assertEquals(req.getCallBackHandler(), null);
+    @Test
+    public void test() {
+        Object obj = new Object();
+        URL url = new URL("192.168.1.1", 8888);
+        SimpleRequest req = new SimpleRequest(obj, url);
+        Assert.assertEquals(req.getRequestBody(), obj);
+        Assert.assertEquals(req.getRequestUrl(), url);
+        Assert.assertEquals(req.getCallBackHandler(), null);
 
-    CallbackHandler callback =
-        new CallbackHandler() {
-          @Override
-          public void onCallback(Channel channel, Object message) {}
+        CallbackHandler callback =
+                new CallbackHandler() {
+                    @Override
+                    public void onCallback(Channel channel, Object message) {
+                    }
 
-          @Override
-          public void onException(Channel channel, Throwable exception) {}
+                    @Override
+                    public void onException(Channel channel, Throwable exception) {
+                    }
 
-          @Override
-          public Executor getExecutor() {
-            return null;
-          }
-        };
-    req = new SimpleRequest(obj, url, callback);
-    Assert.assertEquals(req.getCallBackHandler(), callback);
-  }
+                    @Override
+                    public Executor getExecutor() {
+                        return null;
+                    }
+                };
+        req = new SimpleRequest(obj, url, callback);
+        Assert.assertEquals(req.getCallBackHandler(), callback);
+    }
 }

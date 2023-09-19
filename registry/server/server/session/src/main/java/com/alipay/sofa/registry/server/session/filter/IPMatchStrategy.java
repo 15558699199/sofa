@@ -24,5 +24,5 @@ import java.util.function.Supplier;
  */
 public interface IPMatchStrategy<T> {
 
-  boolean match(String IP, Supplier<T> getOperatorType);
+    boolean match(String IP, Supplier<T> getOperatorType);
 }

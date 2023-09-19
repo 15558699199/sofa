@@ -31,20 +31,23 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class DistributeLockJdbcRepository implements DistributeLockRepository, RecoverConfig {
 
-  @Autowired DistributeLockMapper distributeLockMapper;
+    @Autowired
+    DistributeLockMapper distributeLockMapper;
 
-  @Autowired MetaElectorConfig metaElectorConfig;
+    @Autowired
+    MetaElectorConfig metaElectorConfig;
 
-  @Autowired DefaultCommonConfig defaultCommonConfig;
+    @Autowired
+    DefaultCommonConfig defaultCommonConfig;
 
-  @Override
-  public DistributeLockInfo queryDistLock(String lockName) {
-    return distributeLockMapper.queryDistLock(
-        defaultCommonConfig.getClusterId(tableName()), lockName);
-  }
+    @Override
+    public DistributeLockInfo queryDistLock(String lockName) {
+        return distributeLockMapper.queryDistLock(
+                defaultCommonConfig.getClusterId(tableName()), lockName);
+    }
 
-  @Override
-  public String tableName() {
-    return TableEnum.DISTRIBUTE_LOCK.getTableName();
-  }
+    @Override
+    public String tableName() {
+        return TableEnum.DISTRIBUTE_LOCK.getTableName();
+    }
 }

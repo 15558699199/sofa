@@ -40,12 +40,12 @@ public class MeshRegistryHelper {
      */
     public static ProviderInfo convertProviderToProviderInfo(ProviderConfig config, ServerConfig server) {
         ProviderInfo providerInfo = new ProviderInfo()
-            .setPort(server.getPort())
-            .setWeight(config.getWeight())
-            .setSerializationType(config.getSerialization())
-            .setProtocolType(server.getProtocol())
-            .setPath(server.getContextPath())
-            .setStaticAttrs(config.getParameters());
+                .setPort(server.getPort())
+                .setWeight(config.getWeight())
+                .setSerializationType(config.getSerialization())
+                .setProtocolType(server.getProtocol())
+                .setPath(server.getContextPath())
+                .setStaticAttrs(config.getParameters());
         String host = server.getHost();
         if (NetUtils.isLocalHost(host) || NetUtils.isAnyHost(host)) {
             host = SystemInfo.getLocalHost();

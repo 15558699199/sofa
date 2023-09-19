@@ -35,91 +35,97 @@ import com.alipay.sofa.registry.server.shared.env.ServerEnv;
 import com.alipay.sofa.registry.server.shared.remoting.AbstractServerHandler;
 import com.alipay.sofa.registry.util.ParaCheckUtil;
 import com.alipay.sofa.registry.util.StringFormatter;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executor;
-import javax.annotation.Resource;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * @author yuzhi.lyz
  * @version v 0.1 2020-11-06 15:41 yuzhi.lyz Exp $
  */
 public class DataSlotDiffPublisherRequestHandler
-    extends AbstractServerHandler<DataSlotDiffPublisherRequest> {
+        extends AbstractServerHandler<DataSlotDiffPublisherRequest> {
 
-  private static final Logger LOGGER =
-      LoggerFactory.getLogger(DataSlotDiffPublisherRequestHandler.class);
+    private static final Logger LOGGER =
+            LoggerFactory.getLogger(DataSlotDiffPublisherRequestHandler.class);
 
-  @Autowired SessionServerConfig sessionServerConfig;
+    @Autowired
+    SessionServerConfig sessionServerConfig;
 
-  @Autowired ExecutorManager executorManager;
+    @Autowired
+    ExecutorManager executorManager;
 
-  @Autowired DataStore sessionDataStore;
+    @Autowired
+    DataStore sessionDataStore;
 
-  @Autowired SlotTableCache slotTableCache;
+    @Autowired
+    SlotTableCache slotTableCache;
 
-  @Resource SyncSlotAcceptorManager syncSlotAcceptAllManager;
+    @Resource
+    SyncSlotAcceptorManager syncSlotAcceptAllManager;
 
-  @Override
-  public void checkParam(DataSlotDiffPublisherRequest request) {
-    ParaCheckUtil.checkNonNegative(request.getSlotId(), "request.slotId");
-    ParaCheckUtil.checkNotNull(request.getDatumSummaries(), "request.datumSummaries");
-  }
-
-  @Override
-  public Object doHandle(Channel channel, DataSlotDiffPublisherRequest request) {
-    try {
-      final int slotId = request.getSlotId();
-      DataSlotDiffPublisherResult result =
-          calcDiffResult(
-              request.getLocalDataCenter(),
-              slotId,
-              request.getDatumSummaries(),
-              sessionDataStore.getDataInfoIdPublishers(slotId));
-      result.setSlotTableEpoch(slotTableCache.getEpoch(request.getLocalDataCenter()));
-      result.setSessionProcessId(ServerEnv.PROCESS_ID);
-      return new GenericResponse().fillSucceed(result);
-    } catch (Throwable e) {
-      String msg =
-          StringFormatter.format(
-              "DiffSyncPublisher request error for slot {}", request.getSlotId());
-      LOGGER.error(msg, e);
-      return new GenericResponse().fillFailed(msg);
+    @Override
+    public void checkParam(DataSlotDiffPublisherRequest request) {
+        ParaCheckUtil.checkNonNegative(request.getSlotId(), "request.slotId");
+        ParaCheckUtil.checkNotNull(request.getDatumSummaries(), "request.datumSummaries");
     }
-  }
 
-  private DataSlotDiffPublisherResult calcDiffResult(
-      String requestDataCenter,
-      int targetSlot,
-      List<DatumSummary> datumSummaries,
-      Map<String, Map<String, Publisher>> existingPublishers) {
-    DataSlotDiffPublisherResult result =
-        DataSlotDiffUtils.diffPublishersResult(
-            datumSummaries,
-            existingPublishers,
-            sessionServerConfig.getSlotSyncPublisherMaxNum(),
-            syncSlotAcceptAllManager);
-    DataSlotDiffUtils.logDiffResult(requestDataCenter, result, targetSlot, LOGGER);
-    return result;
-  }
+    @Override
+    public Object doHandle(Channel channel, DataSlotDiffPublisherRequest request) {
+        try {
+            final int slotId = request.getSlotId();
+            DataSlotDiffPublisherResult result =
+                    calcDiffResult(
+                            request.getLocalDataCenter(),
+                            slotId,
+                            request.getDatumSummaries(),
+                            sessionDataStore.getDataInfoIdPublishers(slotId));
+            result.setSlotTableEpoch(slotTableCache.getEpoch(request.getLocalDataCenter()));
+            result.setSessionProcessId(ServerEnv.PROCESS_ID);
+            return new GenericResponse().fillSucceed(result);
+        } catch (Throwable e) {
+            String msg =
+                    StringFormatter.format(
+                            "DiffSyncPublisher request error for slot {}", request.getSlotId());
+            LOGGER.error(msg, e);
+            return new GenericResponse().fillFailed(msg);
+        }
+    }
 
-  public Object buildFailedResponse(String msg) {
-    return new GenericResponse().fillFailed(msg);
-  }
+    private DataSlotDiffPublisherResult calcDiffResult(
+            String requestDataCenter,
+            int targetSlot,
+            List<DatumSummary> datumSummaries,
+            Map<String, Map<String, Publisher>> existingPublishers) {
+        DataSlotDiffPublisherResult result =
+                DataSlotDiffUtils.diffPublishersResult(
+                        datumSummaries,
+                        existingPublishers,
+                        sessionServerConfig.getSlotSyncPublisherMaxNum(),
+                        syncSlotAcceptAllManager);
+        DataSlotDiffUtils.logDiffResult(requestDataCenter, result, targetSlot, LOGGER);
+        return result;
+    }
 
-  @Override
-  protected Node.NodeType getConnectNodeType() {
-    return Node.NodeType.DATA;
-  }
+    public Object buildFailedResponse(String msg) {
+        return new GenericResponse().fillFailed(msg);
+    }
 
-  @Override
-  public Executor getExecutor() {
-    return executorManager.getDataSlotSyncRequestExecutor();
-  }
+    @Override
+    protected Node.NodeType getConnectNodeType() {
+        return Node.NodeType.DATA;
+    }
 
-  @Override
-  public Class interest() {
-    return DataSlotDiffPublisherRequest.class;
-  }
+    @Override
+    public Executor getExecutor() {
+        return executorManager.getDataSlotSyncRequestExecutor();
+    }
+
+    @Override
+    public Class interest() {
+        return DataSlotDiffPublisherRequest.class;
+    }
 }

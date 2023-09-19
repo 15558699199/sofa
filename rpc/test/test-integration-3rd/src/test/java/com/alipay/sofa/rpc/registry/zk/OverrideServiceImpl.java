@@ -17,7 +17,6 @@
 package com.alipay.sofa.rpc.registry.zk;
 
 /**
- *
  * @author <a href="mailto:zhuoyu.sjw@antfin.com">Jianwei Shi</a>
  */
 public class OverrideServiceImpl implements OverrideService {

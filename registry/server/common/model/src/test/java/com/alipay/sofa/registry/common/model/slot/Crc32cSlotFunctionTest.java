@@ -17,15 +17,16 @@
 package com.alipay.sofa.registry.common.model.slot;
 
 import com.alipay.sofa.registry.common.model.slot.func.Crc32cSlotFunction;
-import java.util.Date;
 import org.junit.Test;
 
-public class Crc32cSlotFunctionTest {
-  @Test
-  public void test() {
-    Crc32cSlotFunction function = new Crc32cSlotFunction(256);
-    System.out.println(function.slotOf("aaaaaaaaaa"));
+import java.util.Date;
 
-    System.out.println(new Date(1624591989649L));
-  }
+public class Crc32cSlotFunctionTest {
+    @Test
+    public void test() {
+        Crc32cSlotFunction function = new Crc32cSlotFunction(256);
+        System.out.println(function.slotOf("aaaaaaaaaa"));
+
+        System.out.println(new Date(1624591989649L));
+    }
 }

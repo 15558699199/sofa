@@ -26,40 +26,40 @@ import java.util.Set;
  */
 public interface NodeConfig {
 
-  /**
-   * get other metaServer node
-   *
-   * @return Map
-   */
-  Map<String, Collection<String>> getMetaNode();
+    /**
+     * get other metaServer node
+     *
+     * @return Map
+     */
+    Map<String, Collection<String>> getMetaNode();
 
-  /**
-   * get other metaServer node ip
-   *
-   * @return Map
-   */
-  Map<String, Collection<String>> getMetaNodeIP();
+    /**
+     * get other metaServer node ip
+     *
+     * @return Map
+     */
+    Map<String, Collection<String>> getMetaNodeIP();
 
-  /**
-   * local data Center id
-   *
-   * @return String
-   */
-  String getLocalDataCenter();
+    /**
+     * local data Center id
+     *
+     * @return String
+     */
+    String getLocalDataCenter();
 
-  /**
-   * get dataCenter by meta node ipAddress
-   *
-   * @param metaIpAddress metaIpAddress
-   * @return String
-   */
-  String getMetaDataCenter(String metaIpAddress);
+    /**
+     * get dataCenter by meta node ipAddress
+     *
+     * @param metaIpAddress metaIpAddress
+     * @return String
+     */
+    String getMetaDataCenter(String metaIpAddress);
 
-  /**
-   * get datacenter meta servers
-   *
-   * @param dataCenter dataCenter
-   * @return Set
-   */
-  Set<String> getDataCenterMetaServers(String dataCenter);
+    /**
+     * get datacenter meta servers
+     *
+     * @param dataCenter dataCenter
+     * @return Set
+     */
+    Set<String> getDataCenterMetaServers(String dataCenter);
 }

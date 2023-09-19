@@ -36,12 +36,12 @@ import java.util.Set;
  * @version LegacyAutoConfigurationDetectListener.java, v 0.1 2023年04月18日 10:28 AM huzijie Exp $
  */
 public class LegacyAutoConfigurationDetectListener implements AutoConfigurationImportListener,
-                                                  BeanClassLoaderAware {
+        BeanClassLoaderAware {
 
     private static final Logger LOGGER = SofaBootLoggerFactory
-                                           .getLogger(LegacyAutoConfigurationDetectListener.class);
+            .getLogger(LegacyAutoConfigurationDetectListener.class);
 
-    private ClassLoader         beanClassLoader;
+    private ClassLoader beanClassLoader;
 
     @Override
     public void onAutoConfigurationImportEvent(AutoConfigurationImportEvent event) {

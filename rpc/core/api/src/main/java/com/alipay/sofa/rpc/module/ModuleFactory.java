@@ -38,14 +38,13 @@ import java.util.concurrent.ConcurrentMap;
 public class ModuleFactory {
 
     /**
-     * logger for this class
-     */
-    private static final Logger                LOGGER            = LoggerFactory.getLogger(ModuleFactory.class);
-
-    /**
      * 已加载的模块
      */
     static final ConcurrentMap<String, Module> INSTALLED_MODULES = new ConcurrentHashMap<String, Module>();
+    /**
+     * logger for this class
+     */
+    private static final Logger LOGGER = LoggerFactory.getLogger(ModuleFactory.class);
 
     /**
      * parse module load config
@@ -63,7 +62,7 @@ public class ModuleFactory {
             } else if (activatedModule.equals(moduleName)) {
                 match = true;
             } else if (match && (activatedModule.equals("!" + moduleName)
-                || activatedModule.equals("-" + moduleName))) {
+                    || activatedModule.equals("-" + moduleName))) {
                 match = false;
                 break;
             }

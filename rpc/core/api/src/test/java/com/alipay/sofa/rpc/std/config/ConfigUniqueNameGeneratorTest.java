@@ -36,9 +36,9 @@ public class ConfigUniqueNameGeneratorTest extends AbstractMockitoTest {
     @Mock
     private AbstractInterfaceConfig config;
     @Mock
-    private ProviderConfig          providerConfig;
+    private ProviderConfig providerConfig;
     @Mock
-    private ConsumerConfig          consumerConfig;
+    private ConsumerConfig consumerConfig;
 
     @Test
     public void testGetServiceName() {
@@ -78,9 +78,9 @@ public class ConfigUniqueNameGeneratorTest extends AbstractMockitoTest {
         Assert.assertEquals("interfaceId:version:uniqueId", ConfigUniqueNameGenerator.getUniqueName(config));
 
         Assert.assertEquals("interfaceId:version:uniqueId",
-            ConfigUniqueNameGenerator.getUniqueName(interfaceId, version, uniqueId));
+                ConfigUniqueNameGenerator.getUniqueName(interfaceId, version, uniqueId));
         Assert.assertEquals("interfaceId:1.0:uniqueId",
-            ConfigUniqueNameGenerator.getUniqueName(interfaceId, null, uniqueId));
+                ConfigUniqueNameGenerator.getUniqueName(interfaceId, null, uniqueId));
     }
 
     @Test
@@ -125,6 +125,6 @@ public class ConfigUniqueNameGeneratorTest extends AbstractMockitoTest {
         Assert.assertEquals("interfaceId:1.0@null", ConfigUniqueNameGenerator.getUniqueNameProtocol(consumerConfig));
         when(consumerConfig.getProtocol()).thenReturn("protocol");
         Assert
-            .assertEquals("interfaceId:1.0@protocol", ConfigUniqueNameGenerator.getUniqueNameProtocol(consumerConfig));
+                .assertEquals("interfaceId:1.0@protocol", ConfigUniqueNameGenerator.getUniqueNameProtocol(consumerConfig));
     }
 }

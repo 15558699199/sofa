@@ -25,7 +25,6 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 
 /**
- *
  * @author <a href="mailto:guaner.zzx@alipay.com">Alaneuler</a>
  * Created on 2020/8/18
  */
@@ -34,7 +33,7 @@ public class JvmFilterTestConfiguration {
 
     private int beforeCount = 0;
 
-    private int afterCount  = 0;
+    private int afterCount = 0;
 
     public int getBeforeCount() {
         return beforeCount;

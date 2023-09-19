@@ -35,7 +35,7 @@ import org.springframework.core.env.Environment;
  * @since 3.9.1
  **/
 @AutoConfiguration(before = org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration.class)
-@ConditionalOnClass({ MongoClient.class, SofaTracerCommandListenerCustomizer.class })
+@ConditionalOnClass({MongoClient.class, SofaTracerCommandListenerCustomizer.class})
 @ConditionalOnProperty(name = "sofa.boot.tracer.mongodb.enabled", havingValue = "true", matchIfMissing = true)
 public class MongoAutoConfiguration {
 

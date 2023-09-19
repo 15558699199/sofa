@@ -29,12 +29,12 @@ public final class CodecUtils {
     /**
      * 空的Object数组，无参方法
      */
-    public static final Object[]   EMPTY_OBJECT_ARRAY = new Object[0];
+    public static final Object[] EMPTY_OBJECT_ARRAY = new Object[0];
 
     /**
      * 空的Class数组，无参方法
      */
-    public static final Class<?>[] EMPTY_CLASS_ARRAY  = new Class<?>[0];
+    public static final Class<?>[] EMPTY_CLASS_ARRAY = new Class<?>[0];
 
     /**
      * int 转 byte数组
@@ -59,9 +59,9 @@ public final class CodecUtils {
      */
     public static int bytesToInt(byte[] ary) {
         return (ary[3] & 0xFF)
-            | ((ary[2] << 8) & 0xFF00)
-            | ((ary[1] << 16) & 0xFF0000)
-            | ((ary[0] << 24) & 0xFF000000);
+                | ((ary[2] << 8) & 0xFF00)
+                | ((ary[1] << 16) & 0xFF0000)
+                | ((ary[0] << 24) & 0xFF000000);
     }
 
     /**
@@ -97,7 +97,7 @@ public final class CodecUtils {
      * @return byte数组 [&lt;16,&lt;16]
      */
     public static byte[] parseHigh4Low4Bytes(byte b) {
-        return new byte[] {
+        return new byte[]{
                 (byte) ((b >> 4)), // 右移4位，只取前4bit的值
                 (byte) ((b & 0x0f)) // 只取后面4bit的值，前面两位补0
         };
@@ -121,7 +121,7 @@ public final class CodecUtils {
      * @return byte数组{&lt;4,&lt;64}
      */
     public static byte[] parseHigh2Low6Bytes(byte b) {
-        return new byte[] {
+        return new byte[]{
                 (byte) ((b >> 6)), // 右移6位，只取前2bit的值
                 (byte) ((b & 0x3f)) // 只取后面6bit的值，前面两位补0
         };
@@ -140,19 +140,21 @@ public final class CodecUtils {
 
     /**
      * 把byte转为字符串的bit
+     *
      * @param b byte
      * @return bit字符串
      */
     public static String byteToBits(byte b) {
         return ""
-            + (byte) ((b >> 7) & 0x01) + (byte) ((b >> 6) & 0x1)
-            + (byte) ((b >> 5) & 0x01) + (byte) ((b >> 4) & 0x1)
-            + (byte) ((b >> 3) & 0x01) + (byte) ((b >> 2) & 0x1)
-            + (byte) ((b >> 1) & 0x01) + (byte) ((b >> 0) & 0x1);
+                + (byte) ((b >> 7) & 0x01) + (byte) ((b >> 6) & 0x1)
+                + (byte) ((b >> 5) & 0x01) + (byte) ((b >> 4) & 0x1)
+                + (byte) ((b >> 3) & 0x01) + (byte) ((b >> 2) & 0x1)
+                + (byte) ((b >> 1) & 0x01) + (byte) ((b >> 0) & 0x1);
     }
 
     /**
      * 把字符串的bit转为byte
+     *
      * @param bits bits
      * @return byte
      */
@@ -170,7 +172,7 @@ public final class CodecUtils {
     /**
      * byte数组比较，是否命中前面几位
      *
-     * @param bs 字符数组
+     * @param bs   字符数组
      * @param head 匹配头部数组
      * @return 是否匹配
      */
@@ -223,9 +225,9 @@ public final class CodecUtils {
 
     /**
      * byte[] to hex string, such as [0,1] --> "0001"
-     * 
+     *
      * @param bytes data
-     * @return hex string 
+     * @return hex string
      */
     public static String byte2hex(byte[] bytes) {
         StringBuilder hs = new StringBuilder();
@@ -293,9 +295,10 @@ public final class CodecUtils {
 
     /**
      * 扁平化复制
-     * @param prefix 前缀
+     *
+     * @param prefix    前缀
      * @param sourceMap 原始map
-     * @param dstMap 目标map
+     * @param dstMap    目标map
      */
     public static void flatCopyTo(String prefix, Map<String, Object> sourceMap,
                                   Map<String, String> dstMap) {
@@ -314,10 +317,11 @@ public final class CodecUtils {
 
     /**
      * 树状恢复
-     * @param prefix 前缀
-     * @param sourceMap  原始map
-     * @param dstMap 目标map
-     * @param remove 命中遍历后是否删除
+     *
+     * @param prefix    前缀
+     * @param sourceMap 原始map
+     * @param dstMap    目标map
+     * @param remove    命中遍历后是否删除
      */
     public static void treeCopyTo(String prefix, Map<String, String> sourceMap,
                                   Map<String, String> dstMap, boolean remove) {

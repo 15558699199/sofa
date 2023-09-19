@@ -27,14 +27,18 @@ public interface ContextRefreshInterceptor {
 
     /**
      * Invoke before application context refresh
+     *
      * @param context application context
      */
-    default void beforeRefresh(SofaGenericApplicationContext context) {}
+    default void beforeRefresh(SofaGenericApplicationContext context) {
+    }
 
     /**
      * Invoke after application context refresh
-     * @param context application context
+     *
+     * @param context   application context
      * @param throwable not null when refresh failed
      */
-    default void afterRefresh(SofaGenericApplicationContext context, Throwable throwable) {}
+    default void afterRefresh(SofaGenericApplicationContext context, Throwable throwable) {
+    }
 }

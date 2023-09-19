@@ -38,32 +38,28 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class RegistryConfigContainer {
 
-    private static final String                     DEFAULT_REGISTRY = "DEFAULT";
-
-    private Map<String, RegistryConfigureProcessor> registryConfigMap;
-
+    private static final String DEFAULT_REGISTRY = "DEFAULT";
     /**
      * for cache
      */
-    private final Map<String, RegistryConfig>       registryConfigs  = new ConcurrentHashMap<String, RegistryConfig>();
-
+    private final Map<String, RegistryConfig> registryConfigs = new ConcurrentHashMap<String, RegistryConfig>();
     /**
      * for custom extends
      */
-    private final String                            customDefaultRegistry;
-
+    private final String customDefaultRegistry;
+    private Map<String, RegistryConfigureProcessor> registryConfigMap;
     /**
      * for default address for  customDefaultRegistry
      */
-    private String                                  customDefaultRegistryAddress;
+    private String customDefaultRegistryAddress;
 
-    private Map<String, String>                     registries       = new HashMap<>();
+    private Map<String, String> registries = new HashMap<>();
 
-    private String                                  defaultRegistryAddress;
+    private String defaultRegistryAddress;
 
-    private String                                  meshConfig;
+    private String meshConfig;
 
-    private boolean                                 ignoreRegistry;
+    private boolean ignoreRegistry;
 
     public RegistryConfigContainer(Map<String, RegistryConfigureProcessor> registryConfigMap) {
         this.registryConfigMap = registryConfigMap;
@@ -79,7 +75,7 @@ public class RegistryConfigContainer {
      * @throws SofaBootRpcRuntimeException
      */
     public RegistryConfig getRegistryConfig(String registryAlias)
-                                                                 throws SofaBootRpcRuntimeException {
+            throws SofaBootRpcRuntimeException {
         RegistryConfig registryConfig;
         String registryProtocol;
         String registryAddress;
@@ -125,7 +121,7 @@ public class RegistryConfigContainer {
 
         if (registryConfigMap.get(registryProtocol) != null) {
             RegistryConfigureProcessor registryConfigureProcessor = registryConfigMap
-                .get(registryProtocol);
+                    .get(registryProtocol);
             registryConfig = registryConfigureProcessor.buildFromAddress(registryAddress);
             registryConfigs.put(registryAlias, registryConfig);
             //不再处理以.分隔的.
@@ -135,7 +131,7 @@ public class RegistryConfigContainer {
             return registryConfig;
         } else {
             throw new SofaBootRpcRuntimeException(LogCodes.getLog(
-                LogCodes.ERROR_REGISTRY_NOT_SUPPORT, registryAddress));
+                    LogCodes.ERROR_REGISTRY_NOT_SUPPORT, registryAddress));
         }
     }
 
@@ -181,7 +177,7 @@ public class RegistryConfigContainer {
      */
     public boolean isMeshEnabled(String protocol) {
         if (StringUtils.isNotBlank(meshConfig) && registries != null
-            && registries.get(SofaBootRpcConfigConstants.REGISTRY_PROTOCOL_MESH) != null) {
+                && registries.get(SofaBootRpcConfigConstants.REGISTRY_PROTOCOL_MESH) != null) {
             if (meshConfig.equalsIgnoreCase(SofaBootRpcConfigConstants.ENABLE_MESH_ALL)) {
                 return true;
             } else {

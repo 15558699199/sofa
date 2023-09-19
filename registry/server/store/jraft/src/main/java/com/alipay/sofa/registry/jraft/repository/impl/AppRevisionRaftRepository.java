@@ -18,12 +18,8 @@ package com.alipay.sofa.registry.jraft.repository.impl;
 
 import com.alipay.sofa.registry.common.model.store.AppRevision;
 import com.alipay.sofa.registry.store.api.repository.AppRevisionRepository;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -32,86 +28,92 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class AppRevisionRaftRepository implements AppRevisionRepository {
 
-  /** map: <revision, AppRevision> */
-  private final Map<String, AppRevision> registry = new ConcurrentHashMap<>();
+    /**
+     * map: <revision, AppRevision>
+     */
+    private final Map<String, AppRevision> registry = new ConcurrentHashMap<>();
 
-  @Override
-  public void register(AppRevision appRevision) {
-    if (this.registry.containsKey(appRevision.getRevision())) {
-      return;
+    @Override
+    public void register(AppRevision appRevision) {
+        if (this.registry.containsKey(appRevision.getRevision())) {
+            return;
+        }
     }
-  }
 
-  /**
-   * check if revisionId exist
-   *
-   * @param revisionId revisionId
-   * @return boolean
-   */
-  @Override
-  public boolean exist(String revisionId) {
-    return false;
-  }
+    /**
+     * check if revisionId exist
+     *
+     * @param revisionId revisionId
+     * @return boolean
+     */
+    @Override
+    public boolean exist(String revisionId) {
+        return false;
+    }
 
-  @Override
-  public AppRevision queryRevision(String revision) {
-    return registry.get(revision);
-  }
+    @Override
+    public AppRevision queryRevision(String revision) {
+        return registry.get(revision);
+    }
 
-  @Override
-  public boolean heartbeat(String revision) {
-    return false;
-  }
+    @Override
+    public boolean heartbeat(String revision) {
+        return false;
+    }
 
-  @Override
-  public boolean heartbeatDB(String revision) {
-    return false;
-  }
+    @Override
+    public boolean heartbeatDB(String revision) {
+        return false;
+    }
 
-  @Override
-  public void waitSynced() {}
+    @Override
+    public void waitSynced() {
+    }
 
-  @Override
-  public List<AppRevision> getExpired(Date beforeTime, int limit) {
-    return null;
-  }
+    @Override
+    public List<AppRevision> getExpired(Date beforeTime, int limit) {
+        return null;
+    }
 
-  @Override
-  public void replace(AppRevision appRevision) {}
+    @Override
+    public void replace(AppRevision appRevision) {
+    }
 
-  @Override
-  public int cleanDeleted(Date beforeTime, int limit) {
-    return 0;
-  }
+    @Override
+    public int cleanDeleted(Date beforeTime, int limit) {
+        return 0;
+    }
 
-  @Override
-  public Map<String, Integer> countByApp() {
-    return Collections.emptyMap();
-  }
+    @Override
+    public Map<String, Integer> countByApp() {
+        return Collections.emptyMap();
+    }
 
-  @Override
-  public Set<String> allRevisionIds() {
-    return null;
-  }
+    @Override
+    public Set<String> allRevisionIds() {
+        return null;
+    }
 
-  @Override
-  public Collection<String> availableRevisions() {
-    return Collections.EMPTY_LIST;
-  }
+    @Override
+    public Collection<String> availableRevisions() {
+        return Collections.EMPTY_LIST;
+    }
 
-  @Override
-  public List<AppRevision> listFromStorage(long start, int limit) {
-    return null;
-  }
+    @Override
+    public List<AppRevision> listFromStorage(long start, int limit) {
+        return null;
+    }
 
-  @Override
-  public void startSynced() {}
+    @Override
+    public void startSynced() {
+    }
 
-  @Override
-  public Set<String> dataCenters() {
-    return null;
-  }
+    @Override
+    public Set<String> dataCenters() {
+        return null;
+    }
 
-  @Override
-  public void setDataCenters(Set<String> dataCenters) {}
+    @Override
+    public void setDataCenters(Set<String> dataCenters) {
+    }
 }

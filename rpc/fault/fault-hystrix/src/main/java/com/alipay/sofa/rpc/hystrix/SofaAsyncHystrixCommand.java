@@ -47,28 +47,28 @@ import java.util.concurrent.TimeUnit;
  */
 public class SofaAsyncHystrixCommand extends HystrixCommand implements SofaHystrixInvokable {
 
-    private static final Logger               LOGGER               = LoggerFactory
-                                                                       .getLogger(SofaAsyncHystrixCommand.class);
+    private static final Logger LOGGER = LoggerFactory
+            .getLogger(SofaAsyncHystrixCommand.class);
 
-    private static final long                 DEFAULT_LOCK_TIMEOUT = 1000;
+    private static final long DEFAULT_LOCK_TIMEOUT = 1000;
 
-    private final FilterInvoker               invoker;
+    private final FilterInvoker invoker;
 
-    private final SofaRequest                 request;
+    private final SofaRequest request;
 
-    private final RpcInternalContext          rpcInternalContext;
+    private final RpcInternalContext rpcInternalContext;
 
-    private final RpcInvokeContext            rpcInvokeContext;
+    private final RpcInvokeContext rpcInvokeContext;
 
-    private final CountDownLatch              lock                 = new CountDownLatch(1);
+    private final CountDownLatch lock = new CountDownLatch(1);
 
-    private final List<SofaAsyncHystrixEvent> events               = new ArrayList<SofaAsyncHystrixEvent>();
+    private final List<SofaAsyncHystrixEvent> events = new ArrayList<SofaAsyncHystrixEvent>();
 
-    private SofaResponse                      sofaResponse;
+    private SofaResponse sofaResponse;
 
     public SofaAsyncHystrixCommand(FilterInvoker invoker, SofaRequest request) {
         super(SofaHystrixConfig.loadSetterFactory((ConsumerConfig) invoker.getConfig()).createSetter(invoker,
-            request));
+                request));
         this.rpcInternalContext = RpcInternalContext.peekContext();
         this.rpcInvokeContext = RpcInvokeContext.peekContext();
         this.invoker = invoker;
@@ -79,15 +79,15 @@ public class SofaAsyncHystrixCommand extends HystrixCommand implements SofaHystr
     public SofaResponse invoke() {
         if (isCircuitBreakerOpen() && LOGGER.isWarnEnabled(invoker.getConfig().getAppName())) {
             LOGGER.warnWithApp(invoker.getConfig().getAppName(), "Circuit Breaker is opened, method: {}#{}",
-                invoker.getConfig().getInterfaceId(), request.getMethodName());
+                    invoker.getConfig().getInterfaceId(), request.getMethodName());
         }
         HystrixResponseFuture delegate = new HystrixResponseFuture(this.queue());
         try {
             boolean finished = lock.await(getLockTimeout(), TimeUnit.MILLISECONDS);
             if (!finished && !this.isExecutionComplete()) {
                 throw new SofaTimeOutException(
-                    "Asynchronous execution timed out, please check Hystrix configuration. Events: " +
-                        getExecutionEventsString());
+                        "Asynchronous execution timed out, please check Hystrix configuration. Events: " +
+                                getExecutionEventsString());
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
@@ -130,7 +130,7 @@ public class SofaAsyncHystrixCommand extends HystrixCommand implements SofaHystr
             return super.getFallback();
         }
         Object fallback = fallbackFactory.create(new FallbackContext(invoker, request, this.sofaResponse, this
-            .getExecutionException()));
+                .getExecutionException()));
         if (fallback == null) {
             return super.getFallback();
         }
@@ -140,7 +140,7 @@ public class SofaAsyncHystrixCommand extends HystrixCommand implements SofaHystr
             throw new SofaRpcRuntimeException(LogCodes.getLog(LogCodes.ERROR_HYSTRIX_FALLBACK_FAIL), e);
         } catch (InvocationTargetException e) {
             throw new SofaRpcRuntimeException(LogCodes.getLog(LogCodes.ERROR_HYSTRIX_FALLBACK_FAIL),
-                e.getTargetException());
+                    e.getTargetException());
         } finally {
             events.add(SofaAsyncHystrixEvent.FALLBACK_SUCCESS);
         }
@@ -171,7 +171,7 @@ public class SofaAsyncHystrixCommand extends HystrixCommand implements SofaHystr
         StringBuilder message = new StringBuilder("[");
         for (HystrixEventType executionEvent : executionEvents) {
             message.append(HystrixEventType.class.getSimpleName()).append("#").append(executionEvent.name())
-                .append(",");
+                    .append(",");
         }
         for (SofaAsyncHystrixEvent event : events) {
             message.append(SofaAsyncHystrixEvent.class.getSimpleName()).append("#").append(event.name()).append(",");

@@ -16,25 +16,26 @@
  */
 package com.alipay.sofa.registry.server.session.mapper;
 
-import java.util.Collections;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.Collections;
+
 public class ConnectionMapperTest {
-  @Test
-  public void test() {
-    final String key = "testKey";
-    final String val = "testVal";
-    ConnectionMapper mapper = new ConnectionMapper();
-    mapper.add(key, val);
-    Assert.assertTrue(mapper.contains(key));
-    Assert.assertEquals(mapper.get(key), val);
-    Assert.assertNotEquals(mapper.get(key + "1"), val);
-    Assert.assertEquals(mapper.size(), 1);
-    Assert.assertEquals(mapper.get(), Collections.singletonMap(key, val));
-    mapper.remove(key + "1");
-    Assert.assertEquals(mapper.size(), 1);
-    mapper.remove(key);
-    Assert.assertNull(mapper.get(key));
-  }
+    @Test
+    public void test() {
+        final String key = "testKey";
+        final String val = "testVal";
+        ConnectionMapper mapper = new ConnectionMapper();
+        mapper.add(key, val);
+        Assert.assertTrue(mapper.contains(key));
+        Assert.assertEquals(mapper.get(key), val);
+        Assert.assertNotEquals(mapper.get(key + "1"), val);
+        Assert.assertEquals(mapper.size(), 1);
+        Assert.assertEquals(mapper.get(), Collections.singletonMap(key, val));
+        mapper.remove(key + "1");
+        Assert.assertEquals(mapper.size(), 1);
+        mapper.remove(key);
+        Assert.assertNull(mapper.get(key));
+    }
 }

@@ -41,7 +41,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author huzijie
  * @version RpcEndpointWebTests.java, v 0.1 2023年04月24日 11:21 AM huzijie Exp $
  */
-@SpringBootTest(classes = ActuatorSofaBootApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = { "management.endpoints.web.exposure.include=rpc" })
+@SpringBootTest(classes = ActuatorSofaBootApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = {"management.endpoints.web.exposure.include=rpc"})
 @Import(RpcEndpointWebTests.RpcConfigurations.class)
 public class RpcEndpointWebTests {
 
@@ -53,13 +53,13 @@ public class RpcEndpointWebTests {
         ResponseEntity<String> response = restTemplate.getForEntity("/actuator/rpc", String.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody())
-            .contains(
-                "{\"interfaceId\":\"com.alipay.sofa.smoke.tests.actuator.sample.beans.SampleService\",\"uniqueId\":\"http\",\"protocols\":[\"http\"],\"registries\":[\"local\"],\"serialization\":\"hessian2\",\"register\":false,\"targetClassName\":\"com.alipay.sofa.smoke.tests.actuator.sample.beans.DefaultSampleService\",\"extraInfos\":{}}")
-            .contains(
-                "\"interfaceId\":\"com.alipay.sofa.smoke.tests.actuator.sample.beans.SampleService\",\"uniqueId\":\"\",\"protocols\":[\"bolt\"],\"registries\":[\"local\"],\"serialization\":\"hessian2\",\"register\":false,\"targetClassName\":\"com.alipay.sofa.smoke.tests.actuator.sample.beans.DefaultSampleService\",\"extraInfos\":{}")
-            .contains(
-                "{\"interfaceId\":\"com.alipay.sofa.smoke.tests.actuator.sample.beans.SampleService\",\"uniqueId\":\"consumer\",\"protocol\":\"bolt\",\"registries\":[\"local\"],\"serialization\":\"json\",\"invokeType\":\"sync\",\"subscribe\":true,\"timeout\":1500,\"retries\":5,\"extraInfos\":{}")
-            .contains("{\"protocol\":\"local\",\"index\":\"\"}");
+                .contains(
+                        "{\"interfaceId\":\"com.alipay.sofa.smoke.tests.actuator.sample.beans.SampleService\",\"uniqueId\":\"http\",\"protocols\":[\"http\"],\"registries\":[\"local\"],\"serialization\":\"hessian2\",\"register\":false,\"targetClassName\":\"com.alipay.sofa.smoke.tests.actuator.sample.beans.DefaultSampleService\",\"extraInfos\":{}}")
+                .contains(
+                        "\"interfaceId\":\"com.alipay.sofa.smoke.tests.actuator.sample.beans.SampleService\",\"uniqueId\":\"\",\"protocols\":[\"bolt\"],\"registries\":[\"local\"],\"serialization\":\"hessian2\",\"register\":false,\"targetClassName\":\"com.alipay.sofa.smoke.tests.actuator.sample.beans.DefaultSampleService\",\"extraInfos\":{}")
+                .contains(
+                        "{\"interfaceId\":\"com.alipay.sofa.smoke.tests.actuator.sample.beans.SampleService\",\"uniqueId\":\"consumer\",\"protocol\":\"bolt\",\"registries\":[\"local\"],\"serialization\":\"json\",\"invokeType\":\"sync\",\"subscribe\":true,\"timeout\":1500,\"retries\":5,\"extraInfos\":{}")
+                .contains("{\"protocol\":\"local\",\"index\":\"\"}");
     }
 
     @Configuration
@@ -69,13 +69,13 @@ public class RpcEndpointWebTests {
         private SampleService sampleServiceConsumer;
 
         @Bean
-        @SofaService(bindings = { @SofaServiceBinding(bindingType = "bolt", registry = "nacos") })
+        @SofaService(bindings = {@SofaServiceBinding(bindingType = "bolt", registry = "nacos")})
         public SampleService sampleServiceA() {
             return new DefaultSampleService();
         }
 
         @Bean
-        @SofaService(uniqueId = "http", bindings = { @SofaServiceBinding(bindingType = "http") })
+        @SofaService(uniqueId = "http", bindings = {@SofaServiceBinding(bindingType = "http")})
         public SampleService sampleServiceB() {
             return new DefaultSampleService();
         }

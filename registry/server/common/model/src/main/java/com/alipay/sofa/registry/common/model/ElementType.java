@@ -22,10 +22,16 @@ package com.alipay.sofa.registry.common.model;
  */
 public enum ElementType {
 
-  /** sub zone scope,@see DefaultSubscriber */
-  SUBSCRIBER,
-  /** multiple zone sub，@see DefaultSubscriberMulti */
-  MULTISUBSCRIBER,
-  /** */
-  PUBLISHER
+    /**
+     * sub zone scope,@see DefaultSubscriber
+     */
+    SUBSCRIBER,
+    /**
+     * multiple zone sub，@see DefaultSubscriberMulti
+     */
+    MULTISUBSCRIBER,
+    /**
+     *
+     */
+    PUBLISHER
 }

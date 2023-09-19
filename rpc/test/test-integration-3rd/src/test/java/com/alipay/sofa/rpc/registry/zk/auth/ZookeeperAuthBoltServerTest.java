@@ -53,17 +53,36 @@ import java.util.Map;
  */
 public class ZookeeperAuthBoltServerTest {
 
-    protected final static Logger      LOGGER     = LoggerFactory.getLogger(ZookeeperAuthBoltServerTest.class);
+    protected final static Logger LOGGER = LoggerFactory.getLogger(ZookeeperAuthBoltServerTest.class);
 
-    private static ServerConfig        serverConfig;
-    private static RegistryConfig      registryConfig;
+    private static ServerConfig serverConfig;
+    private static RegistryConfig registryConfig;
 
     private static Map<String, String> parameters = new HashMap<String, String>();
 
     /**
      * Zookeeper zkClient
      */
-    private static CuratorFramework    zkClient;
+    private static CuratorFramework zkClient;
+
+    /**
+     * 获取默认的AclProvider
+     *
+     * @return
+     */
+    private static ACLProvider getDefaultAclProvider() {
+        return new ACLProvider() {
+            @Override
+            public List<ACL> getDefaultAcl() {
+                return ZooDefs.Ids.CREATOR_ALL_ACL;
+            }
+
+            @Override
+            public List<ACL> getAclForPath(String path) {
+                return ZooDefs.Ids.CREATOR_ALL_ACL;
+            }
+        };
+    }
 
     @Before
     public void setUp() {
@@ -79,28 +98,28 @@ public class ZookeeperAuthBoltServerTest {
         parameters.put("addAuth", "sofazk:rpc1");
 
         registryConfig = new RegistryConfig()
-            .setProtocol(RpcConstants.REGISTRY_PROTOCOL_ZK)
-            .setAddress("127.0.0.1:2181/authtest")
-            .setParameters(parameters);
+                .setProtocol(RpcConstants.REGISTRY_PROTOCOL_ZK)
+                .setAddress("127.0.0.1:2181/authtest")
+                .setParameters(parameters);
 
         serverConfig = new ServerConfig()
-            .setProtocol("bolt") // 设置一个协议，默认bolt
-            .setPort(12200) // 设置一个端口，默认12200
-            .setDaemon(false); // 非守护线程
+                .setProtocol("bolt") // 设置一个协议，默认bolt
+                .setPort(12200) // 设置一个端口，默认12200
+                .setDaemon(false); // 非守护线程
 
         ProviderConfig<EchoService> providerConfig = new ProviderConfig<EchoService>()
-            .setRegistry(registryConfig)
-            .setInterfaceId(EchoService.class.getName()) // 指定接口
-            .setRef(new EchoServiceImpl()) // 指定实现
-            .setServer(serverConfig); // 指定服务端
+                .setRegistry(registryConfig)
+                .setInterfaceId(EchoService.class.getName()) // 指定接口
+                .setRef(new EchoServiceImpl()) // 指定实现
+                .setServer(serverConfig); // 指定服务端
         providerConfig.export(); // 发布服务
 
         ConsumerConfig<EchoService> consumerConfig = new ConsumerConfig<EchoService>()
-            .setRegistry(registryConfig)
-            .setInterfaceId(EchoService.class.getName()) // 指定接口
-            .setProtocol("bolt") // 指定协议
-            .setTimeout(3000)
-            .setConnectTimeout(10 * 1000);
+                .setRegistry(registryConfig)
+                .setInterfaceId(EchoService.class.getName()) // 指定接口
+                .setProtocol("bolt") // 指定协议
+                .setTimeout(3000)
+                .setConnectTimeout(10 * 1000);
         EchoService echoService = consumerConfig.refer();
 
         String result = echoService.echoStr("auth test");
@@ -117,20 +136,20 @@ public class ZookeeperAuthBoltServerTest {
         parameters.put("addAuth", "sofazk:rpc2");
 
         registryConfig = new RegistryConfig()
-            .setProtocol(RpcConstants.REGISTRY_PROTOCOL_ZK)
-            .setAddress("127.0.0.1:2181/authtest")
-            .setParameters(parameters);
+                .setProtocol(RpcConstants.REGISTRY_PROTOCOL_ZK)
+                .setAddress("127.0.0.1:2181/authtest")
+                .setParameters(parameters);
 
         serverConfig = new ServerConfig()
-            .setProtocol("bolt") // 设置一个协议，默认bolt
-            .setPort(12200) // 设置一个端口，默认12200
-            .setDaemon(false); // 非守护线程
+                .setProtocol("bolt") // 设置一个协议，默认bolt
+                .setPort(12200) // 设置一个端口，默认12200
+                .setDaemon(false); // 非守护线程
 
         ProviderConfig<EchoService> providerConfig = new ProviderConfig<EchoService>()
-            .setRegistry(registryConfig)
-            .setInterfaceId(EchoService.class.getName()) // 指定接口
-            .setRef(new EchoServiceImpl()) // 指定实现
-            .setServer(serverConfig); // 指定服务端
+                .setRegistry(registryConfig)
+                .setInterfaceId(EchoService.class.getName()) // 指定接口
+                .setRef(new EchoServiceImpl()) // 指定实现
+                .setServer(serverConfig); // 指定服务端
 
         try {
             providerConfig.export(); // 发布服务
@@ -147,11 +166,11 @@ public class ZookeeperAuthBoltServerTest {
         }
 
         ConsumerConfig<EchoService> consumerConfig = new ConsumerConfig<EchoService>()
-            .setRegistry(registryConfig)
-            .setInterfaceId(EchoService.class.getName()) // 指定接口
-            .setProtocol("bolt") // 指定协议
-            .setTimeout(3000)
-            .setConnectTimeout(10 * 1000);
+                .setRegistry(registryConfig)
+                .setInterfaceId(EchoService.class.getName()) // 指定接口
+                .setProtocol("bolt") // 指定协议
+                .setTimeout(3000)
+                .setConnectTimeout(10 * 1000);
 
         try {
             consumerConfig.refer();// 引用服务
@@ -191,34 +210,15 @@ public class ZookeeperAuthBoltServerTest {
         return info;
     }
 
-    /**
-     * 获取默认的AclProvider
-     *
-     * @return
-     */
-    private static ACLProvider getDefaultAclProvider() {
-        return new ACLProvider() {
-            @Override
-            public List<ACL> getDefaultAcl() {
-                return ZooDefs.Ids.CREATOR_ALL_ACL;
-            }
-
-            @Override
-            public List<ACL> getAclForPath(String path) {
-                return ZooDefs.Ids.CREATOR_ALL_ACL;
-            }
-        };
-    }
-
     protected void createPathWithAuth() {
         RetryPolicy retryPolicy = new ExponentialBackoffRetry(1000, 3);
         CuratorFrameworkFactory.Builder zkClientuilder = CuratorFrameworkFactory.builder()
-            .connectString("127.0.0.1:2181")
-            .sessionTimeoutMs(20000 * 3)
-            .connectionTimeoutMs(20000)
-            .canBeReadOnly(false)
-            .retryPolicy(retryPolicy)
-            .defaultData(null);
+                .connectString("127.0.0.1:2181")
+                .sessionTimeoutMs(20000 * 3)
+                .connectionTimeoutMs(20000)
+                .canBeReadOnly(false)
+                .retryPolicy(retryPolicy)
+                .defaultData(null);
 
         //是否需要添加zk的认证信息
         Map authMap = new HashMap<String, String>();
@@ -229,7 +229,7 @@ public class ZookeeperAuthBoltServerTest {
         List<AuthInfo> authInfos = buildAuthInfo(authMap);
         if (CommonUtils.isNotEmpty(authInfos)) {
             zkClientuilder = zkClientuilder.aclProvider(getDefaultAclProvider())
-                .authorization(authInfos);
+                    .authorization(authInfos);
         }
 
         try {

@@ -17,5 +17,5 @@
 package com.alipay.sofa.registry.concurrent;
 
 public interface UnThrowableCallable<V> {
-  V call();
+    V call();
 }

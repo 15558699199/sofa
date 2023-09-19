@@ -16,8 +16,6 @@
  */
 package com.alipay.sofa.registry.server.session.remoting.console.handler;
 
-import static org.mockito.Mockito.mock;
-
 import com.alipay.sofa.registry.common.model.CommonResponse;
 import com.alipay.sofa.registry.common.model.Node;
 import com.alipay.sofa.registry.common.model.sessionserver.QuerySubscriberRequest;
@@ -29,33 +27,35 @@ import com.alipay.sofa.registry.server.session.store.Interests;
 import org.junit.Assert;
 import org.junit.Test;
 
+import static org.mockito.Mockito.mock;
+
 public class QuerySubscriberRequestHandlerTest {
-  private SessionServerConfigBean serverConfigBean = TestUtils.newSessionConfig("testDc");
+    private SessionServerConfigBean serverConfigBean = TestUtils.newSessionConfig("testDc");
 
-  private QuerySubscriberRequestHandler newHandler() {
-    QuerySubscriberRequestHandler handler = new QuerySubscriberRequestHandler();
-    handler.executorManager = new ExecutorManager(serverConfigBean);
-    Assert.assertNotNull(handler.getExecutor());
-    Assert.assertEquals(handler.interest(), QuerySubscriberRequest.class);
-    Assert.assertEquals(handler.getConnectNodeType(), Node.NodeType.CONSOLE);
-    Assert.assertEquals(handler.getType(), ChannelHandler.HandlerType.PROCESSER);
-    Assert.assertEquals(handler.getInvokeType(), ChannelHandler.InvokeType.SYNC);
-    Assert.assertFalse(((CommonResponse) handler.buildFailedResponse("msg")).isSuccess());
-    return handler;
-  }
+    private static QuerySubscriberRequest request() {
+        QuerySubscriberRequest req = new QuerySubscriberRequest("testDataId");
+        Assert.assertTrue(req.toString(), req.toString().contains("testDataId"));
+        return req;
+    }
 
-  @Test
-  public void testHandle() {
-    QuerySubscriberRequestHandler handler = newHandler();
-    handler.sessionInterests = mock(Interests.class);
+    private QuerySubscriberRequestHandler newHandler() {
+        QuerySubscriberRequestHandler handler = new QuerySubscriberRequestHandler();
+        handler.executorManager = new ExecutorManager(serverConfigBean);
+        Assert.assertNotNull(handler.getExecutor());
+        Assert.assertEquals(handler.interest(), QuerySubscriberRequest.class);
+        Assert.assertEquals(handler.getConnectNodeType(), Node.NodeType.CONSOLE);
+        Assert.assertEquals(handler.getType(), ChannelHandler.HandlerType.PROCESSER);
+        Assert.assertEquals(handler.getInvokeType(), ChannelHandler.InvokeType.SYNC);
+        Assert.assertFalse(((CommonResponse) handler.buildFailedResponse("msg")).isSuccess());
+        return handler;
+    }
 
-    CommonResponse obj = (CommonResponse) handler.doHandle(null, request());
-    Assert.assertTrue(obj.isSuccess());
-  }
+    @Test
+    public void testHandle() {
+        QuerySubscriberRequestHandler handler = newHandler();
+        handler.sessionInterests = mock(Interests.class);
 
-  private static QuerySubscriberRequest request() {
-    QuerySubscriberRequest req = new QuerySubscriberRequest("testDataId");
-    Assert.assertTrue(req.toString(), req.toString().contains("testDataId"));
-    return req;
-  }
+        CommonResponse obj = (CommonResponse) handler.doHandle(null, request());
+        Assert.assertTrue(obj.isSuccess());
+    }
 }

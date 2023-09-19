@@ -20,6 +20,7 @@ import com.alipay.sofa.registry.common.model.Tuple;
 import com.alipay.sofa.registry.common.model.slot.BaseSlotStatus;
 import com.alipay.sofa.registry.common.model.slot.Slot;
 import com.alipay.sofa.registry.common.model.slot.SlotAccess;
+
 import java.util.List;
 
 /**
@@ -28,15 +29,15 @@ import java.util.List;
  */
 public interface SlotAccessor {
 
-  int slotOf(String dataInfoId);
+    int slotOf(String dataInfoId);
 
-  Slot getSlot(String dataCenter, int slotId);
+    Slot getSlot(String dataCenter, int slotId);
 
-  SlotAccess checkSlotAccess(String dataCenter, int slotId, long srcSlotEpoch, long srcLeaderEpoch);
+    SlotAccess checkSlotAccess(String dataCenter, int slotId, long srcSlotEpoch, long srcLeaderEpoch);
 
-  boolean isLeader(String dataCenter, int slotId);
+    boolean isLeader(String dataCenter, int slotId);
 
-  boolean isFollower(String dataCenter, int slotId);
+    boolean isFollower(String dataCenter, int slotId);
 
-  Tuple<Long, List<BaseSlotStatus>> getSlotTableEpochAndStatuses(String dataCenter);
+    Tuple<Long, List<BaseSlotStatus>> getSlotTableEpochAndStatuses(String dataCenter);
 }

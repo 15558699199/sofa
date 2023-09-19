@@ -50,7 +50,7 @@ public class SofaRuntimeAwareProcessorTests {
     private SofaRuntimeAwareBean sofaRuntimeAwareBean;
 
     @Autowired
-    private SofaRuntimeContext   sofaRuntimeContext;
+    private SofaRuntimeContext sofaRuntimeContext;
 
     @Test
     public void clientFactory() {
@@ -70,7 +70,7 @@ public class SofaRuntimeAwareProcessorTests {
     @Test
     public void jvmFilter() {
         assertThat(sofaRuntimeContext.getJvmFilterHolder().getJvmFilters()).contains(
-            sofaRuntimeAwareBean);
+                sofaRuntimeAwareBean);
     }
 
     @Test
@@ -90,22 +90,12 @@ public class SofaRuntimeAwareProcessorTests {
     }
 
     static class SofaRuntimeAwareBean implements SofaRuntimeContextAware, ClientFactoryAware,
-                                     ExtensionClientAware, JvmFilter, RuntimeShutdownAware {
+            ExtensionClientAware, JvmFilter, RuntimeShutdownAware {
 
-        private ClientFactory      clientFactory;
-        private ExtensionClient    extensionClient;
+        private ClientFactory clientFactory;
+        private ExtensionClient extensionClient;
         private SofaRuntimeContext sofaRuntimeContext;
-        private boolean            trigger;
-
-        @Override
-        public void setClientFactory(ClientFactory clientFactory) {
-            this.clientFactory = clientFactory;
-        }
-
-        @Override
-        public void setExtensionClient(ExtensionClient extensionClient) {
-            this.extensionClient = extensionClient;
-        }
+        private boolean trigger;
 
         @Override
         public boolean before(JvmFilterContext context) {
@@ -123,11 +113,6 @@ public class SofaRuntimeAwareProcessorTests {
         }
 
         @Override
-        public void setSofaRuntimeContext(SofaRuntimeContext sofaRuntimeContext) {
-            this.sofaRuntimeContext = sofaRuntimeContext;
-        }
-
-        @Override
         public int getOrder() {
             return 0;
         }
@@ -136,12 +121,27 @@ public class SofaRuntimeAwareProcessorTests {
             return clientFactory;
         }
 
+        @Override
+        public void setClientFactory(ClientFactory clientFactory) {
+            this.clientFactory = clientFactory;
+        }
+
         public ExtensionClient getExtensionClient() {
             return extensionClient;
         }
 
+        @Override
+        public void setExtensionClient(ExtensionClient extensionClient) {
+            this.extensionClient = extensionClient;
+        }
+
         public SofaRuntimeContext getSofaRuntimeContext() {
             return sofaRuntimeContext;
+        }
+
+        @Override
+        public void setSofaRuntimeContext(SofaRuntimeContext sofaRuntimeContext) {
+            this.sofaRuntimeContext = sofaRuntimeContext;
         }
 
         public boolean isTrigger() {

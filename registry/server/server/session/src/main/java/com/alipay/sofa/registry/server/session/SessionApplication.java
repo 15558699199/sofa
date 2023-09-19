@@ -31,15 +31,15 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 public class SessionApplication {
 
-  private static final Logger CRITICAL_LOGGER = LoggerFactory.getLogger("CRITICAL-ERROR");
+    private static final Logger CRITICAL_LOGGER = LoggerFactory.getLogger("CRITICAL-ERROR");
 
-  public static void main(String[] args) {
-    // setup DefaultUncaughtExceptionHandler
-    Thread.setDefaultUncaughtExceptionHandler(
-        (t, e) ->
-            CRITICAL_LOGGER.safeError(
-                "UncaughtException in Thread({}): {}", t.getName(), e.getMessage(), e));
+    public static void main(String[] args) {
+        // setup DefaultUncaughtExceptionHandler
+        Thread.setDefaultUncaughtExceptionHandler(
+                (t, e) ->
+                        CRITICAL_LOGGER.safeError(
+                                "UncaughtException in Thread({}): {}", t.getName(), e.getMessage(), e));
 
-    SpringApplication.run(SessionApplication.class, args);
-  }
+        SpringApplication.run(SessionApplication.class, args);
+    }
 }

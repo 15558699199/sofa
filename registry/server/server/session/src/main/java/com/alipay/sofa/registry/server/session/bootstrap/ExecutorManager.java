@@ -22,14 +22,11 @@ import com.alipay.sofa.registry.server.shared.meta.MetaServerService;
 import com.alipay.sofa.registry.task.MetricsableThreadPoolExecutor;
 import com.alipay.sofa.registry.util.NamedThreadFactory;
 import com.alipay.sofa.registry.util.OsUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.concurrent.*;
 
 /**
  * @author shangyu.wh
@@ -37,256 +34,243 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class ExecutorManager {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(ExecutorManager.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ExecutorManager.class);
+    private static final String ACCESS_DATA_EXECUTOR = "AccessDataExecutor";
+    private static final String ACCESS_SUB_EXECUTOR = "AccessSubExecutor";
+    private static final String DATA_CHANGE_REQUEST_EXECUTOR = "DataChangeExecutor";
+    private static final String DATA_SLOT_SYNC_REQUEST_EXECUTOR = "SlotSyncExecutor";
+    private static final String ACCESS_METADATA_EXECUTOR = "AccessMetadataExecutor";
+    private static final String CONSOLE_EXECUTOR = "ConsoleExecutor";
+    private static final String ZONE_SDK_EXECUTOR = "ZoneSdkExecutor";
+    private static final String CLIENT_MANAGER_CHECK_EXECUTOR = "ClientManagerCheckExecutor";
+    private static final String APP_REVISION_REGISTER_EXECUTOR = "AppRevisionRegisterExecutor";
+    private static final String SCAN_EXECUTOR = "ScanExecutor";
+    private final ScheduledThreadPoolExecutor scheduler;
+    private final ThreadPoolExecutor accessDataExecutor;
+    private final ThreadPoolExecutor accessSubExecutor;
+    private final ThreadPoolExecutor dataChangeRequestExecutor;
+    private final ThreadPoolExecutor dataSlotSyncRequestExecutor;
+    private final ThreadPoolExecutor accessMetadataExecutor;
+    private final ThreadPoolExecutor consoleExecutor;
+    private final ThreadPoolExecutor zoneSdkExecutor;
+    private final ThreadPoolExecutor clientManagerCheckExecutor;
+    private final ThreadPoolExecutor scanExecutor;
+    private final ThreadPoolExecutor appRevisionRegisterExecutor;
+    @Autowired
+    protected MetaServerService metaServerService;
+    private Map<String, ThreadPoolExecutor> reportExecutors = new HashMap<>();
 
-  private final ScheduledThreadPoolExecutor scheduler;
+    public ExecutorManager(SessionServerConfig sessionServerConfig) {
+        scheduler =
+                new ScheduledThreadPoolExecutor(
+                        sessionServerConfig.getSessionSchedulerPoolSize(),
+                        new NamedThreadFactory("SessionScheduler"));
 
-  private final ThreadPoolExecutor accessDataExecutor;
-  private final ThreadPoolExecutor accessSubExecutor;
-  private final ThreadPoolExecutor dataChangeRequestExecutor;
-  private final ThreadPoolExecutor dataSlotSyncRequestExecutor;
-  private final ThreadPoolExecutor accessMetadataExecutor;
-  private final ThreadPoolExecutor consoleExecutor;
-  private final ThreadPoolExecutor zoneSdkExecutor;
-  private final ThreadPoolExecutor clientManagerCheckExecutor;
-  private final ThreadPoolExecutor scanExecutor;
+        accessDataExecutor =
+                reportExecutors.computeIfAbsent(
+                        ACCESS_DATA_EXECUTOR,
+                        k ->
+                                new MetricsableThreadPoolExecutor(
+                                        ACCESS_DATA_EXECUTOR,
+                                        sessionServerConfig.getAccessDataExecutorPoolSize(),
+                                        sessionServerConfig.getAccessDataExecutorPoolSize(),
+                                        60,
+                                        TimeUnit.SECONDS,
+                                        new ArrayBlockingQueue<>(sessionServerConfig.getAccessDataExecutorQueueSize()),
+                                        new NamedThreadFactory(ACCESS_DATA_EXECUTOR, true),
+                                        (r, executor) -> {
+                                            String msg =
+                                                    String.format(
+                                                            "Task(%s) %s rejected from %s, just ignore it to let client timeout.",
+                                                            r.getClass(), r, executor);
+                                            LOGGER.error(msg);
+                                        }));
 
-  @Autowired protected MetaServerService metaServerService;
+        accessSubExecutor =
+                reportExecutors.computeIfAbsent(
+                        ACCESS_SUB_EXECUTOR,
+                        k ->
+                                new MetricsableThreadPoolExecutor(
+                                        ACCESS_SUB_EXECUTOR,
+                                        sessionServerConfig.getAccessSubDataExecutorPoolSize(),
+                                        sessionServerConfig.getAccessSubDataExecutorPoolSize(),
+                                        60,
+                                        TimeUnit.SECONDS,
+                                        new ArrayBlockingQueue<>(
+                                                sessionServerConfig.getAccessSubDataExecutorQueueSize()),
+                                        new NamedThreadFactory(ACCESS_SUB_EXECUTOR, true),
+                                        (r, executor) -> {
+                                            String msg =
+                                                    String.format(
+                                                            "Task(%s) %s rejected from %s, just ignore it to let client timeout.",
+                                                            r.getClass(), r, executor);
+                                            LOGGER.error(msg);
+                                        }));
+        dataChangeRequestExecutor =
+                reportExecutors.computeIfAbsent(
+                        DATA_CHANGE_REQUEST_EXECUTOR,
+                        k ->
+                                new MetricsableThreadPoolExecutor(
+                                        DATA_CHANGE_REQUEST_EXECUTOR,
+                                        sessionServerConfig.getDataChangeExecutorPoolSize(),
+                                        sessionServerConfig.getDataChangeExecutorPoolSize(),
+                                        60,
+                                        TimeUnit.SECONDS,
+                                        new ArrayBlockingQueue<>(sessionServerConfig.getDataChangeExecutorQueueSize()),
+                                        new NamedThreadFactory(DATA_CHANGE_REQUEST_EXECUTOR, true)));
 
-  private final ThreadPoolExecutor appRevisionRegisterExecutor;
+        dataSlotSyncRequestExecutor =
+                reportExecutors.computeIfAbsent(
+                        DATA_SLOT_SYNC_REQUEST_EXECUTOR,
+                        k ->
+                                new MetricsableThreadPoolExecutor(
+                                        DATA_SLOT_SYNC_REQUEST_EXECUTOR,
+                                        sessionServerConfig.getSlotSyncWorkerSize(),
+                                        sessionServerConfig.getSlotSyncWorkerSize(),
+                                        60,
+                                        TimeUnit.SECONDS,
+                                        new ArrayBlockingQueue<>(sessionServerConfig.getSlotSyncMaxBufferSize()),
+                                        new NamedThreadFactory(DATA_SLOT_SYNC_REQUEST_EXECUTOR, true)));
+        accessMetadataExecutor =
+                reportExecutors.computeIfAbsent(
+                        ACCESS_METADATA_EXECUTOR,
+                        k ->
+                                new MetricsableThreadPoolExecutor(
+                                        ACCESS_METADATA_EXECUTOR,
+                                        sessionServerConfig.getAccessMetadataWorkerSize(),
+                                        sessionServerConfig.getAccessMetadataWorkerSize(),
+                                        60,
+                                        TimeUnit.SECONDS,
+                                        new ArrayBlockingQueue<>(sessionServerConfig.getAccessMetadataMaxBufferSize()),
+                                        new NamedThreadFactory(ACCESS_METADATA_EXECUTOR, true)));
 
-  private Map<String, ThreadPoolExecutor> reportExecutors = new HashMap<>();
+        consoleExecutor =
+                reportExecutors.computeIfAbsent(
+                        CONSOLE_EXECUTOR,
+                        k ->
+                                new MetricsableThreadPoolExecutor(
+                                        CONSOLE_EXECUTOR,
+                                        sessionServerConfig.getConsoleExecutorPoolSize(),
+                                        sessionServerConfig.getConsoleExecutorPoolSize(),
+                                        60L,
+                                        TimeUnit.SECONDS,
+                                        new LinkedBlockingQueue(sessionServerConfig.getConsoleExecutorQueueSize()),
+                                        new NamedThreadFactory(CONSOLE_EXECUTOR, true)));
 
-  private static final String ACCESS_DATA_EXECUTOR = "AccessDataExecutor";
+        zoneSdkExecutor =
+                reportExecutors.computeIfAbsent(
+                        ZONE_SDK_EXECUTOR,
+                        k ->
+                                MetricsableThreadPoolExecutor.newExecutor(
+                                        ZONE_SDK_EXECUTOR,
+                                        OsUtils.getCpuCount() * 5,
+                                        100,
+                                        new ThreadPoolExecutor.CallerRunsPolicy()));
 
-  private static final String ACCESS_SUB_EXECUTOR = "AccessSubExecutor";
+        clientManagerCheckExecutor =
+                reportExecutors.computeIfAbsent(
+                        CLIENT_MANAGER_CHECK_EXECUTOR,
+                        k ->
+                                MetricsableThreadPoolExecutor.newExecutor(
+                                        CLIENT_MANAGER_CHECK_EXECUTOR,
+                                        OsUtils.getCpuCount() * 5,
+                                        100,
+                                        new ThreadPoolExecutor.CallerRunsPolicy()));
 
-  private static final String DATA_CHANGE_REQUEST_EXECUTOR = "DataChangeExecutor";
+        appRevisionRegisterExecutor =
+                reportExecutors.computeIfAbsent(
+                        APP_REVISION_REGISTER_EXECUTOR,
+                        k ->
+                                new MetricsableThreadPoolExecutor(
+                                        APP_REVISION_REGISTER_EXECUTOR,
+                                        sessionServerConfig.getMetadataRegisterExecutorPoolSize(),
+                                        sessionServerConfig.getMetadataRegisterExecutorPoolSize(),
+                                        60,
+                                        TimeUnit.SECONDS,
+                                        new ArrayBlockingQueue<>(
+                                                sessionServerConfig.getMetadataRegisterExecutorQueueSize()),
+                                        new NamedThreadFactory(APP_REVISION_REGISTER_EXECUTOR, true),
+                                        new ThreadPoolExecutor.CallerRunsPolicy()));
 
-  private static final String DATA_SLOT_SYNC_REQUEST_EXECUTOR = "SlotSyncExecutor";
+        scanExecutor =
+                reportExecutors.computeIfAbsent(
+                        SCAN_EXECUTOR,
+                        k ->
+                                new MetricsableThreadPoolExecutor(
+                                        SCAN_EXECUTOR,
+                                        sessionServerConfig.getScanExecutorPoolSize(),
+                                        sessionServerConfig.getScanExecutorPoolSize(),
+                                        60,
+                                        TimeUnit.SECONDS,
+                                        new ArrayBlockingQueue<>(sessionServerConfig.getScanExecutorQueueSize()),
+                                        new NamedThreadFactory(SCAN_EXECUTOR, true),
+                                        new ThreadPoolExecutor.CallerRunsPolicy()));
+    }
 
-  private static final String ACCESS_METADATA_EXECUTOR = "AccessMetadataExecutor";
+    public void startScheduler() {
+    }
 
-  private static final String CONSOLE_EXECUTOR = "ConsoleExecutor";
+    public void stopScheduler() {
+        scheduler.shutdown();
 
-  private static final String ZONE_SDK_EXECUTOR = "ZoneSdkExecutor";
+        accessDataExecutor.shutdown();
 
-  private static final String CLIENT_MANAGER_CHECK_EXECUTOR = "ClientManagerCheckExecutor";
+        dataChangeRequestExecutor.shutdown();
 
-  private static final String APP_REVISION_REGISTER_EXECUTOR = "AppRevisionRegisterExecutor";
+        dataSlotSyncRequestExecutor.shutdown();
+    }
 
-  private static final String SCAN_EXECUTOR = "ScanExecutor";
+    public Map<String, ThreadPoolExecutor> getReportExecutors() {
+        return reportExecutors;
+    }
 
-  public ExecutorManager(SessionServerConfig sessionServerConfig) {
-    scheduler =
-        new ScheduledThreadPoolExecutor(
-            sessionServerConfig.getSessionSchedulerPoolSize(),
-            new NamedThreadFactory("SessionScheduler"));
+    public ThreadPoolExecutor getAccessDataExecutor() {
+        return accessDataExecutor;
+    }
 
-    accessDataExecutor =
-        reportExecutors.computeIfAbsent(
-            ACCESS_DATA_EXECUTOR,
-            k ->
-                new MetricsableThreadPoolExecutor(
-                    ACCESS_DATA_EXECUTOR,
-                    sessionServerConfig.getAccessDataExecutorPoolSize(),
-                    sessionServerConfig.getAccessDataExecutorPoolSize(),
-                    60,
-                    TimeUnit.SECONDS,
-                    new ArrayBlockingQueue<>(sessionServerConfig.getAccessDataExecutorQueueSize()),
-                    new NamedThreadFactory(ACCESS_DATA_EXECUTOR, true),
-                    (r, executor) -> {
-                      String msg =
-                          String.format(
-                              "Task(%s) %s rejected from %s, just ignore it to let client timeout.",
-                              r.getClass(), r, executor);
-                      LOGGER.error(msg);
-                    }));
+    public ThreadPoolExecutor getAccessSubExecutor() {
+        return accessSubExecutor;
+    }
 
-    accessSubExecutor =
-        reportExecutors.computeIfAbsent(
-            ACCESS_SUB_EXECUTOR,
-            k ->
-                new MetricsableThreadPoolExecutor(
-                    ACCESS_SUB_EXECUTOR,
-                    sessionServerConfig.getAccessSubDataExecutorPoolSize(),
-                    sessionServerConfig.getAccessSubDataExecutorPoolSize(),
-                    60,
-                    TimeUnit.SECONDS,
-                    new ArrayBlockingQueue<>(
-                        sessionServerConfig.getAccessSubDataExecutorQueueSize()),
-                    new NamedThreadFactory(ACCESS_SUB_EXECUTOR, true),
-                    (r, executor) -> {
-                      String msg =
-                          String.format(
-                              "Task(%s) %s rejected from %s, just ignore it to let client timeout.",
-                              r.getClass(), r, executor);
-                      LOGGER.error(msg);
-                    }));
-    dataChangeRequestExecutor =
-        reportExecutors.computeIfAbsent(
-            DATA_CHANGE_REQUEST_EXECUTOR,
-            k ->
-                new MetricsableThreadPoolExecutor(
-                    DATA_CHANGE_REQUEST_EXECUTOR,
-                    sessionServerConfig.getDataChangeExecutorPoolSize(),
-                    sessionServerConfig.getDataChangeExecutorPoolSize(),
-                    60,
-                    TimeUnit.SECONDS,
-                    new ArrayBlockingQueue<>(sessionServerConfig.getDataChangeExecutorQueueSize()),
-                    new NamedThreadFactory(DATA_CHANGE_REQUEST_EXECUTOR, true)));
+    public ThreadPoolExecutor getDataChangeRequestExecutor() {
+        return dataChangeRequestExecutor;
+    }
 
-    dataSlotSyncRequestExecutor =
-        reportExecutors.computeIfAbsent(
-            DATA_SLOT_SYNC_REQUEST_EXECUTOR,
-            k ->
-                new MetricsableThreadPoolExecutor(
-                    DATA_SLOT_SYNC_REQUEST_EXECUTOR,
-                    sessionServerConfig.getSlotSyncWorkerSize(),
-                    sessionServerConfig.getSlotSyncWorkerSize(),
-                    60,
-                    TimeUnit.SECONDS,
-                    new ArrayBlockingQueue<>(sessionServerConfig.getSlotSyncMaxBufferSize()),
-                    new NamedThreadFactory(DATA_SLOT_SYNC_REQUEST_EXECUTOR, true)));
-    accessMetadataExecutor =
-        reportExecutors.computeIfAbsent(
-            ACCESS_METADATA_EXECUTOR,
-            k ->
-                new MetricsableThreadPoolExecutor(
-                    ACCESS_METADATA_EXECUTOR,
-                    sessionServerConfig.getAccessMetadataWorkerSize(),
-                    sessionServerConfig.getAccessMetadataWorkerSize(),
-                    60,
-                    TimeUnit.SECONDS,
-                    new ArrayBlockingQueue<>(sessionServerConfig.getAccessMetadataMaxBufferSize()),
-                    new NamedThreadFactory(ACCESS_METADATA_EXECUTOR, true)));
+    public ThreadPoolExecutor getDataSlotSyncRequestExecutor() {
+        return dataSlotSyncRequestExecutor;
+    }
 
-    consoleExecutor =
-        reportExecutors.computeIfAbsent(
-            CONSOLE_EXECUTOR,
-            k ->
-                new MetricsableThreadPoolExecutor(
-                    CONSOLE_EXECUTOR,
-                    sessionServerConfig.getConsoleExecutorPoolSize(),
-                    sessionServerConfig.getConsoleExecutorPoolSize(),
-                    60L,
-                    TimeUnit.SECONDS,
-                    new LinkedBlockingQueue(sessionServerConfig.getConsoleExecutorQueueSize()),
-                    new NamedThreadFactory(CONSOLE_EXECUTOR, true)));
+    public ThreadPoolExecutor getAccessMetadataExecutor() {
+        return accessMetadataExecutor;
+    }
 
-    zoneSdkExecutor =
-        reportExecutors.computeIfAbsent(
-            ZONE_SDK_EXECUTOR,
-            k ->
-                MetricsableThreadPoolExecutor.newExecutor(
-                    ZONE_SDK_EXECUTOR,
-                    OsUtils.getCpuCount() * 5,
-                    100,
-                    new ThreadPoolExecutor.CallerRunsPolicy()));
+    public ThreadPoolExecutor getConsoleExecutor() {
+        return consoleExecutor;
+    }
 
-    clientManagerCheckExecutor =
-        reportExecutors.computeIfAbsent(
-            CLIENT_MANAGER_CHECK_EXECUTOR,
-            k ->
-                MetricsableThreadPoolExecutor.newExecutor(
-                    CLIENT_MANAGER_CHECK_EXECUTOR,
-                    OsUtils.getCpuCount() * 5,
-                    100,
-                    new ThreadPoolExecutor.CallerRunsPolicy()));
+    public ThreadPoolExecutor getZoneSdkExecutor() {
+        return zoneSdkExecutor;
+    }
 
-    appRevisionRegisterExecutor =
-        reportExecutors.computeIfAbsent(
-            APP_REVISION_REGISTER_EXECUTOR,
-            k ->
-                new MetricsableThreadPoolExecutor(
-                    APP_REVISION_REGISTER_EXECUTOR,
-                    sessionServerConfig.getMetadataRegisterExecutorPoolSize(),
-                    sessionServerConfig.getMetadataRegisterExecutorPoolSize(),
-                    60,
-                    TimeUnit.SECONDS,
-                    new ArrayBlockingQueue<>(
-                        sessionServerConfig.getMetadataRegisterExecutorQueueSize()),
-                    new NamedThreadFactory(APP_REVISION_REGISTER_EXECUTOR, true),
-                    new ThreadPoolExecutor.CallerRunsPolicy()));
+    /**
+     * Getter method for property <tt>appRevisionRegisterExecutor</tt>.
+     *
+     * @return property value of appRevisionRegisterExecutor
+     */
+    public ThreadPoolExecutor getAppRevisionRegisterExecutor() {
+        return appRevisionRegisterExecutor;
+    }
 
-    scanExecutor =
-        reportExecutors.computeIfAbsent(
-            SCAN_EXECUTOR,
-            k ->
-                new MetricsableThreadPoolExecutor(
-                    SCAN_EXECUTOR,
-                    sessionServerConfig.getScanExecutorPoolSize(),
-                    sessionServerConfig.getScanExecutorPoolSize(),
-                    60,
-                    TimeUnit.SECONDS,
-                    new ArrayBlockingQueue<>(sessionServerConfig.getScanExecutorQueueSize()),
-                    new NamedThreadFactory(SCAN_EXECUTOR, true),
-                    new ThreadPoolExecutor.CallerRunsPolicy()));
-  }
+    /**
+     * Getter method for property <tt>clientManagerCheckExecutor</tt>.
+     *
+     * @return property value of clientManagerCheckExecutor
+     */
+    public ThreadPoolExecutor getClientManagerCheckExecutor() {
+        return clientManagerCheckExecutor;
+    }
 
-  public void startScheduler() {}
-
-  public void stopScheduler() {
-    scheduler.shutdown();
-
-    accessDataExecutor.shutdown();
-
-    dataChangeRequestExecutor.shutdown();
-
-    dataSlotSyncRequestExecutor.shutdown();
-  }
-
-  public Map<String, ThreadPoolExecutor> getReportExecutors() {
-    return reportExecutors;
-  }
-
-  public ThreadPoolExecutor getAccessDataExecutor() {
-    return accessDataExecutor;
-  }
-
-  public ThreadPoolExecutor getAccessSubExecutor() {
-    return accessSubExecutor;
-  }
-
-  public ThreadPoolExecutor getDataChangeRequestExecutor() {
-    return dataChangeRequestExecutor;
-  }
-
-  public ThreadPoolExecutor getDataSlotSyncRequestExecutor() {
-    return dataSlotSyncRequestExecutor;
-  }
-
-  public ThreadPoolExecutor getAccessMetadataExecutor() {
-    return accessMetadataExecutor;
-  }
-
-  public ThreadPoolExecutor getConsoleExecutor() {
-    return consoleExecutor;
-  }
-
-  public ThreadPoolExecutor getZoneSdkExecutor() {
-    return zoneSdkExecutor;
-  }
-
-  /**
-   * Getter method for property <tt>appRevisionRegisterExecutor</tt>.
-   *
-   * @return property value of appRevisionRegisterExecutor
-   */
-  public ThreadPoolExecutor getAppRevisionRegisterExecutor() {
-    return appRevisionRegisterExecutor;
-  }
-
-  /**
-   * Getter method for property <tt>clientManagerCheckExecutor</tt>.
-   *
-   * @return property value of clientManagerCheckExecutor
-   */
-  public ThreadPoolExecutor getClientManagerCheckExecutor() {
-    return clientManagerCheckExecutor;
-  }
-
-  public ThreadPoolExecutor getScanExecutor() {
-    return scanExecutor;
-  }
+    public ThreadPoolExecutor getScanExecutor() {
+        return scanExecutor;
+    }
 }

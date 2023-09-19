@@ -37,9 +37,9 @@ public class ThreadPoolMonitorTests {
     @Test
     public void checkStop() throws InterruptedException {
         ThreadPoolExecutor executorService = new ThreadPoolExecutor(10, 11, 1, TimeUnit.DAYS,
-            new LinkedBlockingQueue<>(10));
+                new LinkedBlockingQueue<>(10));
         RpcThreadPoolMonitor rpcThreadPoolMonitor = new RpcThreadPoolMonitor(executorService,
-            LoggerConstant.TRIPLE_THREAD_LOGGER_NAME);
+                LoggerConstant.TRIPLE_THREAD_LOGGER_NAME);
         rpcThreadPoolMonitor.start();
 
         Thread monitor = rpcThreadPoolMonitor.getMonitor();

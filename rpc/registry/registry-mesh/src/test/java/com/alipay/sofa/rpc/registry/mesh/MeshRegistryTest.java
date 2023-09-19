@@ -19,24 +19,11 @@ package com.alipay.sofa.rpc.registry.mesh;
 import com.alipay.sofa.rpc.client.ProviderGroup;
 import com.alipay.sofa.rpc.client.ProviderInfo;
 import com.alipay.sofa.rpc.common.json.JSON;
-import com.alipay.sofa.rpc.config.ApplicationConfig;
-import com.alipay.sofa.rpc.config.ConsumerConfig;
-import com.alipay.sofa.rpc.config.ProviderConfig;
-import com.alipay.sofa.rpc.config.RegistryConfig;
-import com.alipay.sofa.rpc.config.ServerConfig;
+import com.alipay.sofa.rpc.config.*;
 import com.alipay.sofa.rpc.listener.ProviderInfoListener;
 import com.alipay.sofa.rpc.registry.RegistryFactory;
 import com.alipay.sofa.rpc.registry.mesh.mock.HttpMockServer;
-import com.alipay.sofa.rpc.registry.mesh.model.ApplicationInfoResult;
-import com.alipay.sofa.rpc.registry.mesh.model.MeshEndpoint;
-import com.alipay.sofa.rpc.registry.mesh.model.PublishServiceRequest;
-import com.alipay.sofa.rpc.registry.mesh.model.PublishServiceResult;
-import com.alipay.sofa.rpc.registry.mesh.model.SubscribeServiceRequest;
-import com.alipay.sofa.rpc.registry.mesh.model.SubscribeServiceResult;
-import com.alipay.sofa.rpc.registry.mesh.model.UnPublishServiceRequest;
-import com.alipay.sofa.rpc.registry.mesh.model.UnPublishServiceResult;
-import com.alipay.sofa.rpc.registry.mesh.model.UnSubscribeServiceRequest;
-import com.alipay.sofa.rpc.registry.mesh.model.UnSubscribeServiceResult;
+import com.alipay.sofa.rpc.registry.mesh.model.*;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -57,7 +44,7 @@ public class MeshRegistryTest extends BaseMeshTest {
 
     private RegistryConfig registryConfig;
 
-    private MeshRegistry   registry;
+    private MeshRegistry registry;
 
     private HttpMockServer httpMockServer;
 
@@ -92,10 +79,10 @@ public class MeshRegistryTest extends BaseMeshTest {
 
         httpMockServer.start();
         registryConfig = new RegistryConfig()
-            .setProtocol("mesh")
-            .setSubscribe(true)
-            .setRegister(true)
-            .setAddress("http://127.0.0.1:7654");
+                .setProtocol("mesh")
+                .setSubscribe(true)
+                .setRegister(true)
+                .setAddress("http://127.0.0.1:7654");
 
         registry = (MeshRegistry) RegistryFactory.getRegistry(registryConfig);
         registry.init();
@@ -134,20 +121,20 @@ public class MeshRegistryTest extends BaseMeshTest {
         }
 
         ServerConfig serverConfig = new ServerConfig()
-            .setProtocol("bolt")
-            .setHost("0.0.0.0")
-            .setPort(12200);
+                .setProtocol("bolt")
+                .setHost("0.0.0.0")
+                .setPort(12200);
         ProviderConfig<?> provider = new ProviderConfig();
         provider.setInterfaceId("com.alipay.xxx.TestService")
-            .setUniqueId("unique123Id")
-            .setApplication(new ApplicationConfig().setAppName("test-server"))
-            .setProxy("javassist")
-            .setRegister(true)
-            .setRegistry(registryConfig)
-            .setSerialization("hessian2")
-            .setServer(serverConfig)
-            .setWeight(222)
-            .setTimeout(3000);
+                .setUniqueId("unique123Id")
+                .setApplication(new ApplicationConfig().setAppName("test-server"))
+                .setProxy("javassist")
+                .setRegister(true)
+                .setRegistry(registryConfig)
+                .setSerialization("hessian2")
+                .setServer(serverConfig)
+                .setWeight(222)
+                .setTimeout(3000);
 
         registry.register(provider);
         Thread.sleep(3000);
@@ -169,41 +156,41 @@ public class MeshRegistryTest extends BaseMeshTest {
         int timeoutPerSub = 1000;
 
         ServerConfig serverConfig = new ServerConfig()
-            .setProtocol("bolt")
-            .setHost("0.0.0.0")
-            .setPort(12200);
+                .setProtocol("bolt")
+                .setHost("0.0.0.0")
+                .setPort(12200);
 
         ProviderConfig<?> provider = new ProviderConfig();
         provider.setInterfaceId("com.alipay.xxx.TestService")
-            .setUniqueId("unique123Id")
-            .setApplication(new ApplicationConfig().setAppName("test-server"))
-            .setProxy("javassist")
-            .setRegister(true)
-            .setRegistry(registryConfig)
-            .setSerialization("hessian2")
-            .setServer(serverConfig)
-            .setWeight(222)
-            .setTimeout(3000);
+                .setUniqueId("unique123Id")
+                .setApplication(new ApplicationConfig().setAppName("test-server"))
+                .setProxy("javassist")
+                .setRegister(true)
+                .setRegistry(registryConfig)
+                .setSerialization("hessian2")
+                .setServer(serverConfig)
+                .setWeight(222)
+                .setTimeout(3000);
 
         // 注册
         registry.register(provider);
 
         ConsumerConfig<?> consumer = new ConsumerConfig();
         consumer.setInterfaceId("com.alipay.xxx.TestService")
-            .setUniqueId("unique123Id")
-            .setApplication(new ApplicationConfig().setAppName("test-server"))
-            .setProxy("javassist")
-            .setSubscribe(true)
-            .setSerialization("java")
-            .setInvokeType("sync")
-            .setTimeout(4444);
+                .setUniqueId("unique123Id")
+                .setApplication(new ApplicationConfig().setAppName("test-server"))
+                .setProxy("javassist")
+                .setSubscribe(true)
+                .setSerialization("java")
+                .setInvokeType("sync")
+                .setTimeout(4444);
 
         String tag0 = MeshRegistryHelper.buildMeshKey(provider, serverConfig.getProtocol());
         String tag1 = MeshRegistryHelper.buildMeshKey(consumer, consumer.getProtocol());
         Assert.assertEquals(tag1, tag0);
         ProviderInfo providerInfo = MeshRegistryHelper.convertProviderToProviderInfo(provider, serverConfig);
         PublishServiceRequest publishServiceRequest = registry.buildPublishServiceRequest(tag0,
-            serverConfig.getProtocol(), providerInfo, "test-server");
+                serverConfig.getProtocol(), providerInfo, "test-server");
         Assert.assertEquals(serverConfig.getProtocol(), publishServiceRequest.getProtocolType());
 
         // 订阅
@@ -231,22 +218,22 @@ public class MeshRegistryTest extends BaseMeshTest {
         latch = new CountDownLatch(1);
         providerInfoListener.setCountDownLatch(latch);
         provider.getServer().add(new ServerConfig()
-            .setProtocol("bolt")
-            .setHost("0.0.0.0")
-            .setPort(12201));
+                .setProtocol("bolt")
+                .setHost("0.0.0.0")
+                .setPort(12201));
         registry.register(provider);
         latch.await(timeoutPerSub * 2, TimeUnit.MILLISECONDS);
 
         // 重复订阅
         ConsumerConfig<?> consumer2 = new ConsumerConfig();
         consumer2.setInterfaceId("com.alipay.xxx.TestService")
-            .setUniqueId("unique123Id")
-            .setApplication(new ApplicationConfig().setAppName("test-server"))
-            .setProxy("javassist")
-            .setSubscribe(true)
-            .setSerialization("java")
-            .setInvokeType("sync")
-            .setTimeout(4444);
+                .setUniqueId("unique123Id")
+                .setApplication(new ApplicationConfig().setAppName("test-server"))
+                .setProxy("javassist")
+                .setSubscribe(true)
+                .setSerialization("java")
+                .setInvokeType("sync")
+                .setTimeout(4444);
         CountDownLatch latch2 = new CountDownLatch(1);
         MeshRegistryTest.MockProviderInfoListener providerInfoListener2 = new MeshRegistryTest.MockProviderInfoListener();
         providerInfoListener2.setCountDownLatch(latch2);
@@ -283,7 +270,7 @@ public class MeshRegistryTest extends BaseMeshTest {
 
         Map<String, ProviderGroup> ps = new HashMap<String, ProviderGroup>();
 
-        private CountDownLatch     countDownLatch;
+        private CountDownLatch countDownLatch;
 
         public void setCountDownLatch(CountDownLatch countDownLatch) {
             this.countDownLatch = countDownLatch;

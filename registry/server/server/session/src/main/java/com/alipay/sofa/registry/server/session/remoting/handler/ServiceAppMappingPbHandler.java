@@ -20,53 +20,54 @@ import com.alipay.sofa.registry.common.model.client.pb.ServiceAppMappingRequest;
 import com.alipay.sofa.registry.remoting.Channel;
 import com.alipay.sofa.registry.server.shared.remoting.RemotingHelper;
 import com.alipay.sofa.registry.util.ParaCheckUtil;
-import java.util.List;
 import org.apache.commons.lang.StringUtils;
+
+import java.util.List;
 
 /**
  * @author xiaojian.xj
  * @version $Id: ServiceAppMappingPbHandler.java, v 0.1 2021年02月04日 20:18 xiaojian.xj Exp $
  */
 public class ServiceAppMappingPbHandler
-    extends AbstractClientMetadataRequestHandler<ServiceAppMappingRequest> {
+        extends AbstractClientMetadataRequestHandler<ServiceAppMappingRequest> {
 
-  @Override
-  public void checkParam(ServiceAppMappingRequest request) {
-    ParaCheckUtil.checkNotNull(request, "request");
-    ParaCheckUtil.checkNotEmpty(request.getServiceIdsList(), "request.serviceIds");
-  }
-
-  @Override
-  public Object doHandle(Channel channel, ServiceAppMappingRequest request) {
-    List<String> services = request.getServiceIdsList();
-    String remoteIp;
-    if (channel != null
-        && channel.getRemoteAddress() != null
-        && channel.getRemoteAddress().getAddress() != null) {
-      remoteIp = channel.getRemoteAddress().getAddress().getHostAddress();
-    } else {
-      remoteIp = StringUtils.EMPTY;
+    @Override
+    public void checkParam(ServiceAppMappingRequest request) {
+        ParaCheckUtil.checkNotNull(request, "request");
+        ParaCheckUtil.checkNotEmpty(request.getServiceIdsList(), "request.serviceIds");
     }
-    return appRevisionHandlerStrategy.queryApps(services, remoteIp);
-  }
 
-  @Override
-  protected void logRequest(Channel channel, ServiceAppMappingRequest request) {
-    if (exchangeLog.isInfoEnabled()) {
-      String sb =
-          "["
-              + this.getClass().getSimpleName()
-              + "] "
-              + "Remote:"
-              + RemotingHelper.getChannelRemoteAddress(channel)
-              + " ServiceCount: "
-              + request.getServiceIdsList().size();
-      exchangeLog.info(sb);
+    @Override
+    public Object doHandle(Channel channel, ServiceAppMappingRequest request) {
+        List<String> services = request.getServiceIdsList();
+        String remoteIp;
+        if (channel != null
+                && channel.getRemoteAddress() != null
+                && channel.getRemoteAddress().getAddress() != null) {
+            remoteIp = channel.getRemoteAddress().getAddress().getHostAddress();
+        } else {
+            remoteIp = StringUtils.EMPTY;
+        }
+        return appRevisionHandlerStrategy.queryApps(services, remoteIp);
     }
-  }
 
-  @Override
-  public Class interest() {
-    return ServiceAppMappingRequest.class;
-  }
+    @Override
+    protected void logRequest(Channel channel, ServiceAppMappingRequest request) {
+        if (exchangeLog.isInfoEnabled()) {
+            String sb =
+                    "["
+                            + this.getClass().getSimpleName()
+                            + "] "
+                            + "Remote:"
+                            + RemotingHelper.getChannelRemoteAddress(channel)
+                            + " ServiceCount: "
+                            + request.getServiceIdsList().size();
+            exchangeLog.info(sb);
+        }
+    }
+
+    @Override
+    public Class interest() {
+        return ServiceAppMappingRequest.class;
+    }
 }

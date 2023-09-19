@@ -83,9 +83,9 @@ public class HttpServiceImpl implements HttpService {
             throw new RuntimeException("group must is a!");
         }
         return EchoResponse.newBuilder()
-            .setCode(200)
-            .setMessage("hello" + request.getName())
-            .build();
+                .setCode(200)
+                .setMessage("hello" + request.getName())
+                .build();
     }
 
     private void doSleep() {

@@ -30,19 +30,19 @@ public class RegistryConfigTest {
     public void testAll() {
         RegistryConfig config = new RegistryConfig();
         config.setProtocol("xx")
-            .setAddress("127.0.0.1")
-            .setFile("file")
-            .setRegister(true)
-            .setSubscribe(true)
-            .setTimeout(1234)
-            .setBatch(false)
-            .setBatchSize(12)
-            .setConnectTimeout(1235)
-            .setHeartbeatPeriod(22222)
-            .setIndex("null")
-            .setParameters(Collections.singletonMap("app", "app"))
-            .setParameter("token", "xxx")
-            .setReconnectPeriod(3333);
+                .setAddress("127.0.0.1")
+                .setFile("file")
+                .setRegister(true)
+                .setSubscribe(true)
+                .setTimeout(1234)
+                .setBatch(false)
+                .setBatchSize(12)
+                .setConnectTimeout(1235)
+                .setHeartbeatPeriod(22222)
+                .setIndex("null")
+                .setParameters(Collections.singletonMap("app", "app"))
+                .setParameter("token", "xxx")
+                .setReconnectPeriod(3333);
 
         Assert.assertEquals("xx", config.getProtocol());
         Assert.assertEquals("127.0.0.1", config.getAddress());

@@ -16,17 +16,8 @@
  */
 package com.alipay.sofa.rpc.codec.sofahessian;
 
-import com.alipay.hessian.generic.io.GenericArraySerializer;
-import com.alipay.hessian.generic.io.GenericClassSerializer;
-import com.alipay.hessian.generic.io.GenericCollectionSerializer;
-import com.alipay.hessian.generic.io.GenericDeserializer;
-import com.alipay.hessian.generic.io.GenericMapSerializer;
-import com.alipay.hessian.generic.io.GenericObjectSerializer;
-import com.alipay.hessian.generic.model.GenericArray;
-import com.alipay.hessian.generic.model.GenericClass;
-import com.alipay.hessian.generic.model.GenericCollection;
-import com.alipay.hessian.generic.model.GenericMap;
-import com.alipay.hessian.generic.model.GenericObject;
+import com.alipay.hessian.generic.io.*;
+import com.alipay.hessian.generic.model.*;
 import com.alipay.sofa.rpc.codec.sofahessian.mock.MockError;
 import com.caucho.hessian.io.Deserializer;
 import com.caucho.hessian.io.Hessian2Input;
@@ -42,8 +33,6 @@ import static com.alipay.sofa.rpc.codec.sofahessian.serialize.GenericCustomThrow
 import static com.alipay.sofa.rpc.codec.sofahessian.serialize.GenericCustomThrowableDeterminerTest.setGenericThrowException;
 
 /**
- *
- *
  * @author <a href="mailto:zhanggeng.zg@antfin.com">GengZhang</a>
  */
 public class GenericMultipleClassLoaderSofaSerializerFactoryTest {
@@ -53,7 +42,7 @@ public class GenericMultipleClassLoaderSofaSerializerFactoryTest {
         Assert.assertEquals(factory.getSerializer(GenericObject.class).getClass(), GenericObjectSerializer.class);
         Assert.assertEquals(factory.getSerializer(GenericArray.class).getClass(), GenericArraySerializer.class);
         Assert.assertEquals(factory.getSerializer(GenericCollection.class).getClass(),
-            GenericCollectionSerializer.class);
+                GenericCollectionSerializer.class);
         Assert.assertEquals(factory.getSerializer(GenericMap.class).getClass(), GenericMapSerializer.class);
         Assert.assertEquals(factory.getSerializer(GenericClass.class).getClass(), GenericClassSerializer.class);
     }

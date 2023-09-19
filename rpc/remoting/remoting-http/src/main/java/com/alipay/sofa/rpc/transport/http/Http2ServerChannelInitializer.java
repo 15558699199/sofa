@@ -19,12 +19,7 @@ package com.alipay.sofa.rpc.transport.http;
 import com.alipay.sofa.rpc.log.Logger;
 import com.alipay.sofa.rpc.log.LoggerFactory;
 import com.alipay.sofa.rpc.server.http.HttpServerHandler;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandlerAdapter;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelPipeline;
-import io.netty.channel.EventLoopGroup;
-import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.channel.*;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.http.HttpMessage;
 import io.netty.handler.codec.http.HttpObjectAggregator;
@@ -52,12 +47,12 @@ public class Http2ServerChannelInitializer extends ChannelInitializer<SocketChan
     /**
      * Logger for Http2ServerInitializer
      **/
-    private static final Logger     LOGGER = LoggerFactory.getLogger(Http2ServerChannelInitializer.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Http2ServerChannelInitializer.class);
 
-    private final EventLoopGroup    bizGroup;
+    private final EventLoopGroup bizGroup;
     private final HttpServerHandler serverHandler;
-    private final SslContext        sslCtx;
-    private final int               maxHttpContentLength;
+    private final SslContext sslCtx;
+    private final int maxHttpContentLength;
 
     public Http2ServerChannelInitializer(EventLoopGroup bizGroup, SslContext sslCtx,
                                          HttpServerHandler serverHandler, int maxHttpContentLength) {
@@ -93,7 +88,7 @@ public class Http2ServerChannelInitializer extends ChannelInitializer<SocketChan
             protected void configurePipeline(ChannelHandlerContext ctx, String protocol) throws Exception {
                 if (ApplicationProtocolNames.HTTP_2.equals(protocol)) {
                     ctx.pipeline().addLast(bizGroup, "Http2ChannelHandler",
-                        new Http2ChannelHandlerBuilder(serverHandler).build());
+                            new Http2ChannelHandlerBuilder(serverHandler).build());
                     return;
                 }
 
@@ -101,7 +96,7 @@ public class Http2ServerChannelInitializer extends ChannelInitializer<SocketChan
                     ctx.pipeline().addLast("HttpServerCodec", new HttpServerCodec());
                     ctx.pipeline().addLast("HttpObjectAggregator", new HttpObjectAggregator(maxHttpContentLength));
                     ctx.pipeline().addLast(bizGroup, "Http1ChannelHandler",
-                        new Http1ServerChannelHandler(serverHandler));
+                            new Http1ServerChannelHandler(serverHandler));
                     return;
                 }
 
@@ -117,19 +112,19 @@ public class Http2ServerChannelInitializer extends ChannelInitializer<SocketChan
         final ChannelPipeline p = ch.pipeline();
         final HttpServerCodec sourceCodec = new HttpServerCodec();
         final HttpServerUpgradeHandler upgradeHandler = new HttpServerUpgradeHandler(sourceCodec,
-            new UpgradeCodecFactory() {
-                @Override
-                public HttpServerUpgradeHandler.UpgradeCodec newUpgradeCodec(CharSequence protocol) {
-                    if (AsciiString.contentEquals(Http2CodecUtil.HTTP_UPGRADE_PROTOCOL_NAME, protocol)) {
-                        return new Http2ServerUpgradeCodec(new Http2ChannelHandlerBuilder(serverHandler).build());
-                    } else {
-                        return null;
+                new UpgradeCodecFactory() {
+                    @Override
+                    public HttpServerUpgradeHandler.UpgradeCodec newUpgradeCodec(CharSequence protocol) {
+                        if (AsciiString.contentEquals(Http2CodecUtil.HTTP_UPGRADE_PROTOCOL_NAME, protocol)) {
+                            return new Http2ServerUpgradeCodec(new Http2ChannelHandlerBuilder(serverHandler).build());
+                        } else {
+                            return null;
+                        }
                     }
-                }
-            });
+                });
         final Http2ServerUpgradeHandler cleartextHttp2ServerUpgradeHandler =
                 new Http2ServerUpgradeHandler(bizGroup, sourceCodec, upgradeHandler,
-                    new Http2ChannelHandlerBuilder(serverHandler).build());
+                        new Http2ChannelHandlerBuilder(serverHandler).build());
 
         // 先通过 HTTP Upgrade 协商版本
         p.addLast("Http2ServerUpgradeHandler", cleartextHttp2ServerUpgradeHandler);
@@ -140,15 +135,15 @@ public class Http2ServerChannelInitializer extends ChannelInitializer<SocketChan
                 // If this handler is hit then no upgrade has been attempted and the client is just talking HTTP.
                 if (LOGGER.isWarnEnabled()) {
                     LOGGER.warn("Directly talking: {} (no upgrade was attempted) from {}", msg.protocolVersion(),
-                        NetUtil.toSocketAddressString(ch.remoteAddress()));
+                            NetUtil.toSocketAddressString(ch.remoteAddress()));
                 }
                 ChannelPipeline pipeline = ctx.pipeline();
                 ChannelHandlerContext thisCtx = pipeline.context(this);
                 // 不需要了
                 pipeline.addAfter(bizGroup, thisCtx.name(), "Http1ChannelHandler",
-                    new Http1ServerChannelHandler(serverHandler));
+                        new Http1ServerChannelHandler(serverHandler));
                 pipeline.replace(this, "HttpObjectAggregator",
-                    new HttpObjectAggregator(maxHttpContentLength));
+                        new HttpObjectAggregator(maxHttpContentLength));
                 // HttpServerUpgradeHandler -> HttpServerCodec ->  HttpObjectAggregator -> Http1ChannelHandler, 
                 ctx.fireChannelRead(ReferenceCountUtil.retain(msg));
             }

@@ -30,33 +30,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import static com.alipay.sofa.rpc.codec.sofahessian.serialize.GenericCustomThrowableDeterminer.judgeCustomThrowableForGenericObject;
 
 /**
- *
  * @author xingqi
  * @version : CustomThrowableGenericDeserializerTest.java, v 0.1 2022年10月20日 4:23 PM xingqi Exp $
  */
 public class GenericCustomThrowableDeterminerTest {
-
-    @Test
-    public void testJudgeCustomThrowable() throws Exception {
-        setGenericThrowException(true);
-        try {
-            Assert.assertNull(judgeCustomThrowableForGenericObject(null));
-            Object o = new Object();
-            Assert.assertEquals(o, judgeCustomThrowableForGenericObject(o));
-            GenericObject genericObject = new GenericObject("");
-            Assert.assertEquals(genericObject, judgeCustomThrowableForGenericObject(genericObject));
-            genericObject.putField("xxx", "yyy");
-            Assert.assertEquals(genericObject, judgeCustomThrowableForGenericObject(genericObject));
-
-            genericObject.putField("cause", "yyy");
-            genericObject.putField("detailMessage", "yyy");
-            genericObject.putField("stackTrace", "yyy");
-            genericObject.putField("suppressedExceptions", "yyy");
-            Assert.assertTrue(judgeCustomThrowableForGenericObject(genericObject) instanceof RuntimeException);
-        } finally {
-            setGenericThrowException(false);
-        }
-    }
 
     public static void setGenericThrowException(boolean enabled) {
         try {
@@ -92,6 +69,28 @@ public class GenericCustomThrowableDeterminerTest {
             field.set(null, new ConcurrentHashMap<String, Deserializer>());
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void testJudgeCustomThrowable() throws Exception {
+        setGenericThrowException(true);
+        try {
+            Assert.assertNull(judgeCustomThrowableForGenericObject(null));
+            Object o = new Object();
+            Assert.assertEquals(o, judgeCustomThrowableForGenericObject(o));
+            GenericObject genericObject = new GenericObject("");
+            Assert.assertEquals(genericObject, judgeCustomThrowableForGenericObject(genericObject));
+            genericObject.putField("xxx", "yyy");
+            Assert.assertEquals(genericObject, judgeCustomThrowableForGenericObject(genericObject));
+
+            genericObject.putField("cause", "yyy");
+            genericObject.putField("detailMessage", "yyy");
+            genericObject.putField("stackTrace", "yyy");
+            genericObject.putField("suppressedExceptions", "yyy");
+            Assert.assertTrue(judgeCustomThrowableForGenericObject(genericObject) instanceof RuntimeException);
+        } finally {
+            setGenericThrowException(false);
         }
     }
 }

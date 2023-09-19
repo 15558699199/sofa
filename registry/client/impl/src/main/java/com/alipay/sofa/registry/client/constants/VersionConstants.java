@@ -22,5 +22,5 @@ package com.alipay.sofa.registry.client.constants;
  */
 public class VersionConstants {
 
-  public static final long UNINITIALIZED_VERSION = 0;
+    public static final long UNINITIALIZED_VERSION = 0;
 }

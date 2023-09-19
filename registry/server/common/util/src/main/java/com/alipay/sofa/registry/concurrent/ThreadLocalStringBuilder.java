@@ -17,53 +17,54 @@
 package com.alipay.sofa.registry.concurrent;
 
 public final class ThreadLocalStringBuilder {
-  private static final int maxBufferSize = 8192;
-  private static final transient ThreadLocal<StringBuilder> builder =
-      ThreadLocal.withInitial(() -> new StringBuilder(maxBufferSize));
+    private static final int maxBufferSize = 8192;
+    private static final transient ThreadLocal<StringBuilder> builder =
+            ThreadLocal.withInitial(() -> new StringBuilder(maxBufferSize));
 
-  private ThreadLocalStringBuilder() {}
-
-  public static StringBuilder get() {
-    StringBuilder b = builder.get();
-    if (b.capacity() > maxBufferSize) {
-      b = new StringBuilder(maxBufferSize);
-      builder.set(b);
-    } else {
-      b.setLength(0);
+    private ThreadLocalStringBuilder() {
     }
-    return b;
-  }
 
-  public static String join(String e1, String e2) {
-    StringBuilder sb = get();
-    sb.append(e1).append(e2);
-    return sb.toString();
-  }
-
-  public static String join(String e1, String e2, String e3) {
-    StringBuilder sb = get();
-    sb.append(e1).append(e2).append(e3);
-    return sb.toString();
-  }
-
-  public static String join(String e1, String e2, String e3, String e4) {
-    StringBuilder sb = get();
-    sb.append(e1).append(e2).append(e3).append(e4);
-    return sb.toString();
-  }
-
-  public static String join(String e1, String e2, String e3, String e4, String e5) {
-    StringBuilder sb = get();
-    sb.append(e1).append(e2).append(e3).append(e4).append(e5);
-    return sb.toString();
-  }
-
-  public static String join(String e1, String e2, String e3, String e4, String e5, String... es) {
-    StringBuilder sb = get();
-    sb.append(e1).append(e2).append(e3).append(e4).append(e5);
-    for (String e : es) {
-      sb.append(e);
+    public static StringBuilder get() {
+        StringBuilder b = builder.get();
+        if (b.capacity() > maxBufferSize) {
+            b = new StringBuilder(maxBufferSize);
+            builder.set(b);
+        } else {
+            b.setLength(0);
+        }
+        return b;
     }
-    return sb.toString();
-  }
+
+    public static String join(String e1, String e2) {
+        StringBuilder sb = get();
+        sb.append(e1).append(e2);
+        return sb.toString();
+    }
+
+    public static String join(String e1, String e2, String e3) {
+        StringBuilder sb = get();
+        sb.append(e1).append(e2).append(e3);
+        return sb.toString();
+    }
+
+    public static String join(String e1, String e2, String e3, String e4) {
+        StringBuilder sb = get();
+        sb.append(e1).append(e2).append(e3).append(e4);
+        return sb.toString();
+    }
+
+    public static String join(String e1, String e2, String e3, String e4, String e5) {
+        StringBuilder sb = get();
+        sb.append(e1).append(e2).append(e3).append(e4).append(e5);
+        return sb.toString();
+    }
+
+    public static String join(String e1, String e2, String e3, String e4, String e5, String... es) {
+        StringBuilder sb = get();
+        sb.append(e1).append(e2).append(e3).append(e4).append(e5);
+        for (String e : es) {
+            sb.append(e);
+        }
+        return sb.toString();
+    }
 }

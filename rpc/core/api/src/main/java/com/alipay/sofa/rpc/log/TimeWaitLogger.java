@@ -28,9 +28,9 @@ import java.util.function.Consumer;
  */
 public class TimeWaitLogger {
 
-    private final long    waitTime;
-    private volatile long lastLogTime;
+    private final long waitTime;
     private final boolean disabled;
+    private volatile long lastLogTime;
 
     public TimeWaitLogger(long waitTimeMills) {
         this.waitTime = waitTimeMills;

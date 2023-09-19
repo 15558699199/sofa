@@ -41,9 +41,7 @@ import org.jboss.resteasy.spi.Failure;
 import javax.ws.rs.core.HttpHeaders;
 import java.net.InetSocketAddress;
 
-import static io.netty.handler.codec.http.HttpResponseStatus.CONTINUE;
-import static io.netty.handler.codec.http.HttpResponseStatus.NOT_FOUND;
-import static io.netty.handler.codec.http.HttpResponseStatus.REQUEST_ENTITY_TOO_LARGE;
+import static io.netty.handler.codec.http.HttpResponseStatus.*;
 import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 
 /**
@@ -53,8 +51,8 @@ import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
  * @see org.jboss.resteasy.plugins.server.netty.RequestHandler
  */
 public class SofaRestRequestHandler extends SimpleChannelInboundHandler {
+    private final static Logger logger = LoggerFactory.getLogger(SofaRestRequestHandler.class);
     protected final RequestDispatcher dispatcher;
-    private final static Logger       logger = LoggerFactory.getLogger(SofaRestRequestHandler.class);
 
     public SofaRestRequestHandler(RequestDispatcher dispatcher) {
         this.dispatcher = dispatcher;
@@ -142,7 +140,7 @@ public class SofaRestRequestHandler extends SimpleChannelInboundHandler {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable e)
-        throws Exception {
+            throws Exception {
         // handle the case of to big requests.
         if (e.getCause() instanceof TooLongFrameException) {
             DefaultHttpResponse response = new DefaultHttpResponse(HTTP_1_1, REQUEST_ENTITY_TOO_LARGE);

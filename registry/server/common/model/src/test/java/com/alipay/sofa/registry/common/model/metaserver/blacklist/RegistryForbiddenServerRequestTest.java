@@ -22,12 +22,12 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class RegistryForbiddenServerRequestTest {
-  @Test
-  public void test() {
-    RegistryForbiddenServerRequest request =
-        new RegistryForbiddenServerRequest(DataOperation.ADD, NodeType.DATA, "test", "testCell");
-    Assert.assertEquals(request.getOperation(), DataOperation.ADD);
-    Assert.assertEquals(request.getIp(), "test");
-    Assert.assertTrue(request.toString(), request.toString().contains("test"));
-  }
+    @Test
+    public void test() {
+        RegistryForbiddenServerRequest request =
+                new RegistryForbiddenServerRequest(DataOperation.ADD, NodeType.DATA, "test", "testCell");
+        Assert.assertEquals(request.getOperation(), DataOperation.ADD);
+        Assert.assertEquals(request.getIp(), "test");
+        Assert.assertTrue(request.toString(), request.toString().contains("test"));
+    }
 }

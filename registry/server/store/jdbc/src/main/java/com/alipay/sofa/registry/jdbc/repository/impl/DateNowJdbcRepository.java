@@ -23,10 +23,11 @@ import com.alipay.sofa.registry.store.api.date.DateNowRepository;
 import com.alipay.sofa.registry.util.ConcurrentUtils;
 import com.alipay.sofa.registry.util.LoopRunnable;
 import com.google.common.annotations.VisibleForTesting;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.annotation.PostConstruct;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
-import javax.annotation.PostConstruct;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * @author xiaojian.xj
@@ -34,51 +35,49 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class DateNowJdbcRepository implements DateNowRepository {
 
-  private static final Logger LOG = LoggerFactory.getLogger(DateNowJdbcRepository.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DateNowJdbcRepository.class);
+    private final DateTimeWatcher watcher = new DateTimeWatcher();
+    @Autowired
+    DateNowMapper dateNowMapper;
+    private volatile Date dateNow;
 
-  private volatile Date dateNow;
-
-  @Autowired DateNowMapper dateNowMapper;
-
-  private final DateTimeWatcher watcher = new DateTimeWatcher();
-
-  @PostConstruct
-  public void init() {
-    ConcurrentUtils.createDaemonThread(this.getClass().getSimpleName() + "WatchDog", watcher)
-        .start();
-  }
-
-  @Override
-  public Date getNow() {
-    if (dateNow != null) {
-      return dateNow;
-    }
-    dateNow = dateNowMapper.getNow().getNow();
-    LOG.info("[Load]getNow dateNow: {}", dateNow);
-    return dateNow;
-  }
-
-  class DateTimeWatcher extends LoopRunnable {
-
-    @Override
-    public void runUnthrowable() {
-      dateNow = dateNowMapper.getNow().getNow();
-      LOG.info("[Load]watcher dateNow: {}", dateNow);
+    @PostConstruct
+    public void init() {
+        ConcurrentUtils.createDaemonThread(this.getClass().getSimpleName() + "WatchDog", watcher)
+                .start();
     }
 
     @Override
-    public void waitingUnthrowable() {
-      ConcurrentUtils.sleepUninterruptibly(500, TimeUnit.MILLISECONDS);
+    public Date getNow() {
+        if (dateNow != null) {
+            return dateNow;
+        }
+        dateNow = dateNowMapper.getNow().getNow();
+        LOG.info("[Load]getNow dateNow: {}", dateNow);
+        return dateNow;
     }
-  }
 
-  /**
-   * Setter method for property <tt>dateNowMapper</tt>.
-   *
-   * @param dateNowMapper value to be assigned to property dateNowMapper
-   */
-  @VisibleForTesting
-  public void setDateNowMapper(DateNowMapper dateNowMapper) {
-    this.dateNowMapper = dateNowMapper;
-  }
+    /**
+     * Setter method for property <tt>dateNowMapper</tt>.
+     *
+     * @param dateNowMapper value to be assigned to property dateNowMapper
+     */
+    @VisibleForTesting
+    public void setDateNowMapper(DateNowMapper dateNowMapper) {
+        this.dateNowMapper = dateNowMapper;
+    }
+
+    class DateTimeWatcher extends LoopRunnable {
+
+        @Override
+        public void runUnthrowable() {
+            dateNow = dateNowMapper.getNow().getNow();
+            LOG.info("[Load]watcher dateNow: {}", dateNow);
+        }
+
+        @Override
+        public void waitingUnthrowable() {
+            ConcurrentUtils.sleepUninterruptibly(500, TimeUnit.MILLISECONDS);
+        }
+    }
 }

@@ -51,41 +51,41 @@ public class MultiProtocolServerExpTest extends ActivelyDestroyTest {
         try {
             // 只有2个线程 执行
             ServerConfig serverConfig = new ServerConfig()
-                .setStopTimeout(0)
-                .setPort(22222)
-                .setProtocol(RpcConstants.PROTOCOL_TYPE_BOLT)
-                .setQueues(100).setCoreThreads(1).setMaxThreads(2);
+                    .setStopTimeout(0)
+                    .setPort(22222)
+                    .setProtocol(RpcConstants.PROTOCOL_TYPE_BOLT)
+                    .setQueues(100).setCoreThreads(1).setMaxThreads(2);
 
             // 发布一个服务，每个请求要执行1秒
             ProviderConfig<RestService> providerConfig = new ProviderConfig<RestService>()
-                .setInterfaceId(RestService.class.getName())
-                .setRef(new RestServiceImpl())
-                .setServer(serverConfig)
-                .setRepeatedExportLimit(1)
-                .setRegister(false);
+                    .setInterfaceId(RestService.class.getName())
+                    .setRef(new RestServiceImpl())
+                    .setServer(serverConfig)
+                    .setRepeatedExportLimit(1)
+                    .setRegister(false);
             providerConfig.export();
 
             ServerConfig serverConfig2 = new ServerConfig()
-                .setStopTimeout(0)
-                .setPort(22223)
-                .setProtocol(RpcConstants.PROTOCOL_TYPE_REST)
-                .setQueues(100).setCoreThreads(1).setMaxThreads(2);
+                    .setStopTimeout(0)
+                    .setPort(22223)
+                    .setProtocol(RpcConstants.PROTOCOL_TYPE_REST)
+                    .setQueues(100).setCoreThreads(1).setMaxThreads(2);
 
             // 发布一个服务，每个请求要执行1秒
             ProviderConfig<RestService> providerConfig2 = new ProviderConfig<RestService>()
-                .setInterfaceId(RestService.class.getName())
-                .setRef(new RestServiceImpl())
-                .setServer(serverConfig2)
-                .setRepeatedExportLimit(1)
-                .setRegister(false);
+                    .setInterfaceId(RestService.class.getName())
+                    .setRef(new RestServiceImpl())
+                    .setServer(serverConfig2)
+                    .setRepeatedExportLimit(1)
+                    .setRegister(false);
             providerConfig2.export();
 
             ProviderConfig<RestService> providerConfig3 = new ProviderConfig<RestService>()
-                .setInterfaceId(RestService.class.getName())
-                .setRef(new RestServiceImpl())
-                .setServer(serverConfig2)
-                .setRepeatedExportLimit(1)
-                .setRegister(false);
+                    .setInterfaceId(RestService.class.getName())
+                    .setRef(new RestServiceImpl())
+                    .setServer(serverConfig2)
+                    .setRepeatedExportLimit(1)
+                    .setRegister(false);
             providerConfig3.export();
 
             Assert.fail();

@@ -20,13 +20,13 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class RegisterResponseTest {
-  @Test
-  public void test() {
-    RegisterResponse response = new RegisterResponse();
-    response.setRegistId("x1");
-    Assert.assertEquals(response.getRegistId(), "x1");
+    @Test
+    public void test() {
+        RegisterResponse response = new RegisterResponse();
+        response.setRegistId("x1");
+        Assert.assertEquals(response.getRegistId(), "x1");
 
-    response.setMessage("x2");
-    Assert.assertEquals(response.getMessage(), "x2");
-  }
+        response.setMessage("x2");
+        Assert.assertEquals(response.getMessage(), "x2");
+    }
 }

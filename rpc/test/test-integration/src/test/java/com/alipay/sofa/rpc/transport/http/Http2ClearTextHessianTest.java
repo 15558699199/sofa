@@ -47,26 +47,26 @@ public class Http2ClearTextHessianTest extends ActivelyDestroyTest {
     public void testHessian() {
         // 只有1个线程 执行
         ServerConfig serverConfig = new ServerConfig()
-            .setStopTimeout(60000)
-            .setPort(12300)
-            .setProtocol(RpcConstants.PROTOCOL_TYPE_H2C)
-            .setDaemon(true);
+                .setStopTimeout(60000)
+                .setPort(12300)
+                .setProtocol(RpcConstants.PROTOCOL_TYPE_H2C)
+                .setDaemon(true);
 
         // 发布一个服务，每个请求要执行1秒
         ProviderConfig<HttpService> providerConfig = new ProviderConfig<HttpService>()
-            .setInterfaceId(HttpService.class.getName())
-            .setRef(new HttpServiceImpl())
-            .setApplication(new ApplicationConfig().setAppName("serverApp"))
-            .setServer(serverConfig)
-            .setRegister(false);
+                .setInterfaceId(HttpService.class.getName())
+                .setRef(new HttpServiceImpl())
+                .setApplication(new ApplicationConfig().setAppName("serverApp"))
+                .setServer(serverConfig)
+                .setRegister(false);
         providerConfig.export();
 
         {
             ConsumerConfig<HttpService> consumerConfig = new ConsumerConfig<HttpService>()
-                .setInterfaceId(HttpService.class.getName())
-                .setDirectUrl("h2c://127.0.0.1:12300")
-                .setApplication(new ApplicationConfig().setAppName("clientApp"))
-                .setProtocol(RpcConstants.PROTOCOL_TYPE_H2C);
+                    .setInterfaceId(HttpService.class.getName())
+                    .setDirectUrl("h2c://127.0.0.1:12300")
+                    .setApplication(new ApplicationConfig().setAppName("clientApp"))
+                    .setProtocol(RpcConstants.PROTOCOL_TYPE_H2C);
 
             HttpService httpService = consumerConfig.refer();
 
@@ -80,12 +80,12 @@ public class Http2ClearTextHessianTest extends ActivelyDestroyTest {
 
         {
             ConsumerConfig<HttpService> consumerConfig2 = new ConsumerConfig<HttpService>()
-                .setInterfaceId(HttpService.class.getName())
-                .setDirectUrl("h2c://127.0.0.1:12300")
-                .setApplication(new ApplicationConfig().setAppName("clientApp"))
-                .setProtocol(RpcConstants.PROTOCOL_TYPE_H2C)
-                .setInvokeType(RpcConstants.INVOKER_TYPE_ONEWAY)
-                .setRepeatedReferLimit(-1);
+                    .setInterfaceId(HttpService.class.getName())
+                    .setDirectUrl("h2c://127.0.0.1:12300")
+                    .setApplication(new ApplicationConfig().setAppName("clientApp"))
+                    .setProtocol(RpcConstants.PROTOCOL_TYPE_H2C)
+                    .setInvokeType(RpcConstants.INVOKER_TYPE_ONEWAY)
+                    .setRepeatedReferLimit(-1);
             HttpService httpService2 = consumerConfig2.refer();
             EchoRequest request = EchoRequest.newBuilder().setGroup(Group.A).setName("xxx").build();
             try {
@@ -99,12 +99,12 @@ public class Http2ClearTextHessianTest extends ActivelyDestroyTest {
 
         {
             ConsumerConfig<HttpService> consumerConfig3 = new ConsumerConfig<HttpService>()
-                .setInterfaceId(HttpService.class.getName())
-                .setDirectUrl("h2c://127.0.0.1:12300")
-                .setApplication(new ApplicationConfig().setAppName("clientApp"))
-                .setProtocol(RpcConstants.PROTOCOL_TYPE_H2C)
-                .setInvokeType(RpcConstants.INVOKER_TYPE_FUTURE)
-                .setRepeatedReferLimit(-1);
+                    .setInterfaceId(HttpService.class.getName())
+                    .setDirectUrl("h2c://127.0.0.1:12300")
+                    .setApplication(new ApplicationConfig().setAppName("clientApp"))
+                    .setProtocol(RpcConstants.PROTOCOL_TYPE_H2C)
+                    .setInvokeType(RpcConstants.INVOKER_TYPE_FUTURE)
+                    .setRepeatedReferLimit(-1);
             HttpService httpService3 = consumerConfig3.refer();
 
             ExampleObj request = new ExampleObj();
@@ -128,29 +128,29 @@ public class Http2ClearTextHessianTest extends ActivelyDestroyTest {
             final ExampleObj[] result = new ExampleObj[1];
             final CountDownLatch latch = new CountDownLatch(1);
             ConsumerConfig<HttpService> consumerConfig4 = new ConsumerConfig<HttpService>()
-                .setInterfaceId(HttpService.class.getName())
-                .setDirectUrl("h2c://127.0.0.1:12300")
-                .setApplication(new ApplicationConfig().setAppName("clientApp"))
-                .setProtocol(RpcConstants.PROTOCOL_TYPE_H2C)
-                .setInvokeType(RpcConstants.INVOKER_TYPE_CALLBACK)
-                .setOnReturn(new SofaResponseCallback() {
-                    @Override
-                    public void onAppResponse(Object appResponse, String methodName, RequestBase request) {
-                        result[0] = (ExampleObj) appResponse;
-                        latch.countDown();
-                    }
+                    .setInterfaceId(HttpService.class.getName())
+                    .setDirectUrl("h2c://127.0.0.1:12300")
+                    .setApplication(new ApplicationConfig().setAppName("clientApp"))
+                    .setProtocol(RpcConstants.PROTOCOL_TYPE_H2C)
+                    .setInvokeType(RpcConstants.INVOKER_TYPE_CALLBACK)
+                    .setOnReturn(new SofaResponseCallback() {
+                        @Override
+                        public void onAppResponse(Object appResponse, String methodName, RequestBase request) {
+                            result[0] = (ExampleObj) appResponse;
+                            latch.countDown();
+                        }
 
-                    @Override
-                    public void onAppException(Throwable throwable, String methodName, RequestBase request) {
-                        latch.countDown();
-                    }
+                        @Override
+                        public void onAppException(Throwable throwable, String methodName, RequestBase request) {
+                            latch.countDown();
+                        }
 
-                    @Override
-                    public void onSofaException(SofaRpcException sofaException, String methodName, RequestBase request) {
-                        latch.countDown();
-                    }
-                })
-                .setRepeatedReferLimit(-1);
+                        @Override
+                        public void onSofaException(SofaRpcException sofaException, String methodName, RequestBase request) {
+                            latch.countDown();
+                        }
+                    })
+                    .setRepeatedReferLimit(-1);
             HttpService httpService4 = consumerConfig4.refer();
 
             ExampleObj request = new ExampleObj();

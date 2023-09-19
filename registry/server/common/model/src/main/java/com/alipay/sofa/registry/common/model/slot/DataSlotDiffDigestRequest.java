@@ -18,6 +18,7 @@ package com.alipay.sofa.registry.common.model.slot;
 
 import com.alipay.sofa.registry.common.model.dataserver.DatumDigest;
 import com.alipay.sofa.registry.common.model.slot.filter.SyncSlotAcceptorManager;
+
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Map;
@@ -28,104 +29,104 @@ import java.util.Map;
  */
 public class DataSlotDiffDigestRequest implements Serializable {
 
-  private final String localDataCenter;
-  private final long slotTableEpoch;
-  // all dataInfoIds, diff by digest
-  private final Map<String, DatumDigest> datumDigest;
-  private final int slotId;
-  private final long slotLeaderEpoch;
+    private final String localDataCenter;
+    private final long slotTableEpoch;
+    // all dataInfoIds, diff by digest
+    private final Map<String, DatumDigest> datumDigest;
+    private final int slotId;
+    private final long slotLeaderEpoch;
 
-  private final SyncSlotAcceptorManager acceptorManager;
+    private final SyncSlotAcceptorManager acceptorManager;
 
-  public DataSlotDiffDigestRequest(
-      String localDataCenter,
-      long slotTableEpoch,
-      int slotId,
-      long slotLeaderEpoch,
-      Map<String, DatumDigest> datumDigest,
-      SyncSlotAcceptorManager acceptorManager) {
-    this.localDataCenter = localDataCenter;
-    this.slotTableEpoch = slotTableEpoch;
-    this.slotId = slotId;
-    this.slotLeaderEpoch = slotLeaderEpoch;
-    this.datumDigest = datumDigest == null ? Collections.emptyMap() : datumDigest;
-    this.acceptorManager = acceptorManager;
-  }
+    public DataSlotDiffDigestRequest(
+            String localDataCenter,
+            long slotTableEpoch,
+            int slotId,
+            long slotLeaderEpoch,
+            Map<String, DatumDigest> datumDigest,
+            SyncSlotAcceptorManager acceptorManager) {
+        this.localDataCenter = localDataCenter;
+        this.slotTableEpoch = slotTableEpoch;
+        this.slotId = slotId;
+        this.slotLeaderEpoch = slotLeaderEpoch;
+        this.datumDigest = datumDigest == null ? Collections.emptyMap() : datumDigest;
+        this.acceptorManager = acceptorManager;
+    }
 
-  public static DataSlotDiffDigestRequest buildRequest(
-      String localDataCenter,
-      long slotTableEpoch,
-      int slotId,
-      long slotLeaderEpoch,
-      Map<String, DatumDigest> datumDigest,
-      SyncSlotAcceptorManager acceptorManager) {
-    return new DataSlotDiffDigestRequest(
-        localDataCenter, slotTableEpoch, slotId, slotLeaderEpoch, datumDigest, acceptorManager);
-  }
+    public static DataSlotDiffDigestRequest buildRequest(
+            String localDataCenter,
+            long slotTableEpoch,
+            int slotId,
+            long slotLeaderEpoch,
+            Map<String, DatumDigest> datumDigest,
+            SyncSlotAcceptorManager acceptorManager) {
+        return new DataSlotDiffDigestRequest(
+                localDataCenter, slotTableEpoch, slotId, slotLeaderEpoch, datumDigest, acceptorManager);
+    }
 
-  /**
-   * Getter method for property <tt>slotId</tt>.
-   *
-   * @return property value of slotId
-   */
-  public int getSlotId() {
-    return slotId;
-  }
+    /**
+     * Getter method for property <tt>slotId</tt>.
+     *
+     * @return property value of slotId
+     */
+    public int getSlotId() {
+        return slotId;
+    }
 
-  /**
-   * Getter method for property <tt>slotLeaderEpoch</tt>.
-   *
-   * @return property value of slotLeaderEpoch
-   */
-  public long getSlotLeaderEpoch() {
-    return slotLeaderEpoch;
-  }
+    /**
+     * Getter method for property <tt>slotLeaderEpoch</tt>.
+     *
+     * @return property value of slotLeaderEpoch
+     */
+    public long getSlotLeaderEpoch() {
+        return slotLeaderEpoch;
+    }
 
-  /**
-   * Getter method for property <tt>slotTableEpoch</tt>.
-   *
-   * @return property value of slotTableEpoch
-   */
-  public long getSlotTableEpoch() {
-    return slotTableEpoch;
-  }
+    /**
+     * Getter method for property <tt>slotTableEpoch</tt>.
+     *
+     * @return property value of slotTableEpoch
+     */
+    public long getSlotTableEpoch() {
+        return slotTableEpoch;
+    }
 
-  public Map<String, DatumDigest> getDatumDigest() {
-    return Collections.unmodifiableMap(datumDigest);
-  }
+    public Map<String, DatumDigest> getDatumDigest() {
+        return Collections.unmodifiableMap(datumDigest);
+    }
 
-  /**
-   * Getter method for property <tt>acceptorManager</tt>.
-   *
-   * @return property value of acceptorManager
-   */
-  public SyncSlotAcceptorManager getAcceptorManager() {
-    return acceptorManager;
-  }
+    /**
+     * Getter method for property <tt>acceptorManager</tt>.
+     *
+     * @return property value of acceptorManager
+     */
+    public SyncSlotAcceptorManager getAcceptorManager() {
+        return acceptorManager;
+    }
 
-  /**
-   * Getter method for property <tt>localDataCenter</tt>.
-   *
-   * @return property value of localDataCenter
-   */
-  public String getLocalDataCenter() {
-    return localDataCenter;
-  }
+    /**
+     * Getter method for property <tt>localDataCenter</tt>.
+     *
+     * @return property value of localDataCenter
+     */
+    public String getLocalDataCenter() {
+        return localDataCenter;
+    }
 
-  @Override
-  public String toString() {
-    return "DataSlotDiffDigestRequest{"
-        + "localDataCenter='"
-        + localDataCenter
-        + '\''
-        + ", slotTableEpoch="
-        + slotTableEpoch
-        + ", datumDigest="
-        + datumDigest.size()
-        + ", slotId="
-        + slotId
-        + ", slotLeaderEpoch="
-        + slotLeaderEpoch
-        + '}';
-  }
+    @Override
+    public String toString() {
+        return "DataSlotDiffDigestRequest{"
+                + "localDataCenter='"
+                + localDataCenter
+                + '\''
+                + ", slotTableEpoch="
+                + slotTableEpoch
+                + ", datumDigest="
+                + datumDigest.size()
+                + ", slotId="
+                + slotId
+                + ", slotLeaderEpoch="
+                + slotLeaderEpoch
+                + '}';
+    }
 }

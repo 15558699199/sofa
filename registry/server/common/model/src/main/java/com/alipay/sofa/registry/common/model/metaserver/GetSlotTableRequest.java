@@ -23,51 +23,51 @@ import java.io.Serializable;
  * @version v 0.1 2020-11-11 11:16 yuzhi.lyz Exp $
  */
 public class GetSlotTableRequest implements Serializable {
-  private static final long serialVersionUID = 2478663577413212315L;
-  private final long epochOfNode;
-  // session node not care the followers
-  private final boolean ignoredFollowers;
-  // data node only care self, if not set, get all
-  private final String targetDataNode;
+    private static final long serialVersionUID = 2478663577413212315L;
+    private final long epochOfNode;
+    // session node not care the followers
+    private final boolean ignoredFollowers;
+    // data node only care self, if not set, get all
+    private final String targetDataNode;
 
-  public GetSlotTableRequest(long epochOfNode, String targetDataNode, boolean ignoredFollowers) {
-    this.epochOfNode = epochOfNode;
-    this.targetDataNode = targetDataNode;
-    this.ignoredFollowers = ignoredFollowers;
-  }
+    public GetSlotTableRequest(long epochOfNode, String targetDataNode, boolean ignoredFollowers) {
+        this.epochOfNode = epochOfNode;
+        this.targetDataNode = targetDataNode;
+        this.ignoredFollowers = ignoredFollowers;
+    }
 
-  /**
-   * Getter method for property <tt>epochOfNode</tt>.
-   *
-   * @return property value of epochOfNode
-   */
-  public long getEpochOfNode() {
-    return epochOfNode;
-  }
+    /**
+     * Getter method for property <tt>epochOfNode</tt>.
+     *
+     * @return property value of epochOfNode
+     */
+    public long getEpochOfNode() {
+        return epochOfNode;
+    }
 
-  /**
-   * Getter method for property <tt>targetDataNode</tt>.
-   *
-   * @return property value of targetDataNode
-   */
-  public String getTargetDataNode() {
-    return targetDataNode;
-  }
+    /**
+     * Getter method for property <tt>targetDataNode</tt>.
+     *
+     * @return property value of targetDataNode
+     */
+    public String getTargetDataNode() {
+        return targetDataNode;
+    }
 
-  public boolean isIgnoredFollowers() {
-    return ignoredFollowers;
-  }
+    public boolean isIgnoredFollowers() {
+        return ignoredFollowers;
+    }
 
-  @Override
-  public String toString() {
-    return "GetSlotTableRequest{"
-        + "epochOfNode="
-        + epochOfNode
-        + ", ignoredFollowers="
-        + ignoredFollowers
-        + ", targetDataNode='"
-        + targetDataNode
-        + '\''
-        + '}';
-  }
+    @Override
+    public String toString() {
+        return "GetSlotTableRequest{"
+                + "epochOfNode="
+                + epochOfNode
+                + ", ignoredFollowers="
+                + ignoredFollowers
+                + ", targetDataNode='"
+                + targetDataNode
+                + '\''
+                + '}';
+    }
 }

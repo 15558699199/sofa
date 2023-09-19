@@ -21,7 +21,7 @@ import com.alipay.sofa.rpc.client.ProviderStatus;
 
 /**
  * Weight manager of provider info.
- * 
+ *
  * @author <a href="mailto:zhanggeng.zg@antfin.com">GengZhang</a>
  */
 public class ProviderInfoWeightManager {
@@ -31,7 +31,7 @@ public class ProviderInfoWeightManager {
      *
      * @param providerInfo ProviderInfo
      * @param weight       recovered weight
-     * @return is recover success 
+     * @return is recover success
      */
     public static boolean recoverWeight(ProviderInfo providerInfo, int weight) {
         providerInfo.setStatus(ProviderStatus.RECOVERING);
@@ -64,7 +64,6 @@ public class ProviderInfoWeightManager {
     }
 
     /**
-     *
      * @return weight
      */
     public static int getWeight(ProviderInfo providerInfo) {

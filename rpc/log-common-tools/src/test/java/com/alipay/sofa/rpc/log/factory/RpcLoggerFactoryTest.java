@@ -21,8 +21,6 @@ import org.junit.Test;
 import org.slf4j.Logger;
 
 /**
- *
- *
  * @author <a href="mailto:zhanggeng.zg@antfin.com">GengZhang</a>
  */
 public class RpcLoggerFactoryTest {

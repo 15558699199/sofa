@@ -19,23 +19,23 @@ package com.alipay.sofa.registry.server.data.timer;
 import io.prometheus.client.Gauge;
 
 public final class Metrics {
-  private Metrics() {}
+    static final Gauge PUB_GAUGE =
+            Gauge.build()
+                    .namespace("data")
+                    .subsystem("cache")
+                    .name("pub_total")
+                    .labelNames("dataCenter", "remote", "instanceId", "group")
+                    .help("publisher cache num")
+                    .register();
+    static final Gauge PUB_DATA_ID_GAUGE =
+            Gauge.build()
+                    .namespace("data")
+                    .subsystem("cache")
+                    .name("pub_dataID_total")
+                    .labelNames("dataCenter", "remote", "instanceId", "group")
+                    .help("publisher dataID cache num")
+                    .register();
 
-  static final Gauge PUB_GAUGE =
-      Gauge.build()
-          .namespace("data")
-          .subsystem("cache")
-          .name("pub_total")
-          .labelNames("dataCenter", "remote", "instanceId", "group")
-          .help("publisher cache num")
-          .register();
-
-  static final Gauge PUB_DATA_ID_GAUGE =
-      Gauge.build()
-          .namespace("data")
-          .subsystem("cache")
-          .name("pub_dataID_total")
-          .labelNames("dataCenter", "remote", "instanceId", "group")
-          .help("publisher dataID cache num")
-          .register();
+    private Metrics() {
+    }
 }

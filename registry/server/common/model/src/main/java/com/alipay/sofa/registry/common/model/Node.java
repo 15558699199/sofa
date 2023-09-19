@@ -17,8 +17,9 @@
 package com.alipay.sofa.registry.common.model;
 
 import com.alipay.sofa.registry.common.model.store.URL;
-import java.io.Serializable;
 import org.apache.commons.lang.StringUtils;
+
+import java.io.Serializable;
 
 /**
  * @author shangyu.wh
@@ -26,39 +27,41 @@ import org.apache.commons.lang.StringUtils;
  */
 public interface Node extends Serializable {
 
-  /** node type enum */
-  enum NodeType {
-    CLIENT,
-    SESSION,
-    META,
-    DATA,
-    CONSOLE,
-    ;
+    /**
+     * get node type
+     *
+     * @return NodeType
+     */
+    NodeType getNodeType();
 
-    public static NodeType codeOf(String type) {
-      if (StringUtils.isBlank(type)) {
-        return null;
-      }
-      for (NodeType nodeType : NodeType.values()) {
-        if (StringUtils.containsIgnoreCase(type, nodeType.name())) {
-          return nodeType;
+    /**
+     * get node url
+     *
+     * @return URL
+     */
+    URL getNodeUrl();
+
+    /**
+     * node type enum
+     */
+    enum NodeType {
+        CLIENT,
+        SESSION,
+        META,
+        DATA,
+        CONSOLE,
+        ;
+
+        public static NodeType codeOf(String type) {
+            if (StringUtils.isBlank(type)) {
+                return null;
+            }
+            for (NodeType nodeType : NodeType.values()) {
+                if (StringUtils.containsIgnoreCase(type, nodeType.name())) {
+                    return nodeType;
+                }
+            }
+            return null;
         }
-      }
-      return null;
     }
-  }
-
-  /**
-   * get node type
-   *
-   * @return NodeType
-   */
-  NodeType getNodeType();
-
-  /**
-   * get node url
-   *
-   * @return URL
-   */
-  URL getNodeUrl();
 }

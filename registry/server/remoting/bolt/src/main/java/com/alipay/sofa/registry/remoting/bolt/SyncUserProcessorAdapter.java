@@ -19,6 +19,7 @@ package com.alipay.sofa.registry.remoting.bolt;
 import com.alipay.remoting.BizContext;
 import com.alipay.remoting.rpc.protocol.SyncUserProcessor;
 import com.alipay.sofa.registry.remoting.ChannelHandler;
+
 import java.util.concurrent.Executor;
 
 /**
@@ -27,34 +28,34 @@ import java.util.concurrent.Executor;
  */
 public class SyncUserProcessorAdapter extends SyncUserProcessor {
 
-  private final ChannelHandler userProcessorHandler;
+    private final ChannelHandler userProcessorHandler;
 
-  /**
-   * constructor
-   *
-   * @param userProcessorHandler
-   */
-  public SyncUserProcessorAdapter(ChannelHandler userProcessorHandler) {
-    this.userProcessorHandler = userProcessorHandler;
-  }
-
-  @Override
-  public Object handleRequest(BizContext bizCtx, Object request) throws Exception {
-    BoltChannel boltChannel = new BoltChannel(bizCtx.getConnection());
-    return userProcessorHandler.reply(boltChannel, request);
-  }
-
-  @Override
-  public String interest() {
-    if (userProcessorHandler.interest() != null) {
-      return userProcessorHandler.interest().getName();
+    /**
+     * constructor
+     *
+     * @param userProcessorHandler
+     */
+    public SyncUserProcessorAdapter(ChannelHandler userProcessorHandler) {
+        this.userProcessorHandler = userProcessorHandler;
     }
 
-    return null;
-  }
+    @Override
+    public Object handleRequest(BizContext bizCtx, Object request) throws Exception {
+        BoltChannel boltChannel = new BoltChannel(bizCtx.getConnection());
+        return userProcessorHandler.reply(boltChannel, request);
+    }
 
-  @Override
-  public Executor getExecutor() {
-    return userProcessorHandler.getExecutor();
-  }
+    @Override
+    public String interest() {
+        if (userProcessorHandler.interest() != null) {
+            return userProcessorHandler.interest().getName();
+        }
+
+        return null;
+    }
+
+    @Override
+    public Executor getExecutor() {
+        return userProcessorHandler.getExecutor();
+    }
 }

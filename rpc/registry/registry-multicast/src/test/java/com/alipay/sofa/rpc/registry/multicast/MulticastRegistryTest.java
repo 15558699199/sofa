@@ -49,8 +49,8 @@ public class MulticastRegistryTest {
     @Test
     public void testInit() throws NoSuchFieldException, IllegalAccessException {
         RegistryConfig registryConfig = new RegistryConfig()
-            .setProtocol("multicast")
-            .setAddress("224.5.6.7:6666");
+                .setProtocol("multicast")
+                .setAddress("224.5.6.7:6666");
         MulticastRegistry multicastRegistry = new MulticastRegistry(registryConfig);
         multicastRegistry.init();
 
@@ -124,7 +124,6 @@ public class MulticastRegistryTest {
         ProviderGroup providerGroup1 = client.getAllProviderCache().get(MulticastRegistryHelper.buildListDataId(PROVIDER_CONFIG, SERVER_CONFIG.getProtocol()));
         Assert.assertFalse(providerGroup1.isEmpty());
     }
-
 
 
 }

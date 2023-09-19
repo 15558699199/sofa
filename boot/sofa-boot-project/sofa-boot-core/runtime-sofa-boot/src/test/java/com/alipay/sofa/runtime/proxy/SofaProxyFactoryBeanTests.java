@@ -34,9 +34,9 @@ public class SofaProxyFactoryBeanTests {
     @Test
     public void createSofaProxyFactoryBean() {
         BeanFactory beanFactory = new DefaultListableBeanFactory();
-        Class<?>[] classes = new Class<?>[] { SampleService.class };
+        Class<?>[] classes = new Class<?>[]{SampleService.class};
         SofaProxyFactoryBean factoryBean = new SofaProxyFactoryBean(classes, "test",
-            SampleService.class, beanFactory);
+                SampleService.class, beanFactory);
 
         assertThat(factoryBean.getTargetClass()).isEqualTo(SampleService.class);
         assertThat(factoryBean.getProxiedInterfaces()).contains(SampleService.class);

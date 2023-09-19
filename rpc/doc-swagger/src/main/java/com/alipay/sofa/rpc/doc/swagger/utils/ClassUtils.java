@@ -19,16 +19,11 @@ package com.alipay.sofa.rpc.doc.swagger.utils;
 import io.swagger.util.ReflectionUtils;
 
 import java.lang.reflect.Array;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.IdentityHashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * copy from spring-core
- *
+ * <p>
  * Miscellaneous class utility methods.
  * Mainly for internal use within the framework.
  *
@@ -44,51 +39,51 @@ public abstract class ClassUtils {
     /**
      * Suffix for array class names: "[]"
      */
-    public static final String                   ARRAY_SUFFIX               = "[]";
+    public static final String ARRAY_SUFFIX = "[]";
 
     /**
      * Prefix for internal array class names: "["
      */
-    private static final String                  INTERNAL_ARRAY_PREFIX      = "[";
+    private static final String INTERNAL_ARRAY_PREFIX = "[";
 
     /**
      * Prefix for internal non-primitive array class names: "[L"
      */
-    private static final String                  NON_PRIMITIVE_ARRAY_PREFIX = "[L";
+    private static final String NON_PRIMITIVE_ARRAY_PREFIX = "[L";
 
     /**
      * The package separator character: '.'
      */
-    private static final char                    PACKAGE_SEPARATOR          = '.';
+    private static final char PACKAGE_SEPARATOR = '.';
 
     /**
      * The inner class separator character: '$'
      */
-    private static final char                    INNER_CLASS_SEPARATOR      = '$';
+    private static final char INNER_CLASS_SEPARATOR = '$';
 
     /**
      * Map with primitive wrapper type as key and corresponding primitive
      * type as value, for example: Integer.class -> int.class.
      */
-    private static final Map<Class<?>, Class<?>> primitiveWrapperTypeMap    = new IdentityHashMap<Class<?>, Class<?>>(8);
+    private static final Map<Class<?>, Class<?>> primitiveWrapperTypeMap = new IdentityHashMap<Class<?>, Class<?>>(8);
 
     /**
      * Map with primitive type as key and corresponding wrapper
      * type as value, for example: int.class -> Integer.class.
      */
-    private static final Map<Class<?>, Class<?>> primitiveTypeToWrapperMap  = new IdentityHashMap<Class<?>, Class<?>>(8);
+    private static final Map<Class<?>, Class<?>> primitiveTypeToWrapperMap = new IdentityHashMap<Class<?>, Class<?>>(8);
 
     /**
      * Map with primitive type name as key and corresponding primitive
      * type as value, for example: "int" -> "int.class".
      */
-    private static final Map<String, Class<?>>   primitiveTypeNameMap       = new HashMap<String, Class<?>>(32);
+    private static final Map<String, Class<?>> primitiveTypeNameMap = new HashMap<String, Class<?>>(32);
 
     /**
      * Map with common "java.lang" class name as key and corresponding Class as value.
      * Primarily for efficient deserialization of remote invocations.
      */
-    private static final Map<String, Class<?>>   commonClassCache           = new HashMap<String, Class<?>>(32);
+    private static final Map<String, Class<?>> commonClassCache = new HashMap<String, Class<?>>(32);
 
     static {
         primitiveWrapperTypeMap.put(Boolean.class, boolean.class);
@@ -107,20 +102,20 @@ public abstract class ClassUtils {
 
         Set<Class<?>> primitiveTypes = new HashSet<Class<?>>(32);
         primitiveTypes.addAll(primitiveWrapperTypeMap.values());
-        primitiveTypes.addAll(Arrays.asList(new Class<?>[] {
-            boolean[].class, byte[].class, char[].class, double[].class,
-            float[].class, int[].class, long[].class, short[].class }));
+        primitiveTypes.addAll(Arrays.asList(new Class<?>[]{
+                boolean[].class, byte[].class, char[].class, double[].class,
+                float[].class, int[].class, long[].class, short[].class}));
         primitiveTypes.add(void.class);
         for (Class<?> primitiveType : primitiveTypes) {
             primitiveTypeNameMap.put(primitiveType.getName(), primitiveType);
         }
 
         registerCommonClasses(Boolean[].class, Byte[].class, Character[].class, Double[].class,
-            Float[].class, Integer[].class, Long[].class, Short[].class);
+                Float[].class, Integer[].class, Long[].class, Short[].class);
         registerCommonClasses(Number.class, Number[].class, String.class, String[].class,
-            Object.class, Object[].class, Class.class, Class[].class);
+                Object.class, Object[].class, Class.class, Class[].class);
         registerCommonClasses(Throwable.class, Exception.class, RuntimeException.class,
-            Error.class, StackTraceElement.class, StackTraceElement[].class);
+                Error.class, StackTraceElement.class, StackTraceElement[].class);
     }
 
     /**
@@ -257,7 +252,7 @@ public abstract class ClassUtils {
             throw new IllegalArgumentException("Cannot find class [" + className + "]", ex);
         } catch (LinkageError ex) {
             throw new IllegalArgumentException(
-                "Error loading class [" + className + "]: problem with class file or dependent class.", ex);
+                    "Error loading class [" + className + "]: problem with class file or dependent class.", ex);
         }
     }
 

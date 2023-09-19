@@ -62,10 +62,10 @@ public abstract class AbstractRpcStatJsonReporter extends AbstractSofaTracerStat
         //method name
         String methodName = tagsWithStr.get(RpcSpanTags.METHOD);
 
-        statKey.setKey(buildString(new String[] { fromApp, toApp, serviceName, methodName }));
+        statKey.setKey(buildString(new String[]{fromApp, toApp, serviceName, methodName}));
         String resultCode = tagsWithStr.get(RpcSpanTags.RESULT_CODE);
         statKey.setResult(isSuccess(resultCode) ? "Y" : "N");
-        statKey.setEnd(buildString(new String[] { getLoadTestMark(sofaTracerSpan), zone }));
+        statKey.setEnd(buildString(new String[]{getLoadTestMark(sofaTracerSpan), zone}));
         statKey.setLoadTest(TracerUtils.isLoadTest(sofaTracerSpan));
 
         statKey.addKey(RpcSpanTags.LOCAL_APP, tagsWithStr.get(RpcSpanTags.LOCAL_APP));
@@ -74,7 +74,7 @@ public abstract class AbstractRpcStatJsonReporter extends AbstractSofaTracerStat
         statKey.addKey(RpcSpanTags.METHOD, methodName);
         //次数和耗时，最后一个耗时是单独打印的字段
         long duration = sofaTracerSpan.getEndTime() - sofaTracerSpan.getStartTime();
-        long[] values = new long[] { 1, duration };
+        long[] values = new long[]{1, duration};
         this.addStat(statKey, values);
     }
 
@@ -105,7 +105,7 @@ public abstract class AbstractRpcStatJsonReporter extends AbstractSofaTracerStat
     protected boolean isSuccess(String resultCode) {
         //todo 需要判断成功失败的标识
         return "00".equals(resultCode) || "0".equals(resultCode)
-            || com.alipay.sofa.rpc.common.utils.StringUtils.isBlank(resultCode);
+                || com.alipay.sofa.rpc.common.utils.StringUtils.isBlank(resultCode);
     }
 
     protected String getLoadTestMark(SofaTracerSpan span) {

@@ -31,128 +31,133 @@ import com.alipay.sofa.registry.server.meta.lease.impl.AbstractEvictableFilterab
 import com.alipay.sofa.registry.server.meta.monitor.Metrics;
 import com.alipay.sofa.registry.server.meta.slot.SlotManager;
 import com.google.common.collect.Lists;
-import java.util.List;
-import java.util.Objects;
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import java.util.List;
+import java.util.Objects;
+
 /**
  * @author chen.zhu
- *     <p>Nov 24, 2020
+ * <p>Nov 24, 2020
  */
 @Component
 public class DefaultSessionServerManager
-    extends AbstractEvictableFilterableLeaseManager<SessionNode> implements SessionServerManager {
+        extends AbstractEvictableFilterableLeaseManager<SessionNode> implements SessionServerManager {
 
-  @Autowired private MetaServerConfig metaServerConfig;
+    @Autowired
+    private MetaServerConfig metaServerConfig;
 
-  @Autowired private SlotManager slotManager;
+    @Autowired
+    private SlotManager slotManager;
 
-  public DefaultSessionServerManager() {}
-
-  public DefaultSessionServerManager(
-      MetaServerConfig metaServerConfig,
-      SlotManager slotManager,
-      MetaLeaderService metaLeaderService) {
-    this.metaServerConfig = metaServerConfig;
-    this.slotManager = slotManager;
-    this.metaLeaderService = metaLeaderService;
-  }
-
-  @PostConstruct
-  public void postConstruct() throws Exception {
-    LifecycleHelper.initializeIfPossible(this);
-    LifecycleHelper.startIfPossible(this);
-  }
-
-  @PreDestroy
-  public void preDestory() throws Exception {
-    LifecycleHelper.stopIfPossible(this);
-    LifecycleHelper.disposeIfPossible(this);
-  }
-
-  @Override
-  public void register(Lease<SessionNode> lease) {
-    super.register(lease);
-    notifyObservers(new NodeAdded<>(lease.getRenewal()));
-  }
-  /**
-   * Different from data server, session node maintains a 'ProcessId' to be as unique Id for Session
-   * Process(not server)
-   *
-   * <p>Once a restart event happened on the same session-server, an notification will be sent
-   */
-  @Override
-  public boolean renew(SessionNode renewal, int duration) {
-    Metrics.Heartbeat.onSessionHeartbeat(renewal.getIp());
-    Lease<SessionNode> lease = getLease(renewal);
-    if (renewal.getProcessId() != null
-        && lease != null
-        && lease.getRenewal() != null
-        && !Objects.equals(lease.getRenewal().getProcessId(), renewal.getProcessId())) {
-      logger.warn(
-          "[renew] session node is restart, as process-Id change from {} to {}",
-          lease.getRenewal().getProcessId(),
-          renewal.getProcessId());
-      // replace the session node, as it has changed process-id already
-      lease.setRenewal(renewal);
-      super.register(new Lease<>(renewal, duration));
-      notifyObservers(new NodeModified<>(lease.getRenewal(), renewal));
-      return false;
-    } else {
-      return super.renew(renewal, duration);
+    public DefaultSessionServerManager() {
     }
-  }
 
-  @Override
-  public boolean cancel(Lease<SessionNode> lease) {
-    boolean result = super.cancel(lease);
-    if (result) {
-      Metrics.Heartbeat.onSessionEvict(lease.getRenewal().getIp());
-      notifyObservers(new NodeRemoved<>(lease.getRenewal()));
+    public DefaultSessionServerManager(
+            MetaServerConfig metaServerConfig,
+            SlotManager slotManager,
+            MetaLeaderService metaLeaderService) {
+        this.metaServerConfig = metaServerConfig;
+        this.slotManager = slotManager;
+        this.metaLeaderService = metaLeaderService;
     }
-    return result;
-  }
 
-  @Override
-  protected int getIntervalMilli() {
-    return metaServerConfig.getExpireCheckIntervalMillis();
-  }
-
-  @Override
-  protected int getEvictBetweenMilli() {
-    return metaServerConfig.getExpireCheckIntervalMillis();
-  }
-
-  @Override
-  public VersionedList<SessionNode> getSessionServerMetaInfo() {
-    VersionedList<Lease<SessionNode>> leaseMetaInfo = getLeaseMeta();
-    List<SessionNode> sessionNodes = Lists.newArrayList();
-    leaseMetaInfo
-        .getClusterMembers()
-        .forEach(
-            lease -> {
-              sessionNodes.add(lease.getRenewal());
-            });
-    return new VersionedList<>(leaseMetaInfo.getEpoch(), sessionNodes);
-  }
-
-  @Override
-  public long getEpoch() {
-    return currentEpoch.get();
-  }
-
-  @Override
-  public void onHeartbeat(HeartbeatRequest<SessionNode> heartbeat) {
-    if (amILeader() && !metaLeaderService.isWarmuped()) {
-      learnFromSession(heartbeat);
+    @PostConstruct
+    public void postConstruct() throws Exception {
+        LifecycleHelper.initializeIfPossible(this);
+        LifecycleHelper.startIfPossible(this);
     }
-  }
 
-  protected void learnFromSession(HeartbeatRequest<SessionNode> heartbeat) {
-    SlotTable slotTable = heartbeat.getSlotTable();
-    slotManager.refresh(slotTable);
-  }
+    @PreDestroy
+    public void preDestory() throws Exception {
+        LifecycleHelper.stopIfPossible(this);
+        LifecycleHelper.disposeIfPossible(this);
+    }
+
+    @Override
+    public void register(Lease<SessionNode> lease) {
+        super.register(lease);
+        notifyObservers(new NodeAdded<>(lease.getRenewal()));
+    }
+
+    /**
+     * Different from data server, session node maintains a 'ProcessId' to be as unique Id for Session
+     * Process(not server)
+     *
+     * <p>Once a restart event happened on the same session-server, an notification will be sent
+     */
+    @Override
+    public boolean renew(SessionNode renewal, int duration) {
+        Metrics.Heartbeat.onSessionHeartbeat(renewal.getIp());
+        Lease<SessionNode> lease = getLease(renewal);
+        if (renewal.getProcessId() != null
+                && lease != null
+                && lease.getRenewal() != null
+                && !Objects.equals(lease.getRenewal().getProcessId(), renewal.getProcessId())) {
+            logger.warn(
+                    "[renew] session node is restart, as process-Id change from {} to {}",
+                    lease.getRenewal().getProcessId(),
+                    renewal.getProcessId());
+            // replace the session node, as it has changed process-id already
+            lease.setRenewal(renewal);
+            super.register(new Lease<>(renewal, duration));
+            notifyObservers(new NodeModified<>(lease.getRenewal(), renewal));
+            return false;
+        } else {
+            return super.renew(renewal, duration);
+        }
+    }
+
+    @Override
+    public boolean cancel(Lease<SessionNode> lease) {
+        boolean result = super.cancel(lease);
+        if (result) {
+            Metrics.Heartbeat.onSessionEvict(lease.getRenewal().getIp());
+            notifyObservers(new NodeRemoved<>(lease.getRenewal()));
+        }
+        return result;
+    }
+
+    @Override
+    protected int getIntervalMilli() {
+        return metaServerConfig.getExpireCheckIntervalMillis();
+    }
+
+    @Override
+    protected int getEvictBetweenMilli() {
+        return metaServerConfig.getExpireCheckIntervalMillis();
+    }
+
+    @Override
+    public VersionedList<SessionNode> getSessionServerMetaInfo() {
+        VersionedList<Lease<SessionNode>> leaseMetaInfo = getLeaseMeta();
+        List<SessionNode> sessionNodes = Lists.newArrayList();
+        leaseMetaInfo
+                .getClusterMembers()
+                .forEach(
+                        lease -> {
+                            sessionNodes.add(lease.getRenewal());
+                        });
+        return new VersionedList<>(leaseMetaInfo.getEpoch(), sessionNodes);
+    }
+
+    @Override
+    public long getEpoch() {
+        return currentEpoch.get();
+    }
+
+    @Override
+    public void onHeartbeat(HeartbeatRequest<SessionNode> heartbeat) {
+        if (amILeader() && !metaLeaderService.isWarmuped()) {
+            learnFromSession(heartbeat);
+        }
+    }
+
+    protected void learnFromSession(HeartbeatRequest<SessionNode> heartbeat) {
+        SlotTable slotTable = heartbeat.getSlotTable();
+        slotManager.refresh(slotTable);
+    }
 }

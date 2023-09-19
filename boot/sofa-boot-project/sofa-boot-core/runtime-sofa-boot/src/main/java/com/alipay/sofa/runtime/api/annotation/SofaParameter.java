@@ -25,12 +25,14 @@ public @interface SofaParameter {
 
     /**
      * Parameter key.
+     *
      * @return key
      */
     String key();
 
     /**
      * Parameter value.
+     *
      * @return value
      */
     String value();

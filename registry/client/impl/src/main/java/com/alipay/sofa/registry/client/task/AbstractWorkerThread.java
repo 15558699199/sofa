@@ -26,43 +26,51 @@ import com.alipay.sofa.registry.client.remoting.Client;
  */
 public abstract class AbstractWorkerThread extends Thread implements Worker {
 
-  /** */
-  private final Object bell = new Object();
+    /**
+     *
+     */
+    private final Object bell = new Object();
 
-  /** The Client. */
-  protected Client client;
+    /**
+     * The Client.
+     */
+    protected Client client;
 
-  /**
-   * Instantiates a new Abstract worker thread.
-   *
-   * @param client the client
-   */
-  public AbstractWorkerThread(Client client) {
-    this.client = client;
-  }
-
-  /** Notify execute signal for task thread. */
-  void signal() {
-    synchronized (bell) {
-      bell.notifyAll();
+    /**
+     * Instantiates a new Abstract worker thread.
+     *
+     * @param client the client
+     */
+    public AbstractWorkerThread(Client client) {
+        this.client = client;
     }
-  }
 
-  /**
-   * Await for next task.
-   *
-   * @param timeout wait timeout
-   * @throws InterruptedException thread interrupted
-   */
-  void await(long timeout) throws InterruptedException {
-    synchronized (bell) {
-      bell.wait(timeout);
+    /**
+     * Notify execute signal for task thread.
+     */
+    void signal() {
+        synchronized (bell) {
+            bell.notifyAll();
+        }
     }
-  }
 
-  /** @see Runnable#run() */
-  @Override
-  public void run() {
-    handle();
-  }
+    /**
+     * Await for next task.
+     *
+     * @param timeout wait timeout
+     * @throws InterruptedException thread interrupted
+     */
+    void await(long timeout) throws InterruptedException {
+        synchronized (bell) {
+            bell.wait(timeout);
+        }
+    }
+
+    /**
+     * @see Runnable#run()
+     */
+    @Override
+    public void run() {
+        handle();
+    }
 }

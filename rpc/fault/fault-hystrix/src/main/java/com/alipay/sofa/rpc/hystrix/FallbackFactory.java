@@ -18,8 +18,8 @@ package com.alipay.sofa.rpc.hystrix;
 
 /**
  * Construct a instance by exception when the hystrix execute failed
- * @param <T>
  *
+ * @param <T>
  * @author <a href=mailto:scienjus@gmail.com>ScienJus</a>
  */
 public interface FallbackFactory<T> {

@@ -20,63 +20,64 @@ import com.alipay.sofa.registry.common.model.DataCenterPushInfo;
 import com.alipay.sofa.registry.exception.SofaRegistryRuntimeException;
 import com.alipay.sofa.registry.util.StringFormatter;
 import com.google.common.collect.Maps;
+import org.springframework.util.StringUtils;
+
 import java.util.Collections;
 import java.util.Map;
 import java.util.Map.Entry;
-import org.springframework.util.StringUtils;
 
 public class PushData<T> {
-  private final T payload;
+    private final T payload;
 
-  private final Map<String, String> segment2DataCenter;
+    private final Map<String, String> segment2DataCenter;
 
-  private final Map<String, DataCenterPushInfo> dataCenterPushInfo;
+    private final Map<String, DataCenterPushInfo> dataCenterPushInfo;
 
-  public PushData(T payload, Map<String, DataCenterPushInfo> dataCenterPushInfo) {
-    this.payload = payload;
+    public PushData(T payload, Map<String, DataCenterPushInfo> dataCenterPushInfo) {
+        this.payload = payload;
 
-    if (dataCenterPushInfo == null) {
-      this.dataCenterPushInfo = Collections.EMPTY_MAP;
-      this.segment2DataCenter = Collections.EMPTY_MAP;
-      return;
+        if (dataCenterPushInfo == null) {
+            this.dataCenterPushInfo = Collections.EMPTY_MAP;
+            this.segment2DataCenter = Collections.EMPTY_MAP;
+            return;
+        }
+        this.dataCenterPushInfo = dataCenterPushInfo;
+
+        Map<String, String> segment2DataCenter = Maps.newHashMap();
+        for (Entry<String, DataCenterPushInfo> entry : dataCenterPushInfo.entrySet()) {
+            for (String segment : entry.getValue().getSegments()) {
+                segment2DataCenter.put(segment, entry.getKey());
+            }
+        }
+        this.segment2DataCenter = segment2DataCenter;
     }
-    this.dataCenterPushInfo = dataCenterPushInfo;
 
-    Map<String, String> segment2DataCenter = Maps.newHashMap();
-    for (Entry<String, DataCenterPushInfo> entry : dataCenterPushInfo.entrySet()) {
-      for (String segment : entry.getValue().getSegments()) {
-        segment2DataCenter.put(segment, entry.getKey());
-      }
+    public T getPayload() {
+        return payload;
     }
-    this.segment2DataCenter = segment2DataCenter;
-  }
 
-  public T getPayload() {
-    return payload;
-  }
-
-  /**
-   * Getter method for property <tt>dataCenterPushInfo</tt>.
-   *
-   * @return property value of dataCenterPushInfo
-   */
-  public Map<String, DataCenterPushInfo> getDataCenterPushInfo() {
-    return dataCenterPushInfo;
-  }
-
-  public void addSegmentInfo(String segment, String encoding, int encodeSize) {
-    String dataCenter = segment2DataCenter.get(segment);
-    if (StringUtils.isEmpty(dataCenter)) {
-      throw new SofaRegistryRuntimeException(
-          StringFormatter.format("[addSegmentInfo]not find dataCenter for segment: %s", segment));
+    /**
+     * Getter method for property <tt>dataCenterPushInfo</tt>.
+     *
+     * @return property value of dataCenterPushInfo
+     */
+    public Map<String, DataCenterPushInfo> getDataCenterPushInfo() {
+        return dataCenterPushInfo;
     }
-    DataCenterPushInfo dataCenterPushInfo = this.dataCenterPushInfo.get(dataCenter);
-    if (dataCenterPushInfo == null) {
-      throw new SofaRegistryRuntimeException(
-          StringFormatter.format(
-              "[addSegmentInfo]not find dataCenterPushInfo for dataCenter:%s, segment: %s",
-              dataCenter, segment));
+
+    public void addSegmentInfo(String segment, String encoding, int encodeSize) {
+        String dataCenter = segment2DataCenter.get(segment);
+        if (StringUtils.isEmpty(dataCenter)) {
+            throw new SofaRegistryRuntimeException(
+                    StringFormatter.format("[addSegmentInfo]not find dataCenter for segment: %s", segment));
+        }
+        DataCenterPushInfo dataCenterPushInfo = this.dataCenterPushInfo.get(dataCenter);
+        if (dataCenterPushInfo == null) {
+            throw new SofaRegistryRuntimeException(
+                    StringFormatter.format(
+                            "[addSegmentInfo]not find dataCenterPushInfo for dataCenter:%s, segment: %s",
+                            dataCenter, segment));
+        }
+        dataCenterPushInfo.addSegmentInfo(segment, encoding, encodeSize);
     }
-    dataCenterPushInfo.addSegmentInfo(segment, encoding, encodeSize);
-  }
 }

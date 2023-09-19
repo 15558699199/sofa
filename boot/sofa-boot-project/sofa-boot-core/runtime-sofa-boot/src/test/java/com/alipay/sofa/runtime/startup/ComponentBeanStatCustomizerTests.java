@@ -41,7 +41,7 @@ public class ComponentBeanStatCustomizerTests {
         ServiceFactoryBean serviceFactoryBean = new ServiceFactoryBean();
         serviceFactoryBean.setInterfaceType("testService");
         BeanStat result = componentBeanStatCustomizer.customize("service", serviceFactoryBean,
-            beanStat);
+                beanStat);
         assertThat(result).isNull();
         assertThat(beanStat.getAttribute("interface")).isEqualTo("testService");
     }
@@ -52,7 +52,7 @@ public class ComponentBeanStatCustomizerTests {
         ReferenceFactoryBean referenceFactoryBean = new ReferenceFactoryBean();
         referenceFactoryBean.setInterfaceType("testService");
         BeanStat result = componentBeanStatCustomizer.customize("reference", referenceFactoryBean,
-            beanStat);
+                beanStat);
         assertThat(result).isNull();
         assertThat(beanStat.getAttribute("interface")).isEqualTo("testService");
     }
@@ -63,10 +63,10 @@ public class ComponentBeanStatCustomizerTests {
         ExtensionFactoryBean extensionFactoryBean = new ExtensionFactoryBean();
         extensionFactoryBean.setBean("testExtension");
         BeanStat result = componentBeanStatCustomizer.customize("extension", extensionFactoryBean,
-            beanStat);
+                beanStat);
         assertThat(result).isNull();
         assertThat(beanStat.getAttribute("extension")).isEqualTo(
-            "ExtensionPointTarget: testExtension");
+                "ExtensionPointTarget: testExtension");
     }
 
     @Test
@@ -75,10 +75,10 @@ public class ComponentBeanStatCustomizerTests {
         ExtensionPointFactoryBean extensionPointFactoryBean = new ExtensionPointFactoryBean();
         extensionPointFactoryBean.setTargetBeanName("testExtensionPoint");
         BeanStat result = componentBeanStatCustomizer.customize("extensionPoint",
-            extensionPointFactoryBean, beanStat);
+                extensionPointFactoryBean, beanStat);
         assertThat(result).isNull();
         assertThat(beanStat.getAttribute("extension")).isEqualTo(
-            "ExtensionPointTarget: testExtensionPoint");
+                "ExtensionPointTarget: testExtensionPoint");
     }
 
     @Test

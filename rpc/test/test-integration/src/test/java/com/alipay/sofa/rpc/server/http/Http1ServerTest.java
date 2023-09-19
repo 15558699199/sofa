@@ -56,19 +56,19 @@ public class Http1ServerTest extends ActivelyDestroyTest {
     public void testHttp1General() throws Exception {
         // 只有1个线程 执行
         ServerConfig serverConfig = new ServerConfig()
-            .setStopTimeout(60000)
-            .setPort(12300)
-            .setProtocol(RpcConstants.PROTOCOL_TYPE_HTTP)
-            .setDaemon(true);
+                .setStopTimeout(60000)
+                .setPort(12300)
+                .setProtocol(RpcConstants.PROTOCOL_TYPE_HTTP)
+                .setDaemon(true);
 
         // 发布一个服务，每个请求要执行1秒
         ProviderConfig<HttpService> providerConfig = new ProviderConfig<HttpService>()
-            .setInterfaceId(HttpService.class.getName())
-            .setRef(new HttpServiceImpl())
-            .setApplication(new ApplicationConfig().setAppName("serverApp"))
-            .setServer(serverConfig)
-            .setUniqueId("uuu")
-            .setRegister(false);
+                .setInterfaceId(HttpService.class.getName())
+                .setRef(new HttpServiceImpl())
+                .setApplication(new ApplicationConfig().setAppName("serverApp"))
+                .setServer(serverConfig)
+                .setUniqueId("uuu")
+                .setRegister(false);
         providerConfig.export();
 
         HttpClient httpclient = HttpClientBuilder.create().build();
@@ -173,19 +173,19 @@ public class Http1ServerTest extends ActivelyDestroyTest {
 
         // 只有1个线程 执行
         ServerConfig serverConfig = new ServerConfig()
-            .setStopTimeout(60000)
-            .setPort(12300)
-            .setProtocol(RpcConstants.PROTOCOL_TYPE_HTTP)
-            .setDaemon(true);
+                .setStopTimeout(60000)
+                .setPort(12300)
+                .setProtocol(RpcConstants.PROTOCOL_TYPE_HTTP)
+                .setDaemon(true);
 
         // 发布一个服务，每个请求要执行1秒
         ProviderConfig<HttpService> providerConfig = new ProviderConfig<HttpService>()
-            .setInterfaceId(HttpService.class.getName())
-            .setRef(new HttpServiceImpl())
-            .setApplication(new ApplicationConfig().setAppName("serverApp"))
-            .setServer(serverConfig)
-            .setUniqueId("uuu")
-            .setRegister(false);
+                .setInterfaceId(HttpService.class.getName())
+                .setRef(new HttpServiceImpl())
+                .setApplication(new ApplicationConfig().setAppName("serverApp"))
+                .setServer(serverConfig)
+                .setUniqueId("uuu")
+                .setRegister(false);
         providerConfig.export();
 
         HttpClient httpclient = HttpClientBuilder.create().build();
@@ -196,7 +196,7 @@ public class Http1ServerTest extends ActivelyDestroyTest {
             httpPost.setHeader(RemotingConstants.HEAD_SERIALIZE_TYPE, "protobuf");
             EchoRequest request = EchoRequest.newBuilder().setGroup(Group.A).setName("xxx").build();
             ByteArrayEntity entity = new ByteArrayEntity(request.toByteArray(),
-                ContentType.create("application/protobuf"));
+                    ContentType.create("application/protobuf"));
             httpPost.setEntity(entity);
             HttpResponse httpResponse = httpclient.execute(httpPost);
             Assert.assertEquals(404, httpResponse.getStatusLine().getStatusCode());
@@ -208,7 +208,7 @@ public class Http1ServerTest extends ActivelyDestroyTest {
             httpPost.setHeader(RemotingConstants.HEAD_SERIALIZE_TYPE, "protobuf");
             EchoRequest request = EchoRequest.newBuilder().setGroup(Group.A).setName("xxx").build();
             ByteArrayEntity entity = new ByteArrayEntity(request.toByteArray(),
-                ContentType.create("application/protobuf"));
+                    ContentType.create("application/protobuf"));
             httpPost.setEntity(entity);
             HttpResponse httpResponse = httpclient.execute(httpPost);
             Assert.assertEquals(404, httpResponse.getStatusLine().getStatusCode());
@@ -220,7 +220,7 @@ public class Http1ServerTest extends ActivelyDestroyTest {
             HttpPost httpPost = new HttpPost(url);
             EchoRequest request = EchoRequest.newBuilder().setGroup(Group.A).setName("xxx").build();
             ByteArrayEntity entity = new ByteArrayEntity(request.toByteArray(),
-                ContentType.create("application/protobuf"));
+                    ContentType.create("application/protobuf"));
             httpPost.setEntity(entity);
 
             HttpResponse httpResponse = httpclient.execute(httpPost);
@@ -237,7 +237,7 @@ public class Http1ServerTest extends ActivelyDestroyTest {
             EchoRequest request = EchoRequest.newBuilder().setGroup(Group.A).setName("xxx").build();
             httpPost.setHeader(RemotingConstants.HEAD_SERIALIZE_TYPE, "protobuf");
             ByteArrayEntity entity = new ByteArrayEntity(request.toByteArray(),
-                ContentType.create("application/protobuf"));
+                    ContentType.create("application/protobuf"));
             httpPost.setEntity(entity);
 
             HttpResponse httpResponse = httpclient.execute(httpPost);
@@ -254,19 +254,19 @@ public class Http1ServerTest extends ActivelyDestroyTest {
     public void testHttp1Json() throws Exception {
         // 只有1个线程 执行
         ServerConfig serverConfig = new ServerConfig()
-            .setStopTimeout(60000)
-            .setPort(12300)
-            .setProtocol(RpcConstants.PROTOCOL_TYPE_HTTP)
-            .setDaemon(true);
+                .setStopTimeout(60000)
+                .setPort(12300)
+                .setProtocol(RpcConstants.PROTOCOL_TYPE_HTTP)
+                .setDaemon(true);
 
         // 发布一个服务，每个请求要执行1秒
         ProviderConfig<HttpService> providerConfig = new ProviderConfig<HttpService>()
-            .setInterfaceId(HttpService.class.getName())
-            .setRef(new HttpServiceImpl())
-            .setApplication(new ApplicationConfig().setAppName("serverApp"))
-            .setServer(serverConfig)
-            .setUniqueId("uuu")
-            .setRegister(false);
+                .setInterfaceId(HttpService.class.getName())
+                .setRef(new HttpServiceImpl())
+                .setApplication(new ApplicationConfig().setAppName("serverApp"))
+                .setServer(serverConfig)
+                .setUniqueId("uuu")
+                .setRegister(false);
         providerConfig.export();
 
         HttpClient httpclient = HttpClientBuilder.create().build();
@@ -280,7 +280,7 @@ public class Http1ServerTest extends ActivelyDestroyTest {
             obj.setName("xxx");
             byte[] bytes = mapper.writeValueAsBytes(obj);
             ByteArrayEntity entity = new ByteArrayEntity(bytes,
-                ContentType.create("application/json"));
+                    ContentType.create("application/json"));
             httpPost.setEntity(entity);
             HttpResponse httpResponse = httpclient.execute(httpPost);
             Assert.assertEquals(404, httpResponse.getStatusLine().getStatusCode());
@@ -295,7 +295,7 @@ public class Http1ServerTest extends ActivelyDestroyTest {
             obj.setName("xxx");
             byte[] bytes = mapper.writeValueAsBytes(obj);
             ByteArrayEntity entity = new ByteArrayEntity(bytes,
-                ContentType.create("application/json"));
+                    ContentType.create("application/json"));
 
             httpPost.setEntity(entity);
             HttpResponse httpResponse = httpclient.execute(httpPost);
@@ -311,7 +311,7 @@ public class Http1ServerTest extends ActivelyDestroyTest {
             obj.setName("xxx");
             byte[] bytes = mapper.writeValueAsBytes(obj);
             ByteArrayEntity entity = new ByteArrayEntity(bytes,
-                ContentType.create("application/json"));
+                    ContentType.create("application/json"));
 
             httpPost.setEntity(entity);
 
@@ -332,7 +332,7 @@ public class Http1ServerTest extends ActivelyDestroyTest {
             obj.setName("xxx");
             byte[] bytes = mapper.writeValueAsBytes(obj);
             ByteArrayEntity entity = new ByteArrayEntity(bytes,
-                ContentType.create("application/json"));
+                    ContentType.create("application/json"));
 
             httpPost.setEntity(entity);
 

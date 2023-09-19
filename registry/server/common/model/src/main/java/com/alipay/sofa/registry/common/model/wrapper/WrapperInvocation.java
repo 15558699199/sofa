@@ -26,29 +26,29 @@ import java.util.function.Supplier;
  */
 public class WrapperInvocation<T, R> {
 
-  private final Wrapper<T, R> target;
+    private final Wrapper<T, R> target;
 
-  private Iterator<WrapperInterceptor> iterator;
+    private Iterator<WrapperInterceptor> iterator;
 
-  public WrapperInvocation(Wrapper<T, R> target, List<WrapperInterceptor> interceptorChain) {
-    this.iterator = interceptorChain.iterator();
-    this.target = target;
-  }
-
-  public R proceed() throws Exception {
-    if (iterator.hasNext()) {
-      WrapperInterceptor<T, R> interceptor = iterator.next();
-      return interceptor.invokeCodeWrapper(this);
+    public WrapperInvocation(Wrapper<T, R> target, List<WrapperInterceptor> interceptorChain) {
+        this.iterator = interceptorChain.iterator();
+        this.target = target;
     }
-    return target.call();
-  }
 
-  /**
-   * Getter method for property <tt>ParameterSupplier</tt>.
-   *
-   * @return property value of ParameterSupplier
-   */
-  public Supplier<T> getParameterSupplier() {
-    return target.getParameterSupplier();
-  }
+    public R proceed() throws Exception {
+        if (iterator.hasNext()) {
+            WrapperInterceptor<T, R> interceptor = iterator.next();
+            return interceptor.invokeCodeWrapper(this);
+        }
+        return target.call();
+    }
+
+    /**
+     * Getter method for property <tt>ParameterSupplier</tt>.
+     *
+     * @return property value of ParameterSupplier
+     */
+    public Supplier<T> getParameterSupplier() {
+        return target.getParameterSupplier();
+    }
 }

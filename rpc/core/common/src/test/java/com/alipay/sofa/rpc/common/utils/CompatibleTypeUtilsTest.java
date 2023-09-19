@@ -21,11 +21,7 @@ import org.junit.Test;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author <a href="mailto:zhanggeng.zg@antfin.com">GengZhang</a>
@@ -100,11 +96,11 @@ public class CompatibleTypeUtilsTest {
         Set set = (Set) CompatibleTypeUtils.convert(Collections.singletonList("x"), Set.class);
         Assert.assertEquals("x", set.iterator().next());
 
-        list = (List) CompatibleTypeUtils.convert(new String[] { "x" }, List.class);
+        list = (List) CompatibleTypeUtils.convert(new String[]{"x"}, List.class);
         Assert.assertEquals("x", list.get(0));
-        list = (List) CompatibleTypeUtils.convert(new String[] { "x" }, ArrayList.class);
+        list = (List) CompatibleTypeUtils.convert(new String[]{"x"}, ArrayList.class);
         Assert.assertEquals("x", list.get(0));
-        set = (Set) CompatibleTypeUtils.convert(new String[] { "x" }, Set.class);
+        set = (Set) CompatibleTypeUtils.convert(new String[]{"x"}, Set.class);
         Assert.assertEquals("x", set.iterator().next());
     }
 

@@ -18,33 +18,33 @@ package com.alipay.sofa.registry.common.model.store;
 
 import com.alipay.sofa.registry.cache.Sizer;
 import com.alipay.sofa.registry.util.CollectionUtils;
+
 import java.io.Serializable;
 import java.util.List;
 
 public class SubPublisherList implements Serializable, Sizer {
-  private static final long serialVersionUID = 5778574892539780708L;
-  public static final String className = SubPublisherList.class.getName();
+    public static final String className = SubPublisherList.class.getName();
+    private static final long serialVersionUID = 5778574892539780708L;
+    private final List<SubPublisher> pubs;
+    private final int byteSize;
 
-  private final List<SubPublisher> pubs;
-  private final int byteSize;
+    public SubPublisherList(List<SubPublisher> pubs) {
+        this.pubs = pubs;
+        this.byteSize = calcSize();
+    }
 
-  public SubPublisherList(List<SubPublisher> pubs) {
-    this.pubs = pubs;
-    this.byteSize = calcSize();
-  }
+    public List<SubPublisher> getPubs() {
+        return pubs;
+    }
 
-  public List<SubPublisher> getPubs() {
-    return pubs;
-  }
+    private int calcSize() {
+        int bytes = 20;
+        bytes += CollectionUtils.fuzzyTotalSize(pubs, SubPublisher::size);
+        return bytes;
+    }
 
-  private int calcSize() {
-    int bytes = 20;
-    bytes += CollectionUtils.fuzzyTotalSize(pubs, SubPublisher::size);
-    return bytes;
-  }
-
-  @Override
-  public int size() {
-    return byteSize;
-  }
+    @Override
+    public int size() {
+        return byteSize;
+    }
 }

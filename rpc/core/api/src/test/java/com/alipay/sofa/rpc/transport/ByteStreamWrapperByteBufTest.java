@@ -34,7 +34,7 @@ public class ByteStreamWrapperByteBufTest {
         Assert.assertTrue(byteBuf.readableBytes() == 0);
 
         UnsafeByteArrayOutputStream bs = new UnsafeByteArrayOutputStream();
-        bs.write(new byte[] { 1, 2, 3 });
+        bs.write(new byte[]{1, 2, 3});
         byteBuf = new ByteStreamWrapperByteBuf(bs);
         Assert.assertNotNull(byteBuf.array());
         Assert.assertTrue(byteBuf.array().length == 3);

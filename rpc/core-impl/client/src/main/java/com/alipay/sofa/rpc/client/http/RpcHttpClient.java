@@ -33,14 +33,12 @@ import org.apache.http.util.EntityUtils;
 import java.io.IOException;
 
 /**
- *  @author <a href=mailto:zhiyuan.lzy@antfin.com>zhiyuan.lzy</a>
+ * @author <a href=mailto:zhiyuan.lzy@antfin.com>zhiyuan.lzy</a>
  */
 public class RpcHttpClient {
-    private static final Logger          LOGGER   = LoggerFactory.getLogger(RpcHttpClient.class);
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(RpcHttpClient.class);
+    private static RpcHttpClient INSTANCE = new RpcHttpClient();
     private volatile CloseableHttpClient closeableHttpClient;
-
-    private static RpcHttpClient         INSTANCE = new RpcHttpClient();
 
     private RpcHttpClient() {
         shutdownHttpClientHook();
@@ -62,12 +60,12 @@ public class RpcHttpClient {
             HttpEntity entity = response.getEntity();
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("http client get success. url: {}. latency: {}ms.", url, System.currentTimeMillis() -
-                    start);
+                        start);
             }
             return JSON.parseObject(EntityUtils.toString(entity), tClass);
         } catch (Throwable throwable) {
             LOGGER.error("http client get error. url: " + url + ". latency: " + (System.currentTimeMillis() - start) +
-                "ms.", throwable);
+                    "ms.", throwable);
             throw throwable;
         } finally {
             if (response != null) {
@@ -98,14 +96,14 @@ public class RpcHttpClient {
             HttpEntity entity = response.getEntity();
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("http client post success. url: {}. latency: {}ms.", url, System.currentTimeMillis() -
-                    start);
+                        start);
             }
             return JSON.parseObject(EntityUtils.toString(entity), tClass);
         } catch (Throwable throwable) {
             LOGGER.error(
-                "http client post error. url: " + url + ", body: " + jsonBody + ". latency: " +
-                    (System.currentTimeMillis() - start)
-                    + "ms.", throwable);
+                    "http client post error. url: " + url + ", body: " + jsonBody + ". latency: " +
+                            (System.currentTimeMillis() - start)
+                            + "ms.", throwable);
             throw throwable;
         } finally {
             if (response != null) {

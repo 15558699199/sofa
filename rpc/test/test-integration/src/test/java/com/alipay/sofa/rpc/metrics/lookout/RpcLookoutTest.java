@@ -16,40 +16,25 @@
  */
 package com.alipay.sofa.rpc.metrics.lookout;
 
-import com.alipay.lookout.api.Id;
-import com.alipay.lookout.api.Lookout;
-import com.alipay.lookout.api.Measurement;
-import com.alipay.lookout.api.Metric;
-import com.alipay.lookout.api.NoopRegistry;
-import com.alipay.lookout.api.Registry;
-import com.alipay.lookout.api.Tag;
+import com.alipay.lookout.api.*;
 import com.alipay.lookout.core.DefaultRegistry;
 import com.alipay.sofa.rpc.api.future.SofaResponseFuture;
 import com.alipay.sofa.rpc.common.RpcConstants;
 import com.alipay.sofa.rpc.common.utils.StringUtils;
-import com.alipay.sofa.rpc.config.ApplicationConfig;
-import com.alipay.sofa.rpc.config.ConsumerConfig;
-import com.alipay.sofa.rpc.config.MethodConfig;
-import com.alipay.sofa.rpc.config.ProviderConfig;
-import com.alipay.sofa.rpc.config.ServerConfig;
+import com.alipay.sofa.rpc.config.*;
 import com.alipay.sofa.rpc.context.RpcRunningState;
 import com.alipay.sofa.rpc.core.exception.SofaRpcException;
 import com.alipay.sofa.rpc.core.invoke.SofaResponseCallback;
 import com.alipay.sofa.rpc.core.request.RequestBase;
 import com.alipay.sofa.rpc.test.ActivelyDestroyTest;
-import java.util.Iterator;
-import java.util.concurrent.TimeUnit;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -59,19 +44,19 @@ import static org.junit.Assert.assertTrue;
  */
 public class RpcLookoutTest extends ActivelyDestroyTest {
 
-    static Field                           corePoolSize;
-    static Field                           maxPoolSize;
-    static Field                           queueSize;
+    static Field corePoolSize;
+    static Field maxPoolSize;
+    static Field queueSize;
 
-    private ServerConfig                   serverConfig;
+    private ServerConfig serverConfig;
 
     private ProviderConfig<LookoutService> providerConfig;
 
     private ConsumerConfig<LookoutService> consumerConfig;
 
-    private LookoutService                 lookoutService;
+    private LookoutService lookoutService;
 
-    private CountSofaResponseCallback      onReturn;
+    private CountSofaResponseCallback onReturn;
 
     @BeforeClass
     public static void beforeClass() {
@@ -151,46 +136,46 @@ public class RpcLookoutTest extends ActivelyDestroyTest {
         }
 
         serverConfig = new ServerConfig()
-            .setPort(12201)
-            .setCoreThreads(30)
-            .setMaxThreads(500)
-            .setQueues(600)
-            .setProtocol(RpcConstants.PROTOCOL_TYPE_BOLT);
+                .setPort(12201)
+                .setCoreThreads(30)
+                .setMaxThreads(500)
+                .setQueues(600)
+                .setProtocol(RpcConstants.PROTOCOL_TYPE_BOLT);
 
         providerConfig = new ProviderConfig<LookoutService>()
-            .setInterfaceId(LookoutService.class.getName())
-            .setRef(new LookoutServiceImpl())
-            .setServer(serverConfig)
-            .setBootstrap("bolt")
-            .setRegister(false)
-            .setApplication(new ApplicationConfig().setAppName("TestLookOutServer"));
+                .setInterfaceId(LookoutService.class.getName())
+                .setRef(new LookoutServiceImpl())
+                .setServer(serverConfig)
+                .setBootstrap("bolt")
+                .setRegister(false)
+                .setApplication(new ApplicationConfig().setAppName("TestLookOutServer"));
         providerConfig.export();
 
         MethodConfig methodConfigFuture = new MethodConfig()
-            .setName("sayFuture")
-            .setInvokeType("future");
+                .setName("sayFuture")
+                .setInvokeType("future");
         onReturn = new CountSofaResponseCallback();
         MethodConfig methodConfigCallback = new MethodConfig()
-            .setName("sayCallback")
-            .setInvokeType("callback")
-            .setOnReturn(onReturn);
+                .setName("sayCallback")
+                .setInvokeType("callback")
+                .setOnReturn(onReturn);
         MethodConfig methodConfigOneway = new MethodConfig()
-            .setName("sayOneway")
-            .setInvokeType("oneway");
+                .setName("sayOneway")
+                .setInvokeType("oneway");
         List<MethodConfig> methodConfigs = new ArrayList<MethodConfig>();
         methodConfigs.add(methodConfigFuture);
         methodConfigs.add(methodConfigCallback);
         methodConfigs.add(methodConfigOneway);
 
         consumerConfig = new ConsumerConfig<LookoutService>()
-            .setInterfaceId(LookoutService.class.getName())
-            .setProtocol("bolt")
-            .setBootstrap("bolt")
-            .setMethods(methodConfigs)
-            .setTimeout(3000)
-            .setRegister(false)
-            .setDirectUrl("bolt://127.0.0.1:12201?appName=TestLookOutServer")
-            .setApplication(new ApplicationConfig().setAppName("TestLookOutClient"));
+                .setInterfaceId(LookoutService.class.getName())
+                .setProtocol("bolt")
+                .setBootstrap("bolt")
+                .setMethods(methodConfigs)
+                .setTimeout(3000)
+                .setRegister(false)
+                .setDirectUrl("bolt://127.0.0.1:12201?appName=TestLookOutServer")
+                .setApplication(new ApplicationConfig().setAppName("TestLookOutClient"));
         lookoutService = consumerConfig.refer();
 
     }
@@ -594,13 +579,13 @@ public class RpcLookoutTest extends ActivelyDestroyTest {
             if (!isProvider) {
                 if (name.equals("request_size.count")) {
                     LOGGER.info("request_size.count,value={},requestSize={},totalCount={}", value, requestSize,
-                        totalCount);
+                            totalCount);
                     assertTrue("request_size.count is smaller than 0", requestSize > 0);
                     invokeInfoAssert = true;
                 }
                 if (name.equals("response_size.count")) {
                     LOGGER.info("response_size.count,value={},responseSize={},totalCount={}", value, responseSize,
-                        totalCount);
+                            totalCount);
                     assertTrue("response_size.count is smaller than 0", responseSize > 0);
                     invokeInfoAssert = true;
                 }

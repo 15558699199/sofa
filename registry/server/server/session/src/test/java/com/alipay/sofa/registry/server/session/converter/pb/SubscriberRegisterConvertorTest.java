@@ -23,17 +23,17 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class SubscriberRegisterConvertorTest {
-  @Test
-  public void test() {
-    Assert.assertNull(SubscriberRegisterConvertor.convert2Pb(null));
-    Assert.assertNull(SubscriberRegisterConvertor.convert2Java(null));
-    SubscriberRegister registerJava = new SubscriberRegister();
-    TestUtils.setField(registerJava);
-    registerJava.setScope("testScope");
-    SubscriberRegisterPb pb = SubscriberRegisterConvertor.convert2Pb(registerJava);
-    SubscriberRegister convertJava = SubscriberRegisterConvertor.convert2Java(pb);
-    TestUtils.assertEquals(registerJava, convertJava);
-    Assert.assertEquals(registerJava.getScope(), convertJava.getScope());
-    Assert.assertEquals(registerJava.acceptMulti(), convertJava.acceptMulti());
-  }
+    @Test
+    public void test() {
+        Assert.assertNull(SubscriberRegisterConvertor.convert2Pb(null));
+        Assert.assertNull(SubscriberRegisterConvertor.convert2Java(null));
+        SubscriberRegister registerJava = new SubscriberRegister();
+        TestUtils.setField(registerJava);
+        registerJava.setScope("testScope");
+        SubscriberRegisterPb pb = SubscriberRegisterConvertor.convert2Pb(registerJava);
+        SubscriberRegister convertJava = SubscriberRegisterConvertor.convert2Java(pb);
+        TestUtils.assertEquals(registerJava, convertJava);
+        Assert.assertEquals(registerJava.getScope(), convertJava.getScope());
+        Assert.assertEquals(registerJava.acceptMulti(), convertJava.acceptMulti());
+    }
 }

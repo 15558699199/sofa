@@ -22,25 +22,25 @@ package com.alipay.sofa.registry.jdbc.config;
  */
 public interface JdbcDriverConfig {
 
-  String getDriverClassName();
+    String getDriverClassName();
 
-  String getUrl();
+    String getUrl();
 
-  String getUsername();
+    String getUsername();
 
-  String getPassword();
+    String getPassword();
 
-  // get domain path
-  String getTypeAliasesPackage();
+    // get domain path
+    String getTypeAliasesPackage();
 
-  // get mapper.xml path
-  String[] getMapperLocations();
+    // get mapper.xml path
+    String[] getMapperLocations();
 
-  int getMinIdle();
+    int getMinIdle();
 
-  int getMaxActive();
+    int getMaxActive();
 
-  int getMaxWait();
+    int getMaxWait();
 
-  int getSlowSqlMillis();
+    int getSlowSqlMillis();
 }

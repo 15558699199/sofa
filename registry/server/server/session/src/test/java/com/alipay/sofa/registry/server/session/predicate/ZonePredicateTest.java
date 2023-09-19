@@ -19,27 +19,28 @@ package com.alipay.sofa.registry.server.session.predicate;
 import com.alipay.sofa.registry.core.model.ScopeEnum;
 import com.alipay.sofa.registry.server.session.TestUtils;
 import com.alipay.sofa.registry.server.session.bootstrap.SessionServerConfigBean;
-import java.util.function.Predicate;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.function.Predicate;
+
 public class ZonePredicateTest {
-  @Test
-  public void test() {
-    SessionServerConfigBean configBean = TestUtils.newSessionConfig("testDc");
-    Predicate<String> predicate =
-        ZonePredicate.pushDataPredicate("testDataId", "zoneA", ScopeEnum.zone, configBean);
-    Assert.assertFalse(predicate.test("zoneA"));
-    Assert.assertTrue(predicate.test("zoneB"));
+    @Test
+    public void test() {
+        SessionServerConfigBean configBean = TestUtils.newSessionConfig("testDc");
+        Predicate<String> predicate =
+                ZonePredicate.pushDataPredicate("testDataId", "zoneA", ScopeEnum.zone, configBean);
+        Assert.assertFalse(predicate.test("zoneA"));
+        Assert.assertTrue(predicate.test("zoneB"));
 
-    predicate =
-        ZonePredicate.pushDataPredicate("testDataId", "zoneA", ScopeEnum.dataCenter, configBean);
-    Assert.assertFalse(predicate.test("zoneA"));
-    Assert.assertFalse(predicate.test("zoneB"));
+        predicate =
+                ZonePredicate.pushDataPredicate("testDataId", "zoneA", ScopeEnum.dataCenter, configBean);
+        Assert.assertFalse(predicate.test("zoneA"));
+        Assert.assertFalse(predicate.test("zoneB"));
 
-    predicate =
-        ZonePredicate.pushDataPredicate("testDataId", "zoneA", ScopeEnum.global, configBean);
-    Assert.assertFalse(predicate.test("zoneA"));
-    Assert.assertFalse(predicate.test("zoneB"));
-  }
+        predicate =
+                ZonePredicate.pushDataPredicate("testDataId", "zoneA", ScopeEnum.global, configBean);
+        Assert.assertFalse(predicate.test("zoneA"));
+        Assert.assertFalse(predicate.test("zoneB"));
+    }
 }

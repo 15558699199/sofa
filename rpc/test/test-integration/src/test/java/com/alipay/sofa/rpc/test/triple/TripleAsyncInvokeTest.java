@@ -51,33 +51,33 @@ public class TripleAsyncInvokeTest {
     @BeforeClass
     public static void start() {
         ServerConfig serverConfig2 = new ServerConfig()
-            .setPort(50053)
-            .setProtocol(RpcConstants.PROTOCOL_TYPE_TRIPLE)
-            .setDaemon(false);
+                .setPort(50053)
+                .setProtocol(RpcConstants.PROTOCOL_TYPE_TRIPLE)
+                .setDaemon(false);
 
         // 服务端
         ProviderConfig<HelloService> CProvider = new ProviderConfig<HelloService>()
-            .setInterfaceId(HelloService.class.getName())
-            .setBootstrap(RpcConstants.PROTOCOL_TYPE_TRIPLE)
-            .setRef(new HelloServiceImpl(1000))
-            .setServer(serverConfig2);
+                .setInterfaceId(HelloService.class.getName())
+                .setBootstrap(RpcConstants.PROTOCOL_TYPE_TRIPLE)
+                .setRef(new HelloServiceImpl(1000))
+                .setServer(serverConfig2);
         CProvider.export();
 
         // 客户端
         ConsumerConfig<HelloService> BConsumer = new ConsumerConfig<HelloService>()
-            .setInterfaceId(HelloService.class.getName())
-            .setInvokeType(RpcConstants.INVOKER_TYPE_FUTURE)
-            .setTimeout(5000)
-            .setProtocol(RpcConstants.PROTOCOL_TYPE_TRIPLE)
-            .setDirectUrl("127.0.0.1:50053");
+                .setInterfaceId(HelloService.class.getName())
+                .setInvokeType(RpcConstants.INVOKER_TYPE_FUTURE)
+                .setTimeout(5000)
+                .setProtocol(RpcConstants.PROTOCOL_TYPE_TRIPLE)
+                .setDirectUrl("127.0.0.1:50053");
         future = BConsumer.refer();
 
         ConsumerConfig<HelloService> BBConsumer = new ConsumerConfig<HelloService>()
-            .setInterfaceId(HelloService.class.getName())
-            .setInvokeType(RpcConstants.INVOKER_TYPE_CALLBACK)
-            .setTimeout(5000)
-            .setProtocol(RpcConstants.PROTOCOL_TYPE_TRIPLE)
-            .setDirectUrl("127.0.0.1:50053");
+                .setInterfaceId(HelloService.class.getName())
+                .setInvokeType(RpcConstants.INVOKER_TYPE_CALLBACK)
+                .setTimeout(5000)
+                .setProtocol(RpcConstants.PROTOCOL_TYPE_TRIPLE)
+                .setDirectUrl("127.0.0.1:50053");
         callback = BBConsumer.refer();
     }
 
@@ -99,7 +99,7 @@ public class TripleAsyncInvokeTest {
     @Test
     public void testCallback() {
         final CountDownLatch latch = new CountDownLatch(1);
-        final String[] ret = { null };
+        final String[] ret = {null};
 
         RpcInvokeContext.getContext().setResponseCallback(new SofaResponseCallback() {
             @Override

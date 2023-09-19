@@ -21,80 +21,80 @@ import java.util.Map;
 
 public class SlotTableStatusResponse implements Serializable {
 
-  private final long slotTableEpoch;
+    private final long slotTableEpoch;
 
-  private final boolean isSlotTableLeaderBalanced;
-  private final boolean isSlotTableFollowerBalanced;
+    private final boolean isSlotTableLeaderBalanced;
+    private final boolean isSlotTableFollowerBalanced;
 
-  private final boolean isSlotTableStable;
-  private final boolean protectionMode;
+    private final boolean isSlotTableStable;
+    private final boolean protectionMode;
 
-  private final Map<String, Integer> leaderCount;
+    private final Map<String, Integer> leaderCount;
 
-  private final Map<String, Integer> followerCount;
+    private final Map<String, Integer> followerCount;
 
-  public SlotTableStatusResponse(
-      long slotTableEpoch,
-      boolean slotTableLeaderBalanced,
-      boolean slotTableFollowerBalanced,
-      boolean slotTableStable,
-      boolean protectionMode,
-      Map<String, Integer> leaderCount,
-      Map<String, Integer> followerCount) {
-    this.slotTableEpoch = slotTableEpoch;
-    this.isSlotTableLeaderBalanced = slotTableLeaderBalanced;
-    this.isSlotTableFollowerBalanced = slotTableFollowerBalanced;
-    this.protectionMode = protectionMode;
-    this.isSlotTableStable = slotTableStable;
-    this.leaderCount = leaderCount;
-    this.followerCount = followerCount;
-  }
+    public SlotTableStatusResponse(
+            long slotTableEpoch,
+            boolean slotTableLeaderBalanced,
+            boolean slotTableFollowerBalanced,
+            boolean slotTableStable,
+            boolean protectionMode,
+            Map<String, Integer> leaderCount,
+            Map<String, Integer> followerCount) {
+        this.slotTableEpoch = slotTableEpoch;
+        this.isSlotTableLeaderBalanced = slotTableLeaderBalanced;
+        this.isSlotTableFollowerBalanced = slotTableFollowerBalanced;
+        this.protectionMode = protectionMode;
+        this.isSlotTableStable = slotTableStable;
+        this.leaderCount = leaderCount;
+        this.followerCount = followerCount;
+    }
 
-  public boolean isSlotTableStable() {
-    return isSlotTableStable;
-  }
+    public boolean isSlotTableStable() {
+        return isSlotTableStable;
+    }
 
-  public Map<String, Integer> getLeaderCount() {
-    return leaderCount;
-  }
+    public Map<String, Integer> getLeaderCount() {
+        return leaderCount;
+    }
 
-  public Map<String, Integer> getFollowerCount() {
-    return followerCount;
-  }
+    public Map<String, Integer> getFollowerCount() {
+        return followerCount;
+    }
 
-  public boolean isSlotTableLeaderBalanced() {
-    return isSlotTableLeaderBalanced;
-  }
+    public boolean isSlotTableLeaderBalanced() {
+        return isSlotTableLeaderBalanced;
+    }
 
-  public boolean isSlotTableFollowerBalanced() {
-    return isSlotTableFollowerBalanced;
-  }
+    public boolean isSlotTableFollowerBalanced() {
+        return isSlotTableFollowerBalanced;
+    }
 
-  public long getSlotTableEpoch() {
-    return slotTableEpoch;
-  }
+    public long getSlotTableEpoch() {
+        return slotTableEpoch;
+    }
 
-  public boolean isProtectionMode() {
-    return protectionMode;
-  }
+    public boolean isProtectionMode() {
+        return protectionMode;
+    }
 
-  @Override
-  public String toString() {
-    return "SlotTableStatusResponse{"
-        + "slotTableEpoch="
-        + slotTableEpoch
-        + ", isSlotTableLeaderBalanced="
-        + isSlotTableLeaderBalanced
-        + ", isSlotTableFollowerBalanced="
-        + isSlotTableFollowerBalanced
-        + ", isSlotTableStable="
-        + isSlotTableStable
-        + ", protectionMode="
-        + protectionMode
-        + ", leaderCount="
-        + leaderCount
-        + ", followerCount="
-        + followerCount
-        + '}';
-  }
+    @Override
+    public String toString() {
+        return "SlotTableStatusResponse{"
+                + "slotTableEpoch="
+                + slotTableEpoch
+                + ", isSlotTableLeaderBalanced="
+                + isSlotTableLeaderBalanced
+                + ", isSlotTableFollowerBalanced="
+                + isSlotTableFollowerBalanced
+                + ", isSlotTableStable="
+                + isSlotTableStable
+                + ", protectionMode="
+                + protectionMode
+                + ", leaderCount="
+                + leaderCount
+                + ", followerCount="
+                + followerCount
+                + '}';
+    }
 }

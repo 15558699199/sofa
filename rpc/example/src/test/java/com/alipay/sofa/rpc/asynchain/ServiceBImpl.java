@@ -25,17 +25,13 @@ import com.alipay.sofa.rpc.message.bolt.BoltSendableResponseCallback;
 import java.util.Random;
 
 /**
- *
- *
  * @author <a href="mailto:zhanggeng.zg@antfin.com">GengZhang</a>
  */
 public class ServiceBImpl implements ServiceB {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(ServiceBImpl.class);
-
-    private Random              random = new Random();
-
-    ServiceC                    serviceC;
+    ServiceC serviceC;
+    private Random random = new Random();
 
     public ServiceBImpl(ServiceC serviceC) {
         this.serviceC = serviceC;

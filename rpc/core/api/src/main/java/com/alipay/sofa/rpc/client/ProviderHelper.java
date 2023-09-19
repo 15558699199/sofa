@@ -178,7 +178,7 @@ public class ProviderHelper {
         }
         if (providerInfo.getSerializationType() != null) {
             sb.append("&").append(ProviderInfoAttrs.ATTR_SERIALIZATION).append("=")
-                .append(providerInfo.getSerializationType());
+                    .append(providerInfo.getSerializationType());
         }
         for (Map.Entry<String, String> entry : providerInfo.getStaticAttrs().entrySet()) {
             sb.append("&").append(entry.getKey()).append("=").append(entry.getValue());
@@ -246,10 +246,10 @@ public class ProviderHelper {
                             providerInfo.setWeight(weight);
                             providerInfo.setStaticAttr(ProviderInfoAttrs.ATTR_WEIGHT, String.valueOf(weight));
                         } else if (ProviderInfoAttrs.ATTR_RPC_VERSION.equals(kvpair[0]) &&
-                            StringUtils.isNotEmpty(kvpair[1])) {
+                                StringUtils.isNotEmpty(kvpair[1])) {
                             providerInfo.setRpcVersion(CommonUtils.parseInt(kvpair[1], providerInfo.getRpcVersion()));
                         } else if (ProviderInfoAttrs.ATTR_SERIALIZATION.equals(kvpair[0]) &&
-                            StringUtils.isNotEmpty(kvpair[1])) {
+                                StringUtils.isNotEmpty(kvpair[1])) {
                             providerInfo.setSerializationType(kvpair[1]);
                         } else {
                             providerInfo.getStaticAttrs().put(kvpair[0], kvpair[1]);

@@ -29,14 +29,14 @@ public class ProtostuffHelperTest {
     @Test
     public void getReqClass() {
         Class req = protostuffHelper.getReqClass(
-            ProtostuffService.class.getCanonicalName(), "echoStr");
+                ProtostuffService.class.getCanonicalName(), "echoStr");
         Assert.assertTrue(req == ExampleObj.class);
     }
 
     @Test
     public void getResClass() {
         Class res = protostuffHelper.getResClass(
-            ProtostuffService.class.getCanonicalName(), "echoStr");
+                ProtostuffService.class.getCanonicalName(), "echoStr");
         Assert.assertTrue(res == ExampleObj.class);
     }
 }

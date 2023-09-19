@@ -33,8 +33,8 @@ public class FaultToleranceConfigManager {
     /**
      * Logger for this class
      */
-    private static final Logger                                      LOGGER      = LoggerFactory
-                                                                                     .getLogger(FaultToleranceConfigManager.class);
+    private static final Logger LOGGER = LoggerFactory
+            .getLogger(FaultToleranceConfigManager.class);
 
     /**
      * All fault-tolerance config of apps
@@ -44,12 +44,12 @@ public class FaultToleranceConfigManager {
     /**
      * Default fault-tolerance config
      */
-    private static final FaultToleranceConfig                        DEFAULT_CFG = new FaultToleranceConfig();
+    private static final FaultToleranceConfig DEFAULT_CFG = new FaultToleranceConfig();
 
     /**
-     * 
+     *
      */
-    private static volatile boolean                                  aftEnable   = false;
+    private static volatile boolean aftEnable = false;
 
     /**
      * Put app config.

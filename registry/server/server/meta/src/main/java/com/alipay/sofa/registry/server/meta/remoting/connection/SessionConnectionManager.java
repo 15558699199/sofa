@@ -26,13 +26,13 @@ import com.alipay.sofa.registry.common.model.Node.NodeType;
  */
 public class SessionConnectionManager extends AbstractNodeConnectManager {
 
-  @Override
-  public NodeType getConnectNodeType() {
-    return NodeType.SESSION;
-  }
+    @Override
+    public NodeType getConnectNodeType() {
+        return NodeType.SESSION;
+    }
 
-  @Override
-  protected int getServerPort() {
-    return metaServerConfig.getSessionServerPort();
-  }
+    @Override
+    protected int getServerPort() {
+        return metaServerConfig.getSessionServerPort();
+    }
 }

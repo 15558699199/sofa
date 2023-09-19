@@ -22,19 +22,19 @@ package com.alipay.sofa.registry.common.model.wrapper;
  */
 public interface WrapperInterceptor<T, R> {
 
-  /**
-   * invoke inside function
-   *
-   * @param invocation invocation
-   * @return R
-   * @throws Exception exception
-   */
-  R invokeCodeWrapper(WrapperInvocation<T, R> invocation) throws Exception;
+    /**
+     * invoke inside function
+     *
+     * @param invocation invocation
+     * @return R
+     * @throws Exception exception
+     */
+    R invokeCodeWrapper(WrapperInvocation<T, R> invocation) throws Exception;
 
-  /**
-   * Interceptor order
-   *
-   * @return int
-   */
-  int getOrder();
+    /**
+     * Interceptor order
+     *
+     * @return int
+     */
+    int getOrder();
 }

@@ -24,35 +24,35 @@ import java.io.Serializable;
  */
 public class CheckClientManagerResponse implements Serializable {
 
-  private final boolean paasCheck;
+    private final boolean paasCheck;
 
-  private final long actualVersion;
+    private final long actualVersion;
 
-  public CheckClientManagerResponse(boolean paasCheck, long actualVersion) {
-    this.paasCheck = paasCheck;
-    this.actualVersion = actualVersion;
-  }
+    public CheckClientManagerResponse(boolean paasCheck, long actualVersion) {
+        this.paasCheck = paasCheck;
+        this.actualVersion = actualVersion;
+    }
 
-  public boolean isPaasCheck() {
-    return paasCheck;
-  }
+    public boolean isPaasCheck() {
+        return paasCheck;
+    }
 
-  /**
-   * Getter method for property <tt>actualVersion</tt>.
-   *
-   * @return property value of actualVersion
-   */
-  public long getActualVersion() {
-    return actualVersion;
-  }
+    /**
+     * Getter method for property <tt>actualVersion</tt>.
+     *
+     * @return property value of actualVersion
+     */
+    public long getActualVersion() {
+        return actualVersion;
+    }
 
-  @Override
-  public String toString() {
-    return "CheckClientManagerResponse{"
-        + "paasCheck="
-        + paasCheck
-        + ", actualVersion="
-        + actualVersion
-        + '}';
-  }
+    @Override
+    public String toString() {
+        return "CheckClientManagerResponse{"
+                + "paasCheck="
+                + paasCheck
+                + ", actualVersion="
+                + actualVersion
+                + '}';
+    }
 }

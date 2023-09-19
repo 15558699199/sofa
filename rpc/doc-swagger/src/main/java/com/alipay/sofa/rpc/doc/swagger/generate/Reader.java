@@ -16,21 +16,13 @@
  */
 package com.alipay.sofa.rpc.doc.swagger.generate;
 
-import io.swagger.annotations.ApiKeyAuthDefinition;
-import io.swagger.annotations.BasicAuthDefinition;
 import io.swagger.annotations.Info;
-import io.swagger.annotations.OAuth2Definition;
-import io.swagger.annotations.Scope;
-import io.swagger.annotations.SwaggerDefinition;
+import io.swagger.annotations.*;
 import io.swagger.models.Contact;
 import io.swagger.models.ExternalDocs;
 import io.swagger.models.License;
-import io.swagger.models.Operation;
-import io.swagger.models.Path;
-import io.swagger.models.Response;
-import io.swagger.models.Scheme;
-import io.swagger.models.Swagger;
 import io.swagger.models.Tag;
+import io.swagger.models.*;
 import io.swagger.models.auth.In;
 import io.swagger.models.parameters.Parameter;
 import io.swagger.util.BaseReaderUtils;
@@ -39,15 +31,8 @@ import io.swagger.util.ReflectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
 
 /**
  * The <code>Reader</code> class scans classes for Swagger annotations.
@@ -70,8 +55,8 @@ public class Reader {
         final Reader reader = new Reader(swagger);
         for (Class<?> cls : classes) {
             final ReaderContext context = new ReaderContext(swagger, cls, cls, "", null, false,
-                new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(),
-                new ArrayList<Parameter>());
+                    new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(),
+                    new ArrayList<Parameter>());
             reader.read(context);
         }
     }
@@ -88,16 +73,16 @@ public class Reader {
         });
         for (Entry<Class<?>, Object> entry : arrayList) {
             final ReaderContext context = new ReaderContext(swagger,
-                entry.getValue().getClass(), entry.getKey(), httpContext, null, false,
-                new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(),
-                new ArrayList<Parameter>());
+                    entry.getValue().getClass(), entry.getKey(), httpContext, null, false,
+                    new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(),
+                    new ArrayList<Parameter>());
             reader.read(context);
         }
     }
 
     private void read(ReaderContext context) {
         final SwaggerDefinition swaggerDefinition = context.getCls()
-            .getAnnotation(SwaggerDefinition.class);
+                .getAnnotation(SwaggerDefinition.class);
         if (swaggerDefinition != null) {
             readSwaggerConfig(swaggerDefinition);
         }
@@ -222,7 +207,7 @@ public class Reader {
 
             if (flow.equals(OAuth2Definition.Flow.ACCESS_CODE)) {
                 oAuth2Definition = oAuth2Definition.accessCode(oAuth2Config.authorizationUrl(),
-                    oAuth2Config.tokenUrl());
+                        oAuth2Config.tokenUrl());
             } else if (flow.equals(OAuth2Definition.Flow.APPLICATION)) {
                 oAuth2Definition = oAuth2Definition.application(oAuth2Config.tokenUrl());
             } else if (flow.equals(OAuth2Definition.Flow.IMPLICIT)) {
@@ -239,9 +224,9 @@ public class Reader {
             swagger.addSecurityDefinition(oAuth2Config.key(), oAuth2Definition);
         }
 
-        for (ApiKeyAuthDefinition[] apiKeyAuthConfigs : new ApiKeyAuthDefinition[][] {
+        for (ApiKeyAuthDefinition[] apiKeyAuthConfigs : new ApiKeyAuthDefinition[][]{
                 config.securityDefinition().apiKeyAuthDefintions(),
-                config.securityDefinition().apiKeyAuthDefinitions() }) {
+                config.securityDefinition().apiKeyAuthDefinitions()}) {
             for (ApiKeyAuthDefinition apiKeyAuthConfig : apiKeyAuthConfigs) {
                 io.swagger.models.auth.ApiKeyAuthDefinition apiKeyAuthDefinition = new io.swagger.models.auth.ApiKeyAuthDefinition();
 
@@ -253,9 +238,9 @@ public class Reader {
             }
         }
 
-        for (BasicAuthDefinition[] basicAuthConfigs : new BasicAuthDefinition[][] {
+        for (BasicAuthDefinition[] basicAuthConfigs : new BasicAuthDefinition[][]{
                 config.securityDefinition().basicAuthDefinions(),
-                config.securityDefinition().basicAuthDefinitions() }) {
+                config.securityDefinition().basicAuthDefinitions()}) {
             for (BasicAuthDefinition basicAuthConfig : basicAuthConfigs) {
                 io.swagger.models.auth.BasicAuthDefinition basicAuthDefinition = new io.swagger.models.auth.BasicAuthDefinition();
 
@@ -273,11 +258,11 @@ public class Reader {
 
                 if (StringUtils.isNotBlank(tagConfig.externalDocs().value())) {
                     tag.setExternalDocs(new ExternalDocs(tagConfig.externalDocs().value(),
-                        tagConfig.externalDocs().url()));
+                            tagConfig.externalDocs().url()));
                 }
 
                 tag.getVendorExtensions()
-                    .putAll(BaseReaderUtils.parseExtensions(tagConfig.extensions()));
+                        .putAll(BaseReaderUtils.parseExtensions(tagConfig.extensions()));
 
                 swagger.addTag(tag);
             }

@@ -24,7 +24,7 @@ package com.alipay.sofa.registry.server.session.cache;
  */
 public class CacheAccessException extends RuntimeException {
 
-  public CacheAccessException(String message, Throwable cause) {
-    super(message, cause);
-  }
+    public CacheAccessException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

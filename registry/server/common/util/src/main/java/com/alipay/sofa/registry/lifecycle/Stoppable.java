@@ -20,9 +20,9 @@ import com.alipay.sofa.registry.exception.StopException;
 
 /**
  * @author chen.zhu
- *     <p>Nov 13, 2020
+ * <p>Nov 13, 2020
  */
 public interface Stoppable {
 
-  void stop() throws StopException;
+    void stop() throws StopException;
 }

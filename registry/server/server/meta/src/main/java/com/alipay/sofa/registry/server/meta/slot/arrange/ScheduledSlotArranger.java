@@ -47,264 +47,265 @@ import com.alipay.sofa.registry.util.JsonUtils;
 import com.alipay.sofa.registry.util.SystemUtils;
 import com.alipay.sofa.registry.util.WakeUpLoopRunnable;
 import com.google.common.annotations.VisibleForTesting;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 /**
  * @author chen.zhu
- *     <p>Jan 14, 2021
+ * <p>Jan 14, 2021
  */
 @Component
 public class ScheduledSlotArranger extends AbstractLifecycleObservable
-    implements DataManagerObserver, Suspendable {
+        implements DataManagerObserver, Suspendable {
 
-  private final DefaultDataServerManager dataServerManager;
+    private final DefaultDataServerManager dataServerManager;
 
-  private final SlotManager slotManager;
+    private final SlotManager slotManager;
 
-  private final SlotTableMonitor slotTableMonitor;
+    private final SlotTableMonitor slotTableMonitor;
 
-  private final MetaLeaderService metaLeaderService;
+    private final MetaLeaderService metaLeaderService;
 
-  private final Arranger arranger = new Arranger();
+    private final Arranger arranger = new Arranger();
 
-  private final MetaServerConfig metaServerConfig;
+    private final MetaServerConfig metaServerConfig;
 
-  private final Lock lock = new ReentrantLock();
+    private final Lock lock = new ReentrantLock();
 
-  private volatile boolean slotTableProtectionMode = true;
+    private volatile boolean slotTableProtectionMode = true;
 
-  @Autowired
-  public ScheduledSlotArranger(
-      DefaultDataServerManager dataServerManager,
-      SlotManager slotManager,
-      SlotTableMonitor slotTableMonitor,
-      MetaLeaderService metaLeaderService,
-      MetaServerConfig metaServerConfig) {
-    this.dataServerManager = dataServerManager;
-    this.slotManager = slotManager;
-    this.slotTableMonitor = slotTableMonitor;
-    this.metaLeaderService = metaLeaderService;
-    this.metaServerConfig = metaServerConfig;
-  }
-
-  @PostConstruct
-  public void postConstruct() throws Exception {
-    LifecycleHelper.initializeIfPossible(this);
-    LifecycleHelper.startIfPossible(this);
-  }
-
-  @PreDestroy
-  public void preDestroy() throws Exception {
-    LifecycleHelper.stopIfPossible(this);
-    LifecycleHelper.disposeIfPossible(this);
-  }
-
-  @Override
-  protected void doInitialize() throws InitializeException {
-    super.doInitialize();
-    dataServerManager.addObserver(this);
-    Thread executor = ConcurrentUtils.createDaemonThread(getClass().getSimpleName(), arranger);
-    executor.start();
-  }
-
-  @Override
-  protected void doDispose() throws DisposeException {
-    arranger.close();
-    dataServerManager.removeObserver(this);
-    super.doDispose();
-  }
-
-  @Override
-  public void update(Observable source, Object message) {
-    logger.warn("[update] receive from [{}], message: {}", source, message);
-    if (message instanceof NodeRemoved) {
-      arranger.wakeup();
+    @Autowired
+    public ScheduledSlotArranger(
+            DefaultDataServerManager dataServerManager,
+            SlotManager slotManager,
+            SlotTableMonitor slotTableMonitor,
+            MetaLeaderService metaLeaderService,
+            MetaServerConfig metaServerConfig) {
+        this.dataServerManager = dataServerManager;
+        this.slotManager = slotManager;
+        this.slotTableMonitor = slotTableMonitor;
+        this.metaLeaderService = metaLeaderService;
+        this.metaServerConfig = metaServerConfig;
     }
-    if (message instanceof NodeAdded) {
-      arranger.wakeup();
+
+    @PostConstruct
+    public void postConstruct() throws Exception {
+        LifecycleHelper.initializeIfPossible(this);
+        LifecycleHelper.startIfPossible(this);
     }
-  }
 
-  public boolean tryLock() {
-    return lock.tryLock();
-  }
-
-  public void unlock() {
-    lock.unlock();
-  }
-
-  private SlotTableBuilder createSlotTableBuilder(
-      SlotTable slotTable, List<String> currentDataNodeIps, int slotNum, int replicas) {
-    NodeComparator comparator = new NodeComparator(slotTable.getDataServers(), currentDataNodeIps);
-    SlotTableBuilder slotTableBuilder = new SlotTableBuilder(slotTable, slotNum, replicas);
-    slotTableBuilder.init(currentDataNodeIps);
-
-    comparator.getRemoved().forEach(slotTableBuilder::removeDataServerSlots);
-    return slotTableBuilder;
-  }
-
-  protected boolean assignSlots(
-      SlotTableBuilder slotTableBuilder, Collection<String> currentDataServers) {
-    SlotTable slotTable = createSlotAssigner(slotTableBuilder, currentDataServers).assign();
-    return refreshSlotTable(slotTable);
-  }
-
-  protected SlotAssigner createSlotAssigner(
-      SlotTableBuilder slotTableBuilder, Collection<String> currentDataServers) {
-    return new DefaultSlotAssigner(slotTableBuilder, currentDataServers);
-  }
-
-  protected boolean balanceSlots(
-      SlotTableBuilder slotTableBuilder, Collection<String> currentDataServers) {
-    SlotTable slotTable = createSlotBalancer(slotTableBuilder, currentDataServers).balance();
-    return refreshSlotTable(slotTable);
-  }
-
-  private boolean refreshSlotTable(SlotTable slotTable) {
-    if (slotTable == null) {
-      logger.info("[refreshSlotTable] slot-table not change");
-      return false;
-    }
-    if (!SlotTableUtils.isValidSlotTable(slotTable)) {
-      throw new SofaRegistrySlotTableException(
-          "slot table is not valid: \n" + JsonUtils.writeValueAsString(slotTable));
-    }
-    if (slotTable.getEpoch() > slotManager.getSlotTable().getEpoch()) {
-      slotManager.refresh(slotTable);
-      return true;
-    } else {
-      logger.warn(
-          "[refreshSlotTable] slot-table epoch not change: {}",
-          JsonUtils.writeValueAsString(slotTable));
-      return false;
-    }
-  }
-
-  protected SlotBalancer createSlotBalancer(
-      SlotTableBuilder slotTableBuilder, Collection<String> currentDataServers) {
-    return new DefaultSlotBalancer(slotTableBuilder, currentDataServers);
-  }
-
-  @Override
-  public void suspend() {
-    arranger.suspend();
-  }
-
-  @Override
-  public void resume() {
-    arranger.resume();
-  }
-
-  @Override
-  public boolean isSuspended() {
-    return arranger.isSuspended();
-  }
-
-  public boolean isSlotTableProtectionMode() {
-    return slotTableProtectionMode;
-  }
-
-  private final class Arranger extends WakeUpLoopRunnable {
-
-    private final int waitingMillis =
-        SystemUtils.getSystemInteger("registry.slot.arrange.interval.millis", 1000);
-
-    @Override
-    public int getWaitingMillis() {
-      return waitingMillis;
+    @PreDestroy
+    public void preDestroy() throws Exception {
+        LifecycleHelper.stopIfPossible(this);
+        LifecycleHelper.disposeIfPossible(this);
     }
 
     @Override
-    public void runUnthrowable() {
-      try {
-        arrangeSync();
-      } catch (Throwable e) {
-        logger.error("failed to arrange", e);
-      }
+    protected void doInitialize() throws InitializeException {
+        super.doInitialize();
+        dataServerManager.addObserver(this);
+        Thread executor = ConcurrentUtils.createDaemonThread(getClass().getSimpleName(), arranger);
+        executor.start();
     }
-  }
 
-  private boolean tryArrangeSlots(List<DataNode> dataNodes) {
-    if (!tryLock()) {
-      logger.warn("[tryArrangeSlots] tryLock failed");
-      return false;
+    @Override
+    protected void doDispose() throws DisposeException {
+        arranger.close();
+        dataServerManager.removeObserver(this);
+        super.doDispose();
     }
-    boolean modified = false;
-    boolean noAssign = false;
-    try {
-      List<String> currentDataNodeIps = NodeUtils.transferNodeToIpList(dataNodes);
-      logger.info(
-          "[tryArrangeSlots][begin]arrange slot with DataNode, size={}, {}",
-          currentDataNodeIps.size(),
-          currentDataNodeIps);
-      final SlotTable curSlotTable = slotManager.getSlotTable();
-      SlotTableBuilder tableBuilder =
-          createSlotTableBuilder(
-              curSlotTable,
-              currentDataNodeIps,
-              slotManager.getSlotNums(),
-              slotManager.getSlotReplicaNums());
 
-      noAssign = tableBuilder.hasNoAssignedSlots();
-      if (noAssign) {
-        logger.info("[re-assign][begin] assign slots to data-server");
-        modified = assignSlots(tableBuilder, currentDataNodeIps);
-        logger.info("[re-assign][end] modified={}", modified);
-      } else if (slotTableMonitor.isStableTableStable()) {
-        logger.info("[balance][begin] balance slots to data-server");
-        modified = balanceSlots(tableBuilder, currentDataNodeIps);
-        logger.info("[balance][end] modified={}", modified);
-      } else {
-        logger.info("[tryArrangeSlots][end] no arrangement");
-      }
-    } finally {
-      unlock();
-    }
-    if (modified || noAssign) {
-      // for log monitor
-      logger.warn("[Arranging]noAssign={},modified={}", noAssign, modified);
-    }
-    return modified;
-  }
-
-  @VisibleForTesting
-  public boolean arrangeSync() {
-    if (metaLeaderService.amIStableAsLeader()) {
-      final int minDataNodeNum = metaServerConfig.getDataNodeProtectionNum();
-      // the start arrange with the dataNodes snapshot
-      final List<DataNode> dataNodes =
-          dataServerManager.getDataServerMetaInfo().getClusterMembers();
-      if (dataNodes.isEmpty()) {
-        logger.warn("[Arranger] empty data server list");
-        return false;
-      } else {
-        if (dataNodes.size() <= minDataNodeNum) {
-          slotTableProtectionMode = true;
-          logger.warn("[ProtectionMode] dataServers={} <= {}", dataNodes.size(), minDataNodeNum);
-          return false;
+    @Override
+    public void update(Observable source, Object message) {
+        logger.warn("[update] receive from [{}], message: {}", source, message);
+        if (message instanceof NodeRemoved) {
+            arranger.wakeup();
         }
-        slotTableProtectionMode = false;
-        Metrics.SlotArrange.begin();
+        if (message instanceof NodeAdded) {
+            arranger.wakeup();
+        }
+    }
+
+    public boolean tryLock() {
+        return lock.tryLock();
+    }
+
+    public void unlock() {
+        lock.unlock();
+    }
+
+    private SlotTableBuilder createSlotTableBuilder(
+            SlotTable slotTable, List<String> currentDataNodeIps, int slotNum, int replicas) {
+        NodeComparator comparator = new NodeComparator(slotTable.getDataServers(), currentDataNodeIps);
+        SlotTableBuilder slotTableBuilder = new SlotTableBuilder(slotTable, slotNum, replicas);
+        slotTableBuilder.init(currentDataNodeIps);
+
+        comparator.getRemoved().forEach(slotTableBuilder::removeDataServerSlots);
+        return slotTableBuilder;
+    }
+
+    protected boolean assignSlots(
+            SlotTableBuilder slotTableBuilder, Collection<String> currentDataServers) {
+        SlotTable slotTable = createSlotAssigner(slotTableBuilder, currentDataServers).assign();
+        return refreshSlotTable(slotTable);
+    }
+
+    protected SlotAssigner createSlotAssigner(
+            SlotTableBuilder slotTableBuilder, Collection<String> currentDataServers) {
+        return new DefaultSlotAssigner(slotTableBuilder, currentDataServers);
+    }
+
+    protected boolean balanceSlots(
+            SlotTableBuilder slotTableBuilder, Collection<String> currentDataServers) {
+        SlotTable slotTable = createSlotBalancer(slotTableBuilder, currentDataServers).balance();
+        return refreshSlotTable(slotTable);
+    }
+
+    private boolean refreshSlotTable(SlotTable slotTable) {
+        if (slotTable == null) {
+            logger.info("[refreshSlotTable] slot-table not change");
+            return false;
+        }
+        if (!SlotTableUtils.isValidSlotTable(slotTable)) {
+            throw new SofaRegistrySlotTableException(
+                    "slot table is not valid: \n" + JsonUtils.writeValueAsString(slotTable));
+        }
+        if (slotTable.getEpoch() > slotManager.getSlotTable().getEpoch()) {
+            slotManager.refresh(slotTable);
+            return true;
+        } else {
+            logger.warn(
+                    "[refreshSlotTable] slot-table epoch not change: {}",
+                    JsonUtils.writeValueAsString(slotTable));
+            return false;
+        }
+    }
+
+    protected SlotBalancer createSlotBalancer(
+            SlotTableBuilder slotTableBuilder, Collection<String> currentDataServers) {
+        return new DefaultSlotBalancer(slotTableBuilder, currentDataServers);
+    }
+
+    @Override
+    public void suspend() {
+        arranger.suspend();
+    }
+
+    @Override
+    public void resume() {
+        arranger.resume();
+    }
+
+    @Override
+    public boolean isSuspended() {
+        return arranger.isSuspended();
+    }
+
+    public boolean isSlotTableProtectionMode() {
+        return slotTableProtectionMode;
+    }
+
+    private boolean tryArrangeSlots(List<DataNode> dataNodes) {
+        if (!tryLock()) {
+            logger.warn("[tryArrangeSlots] tryLock failed");
+            return false;
+        }
+        boolean modified = false;
+        boolean noAssign = false;
         try {
-          return tryArrangeSlots(dataNodes);
+            List<String> currentDataNodeIps = NodeUtils.transferNodeToIpList(dataNodes);
+            logger.info(
+                    "[tryArrangeSlots][begin]arrange slot with DataNode, size={}, {}",
+                    currentDataNodeIps.size(),
+                    currentDataNodeIps);
+            final SlotTable curSlotTable = slotManager.getSlotTable();
+            SlotTableBuilder tableBuilder =
+                    createSlotTableBuilder(
+                            curSlotTable,
+                            currentDataNodeIps,
+                            slotManager.getSlotNums(),
+                            slotManager.getSlotReplicaNums());
+
+            noAssign = tableBuilder.hasNoAssignedSlots();
+            if (noAssign) {
+                logger.info("[re-assign][begin] assign slots to data-server");
+                modified = assignSlots(tableBuilder, currentDataNodeIps);
+                logger.info("[re-assign][end] modified={}", modified);
+            } else if (slotTableMonitor.isStableTableStable()) {
+                logger.info("[balance][begin] balance slots to data-server");
+                modified = balanceSlots(tableBuilder, currentDataNodeIps);
+                logger.info("[balance][end] modified={}", modified);
+            } else {
+                logger.info("[tryArrangeSlots][end] no arrangement");
+            }
         } finally {
-          Metrics.SlotArrange.end();
+            unlock();
         }
-      }
-    } else {
-      logger.info(
-          "[arrangeSync] not stable leader for arrange, leader: [{}], is-leader: [{}], isWarmup [{}]",
-          metaLeaderService.getLeader(),
-          metaLeaderService.amILeader(),
-          metaLeaderService.isWarmuped());
-      return false;
+        if (modified || noAssign) {
+            // for log monitor
+            logger.warn("[Arranging]noAssign={},modified={}", noAssign, modified);
+        }
+        return modified;
     }
-  }
+
+    @VisibleForTesting
+    public boolean arrangeSync() {
+        if (metaLeaderService.amIStableAsLeader()) {
+            final int minDataNodeNum = metaServerConfig.getDataNodeProtectionNum();
+            // the start arrange with the dataNodes snapshot
+            final List<DataNode> dataNodes =
+                    dataServerManager.getDataServerMetaInfo().getClusterMembers();
+            if (dataNodes.isEmpty()) {
+                logger.warn("[Arranger] empty data server list");
+                return false;
+            } else {
+                if (dataNodes.size() <= minDataNodeNum) {
+                    slotTableProtectionMode = true;
+                    logger.warn("[ProtectionMode] dataServers={} <= {}", dataNodes.size(), minDataNodeNum);
+                    return false;
+                }
+                slotTableProtectionMode = false;
+                Metrics.SlotArrange.begin();
+                try {
+                    return tryArrangeSlots(dataNodes);
+                } finally {
+                    Metrics.SlotArrange.end();
+                }
+            }
+        } else {
+            logger.info(
+                    "[arrangeSync] not stable leader for arrange, leader: [{}], is-leader: [{}], isWarmup [{}]",
+                    metaLeaderService.getLeader(),
+                    metaLeaderService.amILeader(),
+                    metaLeaderService.isWarmuped());
+            return false;
+        }
+    }
+
+    private final class Arranger extends WakeUpLoopRunnable {
+
+        private final int waitingMillis =
+                SystemUtils.getSystemInteger("registry.slot.arrange.interval.millis", 1000);
+
+        @Override
+        public int getWaitingMillis() {
+            return waitingMillis;
+        }
+
+        @Override
+        public void runUnthrowable() {
+            try {
+                arrangeSync();
+            } catch (Throwable e) {
+                logger.error("failed to arrange", e);
+            }
+        }
+    }
 }

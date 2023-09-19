@@ -21,14 +21,14 @@ package com.alipay.sofa.rpc.registry.mesh.model;
  */
 public class MeshEndpoint {
 
-    public final static String PUBLISH     = "/services/publish";
+    public final static String PUBLISH = "/services/publish";
 
-    public final static String UN_PUBLISH  = "/services/unpublish";
+    public final static String UN_PUBLISH = "/services/unpublish";
 
-    public final static String SUBCRIBE    = "/services/subscribe";
+    public final static String SUBCRIBE = "/services/subscribe";
 
     public final static String UN_SUBCRIBE = "/services/unsubscribe";
 
-    public final static String CONFIGS     = "/configs/application";
+    public final static String CONFIGS = "/configs/application";
 
 }

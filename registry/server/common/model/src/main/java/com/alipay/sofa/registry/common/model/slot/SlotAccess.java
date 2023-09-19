@@ -24,69 +24,68 @@ import java.io.Serializable;
  */
 public final class SlotAccess implements Serializable {
 
-  public enum Status {
-    Accept,
-    Migrating,
-    Moved,
-    MisMatch,
-    UnSupport,
-  }
+    private final int slotId;
+    private final Status status;
+    private final long slotTableEpoch;
+    private final long slotLeaderEpoch;
+    public SlotAccess(int slotId, long slotTableEpoch, Status status, long slotLeaderEpoch) {
+        this.slotTableEpoch = slotTableEpoch;
+        this.slotId = slotId;
+        this.status = status;
+        this.slotLeaderEpoch = slotLeaderEpoch;
+    }
 
-  private final int slotId;
-  private final Status status;
-  private final long slotTableEpoch;
-  private final long slotLeaderEpoch;
+    public boolean isMoved() {
+        return status == Status.Moved;
+    }
 
-  public SlotAccess(int slotId, long slotTableEpoch, Status status, long slotLeaderEpoch) {
-    this.slotTableEpoch = slotTableEpoch;
-    this.slotId = slotId;
-    this.status = status;
-    this.slotLeaderEpoch = slotLeaderEpoch;
-  }
+    public boolean isMigrating() {
+        return status == Status.Migrating;
+    }
 
-  public boolean isMoved() {
-    return status == Status.Moved;
-  }
+    public boolean isAccept() {
+        return status == Status.Accept;
+    }
 
-  public boolean isMigrating() {
-    return status == Status.Migrating;
-  }
+    public boolean isMisMatch() {
+        return status == Status.MisMatch;
+    }
 
-  public boolean isAccept() {
-    return status == Status.Accept;
-  }
+    public Status getStatus() {
+        return status;
+    }
 
-  public boolean isMisMatch() {
-    return status == Status.MisMatch;
-  }
+    public int getSlotId() {
+        return slotId;
+    }
 
-  public Status getStatus() {
-    return status;
-  }
+    public long getSlotTableEpoch() {
+        return slotTableEpoch;
+    }
 
-  public int getSlotId() {
-    return slotId;
-  }
+    public long getSlotLeaderEpoch() {
+        return slotLeaderEpoch;
+    }
 
-  public long getSlotTableEpoch() {
-    return slotTableEpoch;
-  }
+    @Override
+    public String toString() {
+        return "SlotAccess{"
+                + "slotId="
+                + slotId
+                + ", status="
+                + status
+                + ", tableEpoch="
+                + slotTableEpoch
+                + ", leaderEpoch="
+                + slotLeaderEpoch
+                + '}';
+    }
 
-  public long getSlotLeaderEpoch() {
-    return slotLeaderEpoch;
-  }
-
-  @Override
-  public String toString() {
-    return "SlotAccess{"
-        + "slotId="
-        + slotId
-        + ", status="
-        + status
-        + ", tableEpoch="
-        + slotTableEpoch
-        + ", leaderEpoch="
-        + slotLeaderEpoch
-        + '}';
-  }
+    public enum Status {
+        Accept,
+        Migrating,
+        Moved,
+        MisMatch,
+        UnSupport,
+    }
 }

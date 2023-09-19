@@ -37,13 +37,18 @@ public class ClientTransportFactory {
     /**
      * slf4j Logger for this class
      */
-    private final static Logger                LOGGER                  = LoggerFactory
-                                                                           .getLogger(ClientTransportFactory.class);
+    private final static Logger LOGGER = LoggerFactory
+            .getLogger(ClientTransportFactory.class);
 
     /**
      * 不可复用长连接管理器
      */
     private final static ClientTransportHolder CLIENT_TRANSPORT_HOLDER = new NotReusableClientTransportHolder();
+    /**
+     * 反向虚拟的长连接对象, 缓存一个长连接一个<br>
+     * {"127.0.0.1:22000<->127.0.0.1:54321": ClientTransport}
+     */
+    private volatile static ConcurrentMap<String, ClientTransport> REVERSE_CLIENT_TRANSPORT_MAP = null;
 
     /**
      * 销毁长连接
@@ -64,10 +69,10 @@ public class ClientTransportFactory {
                     long start = RpcRuntimeContext.now();
                     if (LOGGER.isInfoEnabled()) {
                         LOGGER.info("There are {} outstanding call in transport, wait {}ms to end",
-                            count, disconnectTimeout);
+                                count, disconnectTimeout);
                     }
                     while (clientTransport.currentRequests() > 0
-                        && RpcRuntimeContext.now() - start < disconnectTimeout) { // 等待返回结果
+                            && RpcRuntimeContext.now() - start < disconnectTimeout) { // 等待返回结果
                         try {
                             Thread.sleep(10);
                         } catch (InterruptedException ignore) {
@@ -121,12 +126,6 @@ public class ClientTransportFactory {
     }
 
     /**
-     * 反向虚拟的长连接对象, 缓存一个长连接一个<br>
-     * {"127.0.0.1:22000<->127.0.0.1:54321": ClientTransport}
-     */
-    private volatile static ConcurrentMap<String, ClientTransport> REVERSE_CLIENT_TRANSPORT_MAP = null;
-
-    /**
      * 构建反向的（服务端到客户端）虚拟长连接
      *
      * @param container Container of client transport
@@ -148,13 +147,13 @@ public class ClientTransportFactory {
                 transport = REVERSE_CLIENT_TRANSPORT_MAP.get(key);
                 if (transport == null) {
                     ClientTransportConfig config = new ClientTransportConfig()
-                        .setProviderInfo(new ProviderInfo().setHost(channel.remoteAddress().getHostName())
-                            .setPort(channel.remoteAddress().getPort()))
-                        .setContainer(container);
+                            .setProviderInfo(new ProviderInfo().setHost(channel.remoteAddress().getHostName())
+                                    .setPort(channel.remoteAddress().getPort()))
+                            .setContainer(container);
                     transport = ExtensionLoaderFactory.getExtensionLoader(ClientTransport.class)
-                        .getExtension(config.getContainer(),
-                            new Class[] { ClientTransportConfig.class },
-                            new Object[] { config });
+                            .getExtension(config.getContainer(),
+                                    new Class[]{ClientTransportConfig.class},
+                                    new Object[]{config});
                     transport.setChannel(channel);
                     REVERSE_CLIENT_TRANSPORT_MAP.put(key, transport); // 保存唯一长连接
                 }
@@ -173,7 +172,7 @@ public class ClientTransportFactory {
      */
     public static ClientTransport getReverseClientTransport(String channelKey) {
         return REVERSE_CLIENT_TRANSPORT_MAP != null ?
-            REVERSE_CLIENT_TRANSPORT_MAP.get(channelKey) : null;
+                REVERSE_CLIENT_TRANSPORT_MAP.get(channelKey) : null;
     }
 
     /**

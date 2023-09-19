@@ -28,39 +28,39 @@ import org.junit.Test;
  * @version : BaseConfigRepositoryTest.java, v 0.1 2023年02月03日 15:38 xiaojian.xj Exp $
  */
 public class BaseConfigRepositoryTest extends BaseConfigRepository<ProvideDataDomain> {
-  private static final Logger LOG = LoggerFactory.getLogger(BaseConfigRepositoryTest.class);
+    private static final Logger LOG = LoggerFactory.getLogger(BaseConfigRepositoryTest.class);
 
-  public BaseConfigRepositoryTest() {
-    super("BaseConfigRepositoryTest", LOG);
-  }
+    public BaseConfigRepositoryTest() {
+        super("BaseConfigRepositoryTest", LOG);
+    }
 
-  @Override
-  protected ProvideDataDomain queryExistVersion(ProvideDataDomain entry) {
-    throw new RuntimeException();
-  }
+    @Override
+    protected ProvideDataDomain queryExistVersion(ProvideDataDomain entry) {
+        throw new RuntimeException();
+    }
 
-  @Override
-  protected long insert(ProvideDataDomain entry) {
-    throw new RuntimeException();
-  }
+    @Override
+    protected long insert(ProvideDataDomain entry) {
+        throw new RuntimeException();
+    }
 
-  @Override
-  protected int updateWithExpectVersion(ProvideDataDomain entry, long exist) {
-    throw new RuntimeException();
-  }
+    @Override
+    protected int updateWithExpectVersion(ProvideDataDomain entry, long exist) {
+        throw new RuntimeException();
+    }
 
-  @Test
-  public void testPutNull() {
-    BaseConfigRepositoryTest repository = new BaseConfigRepositoryTest();
-    Assert.assertFalse(repository.put(null));
-    Assert.assertFalse(repository.put(null, System.currentTimeMillis()));
-  }
+    @Test
+    public void testPutNull() {
+        BaseConfigRepositoryTest repository = new BaseConfigRepositoryTest();
+        Assert.assertFalse(repository.put(null));
+        Assert.assertFalse(repository.put(null, System.currentTimeMillis()));
+    }
 
-  @Test
-  public void testException() {
-    BaseConfigRepositoryTest repository = new BaseConfigRepositoryTest();
-    ProvideDataDomain domain = new ProvideDataDomain();
-    Assert.assertFalse(repository.put(domain));
-    Assert.assertFalse(repository.put(domain, System.currentTimeMillis()));
-  }
+    @Test
+    public void testException() {
+        BaseConfigRepositoryTest repository = new BaseConfigRepositoryTest();
+        ProvideDataDomain domain = new ProvideDataDomain();
+        Assert.assertFalse(repository.put(domain));
+        Assert.assertFalse(repository.put(domain, System.currentTimeMillis()));
+    }
 }

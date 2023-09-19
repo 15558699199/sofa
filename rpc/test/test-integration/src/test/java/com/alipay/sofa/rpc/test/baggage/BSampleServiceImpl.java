@@ -23,19 +23,17 @@ import com.alipay.sofa.rpc.server.bolt.pb.EchoRequest;
 import com.alipay.sofa.rpc.server.bolt.pb.EchoResponse;
 
 /**
- *
- *
  * @author <a href="mailto:zhanggeng.zg@antfin.com">GengZhang</a>
  */
 public class BSampleServiceImpl implements SampleService {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(BSampleServiceImpl.class);
 
-    private SampleService       sampleServiceC;
+    private SampleService sampleServiceC;
 
-    private SampleService       sampleServiceD;
+    private SampleService sampleServiceD;
 
-    private String              reqBaggage;
+    private String reqBaggage;
 
     public BSampleServiceImpl(SampleService sampleServiceC, SampleService sampleServiceD) {
         this.sampleServiceC = sampleServiceC;

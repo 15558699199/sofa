@@ -29,18 +29,10 @@ import com.alipay.sofa.rpc.ext.Extension;
 import com.alipay.sofa.rpc.transport.AbstractByteBuf;
 import com.alipay.sofa.rpc.transport.ByteArrayWrapperByteBuf;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.*;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 /**
  * Json serializer.
@@ -64,13 +56,10 @@ import java.util.Properties;
 @Extension(value = "json", code = 12)
 public class JacksonSerializer extends AbstractSerializer {
 
-    private ObjectMapper        mapper                        = new ObjectMapper();
-
-    private JacksonHelper       jacksonHelper                 = new JacksonHelper();
-
     private static final String DESERIALIZATIONFEATURE_PREFIX = "sofa.rpc.codec.jackson.DeserializationFeature.";
-
-    private static final String SERIALIZATIONFEATURE_PREFIX   = "sofa.rpc.codec.jackson.SerializationFeature.";
+    private static final String SERIALIZATIONFEATURE_PREFIX = "sofa.rpc.codec.jackson.SerializationFeature.";
+    private ObjectMapper mapper = new ObjectMapper();
+    private JacksonHelper jacksonHelper = new JacksonHelper();
 
     public JacksonSerializer() {
 
@@ -115,7 +104,7 @@ public class JacksonSerializer extends AbstractSerializer {
     }
 
     protected AbstractByteBuf encodeSofaRequest(SofaRequest sofaRequest, Map<String, String> context)
-        throws SofaRpcException {
+            throws SofaRpcException {
         Object[] args = sofaRequest.getMethodArgs();
         if (args.length == 1) {
             return encode(args[0], context);
@@ -125,7 +114,7 @@ public class JacksonSerializer extends AbstractSerializer {
     }
 
     protected AbstractByteBuf encodeSofaResponse(SofaResponse sofaResponse, Map<String, String> context)
-        throws SofaRpcException {
+            throws SofaRpcException {
         AbstractByteBuf byteBuf;
         if (sofaResponse.isError()) {
             // rpc exception：error when body is illegal string
@@ -212,7 +201,7 @@ public class JacksonSerializer extends AbstractSerializer {
         JavaType[] requestClassListDecode = requestClassList;
         if (genericServiceMap.containsKey(targetService)) {
             requestClassListDecode = jacksonHelper.getReqClass(genericServiceMap.get(targetService),
-                sofaRequest.getMethodName());
+                    sofaRequest.getMethodName());
         }
         Object[] reqList = decode(data, requestClassListDecode);
         sofaRequest.setMethodArgs(reqList);

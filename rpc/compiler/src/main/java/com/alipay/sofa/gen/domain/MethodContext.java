@@ -20,16 +20,16 @@ package com.alipay.sofa.gen.domain;
  * Template class for proto RPC objects.
  */
 public class MethodContext {
-    private String  methodName;
-    private String  inputType;
-    private String  outputType;
+    private String methodName;
+    private String inputType;
+    private String outputType;
     private boolean deprecated;
     private boolean isManyInput;
     private boolean isManyOutput;
-    private String  reactiveCallsMethodName;
-    private String  grpcCallsMethodName;
-    private int     methodNumber;
-    private String  javaDoc;
+    private String reactiveCallsMethodName;
+    private String grpcCallsMethodName;
+    private int methodNumber;
+    private String javaDoc;
 
     // This method mimics the upper-casing method ogf gRPC to ensure compatibility
     // See https://github.com/grpc/grpc-java/blob/v1.8.0/compiler/src/java_plugin/cpp/java_generator.cpp#L58
@@ -39,7 +39,7 @@ public class MethodContext {
             char c = methodName.charAt(i);
             s.append(Character.toUpperCase(c));
             if ((i < methodName.length() - 1) && Character.isLowerCase(c)
-                && Character.isUpperCase(methodName.charAt(i + 1))) {
+                    && Character.isUpperCase(methodName.charAt(i + 1))) {
                 s.append('_');
             }
         }
@@ -139,10 +139,10 @@ public class MethodContext {
     @Override
     public String toString() {
         return "MethodContext{" + "methodName='" + methodName + '\'' + ", inputType='" + inputType
-            + '\'' + ", outputType='" + outputType + '\'' + ", deprecated=" + deprecated
-            + ", isManyInput=" + isManyInput + ", isManyOutput=" + isManyOutput
-            + ", reactiveCallsMethodName='" + reactiveCallsMethodName + '\''
-            + ", grpcCallsMethodName='" + grpcCallsMethodName + '\'' + ", methodNumber="
-            + methodNumber + ", javaDoc='" + javaDoc + '\'' + '}';
+                + '\'' + ", outputType='" + outputType + '\'' + ", deprecated=" + deprecated
+                + ", isManyInput=" + isManyInput + ", isManyOutput=" + isManyOutput
+                + ", reactiveCallsMethodName='" + reactiveCallsMethodName + '\''
+                + ", grpcCallsMethodName='" + grpcCallsMethodName + '\'' + ", methodNumber="
+                + methodNumber + ", javaDoc='" + javaDoc + '\'' + '}';
     }
 }

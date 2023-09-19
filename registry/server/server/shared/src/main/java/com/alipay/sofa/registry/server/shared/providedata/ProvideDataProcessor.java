@@ -24,7 +24,7 @@ import com.alipay.sofa.registry.common.model.metaserver.ProvideData;
  */
 public interface ProvideDataProcessor {
 
-  boolean support(String dataInfoId);
+    boolean support(String dataInfoId);
 
-  boolean processData(ProvideData data);
+    boolean processData(ProvideData data);
 }

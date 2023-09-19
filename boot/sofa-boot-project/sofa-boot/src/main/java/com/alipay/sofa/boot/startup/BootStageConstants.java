@@ -34,13 +34,13 @@ public class BootStageConstants {
     /**
      * The running stage since JVM started to {@link SpringApplicationRunListener#started(ConfigurableApplicationContext, Duration)} ()}
      */
-    public static final String JVM_STARTING_STAGE                = "JvmStartingStage";
+    public static final String JVM_STARTING_STAGE = "JvmStartingStage";
 
     /**
      * The running stage since {@link SpringApplicationRunListener#started(ConfigurableApplicationContext, Duration)} ()} to
      * {@link SpringApplicationRunListener#environmentPrepared(ConfigurableBootstrapContext, ConfigurableEnvironment)} (ConfigurableEnvironment)}}
      */
-    public static final String ENVIRONMENT_PREPARE_STAGE         = "EnvironmentPrepareStage";
+    public static final String ENVIRONMENT_PREPARE_STAGE = "EnvironmentPrepareStage";
 
     /**
      * The running stage since {@link SpringApplicationRunListener#environmentPrepared(ConfigurableBootstrapContext, ConfigurableEnvironment)} (ConfigurableEnvironment)} to
@@ -52,7 +52,7 @@ public class BootStageConstants {
      * The running stage since {@link SpringApplicationRunListener#contextPrepared(ConfigurableApplicationContext)} to
      * {@link SpringApplicationRunListener#contextLoaded(ConfigurableApplicationContext)}}
      */
-    public static final String APPLICATION_CONTEXT_LOAD_STAGE    = "ApplicationContextLoadStage";
+    public static final String APPLICATION_CONTEXT_LOAD_STAGE = "ApplicationContextLoadStage";
 
     /**
      * The running stage since {@link SpringApplicationRunListener#contextLoaded(ConfigurableApplicationContext)} to

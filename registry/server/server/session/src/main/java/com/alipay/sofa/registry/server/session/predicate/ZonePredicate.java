@@ -18,6 +18,7 @@ package com.alipay.sofa.registry.server.session.predicate;
 
 import com.alipay.sofa.registry.core.model.ScopeEnum;
 import com.alipay.sofa.registry.server.session.bootstrap.SessionServerConfig;
+
 import java.util.function.Predicate;
 
 /**
@@ -25,37 +26,38 @@ import java.util.function.Predicate;
  * @version $Id: ZonePredicate.java, v 0.1 2020年11月12日 21:57 xiaojian.xj Exp $
  */
 public final class ZonePredicate {
-  private ZonePredicate() {}
-
-  public static Predicate<String> pushDataPredicate(
-      String dataId,
-      String clientCell,
-      ScopeEnum scopeEnum,
-      SessionServerConfig sessionServerConfig) {
-    Predicate<String> zonePredicate =
-        (zone) -> zoneFilter(dataId, clientCell, scopeEnum, sessionServerConfig, zone);
-    return zonePredicate;
-  }
-
-  private static boolean zoneFilter(
-      String dataId,
-      String clientCell,
-      ScopeEnum scopeEnum,
-      SessionServerConfig sessionServerConfig,
-      String zone) {
-    if (!clientCell.equals(zone)) {
-      if (ScopeEnum.zone == scopeEnum) {
-        // zone scope subscribe only return zone list
-        return true;
-
-      } else if (ScopeEnum.dataCenter == scopeEnum || ScopeEnum.global == scopeEnum) {
-        // disable zone config
-        if (sessionServerConfig.isInvalidForeverZone(zone)
-            && !sessionServerConfig.isInvalidIgnored(dataId)) {
-          return true;
-        }
-      }
+    private ZonePredicate() {
     }
-    return false;
-  }
+
+    public static Predicate<String> pushDataPredicate(
+            String dataId,
+            String clientCell,
+            ScopeEnum scopeEnum,
+            SessionServerConfig sessionServerConfig) {
+        Predicate<String> zonePredicate =
+                (zone) -> zoneFilter(dataId, clientCell, scopeEnum, sessionServerConfig, zone);
+        return zonePredicate;
+    }
+
+    private static boolean zoneFilter(
+            String dataId,
+            String clientCell,
+            ScopeEnum scopeEnum,
+            SessionServerConfig sessionServerConfig,
+            String zone) {
+        if (!clientCell.equals(zone)) {
+            if (ScopeEnum.zone == scopeEnum) {
+                // zone scope subscribe only return zone list
+                return true;
+
+            } else if (ScopeEnum.dataCenter == scopeEnum || ScopeEnum.global == scopeEnum) {
+                // disable zone config
+                if (sessionServerConfig.isInvalidForeverZone(zone)
+                        && !sessionServerConfig.isInvalidIgnored(dataId)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }

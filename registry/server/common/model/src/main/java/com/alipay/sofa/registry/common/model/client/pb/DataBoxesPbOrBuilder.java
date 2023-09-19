@@ -17,19 +17,33 @@
 package com.alipay.sofa.registry.common.model.client.pb;
 
 public interface DataBoxesPbOrBuilder
-    extends
-    // @@protoc_insertion_point(interface_extends:DataBoxesPb)
-    com.google.protobuf.MessageOrBuilder {
+        extends
+        // @@protoc_insertion_point(interface_extends:DataBoxesPb)
+        com.google.protobuf.MessageOrBuilder {
 
-  /** <code>repeated .DataBoxPb data = 1;</code> */
-  java.util.List<com.alipay.sofa.registry.common.model.client.pb.DataBoxPb> getDataList();
-  /** <code>repeated .DataBoxPb data = 1;</code> */
-  com.alipay.sofa.registry.common.model.client.pb.DataBoxPb getData(int index);
-  /** <code>repeated .DataBoxPb data = 1;</code> */
-  int getDataCount();
-  /** <code>repeated .DataBoxPb data = 1;</code> */
-  java.util.List<? extends com.alipay.sofa.registry.common.model.client.pb.DataBoxPbOrBuilder>
-      getDataOrBuilderList();
-  /** <code>repeated .DataBoxPb data = 1;</code> */
-  com.alipay.sofa.registry.common.model.client.pb.DataBoxPbOrBuilder getDataOrBuilder(int index);
+    /**
+     * <code>repeated .DataBoxPb data = 1;</code>
+     */
+    java.util.List<com.alipay.sofa.registry.common.model.client.pb.DataBoxPb> getDataList();
+
+    /**
+     * <code>repeated .DataBoxPb data = 1;</code>
+     */
+    com.alipay.sofa.registry.common.model.client.pb.DataBoxPb getData(int index);
+
+    /**
+     * <code>repeated .DataBoxPb data = 1;</code>
+     */
+    int getDataCount();
+
+    /**
+     * <code>repeated .DataBoxPb data = 1;</code>
+     */
+    java.util.List<? extends com.alipay.sofa.registry.common.model.client.pb.DataBoxPbOrBuilder>
+    getDataOrBuilderList();
+
+    /**
+     * <code>repeated .DataBoxPb data = 1;</code>
+     */
+    com.alipay.sofa.registry.common.model.client.pb.DataBoxPbOrBuilder getDataOrBuilder(int index);
 }

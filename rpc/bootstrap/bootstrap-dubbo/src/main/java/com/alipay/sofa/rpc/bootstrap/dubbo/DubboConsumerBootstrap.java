@@ -16,7 +16,6 @@
  */
 package com.alipay.sofa.rpc.bootstrap.dubbo;
 
-import org.apache.dubbo.config.ReferenceConfig;
 import com.alipay.sofa.rpc.bootstrap.ConsumerBootstrap;
 import com.alipay.sofa.rpc.client.Cluster;
 import com.alipay.sofa.rpc.client.ProviderGroup;
@@ -27,6 +26,7 @@ import com.alipay.sofa.rpc.config.ConsumerConfig;
 import com.alipay.sofa.rpc.config.MethodConfig;
 import com.alipay.sofa.rpc.core.exception.SofaRpcRuntimeException;
 import com.alipay.sofa.rpc.ext.Extension;
+import org.apache.dubbo.config.ReferenceConfig;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,19 +43,17 @@ import static com.alipay.sofa.rpc.bootstrap.dubbo.DubboConvertor.copyRegistries;
 public class DubboConsumerBootstrap<T> extends ConsumerBootstrap<T> {
 
     /**
-     * Dubbo的配置
+     * dubbo service version
      */
-    private ReferenceConfig<T>     referenceConfig;
-
+    private static final String VERSION = "version";
     /**
      * 代理实现类
      */
     protected transient volatile T proxyIns;
-
     /**
-     * dubbo service version
+     * Dubbo的配置
      */
-    private static final String    VERSION = "version";
+    private ReferenceConfig<T> referenceConfig;
 
     /**
      * 构造函数
@@ -130,7 +128,7 @@ public class DubboConsumerBootstrap<T> extends ConsumerBootstrap<T> {
                 referenceConfig.setSent(false);
             }
             if (RpcConstants.INVOKER_TYPE_CALLBACK.equals(invokeType)
-                || RpcConstants.INVOKER_TYPE_FUTURE.equals(invokeType)) {
+                    || RpcConstants.INVOKER_TYPE_FUTURE.equals(invokeType)) {
                 referenceConfig.setAsync(true);
             }
         }
@@ -154,7 +152,7 @@ public class DubboConsumerBootstrap<T> extends ConsumerBootstrap<T> {
                         dubboMethodConfig.setReturn(false);
                     }
                     if (RpcConstants.INVOKER_TYPE_CALLBACK.equals(invokeType)
-                        || RpcConstants.INVOKER_TYPE_FUTURE.equals(invokeType)) {
+                            || RpcConstants.INVOKER_TYPE_FUTURE.equals(invokeType)) {
                         dubboMethodConfig.setAsync(true);
                     }
                 }

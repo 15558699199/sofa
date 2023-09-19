@@ -26,7 +26,6 @@ import javax.ws.rs.ext.Provider;
 import java.io.IOException;
 
 /**
- *
  * @author <a href="mailto:lw111072@antfin.com">liangen</a>
  */
 @Provider
@@ -34,12 +33,16 @@ import java.io.IOException;
 public class ClientRequestTestFilter implements ClientRequestFilter {
     private final static Logger LOGGER = LoggerFactory.getLogger(ClientRequestTestFilter.class);
 
-    private static String       name   = "X";
+    private static String name = "X";
 
     @CustomerAnnotation()
-    private static String       code   = "x";
+    private static String code = "x";
 
-    private static String       code2  = "x";
+    private static String code2 = "x";
+
+    public static String getName() {
+        return name + code + code2;
+    }
 
     @Override
     public void filter(ClientRequestContext requestContext) throws IOException {
@@ -53,9 +56,5 @@ public class ClientRequestTestFilter implements ClientRequestFilter {
         this.code2 = code2;
         LOGGER.info("客户端customerAnnotation  code2:" + this.code2);
 
-    }
-
-    public static String getName() {
-        return name + code + code2;
     }
 }

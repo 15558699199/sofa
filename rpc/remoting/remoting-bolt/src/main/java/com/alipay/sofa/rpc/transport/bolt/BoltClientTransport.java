@@ -74,44 +74,42 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class BoltClientTransport extends ClientTransport {
 
     /**
-     * Logger for this class
-     */
-    private static final Logger                  LOGGER            = LoggerFactory.getLogger(BoltClientTransport.class);
-    /**
      * Bolt rpc client
      */
-    protected static final RpcClient             RPC_CLIENT        = new RpcClient();
-
-    protected static final boolean               REUSE_CONNECTION  = RpcConfigs.getOrDefaultValue(
-                                                                       RpcOptions.TRANSPORT_CONNECTION_REUSE, true);
-
+    protected static final RpcClient RPC_CLIENT = new RpcClient();
+    protected static final boolean REUSE_CONNECTION = RpcConfigs.getOrDefaultValue(
+            RpcOptions.TRANSPORT_CONNECTION_REUSE, true);
+    /**
+     * Logger for this class
+     */
+    private static final Logger LOGGER = LoggerFactory.getLogger(BoltClientTransport.class);
     /**
      * Connection manager for reuse connection
      *
      * @since 5.4.0
      */
     protected static BoltClientConnectionManager connectionManager = REUSE_CONNECTION ? new ReuseBoltClientConnectionManager(
-                                                                       true)
-                                                                       : new AloneBoltClientConnectionManager(
-                                                                           true);
+            true)
+            : new AloneBoltClientConnectionManager(
+            true);
 
     static {
         RPC_CLIENT.init();
 
         String extensionAlias = RpcConfigs.getStringValue(RpcOptions.BOLT_SERIALIZER_REGISTER_EXTENSION);
         ExtensionLoaderFactory.getExtensionLoader(AbstractSerializationRegister.class)
-            .getExtension(extensionAlias).doRegisterCustomSerializer();
+                .getExtension(extensionAlias).doRegisterCustomSerializer();
     }
 
     /**
      * bolt需要的URL的缓存
      */
-    protected final Url                          url;
+    protected final Url url;
 
     /**
      * 正在发送的调用数量
      */
-    protected volatile AtomicInteger             currentRequests   = new AtomicInteger(0);
+    protected volatile AtomicInteger currentRequests = new AtomicInteger(0);
 
     /**
      * Instant BoltClientTransport
@@ -178,12 +176,12 @@ public class BoltClientTransport extends ClientTransport {
     }
 
     @Override
-    public void setChannel(AbstractChannel channel) {
+    public AbstractChannel getChannel() {
         throw new UnsupportedOperationException("Not supported");
     }
 
     @Override
-    public AbstractChannel getChannel() {
+    public void setChannel(AbstractChannel channel) {
         throw new UnsupportedOperationException("Not supported");
     }
 
@@ -221,13 +219,13 @@ public class BoltClientTransport extends ClientTransport {
      */
     protected ResponseFuture doInvokeAsync(SofaRequest request, RpcInternalContext rpcContext,
                                            InvokeContext invokeContext, int timeoutMillis)
-        throws RemotingException, InterruptedException {
+            throws RemotingException, InterruptedException {
         SofaResponseCallback listener = request.getSofaResponseCallback();
         if (listener != null) {
             // callback调用
             InvokeCallback callback = new BoltInvokerCallback(transportConfig.getConsumerConfig(),
-                transportConfig.getProviderInfo(), listener, request, rpcContext,
-                ClassLoaderUtils.getCurrentClassLoader());
+                    transportConfig.getProviderInfo(), listener, request, rpcContext,
+                    ClassLoaderUtils.getCurrentClassLoader());
             // 发起调用
             RPC_CLIENT.invokeWithCallback(url, request, invokeContext, callback, timeoutMillis);
             return null;
@@ -235,8 +233,8 @@ public class BoltClientTransport extends ClientTransport {
             // future 转为 callback
             BoltResponseFuture future = new BoltResponseFuture(request, timeoutMillis);
             InvokeCallback callback = new BoltFutureInvokeCallback(transportConfig.getConsumerConfig(),
-                transportConfig.getProviderInfo(), future, request, rpcContext,
-                ClassLoaderUtils.getCurrentClassLoader());
+                    transportConfig.getProviderInfo(), future, request, rpcContext,
+                    ClassLoaderUtils.getCurrentClassLoader());
             // 发起调用
             RPC_CLIENT.invokeWithCallback(url, request, invokeContext, callback, timeoutMillis);
             future.setSentTime();
@@ -262,7 +260,7 @@ public class BoltClientTransport extends ClientTransport {
             afterSend(context, boltInvokeContext, request);
             if (EventBus.isEnable(ClientSyncReceiveEvent.class)) {
                 EventBus.post(new ClientSyncReceiveEvent(transportConfig.getConsumerConfig(),
-                    transportConfig.getProviderInfo(), request, response, throwable));
+                        transportConfig.getProviderInfo(), request, response, throwable));
             }
         }
     }
@@ -279,7 +277,7 @@ public class BoltClientTransport extends ClientTransport {
      * @since 5.2.0
      */
     protected SofaResponse doInvokeSync(SofaRequest request, InvokeContext invokeContext, int timeoutMillis)
-        throws RemotingException, InterruptedException {
+            throws RemotingException, InterruptedException {
         return (SofaResponse) RPC_CLIENT.invokeSync(url, request, invokeContext, timeoutMillis);
     }
 
@@ -299,7 +297,7 @@ public class BoltClientTransport extends ClientTransport {
             afterSend(context, invokeContext, request);
             if (EventBus.isEnable(ClientSyncReceiveEvent.class)) {
                 EventBus.post(new ClientSyncReceiveEvent(transportConfig.getConsumerConfig(),
-                    transportConfig.getProviderInfo(), request, null, throwable));
+                        transportConfig.getProviderInfo(), request, null, throwable));
             }
         }
     }
@@ -315,7 +313,7 @@ public class BoltClientTransport extends ClientTransport {
      * @since 5.2.0
      */
     protected void doOneWay(SofaRequest request, InvokeContext invokeContext, int timeoutMillis)
-        throws RemotingException, InterruptedException {
+            throws RemotingException, InterruptedException {
         RPC_CLIENT.oneway(url, request, invokeContext);
     }
 
@@ -342,13 +340,13 @@ public class BoltClientTransport extends ClientTransport {
         else if (e instanceof SerializationException) {
             boolean isServer = ((SerializationException) e).isServerSide();
             exception = isServer ? new SofaRpcException(RpcErrorType.SERVER_SERIALIZE, e)
-                : new SofaRpcException(RpcErrorType.CLIENT_SERIALIZE, e);
+                    : new SofaRpcException(RpcErrorType.CLIENT_SERIALIZE, e);
         }
         // 反序列化
         else if (e instanceof DeserializationException) {
             boolean isServer = ((DeserializationException) e).isServerSide();
             exception = isServer ? new SofaRpcException(RpcErrorType.SERVER_DESERIALIZE, e)
-                : new SofaRpcException(RpcErrorType.CLIENT_DESERIALIZE, e);
+                    : new SofaRpcException(RpcErrorType.CLIENT_DESERIALIZE, e);
         }
         // 长连接断连
         else if (e instanceof ConnectionClosedException) {
@@ -406,7 +404,7 @@ public class BoltClientTransport extends ClientTransport {
         currentRequests.decrementAndGet();
         if (RpcInternalContext.isAttachmentEnable()) {
             putToContextIfNotNull(invokeContext, InvokeContext.CLIENT_CONN_CREATETIME, context,
-                RpcConstants.INTERNAL_KEY_CONN_CREATE_TIME);
+                    RpcConstants.INTERNAL_KEY_CONN_CREATE_TIME);
         }
         putToContext(invokeContext);
         if (EventBus.isEnable(ClientAfterSendEvent.class)) {
@@ -461,7 +459,7 @@ public class BoltClientTransport extends ClientTransport {
         Long connEndTime = invokeContext.get(InvokeContext.CLIENT_CONN_CREATE_END_IN_NANO);
         if (connStartTime != null && connEndTime != null) {
             RpcInvokeContext.getContext().put(RpcConstants.INTERNAL_KEY_CONN_CREATE_TIME_NANO,
-                connEndTime - connStartTime);
+                    connEndTime - connStartTime);
         }
     }
 

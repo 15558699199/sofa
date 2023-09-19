@@ -16,15 +16,16 @@
  */
 package com.alipay.sofa.registry.server.shared.resource;
 
-import javax.ws.rs.core.Response;
 import org.junit.Assert;
 import org.junit.Test;
 
+import javax.ws.rs.core.Response;
+
 public class MetricsResourceTest {
-  @Test
-  public void test() {
-    MetricsResource resource = new MetricsResource();
-    Response response = resource.metrics();
-    Assert.assertEquals(response.getStatus(), 200);
-  }
+    @Test
+    public void test() {
+        MetricsResource resource = new MetricsResource();
+        Response response = resource.metrics();
+        Assert.assertEquals(response.getStatus(), 200);
+    }
 }

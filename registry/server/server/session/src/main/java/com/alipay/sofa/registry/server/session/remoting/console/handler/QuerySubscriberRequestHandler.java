@@ -22,25 +22,27 @@ import com.alipay.sofa.registry.common.model.sessionserver.QuerySubscriberReques
 import com.alipay.sofa.registry.common.model.store.Subscriber;
 import com.alipay.sofa.registry.remoting.Channel;
 import com.alipay.sofa.registry.server.session.store.Interests;
-import java.util.Collection;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Collection;
+
 public class QuerySubscriberRequestHandler extends AbstractConsoleHandler<QuerySubscriberRequest> {
-  @Autowired protected Interests sessionInterests;
+    @Autowired
+    protected Interests sessionInterests;
 
-  @Override
-  public Object doHandle(Channel channel, QuerySubscriberRequest request) {
-    Collection<Subscriber> subscribers = sessionInterests.getInterests(request.getDataInfoId());
-    return new GenericResponse().fillSucceed(SubscriberUtils.convert(subscribers));
-  }
+    @Override
+    public Object doHandle(Channel channel, QuerySubscriberRequest request) {
+        Collection<Subscriber> subscribers = sessionInterests.getInterests(request.getDataInfoId());
+        return new GenericResponse().fillSucceed(SubscriberUtils.convert(subscribers));
+    }
 
-  @Override
-  public Object buildFailedResponse(String msg) {
-    return new GenericResponse().fillFailed(msg);
-  }
+    @Override
+    public Object buildFailedResponse(String msg) {
+        return new GenericResponse().fillFailed(msg);
+    }
 
-  @Override
-  public Class interest() {
-    return QuerySubscriberRequest.class;
-  }
+    @Override
+    public Class interest() {
+        return QuerySubscriberRequest.class;
+    }
 }

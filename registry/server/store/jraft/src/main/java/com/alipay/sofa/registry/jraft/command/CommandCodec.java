@@ -23,37 +23,37 @@ import com.alipay.remoting.serialization.SerializerManager;
  * Command codec
  *
  * @author boyan (boyan@alibaba-inc.com)
- *     <p>2018-Apr-25 1:30:30 PM
+ * <p>2018-Apr-25 1:30:30 PM
  */
 public class CommandCodec {
-  /**
-   * encode the command,returns the byte array.
-   *
-   * @param obj obj
-   * @return byte[]
-   */
-  public static byte[] encodeCommand(Object obj) {
-    try {
-      return SerializerManager.getSerializer(SerializerManager.Hessian2).serialize(obj);
-    } catch (CodecException e) {
-      throw new IllegalStateException(e);
+    /**
+     * encode the command,returns the byte array.
+     *
+     * @param obj obj
+     * @return byte[]
+     */
+    public static byte[] encodeCommand(Object obj) {
+        try {
+            return SerializerManager.getSerializer(SerializerManager.Hessian2).serialize(obj);
+        } catch (CodecException e) {
+            throw new IllegalStateException(e);
+        }
     }
-  }
 
-  /**
-   * Decode the command object from byte array.
-   *
-   * @param content content
-   * @param clazz clazz
-   * @param <T> T
-   * @return T
-   */
-  public static <T> T decodeCommand(byte[] content, Class<T> clazz) {
-    try {
-      return SerializerManager.getSerializer(SerializerManager.Hessian2)
-          .deserialize(content, clazz.getName());
-    } catch (CodecException e) {
-      throw new IllegalStateException(e);
+    /**
+     * Decode the command object from byte array.
+     *
+     * @param content content
+     * @param clazz   clazz
+     * @param <T>     T
+     * @return T
+     */
+    public static <T> T decodeCommand(byte[] content, Class<T> clazz) {
+        try {
+            return SerializerManager.getSerializer(SerializerManager.Hessian2)
+                    .deserialize(content, clazz.getName());
+        } catch (CodecException e) {
+            throw new IllegalStateException(e);
+        }
     }
-  }
 }

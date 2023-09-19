@@ -16,11 +16,7 @@
  */
 package com.alipay.sofa.runtime.api.annotation;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Repeatable;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 /**
  * Annotation used to create a SOFA service of a spring bean. Sample usage:
@@ -40,7 +36,7 @@ import java.lang.annotation.Target;
  * @author xuanbei 18/3/1
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE, ElementType.METHOD })
+@Target({ElementType.TYPE, ElementType.METHOD})
 @Repeatable(SofaServices.class)
 public @interface SofaService {
 
@@ -66,5 +62,5 @@ public @interface SofaService {
      *
      * @return bindings of service
      */
-    SofaServiceBinding[] bindings() default { @SofaServiceBinding };
+    SofaServiceBinding[] bindings() default {@SofaServiceBinding};
 }

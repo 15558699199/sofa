@@ -26,9 +26,10 @@ import com.alipay.sofa.registry.server.data.multi.cluster.executor.MultiClusterE
 import com.alipay.sofa.registry.server.data.multi.cluster.slot.MultiClusterSlotManager;
 import com.alipay.sofa.registry.server.shared.remoting.AbstractClientHandler;
 import com.alipay.sofa.registry.util.ParaCheckUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.util.Set;
 import java.util.concurrent.Executor;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * @author xiaojian.xj
@@ -36,62 +37,65 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class RemoteDataChangeNotifyHandler extends AbstractClientHandler<DataChangeRequest> {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(RemoteDataChangeNotifyHandler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(RemoteDataChangeNotifyHandler.class);
 
-  @Autowired private DataServerConfig dataServerConfig;
+    @Autowired
+    private DataServerConfig dataServerConfig;
 
-  @Autowired private MultiClusterSlotManager multiClusterSlotManager;
+    @Autowired
+    private MultiClusterSlotManager multiClusterSlotManager;
 
-  @Autowired private MultiClusterExecutorManager multiClusterExecutorManager;
+    @Autowired
+    private MultiClusterExecutorManager multiClusterExecutorManager;
 
-  /**
-   * return processor request class name
-   *
-   * @return Class
-   */
-  @Override
-  public Class interest() {
-    return DataChangeRequest.class;
-  }
-
-  @Override
-  protected NodeType getConnectNodeType() {
-    return NodeType.DATA;
-  }
-
-  @Override
-  public Executor getExecutor() {
-    return multiClusterExecutorManager.getRemoteDataChangeRequestExecutor();
-  }
-
-  @Override
-  public void checkParam(DataChangeRequest request) {
-    ParaCheckUtil.checkNotBlank(request.getDataCenter(), "request.dataCenter");
-    ParaCheckUtil.checkNotEmpty(request.getDataInfoIds(), "request.dataInfoIds");
-  }
-
-  /**
-   * execute
-   *
-   * @param channel channel
-   * @param request request
-   * @return Object
-   */
-  @Override
-  public Object doHandle(Channel channel, DataChangeRequest request) {
-
-    if (dataServerConfig.isLocalDataCenter(request.getDataCenter())) {
-      LOGGER.error(
-          "[DataChangeRequest]local dataCenter data change should not notify localData, request:{}",
-          request);
-      return null;
+    /**
+     * return processor request class name
+     *
+     * @return Class
+     */
+    @Override
+    public Class interest() {
+        return DataChangeRequest.class;
     }
-    Set<String> dataInfoIds = request.getDataInfoIds().keySet();
-    LOGGER.info(
-        "[DataChangeRequest]dataCenter:{} data change:{}",
-        request.getDataCenter(),
-        dataInfoIds.size());
-    multiClusterSlotManager.dataChangeNotify(request.getDataCenter(), dataInfoIds);
-    return null;
-  }
+
+    @Override
+    protected NodeType getConnectNodeType() {
+        return NodeType.DATA;
+    }
+
+    @Override
+    public Executor getExecutor() {
+        return multiClusterExecutorManager.getRemoteDataChangeRequestExecutor();
+    }
+
+    @Override
+    public void checkParam(DataChangeRequest request) {
+        ParaCheckUtil.checkNotBlank(request.getDataCenter(), "request.dataCenter");
+        ParaCheckUtil.checkNotEmpty(request.getDataInfoIds(), "request.dataInfoIds");
+    }
+
+    /**
+     * execute
+     *
+     * @param channel channel
+     * @param request request
+     * @return Object
+     */
+    @Override
+    public Object doHandle(Channel channel, DataChangeRequest request) {
+
+        if (dataServerConfig.isLocalDataCenter(request.getDataCenter())) {
+            LOGGER.error(
+                    "[DataChangeRequest]local dataCenter data change should not notify localData, request:{}",
+                    request);
+            return null;
+        }
+        Set<String> dataInfoIds = request.getDataInfoIds().keySet();
+        LOGGER.info(
+                "[DataChangeRequest]dataCenter:{} data change:{}",
+                request.getDataCenter(),
+                dataInfoIds.size());
+        multiClusterSlotManager.dataChangeNotify(request.getDataCenter(), dataInfoIds);
+        return null;
+    }
 }

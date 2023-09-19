@@ -35,13 +35,13 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class DynamicJvmServiceInvokerTests {
 
-    private final ClassLoader       clientClassloader = new FilteredClassLoader("client");
+    private final ClassLoader clientClassloader = new FilteredClassLoader("client");
 
-    private final ClassLoader       serverClassloader = new FilteredClassLoader("server");
+    private final ClassLoader serverClassloader = new FilteredClassLoader("server");
 
-    private final ReferenceImpl     contract          = new ReferenceImpl("test",
-                                                          SampleService.class, InterfaceMode.api,
-                                                          true);
+    private final ReferenceImpl contract = new ReferenceImpl("test",
+            SampleService.class, InterfaceMode.api,
+            true);
 
     private final SampleServiceImpl sampleServiceImpl = new SampleServiceImpl();
 
@@ -52,7 +52,7 @@ public class DynamicJvmServiceInvokerTests {
         factory.addInterface(SampleService.class);
         factory.addAdvice(dynamicJvmServiceInvoker);
         SampleService sampleService = (SampleService) factory.getProxy(this.getClass()
-            .getClassLoader());
+                .getClassLoader());
 
         Pojo pojo = new Pojo(1, "test");
 
@@ -67,7 +67,7 @@ public class DynamicJvmServiceInvokerTests {
         factory.addInterface(SampleService.class);
         factory.addAdvice(dynamicJvmServiceInvoker);
         SampleService sampleService = (SampleService) factory.getProxy(this.getClass()
-            .getClassLoader());
+                .getClassLoader());
 
         Pojo pojo = new Pojo(1, "test");
 
@@ -83,7 +83,7 @@ public class DynamicJvmServiceInvokerTests {
         factory.addInterface(SampleService.class);
         factory.addAdvice(dynamicJvmServiceInvoker);
         SampleService sampleService = (SampleService) factory.getProxy(this.getClass()
-            .getClassLoader());
+                .getClassLoader());
 
         assertThat(sampleService.toString()).isEqualTo(sampleServiceImpl.toString());
 
@@ -94,6 +94,6 @@ public class DynamicJvmServiceInvokerTests {
 
     private DynamicJvmServiceInvoker createDynamicJvmServiceInvoker(boolean serialize) {
         return new DynamicJvmServiceInvoker(clientClassloader, serverClassloader,
-            sampleServiceImpl, contract, "biz", serialize);
+                sampleServiceImpl, contract, "biz", serialize);
     }
 }

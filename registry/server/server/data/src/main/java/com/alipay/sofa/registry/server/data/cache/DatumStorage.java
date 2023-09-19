@@ -23,6 +23,7 @@ import com.alipay.sofa.registry.common.model.dataserver.Datum;
 import com.alipay.sofa.registry.common.model.dataserver.DatumVersion;
 import com.alipay.sofa.registry.common.model.store.Publisher;
 import com.alipay.sofa.registry.server.data.slot.SlotChangeListener;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -35,77 +36,77 @@ import java.util.function.BiConsumer;
  */
 public interface DatumStorage {
 
-  Set<String> allDataCenters();
+    Set<String> allDataCenters();
 
-  /**
-   * get datum by specific dataInfoId
-   *
-   * @param dataCenter dataCenter
-   * @param dataInfoId dataInfoId
-   * @return Datum
-   */
-  Datum get(String dataCenter, String dataInfoId);
+    /**
+     * get datum by specific dataInfoId
+     *
+     * @param dataCenter dataCenter
+     * @param dataInfoId dataInfoId
+     * @return Datum
+     */
+    Datum get(String dataCenter, String dataInfoId);
 
-  DatumVersion getVersion(String dataCenter, String dataInfoId);
+    DatumVersion getVersion(String dataCenter, String dataInfoId);
 
-  Map<String, DatumVersion> getVersions(
-      String dataCenter, int slotId, Collection<String> targetDatInfoIds);
+    Map<String, DatumVersion> getVersions(
+            String dataCenter, int slotId, Collection<String> targetDatInfoIds);
 
-  Map<String, Publisher> getByConnectId(ConnectId connectId);
+    Map<String, Publisher> getByConnectId(ConnectId connectId);
 
-  Map<String, Map<String, Publisher>> getPublishers(String dataCenter, int slot);
+    Map<String, Map<String, Publisher>> getPublishers(String dataCenter, int slot);
 
-  /**
-   * get all datum
-   *
-   * @param dataCenter dataCenter
-   * @return Map
-   */
-  Map<String, Datum> getAll(String dataCenter);
+    /**
+     * get all datum
+     *
+     * @param dataCenter dataCenter
+     * @return Map
+     */
+    Map<String, Datum> getAll(String dataCenter);
 
-  Map<String, List<Publisher>> getAllPublisher(String dataCenter);
+    Map<String, List<Publisher>> getAllPublisher(String dataCenter);
 
-  Map<String, Integer> getPubCount(String dataCenter);
+    Map<String, Integer> getPubCount(String dataCenter);
 
-  void putPublisherGroups(String dataCenter, int slotId);
+    void putPublisherGroups(String dataCenter, int slotId);
 
-  DatumVersion putPublisher(String dataCenter, Publisher publisher);
+    DatumVersion putPublisher(String dataCenter, Publisher publisher);
 
-  DatumVersion putPublisher(
-      String dataCenter, String dataInfoId, List<Publisher> updatedPublishers);
+    DatumVersion putPublisher(
+            String dataCenter, String dataInfoId, List<Publisher> updatedPublishers);
 
-  DatumVersion createEmptyDatumIfAbsent(String dataCenter, String dataInfoId);
+    DatumVersion createEmptyDatumIfAbsent(String dataCenter, String dataInfoId);
 
-  Map<String, DatumVersion> cleanBySessionId(
-      String dataCenter, int slotId, ProcessId sessionProcessId, CleanContinues cleanContinues);
+    Map<String, DatumVersion> cleanBySessionId(
+            String dataCenter, int slotId, ProcessId sessionProcessId, CleanContinues cleanContinues);
 
-  boolean removePublisherGroups(String dataCenter, int slotId);
+    boolean removePublisherGroups(String dataCenter, int slotId);
 
-  DatumVersion removePublishers(String dataCenter, String dataInfoId, ProcessId sessionProcessId);
+    DatumVersion removePublishers(String dataCenter, String dataInfoId, ProcessId sessionProcessId);
 
-  DatumVersion removePublishers(
-      String dataCenter,
-      String dataInfoId,
-      ProcessId sessionProcessId,
-      Map<String, RegisterVersion> removedPublishers);
+    DatumVersion removePublishers(
+            String dataCenter,
+            String dataInfoId,
+            ProcessId sessionProcessId,
+            Map<String, RegisterVersion> removedPublishers);
 
-  SlotChangeListener getSlotChangeListener(boolean localDataCenter);
+    SlotChangeListener getSlotChangeListener(boolean localDataCenter);
 
-  Set<ProcessId> getSessionProcessIds(String dataCenter);
+    Set<ProcessId> getSessionProcessIds(String dataCenter);
 
-  Map<String, Integer> compact(String dataCenter, long tombstoneTimestamp);
+    Map<String, Integer> compact(String dataCenter, long tombstoneTimestamp);
 
-  int tombstoneNum(String dataCenter);
+    int tombstoneNum(String dataCenter);
 
-  Map<String, DatumVersion> updateVersion(String dataCenter, int slotId);
+    Map<String, DatumVersion> updateVersion(String dataCenter, int slotId);
 
-  DatumVersion updateVersion(String dataCenter, String dataInfoId);
+    DatumVersion updateVersion(String dataCenter, String dataInfoId);
 
-  void foreach(String dataCenter, int slotId, BiConsumer<String, PublisherGroup> f);
+    void foreach(String dataCenter, int slotId, BiConsumer<String, PublisherGroup> f);
 
-  boolean removeStorage(String dataCenter);
+    boolean removeStorage(String dataCenter);
 
-  DatumVersion clearPublishers(String dataCenter, String dataInfoId);
+    DatumVersion clearPublishers(String dataCenter, String dataInfoId);
 
-  Map<String, DatumVersion> clearGroupPublishers(String dataCenter, String group);
+    Map<String, DatumVersion> clearGroupPublishers(String dataCenter, String group);
 }

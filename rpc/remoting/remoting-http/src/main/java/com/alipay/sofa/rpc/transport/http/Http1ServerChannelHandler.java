@@ -36,14 +36,7 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import io.netty.handler.codec.http.DefaultFullHttpResponse;
-import io.netty.handler.codec.http.FullHttpRequest;
-import io.netty.handler.codec.http.FullHttpResponse;
-import io.netty.handler.codec.http.HttpHeaderNames;
-import io.netty.handler.codec.http.HttpHeaders;
-import io.netty.handler.codec.http.HttpMethod;
-import io.netty.handler.codec.http.HttpResponseStatus;
-import io.netty.handler.codec.http.HttpUtil;
+import io.netty.handler.codec.http.*;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Method;
@@ -66,7 +59,7 @@ public class Http1ServerChannelHandler extends SimpleChannelInboundHandler<FullH
     /**
      * Logger for Http1ChannelHandler
      **/
-    private static final Logger     LOGGER = LoggerFactory.getLogger(Http1ServerChannelHandler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Http1ServerChannelHandler.class);
 
     private final HttpServerHandler serverHandler;
 
@@ -117,7 +110,7 @@ public class Http1ServerChannelHandler extends SimpleChannelInboundHandler<FullH
                 Method method = ReflectCache.getMethodCache(serviceName, methodName);
                 if (method == null) {
                     sendHttp1Response(ctx, HttpResponseStatus.NOT_FOUND,
-                        "Not found method:" + serviceName + "." + methodName, keepAlive);
+                            "Not found method:" + serviceName + "." + methodName, keepAlive);
                     return;
                 }
                 String params = null;
@@ -140,8 +133,8 @@ public class Http1ServerChannelHandler extends SimpleChannelInboundHandler<FullH
             }
         } catch (Exception e) {
             String message = "Failed to parse http2 request for uri " + uri + " form "
-                + NetUtils.channelToString(ctx.channel().remoteAddress(), ctx.channel().localAddress())
-                + ", cause by: " + e.getMessage();
+                    + NetUtils.channelToString(ctx.channel().remoteAddress(), ctx.channel().localAddress())
+                    + ", cause by: " + e.getMessage();
             if (LOGGER.isWarnEnabled()) {
                 LOGGER.warn(message, e);
             }

@@ -16,11 +16,11 @@
  */
 package com.alipay.sofa.smoke.tests.runtime.extension.bean;
 
-import java.util.List;
-import java.util.Map;
-
 import com.alipay.sofa.smoke.tests.runtime.extension.descriptor.ListExtensionDescriptor;
 import com.alipay.sofa.smoke.tests.runtime.extension.descriptor.SimpleExtensionDescriptor;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author khotyn

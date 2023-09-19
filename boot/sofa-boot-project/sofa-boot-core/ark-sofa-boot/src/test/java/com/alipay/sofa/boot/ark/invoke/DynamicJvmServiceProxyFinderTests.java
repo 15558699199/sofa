@@ -53,30 +53,35 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class DynamicJvmServiceProxyFinderTests {
 
     private final DynamicJvmServiceProxyFinder dynamicJvmServiceProxyFinder = DynamicJvmServiceProxyFinder
-                                                                                .getInstance();
+            .getInstance();
 
-    private final MockBizManagerService        mockBizManagerService        = new MockBizManagerService();
+    private final MockBizManagerService mockBizManagerService = new MockBizManagerService();
 
-    private final MockBiz                      mockBiz                      = new MockBiz();
+    private final MockBiz mockBiz = new MockBiz();
 
-    private final ClassLoader                  appClassLoader               = ClassLoader
-                                                                                .getSystemClassLoader();
+    private final ClassLoader appClassLoader = ClassLoader
+            .getSystemClassLoader();
 
-    private final ClassLoader                  mockClassloader              = new FilteredClassLoader(
-                                                                                "test");
+    private final ClassLoader mockClassloader = new FilteredClassLoader(
+            "test");
 
-    private final ReferenceImpl                contract                     = new ReferenceImpl(
-                                                                                "test",
-                                                                                SampleService.class,
-                                                                                InterfaceMode.api,
-                                                                                true);
+    private final ReferenceImpl contract = new ReferenceImpl(
+            "test",
+            SampleService.class,
+            InterfaceMode.api,
+            true);
 
-    private final SofaRuntimeManager           sofaRuntimeManager           = new StandardSofaRuntimeManager(
-                                                                                "test",
-                                                                                appClassLoader,
-                                                                                null);
+    private final SofaRuntimeManager sofaRuntimeManager = new StandardSofaRuntimeManager(
+            "test",
+            appClassLoader,
+            null);
 
-    private final SampleServiceImpl            sampleServiceImpl            = new SampleServiceImpl();
+    private final SampleServiceImpl sampleServiceImpl = new SampleServiceImpl();
+
+    @AfterAll
+    public static void clear() {
+        DynamicJvmServiceProxyFinder.getInstance().setBizManagerService(null);
+    }
 
     @BeforeEach
     public void init() {
@@ -95,22 +100,17 @@ public class DynamicJvmServiceProxyFinderTests {
         SofaRuntimeContainer.clear();
     }
 
-    @AfterAll
-    public static void clear() {
-        DynamicJvmServiceProxyFinder.getInstance().setBizManagerService(null);
-    }
-
     @Test
     public void findServiceComponentWhenNoSofaRuntimeManager() {
         assertThat(dynamicJvmServiceProxyFinder.findServiceComponent(appClassLoader, contract))
-            .isNull();
+                .isNull();
     }
 
     @Test
     public void findServiceComponentWhenClassLoaderEqual() {
         registerSofaRuntimeContainer();
         assertThat(dynamicJvmServiceProxyFinder.findServiceComponent(appClassLoader, contract))
-            .isNull();
+                .isNull();
     }
 
     @Test
@@ -118,7 +118,7 @@ public class DynamicJvmServiceProxyFinderTests {
         registerSofaRuntimeContainer();
         mockBizManagerService.clear();
         assertThat(dynamicJvmServiceProxyFinder.findServiceComponent(mockClassloader, contract))
-            .isNull();
+                .isNull();
     }
 
     @Test
@@ -126,7 +126,7 @@ public class DynamicJvmServiceProxyFinderTests {
         registerSofaRuntimeContainer();
         dynamicJvmServiceProxyFinder.setHasFinishStartup(true);
         assertThat(dynamicJvmServiceProxyFinder.findServiceComponent(mockClassloader, contract))
-            .isNull();
+                .isNull();
     }
 
     @Test
@@ -137,7 +137,7 @@ public class DynamicJvmServiceProxyFinderTests {
         ReplayContext.set("version1");
         mockBiz.setBizVersion("version2");
         assertThat(dynamicJvmServiceProxyFinder.findServiceComponent(mockClassloader, contract))
-            .isNull();
+                .isNull();
 
         mockBiz.setBizVersion(null);
     }
@@ -148,7 +148,7 @@ public class DynamicJvmServiceProxyFinderTests {
         dynamicJvmServiceProxyFinder.setHasFinishStartup(true);
         mockBiz.setBizState(BizState.RESOLVED);
         assertThat(dynamicJvmServiceProxyFinder.findServiceComponent(mockClassloader, contract))
-            .isNull();
+                .isNull();
     }
 
     @Test
@@ -157,14 +157,14 @@ public class DynamicJvmServiceProxyFinderTests {
         dynamicJvmServiceProxyFinder.setHasFinishStartup(true);
         mockBiz.setBizState(BizState.ACTIVATED);
         assertThat(dynamicJvmServiceProxyFinder.findServiceComponent(mockClassloader, contract))
-            .isNull();
+                .isNull();
     }
 
     @Test
     public void findServiceComponent() {
         ServiceComponent serviceComponent = initServiceComponentFind();
         assertThat(dynamicJvmServiceProxyFinder.findServiceComponent(mockClassloader, contract))
-            .isEqualTo(serviceComponent);
+                .isEqualTo(serviceComponent);
     }
 
     @Test
@@ -181,42 +181,42 @@ public class DynamicJvmServiceProxyFinderTests {
 
         ReplayContext.set("test");
         assertThat(dynamicJvmServiceProxyFinder.findServiceComponent(mockClassloader, contract))
-            .isEqualTo(serviceComponent);
+                .isEqualTo(serviceComponent);
 
         ReplayContext.set(null);
         assertThat(dynamicJvmServiceProxyFinder.findServiceComponent(mockClassloader, contract))
-            .isEqualTo(serviceComponent);
+                .isEqualTo(serviceComponent);
 
         dynamicJvmServiceProxyFinder.afterBizUninstall(mockBiz);
         assertThat(dynamicJvmServiceProxyFinder.findServiceComponent(mockClassloader, contract))
-            .isNull();
+                .isNull();
     }
 
     @Test
     public void findServiceProxy() {
         // find ServiceComponent null
         assertThat(dynamicJvmServiceProxyFinder.findServiceProxy(mockClassloader, contract))
-            .isNull();
+                .isNull();
 
         ServiceComponent serviceComponent = initServiceComponentFind();
         assertThat(dynamicJvmServiceProxyFinder.findServiceComponent(mockClassloader, contract))
-            .isEqualTo(serviceComponent);
+                .isEqualTo(serviceComponent);
 
         dynamicJvmServiceProxyFinder.setBizManagerService(null);
         assertThat(dynamicJvmServiceProxyFinder.findServiceProxy(mockClassloader, contract))
-            .isNull();
+                .isNull();
 
         dynamicJvmServiceProxyFinder.setBizManagerService(mockBizManagerService);
         assertThat(dynamicJvmServiceProxyFinder.findServiceProxy(mockClassloader, contract))
-            .isNotNull();
+                .isNotNull();
     }
 
     @Test
     public void createInvokerNoJvmBinding() {
         ServiceComponent serviceComponent = initServiceComponent();
         DynamicJvmServiceInvoker dynamicJvmServiceInvoker = dynamicJvmServiceProxyFinder
-            .createDynamicJvmServiceInvoker(mockClassloader, contract, serviceComponent,
-                sofaRuntimeManager, mockBiz);
+                .createDynamicJvmServiceInvoker(mockClassloader, contract, serviceComponent,
+                        sofaRuntimeManager, mockBiz);
         assertThat(dynamicJvmServiceInvoker.isSerialize()).isTrue();
     }
 
@@ -224,7 +224,7 @@ public class DynamicJvmServiceProxyFinderTests {
     public void createInvokerJvmBindingNoSerialize() {
         ServiceComponent serviceComponent = initServiceComponent();
         ReferenceImpl reference = new ReferenceImpl("test", SampleService.class, InterfaceMode.api,
-            true);
+                true);
         JvmBinding jvmBinding = new JvmBinding();
         JvmBindingParam jvmBindingParam = new JvmBindingParam();
         jvmBindingParam.setSerialize(false);
@@ -232,8 +232,8 @@ public class DynamicJvmServiceProxyFinderTests {
         serviceComponent.getService().addBinding(jvmBinding);
         reference.addBinding(jvmBinding);
         DynamicJvmServiceInvoker dynamicJvmServiceInvoker = dynamicJvmServiceProxyFinder
-            .createDynamicJvmServiceInvoker(mockClassloader, reference, serviceComponent,
-                sofaRuntimeManager, mockBiz);
+                .createDynamicJvmServiceInvoker(mockClassloader, reference, serviceComponent,
+                        sofaRuntimeManager, mockBiz);
         assertThat(dynamicJvmServiceInvoker.isSerialize()).isFalse();
     }
 
@@ -242,8 +242,8 @@ public class DynamicJvmServiceProxyFinderTests {
         registerSofaRuntimeContainer(mockClassloader).setJvmInvokeSerialize(false);
         ServiceComponent serviceComponent = initServiceComponent();
         DynamicJvmServiceInvoker dynamicJvmServiceInvoker = dynamicJvmServiceProxyFinder
-            .createDynamicJvmServiceInvoker(mockClassloader, contract, serviceComponent,
-                sofaRuntimeManager, mockBiz);
+                .createDynamicJvmServiceInvoker(mockClassloader, contract, serviceComponent,
+                        sofaRuntimeManager, mockBiz);
         assertThat(dynamicJvmServiceInvoker.isSerialize()).isFalse();
     }
 

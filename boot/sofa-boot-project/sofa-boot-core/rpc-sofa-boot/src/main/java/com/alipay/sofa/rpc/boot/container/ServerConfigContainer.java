@@ -33,12 +33,7 @@ import com.alipay.sofa.rpc.server.triple.TripleServer;
 import org.slf4j.Logger;
 import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadPoolExecutor;
 
@@ -49,156 +44,140 @@ import java.util.concurrent.ThreadPoolExecutor;
  */
 public class ServerConfigContainer {
 
-    private static final Logger              LOGGER                      = SofaBootRpcLoggerFactory
-                                                                             .getLogger(ServerConfigContainer.class);
+    private static final Logger LOGGER = SofaBootRpcLoggerFactory
+            .getLogger(ServerConfigContainer.class);
+    private final Object BOLT_LOCK = new Object();
+    private final Object REST_LOCK = new Object();
+    private final Object DUBBO_LOCK = new Object();
+    private final Object H2C_LOCK = new Object();
+    private final Object HTTP_LOCK = new Object();
+    private final Object TRIPLE_LOCK = new Object();
+    //custom server configs
+    private final Map<String, ServerConfig> customServerConfigs = new ConcurrentHashMap<String, ServerConfig>();
+    private final RpcThreadPoolMonitor boltThreadPoolMonitor = new RpcThreadPoolMonitor(
+            LoggerConstant.BOLT_THREAD_LOGGER_NAME);
+    private final RpcThreadPoolMonitor tripleThreadPoolMonitor = new RpcThreadPoolMonitor(
+            LoggerConstant.TRIPLE_THREAD_LOGGER_NAME);
+    private final List<RpcThreadPoolMonitor> customThreadPoolMonitorList = new ArrayList<>();
     /**
      * bolt ServerConfig
      */
-    private volatile ServerConfig            boltServerConfig;
-
-    private final Object                     BOLT_LOCK                   = new Object();
-
+    private volatile ServerConfig boltServerConfig;
     /**
      * rest ServerConfig
      */
-    private volatile ServerConfig            restServerConfig;
-
-    private final Object                     REST_LOCK                   = new Object();
-
+    private volatile ServerConfig restServerConfig;
     /**
      * dubbo ServerConfig
      */
-    private volatile ServerConfig            dubboServerConfig;
-
-    private final Object                     DUBBO_LOCK                  = new Object();
-
+    private volatile ServerConfig dubboServerConfig;
     /**
      * h2c ServerConfig
      */
-    private volatile ServerConfig            h2cServerConfig;
-
-    private final Object                     H2C_LOCK                    = new Object();
-
+    private volatile ServerConfig h2cServerConfig;
     /**
      * http ServerConfig
      */
-    private volatile ServerConfig            httpServerConfig;
-
-    private final Object                     HTTP_LOCK                   = new Object();
-
+    private volatile ServerConfig httpServerConfig;
     /**
      * http ServerConfig
      */
-    private volatile ServerConfig            tripleServerConfig;
+    private volatile ServerConfig tripleServerConfig;
+    private String enabledIpRange;
 
-    private final Object                     TRIPLE_LOCK                 = new Object();
+    private String bindNetworkInterface;
 
-    //custom server configs
-    private final Map<String, ServerConfig>  customServerConfigs         = new ConcurrentHashMap<String, ServerConfig>();
+    private String boundHostStr;
 
-    private final RpcThreadPoolMonitor       boltThreadPoolMonitor       = new RpcThreadPoolMonitor(
-                                                                             LoggerConstant.BOLT_THREAD_LOGGER_NAME);
+    private String virtualHostStr;
 
-    private final RpcThreadPoolMonitor       tripleThreadPoolMonitor     = new RpcThreadPoolMonitor(
-                                                                             LoggerConstant.TRIPLE_THREAD_LOGGER_NAME);
-
-    private final List<RpcThreadPoolMonitor> customThreadPoolMonitorList = new ArrayList<>();
-
-    private String                           enabledIpRange;
-
-    private String                           bindNetworkInterface;
-
-    private String                           boundHostStr;
-
-    private String                           virtualHostStr;
-
-    private String                           virtualPortStr;
+    private String virtualPortStr;
 
     /**
      * h2c configs
      */
-    private String                           h2cPortStr;
+    private String h2cPortStr;
 
-    private String                           h2cThreadPoolCoreSizeStr;
+    private String h2cThreadPoolCoreSizeStr;
 
-    private String                           h2cThreadPoolMaxSizeStr;
+    private String h2cThreadPoolMaxSizeStr;
 
-    private String                           h2cAcceptsSizeStr;
+    private String h2cAcceptsSizeStr;
 
-    private String                           h2cThreadPoolQueueSizeStr;
+    private String h2cThreadPoolQueueSizeStr;
 
     /**
      * bolt configs
      */
-    private String                           boltPortStr;
+    private String boltPortStr;
 
-    private String                           boltThreadPoolCoreSizeStr;
+    private String boltThreadPoolCoreSizeStr;
 
-    private String                           boltThreadPoolMaxSizeStr;
+    private String boltThreadPoolMaxSizeStr;
 
-    private String                           boltAcceptsSizeStr;
+    private String boltAcceptsSizeStr;
 
-    private String                           boltThreadPoolQueueSizeStr;
+    private String boltThreadPoolQueueSizeStr;
 
-    private Boolean                          boltProcessInIoThread;
+    private Boolean boltProcessInIoThread;
 
     /**
      * rest configs
      */
-    private String                           restHostName;
+    private String restHostName;
 
-    private String                           restPortStr;
+    private String restPortStr;
 
-    private String                           restIoThreadSizeStr;
+    private String restIoThreadSizeStr;
 
-    private String                           restContextPath;
+    private String restContextPath;
 
-    private String                           restThreadPoolMaxSizeStr;
+    private String restThreadPoolMaxSizeStr;
 
-    private String                           restMaxRequestSizeStr;
+    private String restMaxRequestSizeStr;
 
-    private String                           restTelnetStr;
+    private String restTelnetStr;
 
-    private String                           restDaemonStr;
+    private String restDaemonStr;
 
-    private String                           restAllowedOrigins;
+    private String restAllowedOrigins;
 
     /**
      * dubbo configs
      */
-    private String                           dubboPortStr;
+    private String dubboPortStr;
 
-    private String                           dubboIoThreadSizeStr;
+    private String dubboIoThreadSizeStr;
 
-    private String                           dubboThreadPoolMaxSizeStr;
+    private String dubboThreadPoolMaxSizeStr;
 
-    private String                           dubboAcceptsSizeStr;
+    private String dubboAcceptsSizeStr;
 
     /**
      * http configs
      */
-    private String                           httpPortStr;
+    private String httpPortStr;
 
-    private String                           httpThreadPoolCoreSizeStr;
+    private String httpThreadPoolCoreSizeStr;
 
-    private String                           httpThreadPoolMaxSizeStr;
+    private String httpThreadPoolMaxSizeStr;
 
-    private String                           httpAcceptsSizeStr;
+    private String httpAcceptsSizeStr;
 
-    private String                           httpThreadPoolQueueSizeStr;
+    private String httpThreadPoolQueueSizeStr;
 
     /**
      * triple configs
      */
-    private String                           triplePortStr;
+    private String triplePortStr;
 
-    private String                           tripleThreadPoolCoreSizeStr;
+    private String tripleThreadPoolCoreSizeStr;
 
-    private String                           tripleThreadPoolMaxSizeStr;
+    private String tripleThreadPoolMaxSizeStr;
 
-    private String                           tripleAcceptsSizeStr;
+    private String tripleAcceptsSizeStr;
 
-    private String                           tripleThreadPoolQueueSizeStr;
+    private String tripleThreadPoolQueueSizeStr;
 
     /**
      * 开启所有 ServerConfig 对应的 Server
@@ -266,12 +245,12 @@ public class ServerConfigContainer {
             Set<String> poolNames = new HashSet<>();
             for (UserThreadPool pool : userThreadPoolSet) {
                 RpcThreadPoolMonitor customThreadPoolMonitor = new RpcThreadPoolMonitor(
-                    LoggerConstant.CUSTOM_THREAD_LOGGER_NAME);
+                        LoggerConstant.CUSTOM_THREAD_LOGGER_NAME);
                 customThreadPoolMonitorList.add(customThreadPoolMonitor);
                 if (poolNames.contains(pool.getThreadPoolName())) {
                     //use to distinguish some UserThreadPools set same poolName
                     customThreadPoolMonitor.setPoolName(pool.getThreadPoolName() + "-"
-                                                        + pool.hashCode());
+                            + pool.hashCode());
                 } else {
                     customThreadPoolMonitor.setPoolName(pool.getThreadPoolName());
                 }
@@ -356,7 +335,7 @@ public class ServerConfigContainer {
             return customServerConfigs.get(protocol);
         } else {
             throw new SofaBootRpcRuntimeException(LogCodes.getLog(
-                LogCodes.ERROR_SERVER_PROTOCOL_NOT_SUPPORT, protocol));
+                    LogCodes.ERROR_SERVER_PROTOCOL_NOT_SUPPORT, protocol));
         }
 
     }
@@ -525,8 +504,8 @@ public class ServerConfigContainer {
         }
 
         ServerConfig serverConfig = new ServerConfig().setPort(port).setIoThreads(ioThreadCount)
-            .setMaxThreads(restThreadPoolMaxSize).setPayload(maxRequestSize).setTelnet(telnet)
-            .setDaemon(daemon).setParameters(parameters);
+                .setMaxThreads(restThreadPoolMaxSize).setPayload(maxRequestSize).setTelnet(telnet)
+                .setDaemon(daemon).setParameters(parameters);
 
         if (!StringUtils.isEmpty(restContextPath)) {
             serverConfig.setContextPath(restContextPath);

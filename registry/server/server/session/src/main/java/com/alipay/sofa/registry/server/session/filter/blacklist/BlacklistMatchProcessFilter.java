@@ -21,9 +21,10 @@ import com.alipay.sofa.registry.common.model.store.URL;
 import com.alipay.sofa.registry.server.session.filter.IPMatchStrategy;
 import com.alipay.sofa.registry.server.session.filter.ProcessFilter;
 import com.alipay.sofa.registry.server.session.providedata.FetchBlackListService;
-import java.util.List;
-import javax.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * @author shangyu.wh
@@ -31,35 +32,37 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class BlacklistMatchProcessFilter implements ProcessFilter<BaseInfo> {
 
-  @Autowired protected IPMatchStrategy ipMatchStrategy;
+    @Autowired
+    protected IPMatchStrategy ipMatchStrategy;
 
-  @Resource private FetchBlackListService fetchBlackListService;
+    @Resource
+    private FetchBlackListService fetchBlackListService;
 
-  @Override
-  public boolean match(BaseInfo storeData) {
+    @Override
+    public boolean match(BaseInfo storeData) {
 
-    final List<BlacklistConfig> configList = fetchBlackListService.getBlacklistConfigList();
+        final List<BlacklistConfig> configList = fetchBlackListService.getBlacklistConfigList();
 
-    // empty list proceed
-    if (null == configList || configList.size() == 0) {
-      return false;
+        // empty list proceed
+        if (null == configList || configList.size() == 0) {
+            return false;
+        }
+
+        URL url = storeData.getSourceAddress();
+
+        if (url != null) {
+            switch (storeData.getDataType()) {
+                case PUBLISHER:
+                    return ipMatchStrategy.match(url.getIpAddress(), () -> BlacklistConstants.FORBIDDEN_PUB);
+
+                case SUBSCRIBER:
+                    return ipMatchStrategy.match(
+                            url.getIpAddress(), () -> BlacklistConstants.FORBIDDEN_SUB_BY_PREFIX);
+
+                default:
+                    return false;
+            }
+        }
+        return false;
     }
-
-    URL url = storeData.getSourceAddress();
-
-    if (url != null) {
-      switch (storeData.getDataType()) {
-        case PUBLISHER:
-          return ipMatchStrategy.match(url.getIpAddress(), () -> BlacklistConstants.FORBIDDEN_PUB);
-
-        case SUBSCRIBER:
-          return ipMatchStrategy.match(
-              url.getIpAddress(), () -> BlacklistConstants.FORBIDDEN_SUB_BY_PREFIX);
-
-        default:
-          return false;
-      }
-    }
-    return false;
-  }
 }

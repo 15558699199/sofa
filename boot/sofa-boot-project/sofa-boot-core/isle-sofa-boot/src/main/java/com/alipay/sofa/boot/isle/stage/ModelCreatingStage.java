@@ -17,11 +17,7 @@
 package com.alipay.sofa.boot.isle.stage;
 
 import com.alipay.sofa.boot.isle.ApplicationRuntimeModel;
-import com.alipay.sofa.boot.isle.deployment.DependencyTree;
-import com.alipay.sofa.boot.isle.deployment.DeploymentDescriptor;
-import com.alipay.sofa.boot.isle.deployment.DeploymentDescriptorConfiguration;
-import com.alipay.sofa.boot.isle.deployment.DeploymentDescriptorFactory;
-import com.alipay.sofa.boot.isle.deployment.DeploymentException;
+import com.alipay.sofa.boot.isle.deployment.*;
 import com.alipay.sofa.boot.log.ErrorCode;
 import com.alipay.sofa.boot.log.SofaBootLoggerFactory;
 import org.slf4j.Logger;
@@ -30,12 +26,7 @@ import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Objects;
-import java.util.Properties;
+import java.util.*;
 
 /**
  * Stage to found sofa modules in classpath.
@@ -47,18 +38,16 @@ import java.util.Properties;
  */
 public class ModelCreatingStage extends AbstractPipelineStage {
 
-    private static final Logger           LOGGER                        = SofaBootLoggerFactory
-                                                                            .getLogger(ModelCreatingStage.class);
+    public static final String MODEL_CREATING_STAGE_NAME = "ModelCreatingStage";
+    private static final Logger LOGGER = SofaBootLoggerFactory
+            .getLogger(ModelCreatingStage.class);
+    protected final List<String> ignoreModules = new ArrayList<>();
 
-    public static final String            MODEL_CREATING_STAGE_NAME     = "ModelCreatingStage";
+    protected final List<String> ignoreCalculateRequireModules = new ArrayList<>();
 
-    protected final List<String>          ignoreModules                 = new ArrayList<>();
+    protected DeploymentDescriptorFactory deploymentDescriptorFactory = new DeploymentDescriptorFactory();
 
-    protected final List<String>          ignoreCalculateRequireModules = new ArrayList<>();
-
-    protected DeploymentDescriptorFactory deploymentDescriptorFactory   = new DeploymentDescriptorFactory();
-
-    protected boolean                     allowModuleOverriding;
+    protected boolean allowModuleOverriding;
 
     @Override
     protected void doProcess() throws Exception {
@@ -69,18 +58,18 @@ public class ModelCreatingStage extends AbstractPipelineStage {
     protected void getAllDeployments() throws IOException, DeploymentException {
         String modulePropertyFileName = DeploymentDescriptorConfiguration.SOFA_MODULE_FILE;
         DeploymentDescriptorConfiguration deploymentDescriptorConfiguration = new DeploymentDescriptorConfiguration(
-            Collections.singletonList(DeploymentDescriptorConfiguration.MODULE_NAME),
-            Collections.singletonList(DeploymentDescriptorConfiguration.REQUIRE_MODULE));
+                Collections.singletonList(DeploymentDescriptorConfiguration.MODULE_NAME),
+                Collections.singletonList(DeploymentDescriptorConfiguration.REQUIRE_MODULE));
 
         List<DeploymentDescriptor> deploymentDescriptors = getDeploymentDescriptors(
-            modulePropertyFileName, deploymentDescriptorConfiguration);
+                modulePropertyFileName, deploymentDescriptorConfiguration);
 
         addDeploymentDescriptors(deploymentDescriptors);
     }
 
     protected List<DeploymentDescriptor> getDeploymentDescriptors(String modulePropertyFileName,
                                                                   DeploymentDescriptorConfiguration deploymentDescriptorConfiguration)
-                                                                                                                                      throws IOException {
+            throws IOException {
         List<DeploymentDescriptor> deploymentDescriptors = new ArrayList<>();
 
         Enumeration<URL> urls = appClassLoader.getResources(modulePropertyFileName);
@@ -93,7 +82,7 @@ public class ModelCreatingStage extends AbstractPipelineStage {
             UrlResource urlResource = new UrlResource(url);
             Properties props = loadPropertiesFormUrlResource(urlResource);
             DeploymentDescriptor deploymentDescriptor = createDeploymentDescriptor(url, props,
-                deploymentDescriptorConfiguration, appClassLoader, modulePropertyFileName);
+                    deploymentDescriptorConfiguration, appClassLoader, modulePropertyFileName);
             if (ignoreCalculateRequireModules.contains(deploymentDescriptor.getModuleName())) {
                 deploymentDescriptor.setIgnoreRequireModule(true);
             }
@@ -114,11 +103,11 @@ public class ModelCreatingStage extends AbstractPipelineStage {
                                                               ClassLoader classLoader,
                                                               String modulePropertyName) {
         return deploymentDescriptorFactory.build(url, props, deploymentDescriptorConfiguration,
-            classLoader, modulePropertyName);
+                classLoader, modulePropertyName);
     }
 
     protected void addDeploymentDescriptors(List<DeploymentDescriptor> deploymentDescriptors)
-                                                                                             throws DeploymentException {
+            throws DeploymentException {
         for (DeploymentDescriptor dd : deploymentDescriptors) {
             if (application.isModuleDeployment(dd)) {
                 if (application.acceptModule(dd) && !ignoreModules.contains(dd.getModuleName())) {
@@ -148,19 +137,19 @@ public class ModelCreatingStage extends AbstractPipelineStage {
             return true;
         }
         throw new DeploymentException(ErrorCode.convert("01-11006", dd.getModuleName(),
-            exist.getName(), dd.getName()));
+                exist.getName(), dd.getName()));
     }
 
     protected void outputModulesMessage() throws DeploymentException {
         StringBuilder stringBuilder = new StringBuilder();
         if (application.getAllInactiveDeployments().size() > 0) {
             writeMessageToStringBuilder(stringBuilder, application.getAllInactiveDeployments(),
-                "All unactivated module list");
+                    "All unactivated module list");
         }
         writeMessageToStringBuilder(stringBuilder, application.getAllDeployments(),
-            "All activated module list");
+                "All activated module list");
         writeMessageToStringBuilder(stringBuilder, application.getResolvedDeployments(),
-            "Modules that could install");
+                "Modules that could install");
         LOGGER.info(stringBuilder.toString());
 
         String errorMessage = getErrorMessageByApplicationModule(application);
@@ -177,26 +166,26 @@ public class ModelCreatingStage extends AbstractPipelineStage {
         StringBuilder sbError = new StringBuilder(512);
         if (application.getDeployRegistry().getPendingEntries().size() > 0) {
             sbError.append("\n").append(ErrorCode.convert("01-12000")).append("(")
-                .append(application.getDeployRegistry().getPendingEntries().size())
-                .append(") >>>>>>>>\n");
+                    .append(application.getDeployRegistry().getPendingEntries().size())
+                    .append(") >>>>>>>>\n");
 
             for (DependencyTree.Entry<String, DeploymentDescriptor> entry : application
-                .getDeployRegistry().getPendingEntries()) {
+                    .getDeployRegistry().getPendingEntries()) {
                 if (application.getAllDeployments().contains(entry.get())) {
                     sbError.append("[").append(entry.getKey()).append("]").append(" depends on ")
-                        .append(entry.getWaitsFor())
-                        .append(", but the latter can not be resolved.").append("\n");
+                            .append(entry.getWaitsFor())
+                            .append(", but the latter can not be resolved.").append("\n");
                 }
             }
         }
 
         if (application.getDeployRegistry().getMissingRequirements().size() > 0) {
             sbError.append("Missing modules").append("(")
-                .append(application.getDeployRegistry().getMissingRequirements().size())
-                .append(") >>>>>>>>\n");
+                    .append(application.getDeployRegistry().getMissingRequirements().size())
+                    .append(") >>>>>>>>\n");
 
             for (DependencyTree.Entry<String, DeploymentDescriptor> entry : application
-                .getDeployRegistry().getMissingRequirements()) {
+                    .getDeployRegistry().getMissingRequirements()) {
                 sbError.append("[").append(entry.getKey()).append("]").append("\n");
             }
 

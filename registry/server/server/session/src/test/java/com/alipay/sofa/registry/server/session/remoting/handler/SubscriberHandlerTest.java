@@ -16,8 +16,6 @@
  */
 package com.alipay.sofa.registry.server.session.remoting.handler;
 
-import static org.mockito.Mockito.*;
-
 import com.alipay.remoting.InvokeContext;
 import com.alipay.sofa.registry.common.model.Node;
 import com.alipay.sofa.registry.common.model.client.pb.RegisterResponsePb;
@@ -32,54 +30,56 @@ import com.alipay.sofa.registry.server.session.strategy.SubscriberHandlerStrateg
 import org.junit.Assert;
 import org.junit.Test;
 
+import static org.mockito.Mockito.*;
+
 public class SubscriberHandlerTest {
 
-  private SubscriberHandler newHandler() {
-    SubscriberHandler handler = new SubscriberHandler();
-    handler.executorManager = new ExecutorManager(TestUtils.newSessionConfig("testDc"));
-    Assert.assertNotNull(handler.getExecutor());
-    Assert.assertEquals(handler.interest(), SubscriberRegister.class);
-    Assert.assertEquals(handler.getConnectNodeType(), Node.NodeType.CLIENT);
-    Assert.assertEquals(handler.getType(), ChannelHandler.HandlerType.PROCESSER);
-    Assert.assertEquals(handler.getInvokeType(), ChannelHandler.InvokeType.SYNC);
-    handler.subscriberHandlerStrategy = mock(SubscriberHandlerStrategy.class);
-    return handler;
-  }
+    private static SubscriberRegister request() {
+        SubscriberRegister register = new SubscriberRegister();
+        return register;
+    }
 
-  @Test
-  public void testHandle() {
-    SubscriberHandler handler = newHandler();
+    private SubscriberHandler newHandler() {
+        SubscriberHandler handler = new SubscriberHandler();
+        handler.executorManager = new ExecutorManager(TestUtils.newSessionConfig("testDc"));
+        Assert.assertNotNull(handler.getExecutor());
+        Assert.assertEquals(handler.interest(), SubscriberRegister.class);
+        Assert.assertEquals(handler.getConnectNodeType(), Node.NodeType.CLIENT);
+        Assert.assertEquals(handler.getType(), ChannelHandler.HandlerType.PROCESSER);
+        Assert.assertEquals(handler.getInvokeType(), ChannelHandler.InvokeType.SYNC);
+        handler.subscriberHandlerStrategy = mock(SubscriberHandlerStrategy.class);
+        return handler;
+    }
 
-    RegisterResponse response = (RegisterResponse) handler.doHandle(null, request());
-    Assert.assertFalse(response.isSuccess());
-    verify(handler.subscriberHandlerStrategy, times(1))
-        .handleSubscriberRegister(anyObject(), anyObject(), any());
-  }
+    @Test
+    public void testHandle() {
+        SubscriberHandler handler = newHandler();
 
-  @Test
-  public void testPb() {
-    SubscriberPbHandler pbHandler = new SubscriberPbHandler();
-    pbHandler.subscriberHandler = newHandler();
-    Assert.assertNotNull(pbHandler.getExecutor());
-    Assert.assertEquals(pbHandler.interest(), SubscriberRegisterPb.class);
-    Assert.assertEquals(pbHandler.getConnectNodeType(), Node.NodeType.CLIENT);
-    Assert.assertEquals(pbHandler.getType(), ChannelHandler.HandlerType.PROCESSER);
-    Assert.assertEquals(pbHandler.getInvokeType(), ChannelHandler.InvokeType.SYNC);
-    SubscriberRegisterPb pb = SubscriberRegisterPb.newBuilder().build();
-    TestUtils.MockBlotChannel channel = TestUtils.newChannel(9600, "127.0.0.1", 9888);
+        RegisterResponse response = (RegisterResponse) handler.doHandle(null, request());
+        Assert.assertFalse(response.isSuccess());
+        verify(handler.subscriberHandlerStrategy, times(1))
+                .handleSubscriberRegister(anyObject(), anyObject(), any());
+    }
 
-    // not RegisterResponse
-    RegisterResponsePb responsePb = (RegisterResponsePb) pbHandler.doHandle(channel, pb);
-    Assert.assertFalse(responsePb.getSuccess());
-    verify(pbHandler.subscriberHandler.subscriberHandlerStrategy, times(1))
-        .handleSubscriberRegister(anyObject(), anyObject(), any());
-    Assert.assertEquals(
-        channel.getConnection().getAttribute(InvokeContext.BOLT_CUSTOM_SERIALIZER),
-        new Byte(ProtobufSerializer.PROTOCOL_PROTOBUF));
-  }
+    @Test
+    public void testPb() {
+        SubscriberPbHandler pbHandler = new SubscriberPbHandler();
+        pbHandler.subscriberHandler = newHandler();
+        Assert.assertNotNull(pbHandler.getExecutor());
+        Assert.assertEquals(pbHandler.interest(), SubscriberRegisterPb.class);
+        Assert.assertEquals(pbHandler.getConnectNodeType(), Node.NodeType.CLIENT);
+        Assert.assertEquals(pbHandler.getType(), ChannelHandler.HandlerType.PROCESSER);
+        Assert.assertEquals(pbHandler.getInvokeType(), ChannelHandler.InvokeType.SYNC);
+        SubscriberRegisterPb pb = SubscriberRegisterPb.newBuilder().build();
+        TestUtils.MockBlotChannel channel = TestUtils.newChannel(9600, "127.0.0.1", 9888);
 
-  private static SubscriberRegister request() {
-    SubscriberRegister register = new SubscriberRegister();
-    return register;
-  }
+        // not RegisterResponse
+        RegisterResponsePb responsePb = (RegisterResponsePb) pbHandler.doHandle(channel, pb);
+        Assert.assertFalse(responsePb.getSuccess());
+        verify(pbHandler.subscriberHandler.subscriberHandlerStrategy, times(1))
+                .handleSubscriberRegister(anyObject(), anyObject(), any());
+        Assert.assertEquals(
+                channel.getConnection().getAttribute(InvokeContext.BOLT_CUSTOM_SERIALIZER),
+                new Byte(ProtobufSerializer.PROTOCOL_PROTOBUF));
+    }
 }

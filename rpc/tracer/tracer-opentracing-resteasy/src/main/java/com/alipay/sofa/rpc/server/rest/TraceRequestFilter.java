@@ -28,7 +28,6 @@ import javax.ws.rs.ext.Provider;
 import java.io.IOException;
 
 /**
- * 
  * @author <a href="mailto:lw111072@alibaba-inc.com">liangen</a>
  */
 @Provider

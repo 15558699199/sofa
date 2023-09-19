@@ -16,9 +16,6 @@
  */
 package com.alipay.sofa.registry.server.session.remoting.handler;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 import com.alipay.sofa.registry.common.model.Node;
 import com.alipay.sofa.registry.common.model.metaserver.cleaner.AppRevisionSlice;
 import com.alipay.sofa.registry.common.model.metaserver.cleaner.AppRevisionSliceRequest;
@@ -27,24 +24,27 @@ import org.assertj.core.util.Lists;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class AppRevisionSliceHandlerTest {
-  private AppRevisionSliceHandler newHandler() {
-    AppRevisionSliceHandler handler = new AppRevisionSliceHandler();
-    Assert.assertNull(handler.getExecutor());
-    Assert.assertNotNull(handler.interest());
-    Assert.assertEquals(handler.getConnectNodeType(), Node.NodeType.META);
-    return handler;
-  }
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-  @Test
-  public void testHandle() {
-    AppRevisionSliceHandler handler = newHandler();
-    handler.appRevisionJdbcRepository = mock(AppRevisionRepository.class);
-    when(handler.appRevisionJdbcRepository.availableRevisions())
-        .thenReturn(
-            Lists.newArrayList("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"));
-    AppRevisionSliceRequest req = new AppRevisionSliceRequest(10, 0);
-    AppRevisionSlice slice = (AppRevisionSlice) handler.doHandle(null, req);
-    Assert.assertEquals(slice.getRevisions().size(), 3);
-  }
+public class AppRevisionSliceHandlerTest {
+    private AppRevisionSliceHandler newHandler() {
+        AppRevisionSliceHandler handler = new AppRevisionSliceHandler();
+        Assert.assertNull(handler.getExecutor());
+        Assert.assertNotNull(handler.interest());
+        Assert.assertEquals(handler.getConnectNodeType(), Node.NodeType.META);
+        return handler;
+    }
+
+    @Test
+    public void testHandle() {
+        AppRevisionSliceHandler handler = newHandler();
+        handler.appRevisionJdbcRepository = mock(AppRevisionRepository.class);
+        when(handler.appRevisionJdbcRepository.availableRevisions())
+                .thenReturn(
+                        Lists.newArrayList("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"));
+        AppRevisionSliceRequest req = new AppRevisionSliceRequest(10, 0);
+        AppRevisionSlice slice = (AppRevisionSlice) handler.doHandle(null, req);
+        Assert.assertEquals(slice.getRevisions().size(), 3);
+    }
 }

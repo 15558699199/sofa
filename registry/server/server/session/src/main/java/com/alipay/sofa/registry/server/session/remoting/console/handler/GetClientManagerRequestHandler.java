@@ -21,33 +21,35 @@ import com.alipay.sofa.registry.common.model.sessionserver.ClientManagerQueryReq
 import com.alipay.sofa.registry.common.model.sessionserver.ClientManagerResp;
 import com.alipay.sofa.registry.remoting.Channel;
 import com.alipay.sofa.registry.server.session.providedata.FetchClientOffAddressService;
-import java.util.Set;
+
 import javax.annotation.Resource;
+import java.util.Set;
 
 /**
  * @author xiaojian.xj
  * @version : GetClientManagerRequestHandler.java, v 0.1 2021年07月31日 17:31 xiaojian.xj Exp $
  */
 public class GetClientManagerRequestHandler
-    extends AbstractConsoleHandler<ClientManagerQueryRequest> {
+        extends AbstractConsoleHandler<ClientManagerQueryRequest> {
 
-  @Resource private FetchClientOffAddressService fetchClientOffAddressService;
+    @Resource
+    private FetchClientOffAddressService fetchClientOffAddressService;
 
-  @Override
-  public GenericResponse<ClientManagerResp> doHandle(
-      Channel channel, ClientManagerQueryRequest request) {
-    Set<String> clientOffAddress = fetchClientOffAddressService.getClientOffAddress();
-    return new GenericResponse<ClientManagerResp>()
-        .fillSucceed(new ClientManagerResp(true, clientOffAddress));
-  }
+    @Override
+    public GenericResponse<ClientManagerResp> doHandle(
+            Channel channel, ClientManagerQueryRequest request) {
+        Set<String> clientOffAddress = fetchClientOffAddressService.getClientOffAddress();
+        return new GenericResponse<ClientManagerResp>()
+                .fillSucceed(new ClientManagerResp(true, clientOffAddress));
+    }
 
-  @Override
-  public Class interest() {
-    return ClientManagerQueryRequest.class;
-  }
+    @Override
+    public Class interest() {
+        return ClientManagerQueryRequest.class;
+    }
 
-  @Override
-  public Object buildFailedResponse(String msg) {
-    return new GenericResponse<ClientManagerResp>().fillFailed(msg);
-  }
+    @Override
+    public Object buildFailedResponse(String msg) {
+        return new GenericResponse<ClientManagerResp>().fillFailed(msg);
+    }
 }

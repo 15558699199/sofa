@@ -49,26 +49,26 @@ public class ApolloDynamicConfigManager extends DynamicConfigManager {
     @Override
     public String getProviderServiceProperty(String service, String key) {
         return config.getProperty(DynamicConfigKeyHelper.buildProviderServiceProKey(service, key),
-            DynamicHelper.DEFAULT_DYNAMIC_VALUE);
+                DynamicHelper.DEFAULT_DYNAMIC_VALUE);
     }
 
     @Override
     public String getConsumerServiceProperty(String service, String key) {
         return config.getProperty(DynamicConfigKeyHelper.buildConsumerServiceProKey(service, key),
-            DynamicHelper.DEFAULT_DYNAMIC_VALUE);
+                DynamicHelper.DEFAULT_DYNAMIC_VALUE);
 
     }
 
     @Override
     public String getProviderMethodProperty(String service, String method, String key) {
         return config.getProperty(DynamicConfigKeyHelper.buildProviderMethodProKey(service, method, key),
-            DynamicHelper.DEFAULT_DYNAMIC_VALUE);
+                DynamicHelper.DEFAULT_DYNAMIC_VALUE);
     }
 
     @Override
     public String getConsumerMethodProperty(String service, String method, String key) {
         return config.getProperty(DynamicConfigKeyHelper.buildConsumerMethodProKey(service, method, key),
-            DynamicHelper.DEFAULT_DYNAMIC_VALUE);
+                DynamicHelper.DEFAULT_DYNAMIC_VALUE);
 
     }
 

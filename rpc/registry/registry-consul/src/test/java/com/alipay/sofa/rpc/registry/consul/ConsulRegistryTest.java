@@ -18,11 +18,7 @@ package com.alipay.sofa.rpc.registry.consul;
 
 import com.alipay.sofa.rpc.client.ProviderGroup;
 import com.alipay.sofa.rpc.client.ProviderInfo;
-import com.alipay.sofa.rpc.config.ApplicationConfig;
-import com.alipay.sofa.rpc.config.ConsumerConfig;
-import com.alipay.sofa.rpc.config.ProviderConfig;
-import com.alipay.sofa.rpc.config.RegistryConfig;
-import com.alipay.sofa.rpc.config.ServerConfig;
+import com.alipay.sofa.rpc.config.*;
 import com.alipay.sofa.rpc.listener.ProviderInfoListener;
 import com.alipay.sofa.rpc.registry.RegistryFactory;
 import com.ecwid.consul.v1.ConsulClient;
@@ -50,27 +46,27 @@ import java.util.stream.IntStream;
  */
 public class ConsulRegistryTest {
 
-    private static final String INTERFACE_ID        = "com.alipay.sofa.rpc.registry.consul.TestService";
+    private static final String INTERFACE_ID = "com.alipay.sofa.rpc.registry.consul.TestService";
 
     private static final String CONSUL_SERVICE_NAME = "test-service";
 
-    private ConsulProcess       consul;
+    private ConsulProcess consul;
 
-    private RegistryConfig      registryConfig;
+    private RegistryConfig registryConfig;
 
-    private ConsulRegistry      registry;
+    private ConsulRegistry registry;
 
     @Before
     public void setup() {
         consul = ConsulStarterBuilder.consulStarter()
-            .withConsulVersion("1.4.0")
-            .build()
-            .start();
+                .withConsulVersion("1.4.0")
+                .build()
+                .start();
 
         registryConfig = new RegistryConfig()
-            .setProtocol("consul")
-            .setAddress("127.0.0.1:" + consul.getHttpPort())
-            .setRegister(true);
+                .setProtocol("consul")
+                .setAddress("127.0.0.1:" + consul.getHttpPort())
+                .setRegister(true);
 
         registry = (ConsulRegistry) RegistryFactory.getRegistry(registryConfig);
         registry.init();
@@ -196,13 +192,13 @@ public class ConsulRegistryTest {
     private ConsumerConfig<?> consumerConfig(String uniqueId) {
         ConsumerConfig<?> consumer = new ConsumerConfig();
         consumer.setInterfaceId(INTERFACE_ID)
-            .setUniqueId(uniqueId)
-            .setApplication(new ApplicationConfig().setAppName("consul-registry-test"))
-            .setProxy("javassist")
-            .setSubscribe(true)
-            .setSerialization("java")
-            .setInvokeType("sync")
-            .setTimeout(4444);
+                .setUniqueId(uniqueId)
+                .setApplication(new ApplicationConfig().setAppName("consul-registry-test"))
+                .setProxy("javassist")
+                .setSubscribe(true)
+                .setSerialization("java")
+                .setInvokeType("sync")
+                .setTimeout(4444);
 
         return consumer;
     }
@@ -252,7 +248,7 @@ public class ConsulRegistryTest {
 
         ConcurrentHashMap<String, ProviderInfo> ps = new ConcurrentHashMap<String, ProviderInfo>();
 
-        private CountDownLatch                  countDownLatch;
+        private CountDownLatch countDownLatch;
 
         public void setCountDownLatch(CountDownLatch countDownLatch) {
             this.countDownLatch = countDownLatch;

@@ -63,11 +63,11 @@ public abstract class AbstractHttpServerTask extends AbstractTask {
     /**
      * Logger for Http2ServerTask
      **/
-    private static final Logger           LOGGER = LoggerFactory.getLogger(Http2ServerTask.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Http2ServerTask.class);
 
-    protected final SofaRequest           request;
+    protected final SofaRequest request;
     protected final ChannelHandlerContext ctx;
-    protected final HttpServerHandler     serverHandler;
+    protected final HttpServerHandler serverHandler;
 
     public AbstractHttpServerTask(HttpServerHandler serverHandler, SofaRequest request, ChannelHandlerContext ctx) {
         this.serverHandler = serverHandler;
@@ -146,9 +146,9 @@ public abstract class AbstractHttpServerTask extends AbstractTask {
                             serializer.decode(reqData, request, map);
                         } catch (Exception e) {
                             LOGGER.errorWithApp(appName, "Server deserialize error, request from "
-                                + channel.remoteAddress(), e);
+                                    + channel.remoteAddress(), e);
                             response = MessageBuilder.buildSofaErrorResponse("Server deserialize error, "
-                                + e.getMessage());
+                                    + e.getMessage());
                             break invoke;
                         }
                     } else if (request.getMethodArgs() == null) {
@@ -259,7 +259,7 @@ public abstract class AbstractHttpServerTask extends AbstractTask {
      */
     private SofaRpcException cannotFoundService(String appName, String serviceName) {
         String errorMsg = LogCodes
-            .getLog(LogCodes.ERROR_PROVIDER_SERVICE_CANNOT_FOUND, serviceName);
+                .getLog(LogCodes.ERROR_PROVIDER_SERVICE_CANNOT_FOUND, serviceName);
         LOGGER.errorWithApp(appName, errorMsg);
         return new SofaRpcException(RpcErrorType.SERVER_NOT_FOUND_INVOKER, errorMsg);
     }
@@ -274,7 +274,7 @@ public abstract class AbstractHttpServerTask extends AbstractTask {
      */
     private SofaRpcException cannotFoundServiceMethod(String appName, String serviceName, String methodName) {
         String errorMsg = LogCodes.getLog(
-            LogCodes.ERROR_PROVIDER_SERVICE_METHOD_CANNOT_FOUND, methodName, serviceName);
+                LogCodes.ERROR_PROVIDER_SERVICE_METHOD_CANNOT_FOUND, methodName, serviceName);
         LOGGER.errorWithApp(appName, errorMsg);
         return new SofaRpcException(RpcErrorType.SERVER_NOT_FOUND_INVOKER, errorMsg);
     }

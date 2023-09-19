@@ -34,14 +34,7 @@ import com.alipay.sofa.rpc.log.Logger;
 import com.alipay.sofa.rpc.log.LoggerFactory;
 import com.alipay.sofa.rpc.registry.Registry;
 import com.alipay.sofa.rpc.registry.mesh.client.MeshApiClient;
-import com.alipay.sofa.rpc.registry.mesh.model.ApplicationInfoRequest;
-import com.alipay.sofa.rpc.registry.mesh.model.MeshConstants;
-import com.alipay.sofa.rpc.registry.mesh.model.ProviderMetaInfo;
-import com.alipay.sofa.rpc.registry.mesh.model.PublishServiceRequest;
-import com.alipay.sofa.rpc.registry.mesh.model.SubscribeServiceRequest;
-import com.alipay.sofa.rpc.registry.mesh.model.SubscribeServiceResult;
-import com.alipay.sofa.rpc.registry.mesh.model.UnPublishServiceRequest;
-import com.alipay.sofa.rpc.registry.mesh.model.UnSubscribeServiceRequest;
+import com.alipay.sofa.rpc.registry.mesh.model.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,29 +53,15 @@ public class MeshRegistry extends Registry {
     /**
      * Logger
      */
-    private static final Logger         LOGGER                        = LoggerFactory.getLogger(MeshRegistry.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MeshRegistry.class);
 
-    private static final String         VERSION                       = "4.0";
-
-    protected MeshApiClient             client;
-
-    //init only once
-    protected boolean                   inited;
-
-    //has registed app info
-    protected boolean                   registedApp;
-
+    private static final String VERSION = "4.0";
     protected static ThreadPoolExecutor asyncCreateConnectionExecutor = initThreadPoolExecutor();
-
-    private static ThreadPoolExecutor initThreadPoolExecutor() {
-        final ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(20, 20, 60,
-            TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(5000), new NamedThreadFactory(
-                "Mesh-Async-Registry", true));
-
-        //使用
-        threadPoolExecutor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
-        return threadPoolExecutor;
-    }
+    protected MeshApiClient client;
+    //init only once
+    protected boolean inited;
+    //has registed app info
+    protected boolean registedApp;
 
     /**
      * 注册中心配置
@@ -91,6 +70,16 @@ public class MeshRegistry extends Registry {
      */
     protected MeshRegistry(RegistryConfig registryConfig) {
         super(registryConfig);
+    }
+
+    private static ThreadPoolExecutor initThreadPoolExecutor() {
+        final ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(20, 20, 60,
+                TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(5000), new NamedThreadFactory(
+                "Mesh-Async-Registry", true));
+
+        //使用
+        threadPoolExecutor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
+        return threadPoolExecutor;
     }
 
     @Override
@@ -163,7 +152,7 @@ public class MeshRegistry extends Registry {
                 }
 
                 PublishServiceRequest publishServiceRequest = buildPublishServiceRequest(serviceName, protocol,
-                    providerInfo, appName);
+                        providerInfo, appName);
 
                 client.publishService(publishServiceRequest);
             }
@@ -208,11 +197,11 @@ public class MeshRegistry extends Registry {
                     doUnRegister(serviceName, providerInfo);
                     if (LOGGER.isInfoEnabled(appName)) {
                         LOGGER.infoWithApp(appName,
-                            LogCodes.getLog(LogCodes.INFO_ROUTE_REGISTRY_UNPUB, serviceName, "1"));
+                                LogCodes.getLog(LogCodes.INFO_ROUTE_REGISTRY_UNPUB, serviceName, "1"));
                     }
                 } catch (Exception e) {
                     LOGGER.errorWithApp(appName, LogCodes.getLog(LogCodes.INFO_ROUTE_REGISTRY_UNPUB, serviceName, "0"),
-                        e);
+                            e);
                 }
             }
         }

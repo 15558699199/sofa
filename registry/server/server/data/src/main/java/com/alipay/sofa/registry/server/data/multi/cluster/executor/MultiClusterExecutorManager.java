@@ -20,6 +20,7 @@ import com.alipay.sofa.registry.server.data.bootstrap.MultiClusterDataServerConf
 import com.alipay.sofa.registry.task.KeyedThreadPoolExecutor;
 import com.alipay.sofa.registry.task.MetricsableThreadPoolExecutor;
 import com.alipay.sofa.registry.util.NamedThreadFactory;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -32,109 +33,101 @@ import java.util.concurrent.TimeUnit;
  */
 public class MultiClusterExecutorManager {
 
-  private final KeyedThreadPoolExecutor remoteSyncLeaderExecutor;
+    private static final String REMOTE_SYNC_LEADER_EXECUTOR = "REMOTE_SYNC_LEADER_EXECUTOR";
+    private static final String REMOTE_SYNC_DATA_ID_EXECUTOR = "REMOTE_SYNC_DATA_ID_EXECUTOR";
+    private static final String REMOTE_DATA_CHANGE_REQUEST_EXECUTOR =
+            "REMOTE_DATA_CHANGE_REQUEST_EXECUTOR";
+    private static final String REMOTE_SLOT_SYNC_PROCESSOR_EXECUTOR =
+            "REMOTE_SLOT_SYNC_PROCESSOR_EXECUTOR";
+    private final KeyedThreadPoolExecutor remoteSyncLeaderExecutor;
+    private final KeyedThreadPoolExecutor remoteSyncDataIdExecutor;
+    private final ThreadPoolExecutor remoteDataChangeRequestExecutor;
+    private final MetricsableThreadPoolExecutor remoteSlotSyncProcessorExecutor;
+    private Map<String, KeyedThreadPoolExecutor> reportExecutors = new HashMap<>();
 
-  private final KeyedThreadPoolExecutor remoteSyncDataIdExecutor;
+    private Map<String, MetricsableThreadPoolExecutor> metricsableExecutors = new HashMap<>();
 
-  private final ThreadPoolExecutor remoteDataChangeRequestExecutor;
+    public MultiClusterExecutorManager(MultiClusterDataServerConfig multiClusterDataServerConfig) {
+        remoteSyncLeaderExecutor =
+                reportExecutors.computeIfAbsent(
+                        REMOTE_SYNC_LEADER_EXECUTOR,
+                        k ->
+                                new KeyedThreadPoolExecutor(
+                                        REMOTE_SYNC_LEADER_EXECUTOR,
+                                        multiClusterDataServerConfig.getRemoteSyncSlotLeaderExecutorThreadSize(),
+                                        multiClusterDataServerConfig.getRemoteSyncSlotLeaderExecutorQueueSize()));
 
-  private final MetricsableThreadPoolExecutor remoteSlotSyncProcessorExecutor;
+        remoteSyncDataIdExecutor =
+                reportExecutors.computeIfAbsent(
+                        REMOTE_SYNC_DATA_ID_EXECUTOR,
+                        k ->
+                                new KeyedThreadPoolExecutor(
+                                        REMOTE_SYNC_DATA_ID_EXECUTOR,
+                                        multiClusterDataServerConfig.getRemoteSyncDataIdExecutorThreadSize(),
+                                        multiClusterDataServerConfig.getRemoteSyncDataIdExecutorQueueSize()));
 
-  private static final String REMOTE_SYNC_LEADER_EXECUTOR = "REMOTE_SYNC_LEADER_EXECUTOR";
+        remoteDataChangeRequestExecutor =
+                metricsableExecutors.computeIfAbsent(
+                        REMOTE_DATA_CHANGE_REQUEST_EXECUTOR,
+                        k ->
+                                new MetricsableThreadPoolExecutor(
+                                        REMOTE_DATA_CHANGE_REQUEST_EXECUTOR,
+                                        multiClusterDataServerConfig.getRemoteDataChangeExecutorThreadSize(),
+                                        multiClusterDataServerConfig.getRemoteDataChangeExecutorThreadSize(),
+                                        60,
+                                        TimeUnit.SECONDS,
+                                        new ArrayBlockingQueue<>(
+                                                multiClusterDataServerConfig.getRemoteDataChangeExecutorQueueSize()),
+                                        new NamedThreadFactory(REMOTE_DATA_CHANGE_REQUEST_EXECUTOR, true)));
 
-  private static final String REMOTE_SYNC_DATA_ID_EXECUTOR = "REMOTE_SYNC_DATA_ID_EXECUTOR";
+        remoteSlotSyncProcessorExecutor =
+                metricsableExecutors.computeIfAbsent(
+                        REMOTE_SLOT_SYNC_PROCESSOR_EXECUTOR,
+                        k ->
+                                new MetricsableThreadPoolExecutor(
+                                        "RemoteSlotSyncProcessorExecutor",
+                                        multiClusterDataServerConfig.getRemoteSlotSyncRequestExecutorMinPoolSize(),
+                                        multiClusterDataServerConfig.getRemoteSlotSyncRequestExecutorMaxPoolSize(),
+                                        300,
+                                        TimeUnit.SECONDS,
+                                        new ArrayBlockingQueue<>(
+                                                multiClusterDataServerConfig.getRemoteSlotSyncRequestExecutorQueueSize()),
+                                        new NamedThreadFactory("RemoteSlotSyncProcessorExecutor", true)));
+    }
 
-  private static final String REMOTE_DATA_CHANGE_REQUEST_EXECUTOR =
-      "REMOTE_DATA_CHANGE_REQUEST_EXECUTOR";
+    /**
+     * Getter method for property <tt>remoteSyncLeaderExecutor</tt>.
+     *
+     * @return property value of remoteSyncLeaderExecutor
+     */
+    public KeyedThreadPoolExecutor getRemoteSyncLeaderExecutor() {
+        return remoteSyncLeaderExecutor;
+    }
 
-  private static final String REMOTE_SLOT_SYNC_PROCESSOR_EXECUTOR =
-      "REMOTE_SLOT_SYNC_PROCESSOR_EXECUTOR";
+    /**
+     * Getter method for property <tt>remoteSyncDataIdExecutor</tt>.
+     *
+     * @return property value of remoteSyncDataIdExecutor
+     */
+    public KeyedThreadPoolExecutor getRemoteSyncDataIdExecutor() {
+        return remoteSyncDataIdExecutor;
+    }
 
-  private Map<String, KeyedThreadPoolExecutor> reportExecutors = new HashMap<>();
+    /**
+     * Getter method for property <tt>remoteDataChangeRequestExecutor</tt>.
+     *
+     * @return property value of remoteDataChangeRequestExecutor
+     */
+    public ThreadPoolExecutor getRemoteDataChangeRequestExecutor() {
+        return remoteDataChangeRequestExecutor;
+    }
 
-  private Map<String, MetricsableThreadPoolExecutor> metricsableExecutors = new HashMap<>();
-
-  public MultiClusterExecutorManager(MultiClusterDataServerConfig multiClusterDataServerConfig) {
-    remoteSyncLeaderExecutor =
-        reportExecutors.computeIfAbsent(
-            REMOTE_SYNC_LEADER_EXECUTOR,
-            k ->
-                new KeyedThreadPoolExecutor(
-                    REMOTE_SYNC_LEADER_EXECUTOR,
-                    multiClusterDataServerConfig.getRemoteSyncSlotLeaderExecutorThreadSize(),
-                    multiClusterDataServerConfig.getRemoteSyncSlotLeaderExecutorQueueSize()));
-
-    remoteSyncDataIdExecutor =
-        reportExecutors.computeIfAbsent(
-            REMOTE_SYNC_DATA_ID_EXECUTOR,
-            k ->
-                new KeyedThreadPoolExecutor(
-                    REMOTE_SYNC_DATA_ID_EXECUTOR,
-                    multiClusterDataServerConfig.getRemoteSyncDataIdExecutorThreadSize(),
-                    multiClusterDataServerConfig.getRemoteSyncDataIdExecutorQueueSize()));
-
-    remoteDataChangeRequestExecutor =
-        metricsableExecutors.computeIfAbsent(
-            REMOTE_DATA_CHANGE_REQUEST_EXECUTOR,
-            k ->
-                new MetricsableThreadPoolExecutor(
-                    REMOTE_DATA_CHANGE_REQUEST_EXECUTOR,
-                    multiClusterDataServerConfig.getRemoteDataChangeExecutorThreadSize(),
-                    multiClusterDataServerConfig.getRemoteDataChangeExecutorThreadSize(),
-                    60,
-                    TimeUnit.SECONDS,
-                    new ArrayBlockingQueue<>(
-                        multiClusterDataServerConfig.getRemoteDataChangeExecutorQueueSize()),
-                    new NamedThreadFactory(REMOTE_DATA_CHANGE_REQUEST_EXECUTOR, true)));
-
-    remoteSlotSyncProcessorExecutor =
-        metricsableExecutors.computeIfAbsent(
-            REMOTE_SLOT_SYNC_PROCESSOR_EXECUTOR,
-            k ->
-                new MetricsableThreadPoolExecutor(
-                    "RemoteSlotSyncProcessorExecutor",
-                    multiClusterDataServerConfig.getRemoteSlotSyncRequestExecutorMinPoolSize(),
-                    multiClusterDataServerConfig.getRemoteSlotSyncRequestExecutorMaxPoolSize(),
-                    300,
-                    TimeUnit.SECONDS,
-                    new ArrayBlockingQueue<>(
-                        multiClusterDataServerConfig.getRemoteSlotSyncRequestExecutorQueueSize()),
-                    new NamedThreadFactory("RemoteSlotSyncProcessorExecutor", true)));
-  }
-
-  /**
-   * Getter method for property <tt>remoteSyncLeaderExecutor</tt>.
-   *
-   * @return property value of remoteSyncLeaderExecutor
-   */
-  public KeyedThreadPoolExecutor getRemoteSyncLeaderExecutor() {
-    return remoteSyncLeaderExecutor;
-  }
-
-  /**
-   * Getter method for property <tt>remoteSyncDataIdExecutor</tt>.
-   *
-   * @return property value of remoteSyncDataIdExecutor
-   */
-  public KeyedThreadPoolExecutor getRemoteSyncDataIdExecutor() {
-    return remoteSyncDataIdExecutor;
-  }
-
-  /**
-   * Getter method for property <tt>remoteDataChangeRequestExecutor</tt>.
-   *
-   * @return property value of remoteDataChangeRequestExecutor
-   */
-  public ThreadPoolExecutor getRemoteDataChangeRequestExecutor() {
-    return remoteDataChangeRequestExecutor;
-  }
-
-  /**
-   * Getter method for property <tt>remoteSlotSyncProcessorExecutor</tt>.
-   *
-   * @return property value of remoteSlotSyncProcessorExecutor
-   */
-  public MetricsableThreadPoolExecutor getRemoteSlotSyncProcessorExecutor() {
-    return remoteSlotSyncProcessorExecutor;
-  }
+    /**
+     * Getter method for property <tt>remoteSlotSyncProcessorExecutor</tt>.
+     *
+     * @return property value of remoteSlotSyncProcessorExecutor
+     */
+    public MetricsableThreadPoolExecutor getRemoteSlotSyncProcessorExecutor() {
+        return remoteSlotSyncProcessorExecutor;
+    }
 }

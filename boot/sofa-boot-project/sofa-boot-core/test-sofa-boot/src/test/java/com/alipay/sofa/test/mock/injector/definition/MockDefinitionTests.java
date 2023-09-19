@@ -38,20 +38,20 @@ import static org.mockito.Mockito.mock;
 public class MockDefinitionTests {
 
     private static final ResolvableType EXAMPLE_SERVICE_TYPE = ResolvableType
-                                                                 .forClass(ExampleService.class);
+            .forClass(ExampleService.class);
 
     @Test
-	public void classToMockMustNotBeNull() {
-		assertThatIllegalArgumentException()
-			.isThrownBy(() -> new MockDefinition(null,null,null, null, null,
-					null, null, false, null, null))
-			.withMessageContaining("MockType must not be null");
-	}
+    public void classToMockMustNotBeNull() {
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> new MockDefinition(null, null, null, null, null,
+                        null, null, false, null, null))
+                .withMessageContaining("MockType must not be null");
+    }
 
     @Test
     public void createWithDefaults() {
         MockDefinition definition = new MockDefinition(EXAMPLE_SERVICE_TYPE, null, null, null,
-            "Field", null, null, false, null, null);
+                "Field", null, null, false, null, null);
         assertThat(definition.getName()).isNull();
         assertThat(definition.getModule()).isNull();
         assertThat(definition.getField()).isEqualTo("Field");
@@ -68,9 +68,9 @@ public class MockDefinitionTests {
     public void createExplicit() {
         QualifierDefinition qualifier = mock(QualifierDefinition.class);
         MockDefinition definition = new MockDefinition(EXAMPLE_SERVICE_TYPE, "name",
-            EXAMPLE_SERVICE_TYPE, "Module", "Field",
-            new Class<?>[] { ExampleExtraInterface.class }, Answers.RETURNS_SMART_NULLS, true,
-            MockReset.BEFORE, qualifier);
+                EXAMPLE_SERVICE_TYPE, "Module", "Field",
+                new Class<?>[]{ExampleExtraInterface.class}, Answers.RETURNS_SMART_NULLS, true,
+                MockReset.BEFORE, qualifier);
         assertThat(definition.getName()).isEqualTo("name");
         assertThat(definition.getModule()).isEqualTo("Module");
         assertThat(definition.getField()).isEqualTo("Field");
@@ -86,9 +86,9 @@ public class MockDefinitionTests {
     @Test
     public void createMock() {
         MockDefinition definition = new MockDefinition(EXAMPLE_SERVICE_TYPE, "name",
-            EXAMPLE_SERVICE_TYPE, "Module", "Field",
-            new Class<?>[] { ExampleExtraInterface.class }, Answers.RETURNS_SMART_NULLS, true,
-            MockReset.BEFORE, null);
+                EXAMPLE_SERVICE_TYPE, "Module", "Field",
+                new Class<?>[]{ExampleExtraInterface.class}, Answers.RETURNS_SMART_NULLS, true,
+                MockReset.BEFORE, null);
         ExampleService mock = definition.createMock();
         MockCreationSettings<?> settings = Mockito.mockingDetails(mock).getMockCreationSettings();
         assertThat(mock).isEqualTo(definition.getMockInstance());

@@ -20,8 +20,9 @@ import com.alipay.sofa.registry.common.model.constants.MultiValueConstants;
 import com.alipay.sofa.registry.common.model.store.DataInfo;
 import com.alipay.sofa.registry.util.ParaCheckUtil;
 import com.google.common.base.Objects;
-import java.util.Set;
 import org.springframework.util.CollectionUtils;
+
+import java.util.Set;
 
 /**
  * @author xiaojian.xj
@@ -29,53 +30,53 @@ import org.springframework.util.CollectionUtils;
  */
 public class SyncPublisherGroupAcceptor implements SyncSlotAcceptor {
 
-  private final String NAME = MultiValueConstants.SYNC_PUBLISHER_GROUP_ACCEPTOR;
+    private final String NAME = MultiValueConstants.SYNC_PUBLISHER_GROUP_ACCEPTOR;
 
-  private final Set<String> acceptGroups;
+    private final Set<String> acceptGroups;
 
-  public SyncPublisherGroupAcceptor(Set<String> acceptGroups) {
-    this.acceptGroups = acceptGroups;
-  }
-
-  @Override
-  public boolean accept(SyncAcceptorRequest request) {
-    ParaCheckUtil.checkNotNull(request, "SyncAcceptorRequest");
-    if (CollectionUtils.isEmpty(acceptGroups)) {
-      return false;
+    public SyncPublisherGroupAcceptor(Set<String> acceptGroups) {
+        this.acceptGroups = acceptGroups;
     }
-    DataInfo dataInfo = DataInfo.valueOf(request.getDataInfoId());
-    return acceptGroups.contains(dataInfo.getGroup());
-  }
 
-  @Override
-  public boolean filterOut(SyncAcceptorRequest request) {
-    return false;
-  }
-
-  @Override
-  public String name() {
-    return NAME;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
+    @Override
+    public boolean accept(SyncAcceptorRequest request) {
+        ParaCheckUtil.checkNotNull(request, "SyncAcceptorRequest");
+        if (CollectionUtils.isEmpty(acceptGroups)) {
+            return false;
+        }
+        DataInfo dataInfo = DataInfo.valueOf(request.getDataInfoId());
+        return acceptGroups.contains(dataInfo.getGroup());
     }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
+
+    @Override
+    public boolean filterOut(SyncAcceptorRequest request) {
+        return false;
     }
-    SyncPublisherGroupAcceptor that = (SyncPublisherGroupAcceptor) o;
-    return Objects.equal(NAME, that.NAME);
-  }
 
-  @Override
-  public int hashCode() {
-    return Objects.hashCode(NAME);
-  }
+    @Override
+    public String name() {
+        return NAME;
+    }
 
-  @Override
-  public String toString() {
-    return "SyncPublisherGroupAcceptor{" + ", acceptGroups=" + acceptGroups + '}';
-  }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        SyncPublisherGroupAcceptor that = (SyncPublisherGroupAcceptor) o;
+        return Objects.equal(NAME, that.NAME);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(NAME);
+    }
+
+    @Override
+    public String toString() {
+        return "SyncPublisherGroupAcceptor{" + ", acceptGroups=" + acceptGroups + '}';
+    }
 }

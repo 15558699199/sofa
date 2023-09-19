@@ -19,6 +19,7 @@ package com.alipay.sofa.registry.server.session.cache;
 import com.alipay.sofa.registry.common.model.store.WordCache;
 import com.alipay.sofa.registry.util.ParaCheckUtil;
 import com.alipay.sofa.registry.util.StringFormatter;
+
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -28,71 +29,71 @@ import java.util.stream.Collectors;
  */
 public class DatumKey implements EntityType {
 
-  private final String dataInfoId;
+    private final String dataInfoId;
 
-  private final Set<String> dataCenters;
+    private final Set<String> dataCenters;
 
-  private final String uniqueKey;
+    private final String uniqueKey;
 
-  public DatumKey(String dataInfoId, Set<String> dataCenters) {
-    ParaCheckUtil.checkNotEmpty(dataCenters, "dataCenters");
-    this.dataInfoId = WordCache.getWordCache(dataInfoId);
-    this.dataCenters =
-        dataCenters.stream().map(WordCache::getWordCache).collect(Collectors.toSet());
-    this.uniqueKey = WordCache.getWordCache(createUniqueKey());
-  }
-
-  @Override
-  public String getUniqueKey() {
-    return uniqueKey;
-  }
-
-  private String createUniqueKey() {
-    int dataCenterSize = 0;
-    StringBuilder builder = new StringBuilder();
-    for (String dataCenter : dataCenters) {
-      dataCenterSize += dataCenter.length();
-      builder.append(dataCenter).append(COMMA);
+    public DatumKey(String dataInfoId, Set<String> dataCenters) {
+        ParaCheckUtil.checkNotEmpty(dataCenters, "dataCenters");
+        this.dataInfoId = WordCache.getWordCache(dataInfoId);
+        this.dataCenters =
+                dataCenters.stream().map(WordCache::getWordCache).collect(Collectors.toSet());
+        this.uniqueKey = WordCache.getWordCache(createUniqueKey());
     }
-    StringBuilder sb = new StringBuilder(dataCenterSize + dataInfoId.length() + 1);
-    sb.append(builder).append(dataInfoId);
-    return sb.toString();
-  }
 
-  @Override
-  public int hashCode() {
-    return uniqueKey.hashCode();
-  }
-
-  @Override
-  public boolean equals(Object other) {
-    if (other instanceof DatumKey) {
-      return uniqueKey.equals(((DatumKey) other).uniqueKey);
-    } else {
-      return false;
+    @Override
+    public String getUniqueKey() {
+        return uniqueKey;
     }
-  }
 
-  /**
-   * Getter method for property <tt>dataInfoId</tt>.
-   *
-   * @return property value of dataInfoId
-   */
-  public String getDataInfoId() {
-    return dataInfoId;
-  }
+    private String createUniqueKey() {
+        int dataCenterSize = 0;
+        StringBuilder builder = new StringBuilder();
+        for (String dataCenter : dataCenters) {
+            dataCenterSize += dataCenter.length();
+            builder.append(dataCenter).append(COMMA);
+        }
+        StringBuilder sb = new StringBuilder(dataCenterSize + dataInfoId.length() + 1);
+        sb.append(builder).append(dataInfoId);
+        return sb.toString();
+    }
 
-  /**
-   * Getter method for property <tt>dataCenters</tt>.
-   *
-   * @return property value of dataCenters
-   */
-  public Set<String> getDataCenters() {
-    return dataCenters;
-  }
+    @Override
+    public int hashCode() {
+        return uniqueKey.hashCode();
+    }
 
-  @Override
-  public String toString() {
-    return StringFormatter.format("DatumKey{{}}", uniqueKey);
-  }
+    @Override
+    public boolean equals(Object other) {
+        if (other instanceof DatumKey) {
+            return uniqueKey.equals(((DatumKey) other).uniqueKey);
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Getter method for property <tt>dataInfoId</tt>.
+     *
+     * @return property value of dataInfoId
+     */
+    public String getDataInfoId() {
+        return dataInfoId;
+    }
+
+    /**
+     * Getter method for property <tt>dataCenters</tt>.
+     *
+     * @return property value of dataCenters
+     */
+    public Set<String> getDataCenters() {
+        return dataCenters;
+    }
+
+    @Override
+    public String toString() {
+        return StringFormatter.format("DatumKey{{}}", uniqueKey);
+    }
 }

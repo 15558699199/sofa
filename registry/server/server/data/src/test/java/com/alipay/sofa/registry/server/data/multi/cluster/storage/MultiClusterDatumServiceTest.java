@@ -16,14 +16,6 @@
  */
 package com.alipay.sofa.registry.server.data.multi.cluster.storage;
 
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyObject;
-import static org.mockito.Matchers.anySet;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import com.alipay.sofa.registry.common.model.dataserver.DatumVersion;
 import com.alipay.sofa.registry.common.model.metaserver.MultiClusterSyncInfo;
 import com.alipay.sofa.registry.common.model.metaserver.RemoteDatumClearEvent;
@@ -31,12 +23,16 @@ import com.alipay.sofa.registry.server.data.cache.DatumStorageDelegate;
 import com.alipay.sofa.registry.server.data.change.DataChangeEventCenter;
 import com.alipay.sofa.registry.server.data.slot.SlotAccessorDelegate;
 import com.alipay.sofa.registry.store.api.meta.MultiClusterSyncRepository;
-import java.util.Collections;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+
+import java.util.Collections;
+
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
 
 /**
  * @author xiaojian.xj
@@ -45,94 +41,99 @@ import org.mockito.runners.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class MultiClusterDatumServiceTest {
 
-  private static final String REMOTE = "remote_dc";
-  private static final String DATAINFOID = "test_id";
-  private static final String GROUP = "test_group";
+    private static final String REMOTE = "remote_dc";
+    private static final String DATAINFOID = "test_id";
+    private static final String GROUP = "test_group";
 
-  @InjectMocks private MultiClusterDatumService multiClusterDatumService;
+    @InjectMocks
+    private MultiClusterDatumService multiClusterDatumService;
 
-  @Mock private DatumStorageDelegate datumStorageDelegate;
+    @Mock
+    private DatumStorageDelegate datumStorageDelegate;
 
-  @Mock private SlotAccessorDelegate slotAccessorDelegate;
+    @Mock
+    private SlotAccessorDelegate slotAccessorDelegate;
 
-  @Mock private MultiClusterSyncRepository multiClusterSyncRepository;
+    @Mock
+    private MultiClusterSyncRepository multiClusterSyncRepository;
 
-  @Mock private DataChangeEventCenter dataChangeEventCenter;
+    @Mock
+    private DataChangeEventCenter dataChangeEventCenter;
 
-  @Test
-  public void testClearDataInfoId() {
-    RemoteDatumClearEvent request = RemoteDatumClearEvent.dataInfoIdEvent(REMOTE, DATAINFOID);
+    @Test
+    public void testClearDataInfoId() {
+        RemoteDatumClearEvent request = RemoteDatumClearEvent.dataInfoIdEvent(REMOTE, DATAINFOID);
 
-    // enableSync = true, not clear, not notify
-    MultiClusterSyncInfo syncInfo = new MultiClusterSyncInfo();
-    syncInfo.setEnableSyncDatum(true);
-    when(multiClusterSyncRepository.query(anyString())).thenReturn(syncInfo);
-    multiClusterDatumService.clear(request);
+        // enableSync = true, not clear, not notify
+        MultiClusterSyncInfo syncInfo = new MultiClusterSyncInfo();
+        syncInfo.setEnableSyncDatum(true);
+        when(multiClusterSyncRepository.query(anyString())).thenReturn(syncInfo);
+        multiClusterDatumService.clear(request);
 
-    verify(datumStorageDelegate, times(0)).clearPublishers(anyString(), anyString());
-    verify(datumStorageDelegate, times(0)).clearGroupPublishers(anyString(), anyString());
-    verify(dataChangeEventCenter, times(0)).onChange(anySet(), anyObject(), anyString());
+        verify(datumStorageDelegate, times(0)).clearPublishers(anyString(), anyString());
+        verify(datumStorageDelegate, times(0)).clearGroupPublishers(anyString(), anyString());
+        verify(dataChangeEventCenter, times(0)).onChange(anySet(), anyObject(), anyString());
 
-    // enableSync = false, not leader, not clear, not notify
-    syncInfo = new MultiClusterSyncInfo();
-    syncInfo.setEnableSyncDatum(false);
-    when(multiClusterSyncRepository.query(anyString())).thenReturn(syncInfo);
-    when(slotAccessorDelegate.isLeader(anyString(), anyInt())).thenReturn(false);
+        // enableSync = false, not leader, not clear, not notify
+        syncInfo = new MultiClusterSyncInfo();
+        syncInfo.setEnableSyncDatum(false);
+        when(multiClusterSyncRepository.query(anyString())).thenReturn(syncInfo);
+        when(slotAccessorDelegate.isLeader(anyString(), anyInt())).thenReturn(false);
 
-    multiClusterDatumService.clear(request);
-    verify(datumStorageDelegate, times(0)).clearPublishers(anyString(), anyString());
-    verify(datumStorageDelegate, times(0)).clearGroupPublishers(anyString(), anyString());
-    verify(dataChangeEventCenter, times(0)).onChange(anySet(), anyObject(), anyString());
+        multiClusterDatumService.clear(request);
+        verify(datumStorageDelegate, times(0)).clearPublishers(anyString(), anyString());
+        verify(datumStorageDelegate, times(0)).clearGroupPublishers(anyString(), anyString());
+        verify(dataChangeEventCenter, times(0)).onChange(anySet(), anyObject(), anyString());
 
-    // enableSync = false, leader, clear, not notify
-    when(slotAccessorDelegate.isLeader(anyString(), anyInt())).thenReturn(true);
-    when(datumStorageDelegate.clearPublishers(anyString(), anyString())).thenReturn(null);
+        // enableSync = false, leader, clear, not notify
+        when(slotAccessorDelegate.isLeader(anyString(), anyInt())).thenReturn(true);
+        when(datumStorageDelegate.clearPublishers(anyString(), anyString())).thenReturn(null);
 
-    multiClusterDatumService.clear(request);
-    verify(datumStorageDelegate, times(1)).clearPublishers(anyString(), anyString());
-    verify(datumStorageDelegate, times(0)).clearGroupPublishers(anyString(), anyString());
-    verify(dataChangeEventCenter, times(0)).onChange(anySet(), anyObject(), anyString());
+        multiClusterDatumService.clear(request);
+        verify(datumStorageDelegate, times(1)).clearPublishers(anyString(), anyString());
+        verify(datumStorageDelegate, times(0)).clearGroupPublishers(anyString(), anyString());
+        verify(dataChangeEventCenter, times(0)).onChange(anySet(), anyObject(), anyString());
 
-    // enableSync = false, clear, notify
-    when(datumStorageDelegate.clearPublishers(anyString(), anyString()))
-        .thenReturn(new DatumVersion(System.currentTimeMillis()));
-    multiClusterDatumService.clear(request);
-    verify(datumStorageDelegate, times(2)).clearPublishers(anyString(), anyString());
-    verify(datumStorageDelegate, times(0)).clearGroupPublishers(anyString(), anyString());
-    verify(dataChangeEventCenter, times(1)).onChange(anySet(), anyObject(), anyString());
-  }
+        // enableSync = false, clear, notify
+        when(datumStorageDelegate.clearPublishers(anyString(), anyString()))
+                .thenReturn(new DatumVersion(System.currentTimeMillis()));
+        multiClusterDatumService.clear(request);
+        verify(datumStorageDelegate, times(2)).clearPublishers(anyString(), anyString());
+        verify(datumStorageDelegate, times(0)).clearGroupPublishers(anyString(), anyString());
+        verify(dataChangeEventCenter, times(1)).onChange(anySet(), anyObject(), anyString());
+    }
 
-  @Test
-  public void testClearGroup() {
-    RemoteDatumClearEvent request = RemoteDatumClearEvent.groupEvent(REMOTE, GROUP);
+    @Test
+    public void testClearGroup() {
+        RemoteDatumClearEvent request = RemoteDatumClearEvent.groupEvent(REMOTE, GROUP);
 
-    // enableSync = true, not clear, not notify
-    MultiClusterSyncInfo syncInfo = new MultiClusterSyncInfo();
-    syncInfo.setEnableSyncDatum(true);
-    when(multiClusterSyncRepository.query(anyString())).thenReturn(syncInfo);
-    multiClusterDatumService.clear(request);
+        // enableSync = true, not clear, not notify
+        MultiClusterSyncInfo syncInfo = new MultiClusterSyncInfo();
+        syncInfo.setEnableSyncDatum(true);
+        when(multiClusterSyncRepository.query(anyString())).thenReturn(syncInfo);
+        multiClusterDatumService.clear(request);
 
-    verify(datumStorageDelegate, times(0)).clearPublishers(anyString(), anyString());
-    verify(datumStorageDelegate, times(0)).clearGroupPublishers(anyString(), anyString());
-    verify(dataChangeEventCenter, times(0)).onChange(anySet(), anyObject(), anyString());
+        verify(datumStorageDelegate, times(0)).clearPublishers(anyString(), anyString());
+        verify(datumStorageDelegate, times(0)).clearGroupPublishers(anyString(), anyString());
+        verify(dataChangeEventCenter, times(0)).onChange(anySet(), anyObject(), anyString());
 
-    // enableSync = false, leader, clear, not notify
-    syncInfo = new MultiClusterSyncInfo();
-    syncInfo.setEnableSyncDatum(false);
-    when(multiClusterSyncRepository.query(anyString())).thenReturn(syncInfo);
-    when(datumStorageDelegate.clearGroupPublishers(anyString(), anyString())).thenReturn(null);
+        // enableSync = false, leader, clear, not notify
+        syncInfo = new MultiClusterSyncInfo();
+        syncInfo.setEnableSyncDatum(false);
+        when(multiClusterSyncRepository.query(anyString())).thenReturn(syncInfo);
+        when(datumStorageDelegate.clearGroupPublishers(anyString(), anyString())).thenReturn(null);
 
-    multiClusterDatumService.clear(request);
-    verify(datumStorageDelegate, times(0)).clearPublishers(anyString(), anyString());
-    verify(datumStorageDelegate, times(1)).clearGroupPublishers(anyString(), anyString());
-    verify(dataChangeEventCenter, times(0)).onChange(anySet(), anyObject(), anyString());
+        multiClusterDatumService.clear(request);
+        verify(datumStorageDelegate, times(0)).clearPublishers(anyString(), anyString());
+        verify(datumStorageDelegate, times(1)).clearGroupPublishers(anyString(), anyString());
+        verify(dataChangeEventCenter, times(0)).onChange(anySet(), anyObject(), anyString());
 
-    // enablePush = false, clear, notify
-    when(datumStorageDelegate.clearGroupPublishers(anyString(), anyString()))
-        .thenReturn(Collections.singletonMap(REMOTE, new DatumVersion(System.currentTimeMillis())));
-    multiClusterDatumService.clear(request);
-    verify(datumStorageDelegate, times(0)).clearPublishers(anyString(), anyString());
-    verify(datumStorageDelegate, times(2)).clearGroupPublishers(anyString(), anyString());
-    verify(dataChangeEventCenter, times(1)).onChange(anySet(), anyObject(), anyString());
-  }
+        // enablePush = false, clear, notify
+        when(datumStorageDelegate.clearGroupPublishers(anyString(), anyString()))
+                .thenReturn(Collections.singletonMap(REMOTE, new DatumVersion(System.currentTimeMillis())));
+        multiClusterDatumService.clear(request);
+        verify(datumStorageDelegate, times(0)).clearPublishers(anyString(), anyString());
+        verify(datumStorageDelegate, times(2)).clearGroupPublishers(anyString(), anyString());
+        verify(dataChangeEventCenter, times(1)).onChange(anySet(), anyObject(), anyString());
+    }
 }

@@ -67,7 +67,7 @@ public class BaggageResolver {
         }
         // 解析请求 
         Map<String, String> requestBaggage = (Map<String, String>) request
-            .getRequestProp(RemotingConstants.RPC_REQUEST_BAGGAGE);
+                .getRequestProp(RemotingConstants.RPC_REQUEST_BAGGAGE);
         if (CommonUtils.isNotEmpty(requestBaggage)) {
             if (context == null) {
                 context = RpcInvokeContext.getContext();
@@ -124,7 +124,7 @@ public class BaggageResolver {
                         context = RpcInvokeContext.getContext();
                     }
                     context.putResponseBaggage(entry.getKey().substring(prefix.length()),
-                        entry.getValue());
+                            entry.getValue());
                 }
             }
         }

@@ -30,12 +30,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -49,12 +44,12 @@ public class RpcConfigs {
     /**
      * 全部配置
      */
-    private final static ConcurrentMap<String, Object>                  CFG          = new ConcurrentHashMap<String, Object>();
+    private final static ConcurrentMap<String, Object> CFG = new ConcurrentHashMap<String, Object>();
     /**
      * 配置变化监听器
      */
     private final static ConcurrentMap<String, List<RpcConfigListener>> CFG_LISTENER = new ConcurrentHashMap<String,
-                                                                                             List<RpcConfigListener>>();
+            List<RpcConfigListener>>();
 
     static {
         init(); // 加载配置文件
@@ -87,7 +82,7 @@ public class RpcConfigs {
     private static void loadCustom(String fileName) throws IOException {
         ClassLoader classLoader = ClassLoaderUtils.getClassLoader(RpcConfigs.class);
         Enumeration<URL> urls = classLoader != null ? classLoader.getResources(fileName)
-            : ClassLoader.getSystemResources(fileName);
+                : ClassLoader.getSystemResources(fileName);
         if (urls != null) { // 可能存在多个文件
             List<CfgFile> allFile = new ArrayList<CfgFile>();
             while (urls.hasMoreElements()) {
@@ -188,7 +183,7 @@ public class RpcConfigs {
             val = CFG.get(secondaryKey);
             if (val == null) {
                 throw new SofaRpcRuntimeException(LogCodes.getLog(LogCodes.ERROR_NOT_FOUND_KEY, primaryKey + "/" +
-                    secondaryKey));
+                        secondaryKey));
             }
         }
         return Boolean.valueOf(val.toString());
@@ -222,7 +217,7 @@ public class RpcConfigs {
             val = CFG.get(secondaryKey);
             if (val == null) {
                 throw new SofaRpcRuntimeException(LogCodes.getLog(LogCodes.ERROR_NOT_FOUND_KEY, primaryKey + "/" +
-                    secondaryKey));
+                        secondaryKey));
             }
         }
         return Integer.parseInt(val.toString());
@@ -273,7 +268,7 @@ public class RpcConfigs {
             val = (String) CFG.get(secondaryKey);
             if (val == null) {
                 throw new SofaRpcRuntimeException(LogCodes.getLog(LogCodes.ERROR_NOT_FOUND_KEY, primaryKey + "/" +
-                    secondaryKey));
+                        secondaryKey));
             } else {
                 return val;
             }
@@ -357,8 +352,23 @@ public class RpcConfigs {
      */
     protected static boolean changed(Object oldObj, Object newObj) {
         return oldObj == null ?
-            newObj != null :
-            !oldObj.equals(newObj);
+                newObj != null :
+                !oldObj.equals(newObj);
+    }
+
+    /**
+     * 配置变更会拿到通知
+     *
+     * @param <T> the type parameter
+     */
+    public interface RpcConfigListener<T> {
+        /**
+         * On change.
+         *
+         * @param oldValue the old value
+         * @param newValue the new value
+         */
+        public void onChange(T oldValue, T newValue);
     }
 
     /**
@@ -404,20 +414,5 @@ public class RpcConfigs {
         public Map getMap() {
             return map;
         }
-    }
-
-    /**
-     * 配置变更会拿到通知
-     *
-     * @param <T> the type parameter
-     */
-    public interface RpcConfigListener<T> {
-        /**
-         * On change.
-         *
-         * @param oldValue the old value
-         * @param newValue the new value
-         */
-        public void onChange(T oldValue, T newValue);
     }
 }

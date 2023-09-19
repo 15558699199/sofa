@@ -27,124 +27,127 @@ import com.alipay.sofa.registry.server.meta.monitor.Metrics;
 import com.alipay.sofa.registry.store.api.elector.AbstractLeaderElector.LeaderInfo;
 import com.alipay.sofa.registry.store.api.elector.LeaderAware;
 import com.alipay.sofa.registry.store.api.elector.LeaderElector;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
-import javax.annotation.PostConstruct;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 /**
  * @author chen.zhu
- *     <p>Mar 10, 2021
+ * <p>Mar 10, 2021
  */
 @Component
 public class DefaultMetaLeaderElector extends AbstractLifecycleObservable
-    implements MetaLeaderService, LeaderAware {
+        implements MetaLeaderService, LeaderAware {
 
-  private final Logger logger = LoggerFactory.getLogger(DefaultMetaLeaderElector.class);
+    private final Logger logger = LoggerFactory.getLogger(DefaultMetaLeaderElector.class);
 
-  private final AtomicBoolean wasLeader = new AtomicBoolean(false);
+    private final AtomicBoolean wasLeader = new AtomicBoolean(false);
 
-  private final AtomicReference<LeaderState> leaderState = new AtomicReference<>();
+    private final AtomicReference<LeaderState> leaderState = new AtomicReference<>();
 
-  private final List<MetaLeaderElectorListener> listeners = new CopyOnWriteArrayList<>();
+    private final List<MetaLeaderElectorListener> listeners = new CopyOnWriteArrayList<>();
 
-  @Autowired private final LeaderElector leaderElector;
+    @Autowired
+    private final LeaderElector leaderElector;
 
-  @Autowired private final MetaServerConfig metaServerConfig;
+    @Autowired
+    private final MetaServerConfig metaServerConfig;
 
-  public DefaultMetaLeaderElector(LeaderElector leaderElector, MetaServerConfig metaServerConfig) {
-    this.leaderElector = leaderElector;
-    this.metaServerConfig = metaServerConfig;
-  }
-
-  public void registerListener(MetaLeaderElectorListener listener) {
-    listeners.add(listener);
-  }
-
-  @PostConstruct
-  public void postConstruct() throws Exception {
-    LifecycleHelper.initializeIfPossible(this);
-    LifecycleHelper.startIfPossible(this);
-  }
-
-  @Override
-  protected void doInitialize() throws InitializeException {
-    super.doInitialize();
-    leaderElector.registerLeaderAware(this);
-  }
-
-  @Override
-  public boolean isWarmuped() {
-    return leaderState.get() != null
-        && System.currentTimeMillis() - leaderState.get().getStartTime() > getWarmupMilli();
-  }
-
-  @Override
-  public boolean amILeader() {
-    return leaderElector.amILeader();
-  }
-
-  @Override
-  public String getLeader() {
-    return leaderElector.getLeaderInfo().getLeader();
-  }
-
-  @Override
-  public long getLeaderEpoch() {
-    return leaderElector.getLeaderInfo().getEpoch();
-  }
-
-  @Override
-  public LeaderInfo getLeaderInfo() {
-    return leaderElector.getLeaderInfo();
-  }
-
-  @Override
-  public void leaderNotify() {
-    if (wasLeader.compareAndSet(false, true)) {
-      leaderState.set(
-          new LeaderState(LeaderElector.ElectorRole.LEADER, System.currentTimeMillis()));
-      logger.info("[becomeLeader] change from follower to elector, {}", this.leaderState.get());
-      listeners.forEach(MetaLeaderElectorListener::becomeLeader);
-    }
-  }
-
-  @Override
-  public void followNotify() {
-    if (wasLeader.compareAndSet(true, false)) {
-      leaderState.set(
-          new LeaderState(LeaderElector.ElectorRole.FOLLOWER, System.currentTimeMillis()));
-      logger.info("[becomeFollow] change from elector to follower, {}", this.leaderState.get());
-      // not leader, clear the leader/follower metrics
-      Metrics.DataSlot.clearLeaderNumbers();
-      Metrics.DataSlot.clearFollowerNumbers();
-      listeners.forEach(MetaLeaderElectorListener::loseLeader);
-    }
-  }
-
-  private long getWarmupMilli() {
-    return metaServerConfig.getMetaLeaderWarmupMillis();
-  }
-
-  private static final class LeaderState {
-    private final LeaderElector.ElectorRole state;
-    private final long startTime;
-
-    public LeaderState(LeaderElector.ElectorRole state, long startTime) {
-      this.state = state;
-      this.startTime = startTime;
+    public DefaultMetaLeaderElector(LeaderElector leaderElector, MetaServerConfig metaServerConfig) {
+        this.leaderElector = leaderElector;
+        this.metaServerConfig = metaServerConfig;
     }
 
-    public long getStartTime() {
-      return startTime;
+    public void registerListener(MetaLeaderElectorListener listener) {
+        listeners.add(listener);
+    }
+
+    @PostConstruct
+    public void postConstruct() throws Exception {
+        LifecycleHelper.initializeIfPossible(this);
+        LifecycleHelper.startIfPossible(this);
     }
 
     @Override
-    public String toString() {
-      return "LeaderState{" + "state=" + state + ", startTime=" + startTime + '}';
+    protected void doInitialize() throws InitializeException {
+        super.doInitialize();
+        leaderElector.registerLeaderAware(this);
     }
-  }
+
+    @Override
+    public boolean isWarmuped() {
+        return leaderState.get() != null
+                && System.currentTimeMillis() - leaderState.get().getStartTime() > getWarmupMilli();
+    }
+
+    @Override
+    public boolean amILeader() {
+        return leaderElector.amILeader();
+    }
+
+    @Override
+    public String getLeader() {
+        return leaderElector.getLeaderInfo().getLeader();
+    }
+
+    @Override
+    public long getLeaderEpoch() {
+        return leaderElector.getLeaderInfo().getEpoch();
+    }
+
+    @Override
+    public LeaderInfo getLeaderInfo() {
+        return leaderElector.getLeaderInfo();
+    }
+
+    @Override
+    public void leaderNotify() {
+        if (wasLeader.compareAndSet(false, true)) {
+            leaderState.set(
+                    new LeaderState(LeaderElector.ElectorRole.LEADER, System.currentTimeMillis()));
+            logger.info("[becomeLeader] change from follower to elector, {}", this.leaderState.get());
+            listeners.forEach(MetaLeaderElectorListener::becomeLeader);
+        }
+    }
+
+    @Override
+    public void followNotify() {
+        if (wasLeader.compareAndSet(true, false)) {
+            leaderState.set(
+                    new LeaderState(LeaderElector.ElectorRole.FOLLOWER, System.currentTimeMillis()));
+            logger.info("[becomeFollow] change from elector to follower, {}", this.leaderState.get());
+            // not leader, clear the leader/follower metrics
+            Metrics.DataSlot.clearLeaderNumbers();
+            Metrics.DataSlot.clearFollowerNumbers();
+            listeners.forEach(MetaLeaderElectorListener::loseLeader);
+        }
+    }
+
+    private long getWarmupMilli() {
+        return metaServerConfig.getMetaLeaderWarmupMillis();
+    }
+
+    private static final class LeaderState {
+        private final LeaderElector.ElectorRole state;
+        private final long startTime;
+
+        public LeaderState(LeaderElector.ElectorRole state, long startTime) {
+            this.state = state;
+            this.startTime = startTime;
+        }
+
+        public long getStartTime() {
+            return startTime;
+        }
+
+        @Override
+        public String toString() {
+            return "LeaderState{" + "state=" + state + ", startTime=" + startTime + '}';
+        }
+    }
 }

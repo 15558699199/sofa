@@ -43,7 +43,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ModuleHealthCheckerTests {
 
     @InjectMocks
-    private ModuleHealthChecker     moduleHealthChecker;
+    private ModuleHealthChecker moduleHealthChecker;
 
     @Mock
     private ApplicationRuntimeModel applicationRuntimeModel;

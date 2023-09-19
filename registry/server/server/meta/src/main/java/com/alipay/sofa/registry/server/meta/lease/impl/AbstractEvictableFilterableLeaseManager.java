@@ -22,45 +22,47 @@ import com.alipay.sofa.registry.common.model.metaserver.cluster.VersionedList;
 import com.alipay.sofa.registry.server.meta.lease.LeaseFilter;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
 
 /**
  * @author chen.zhu
- *     <p>Mar 18, 2021
+ * <p>Mar 18, 2021
  */
 public abstract class AbstractEvictableFilterableLeaseManager<T extends Node>
-    extends AbstractEvictableLeaseManager<T> {
+        extends AbstractEvictableLeaseManager<T> {
 
-  @Autowired private List<LeaseFilter> leaseFilters;
+    @Autowired
+    private List<LeaseFilter> leaseFilters;
 
-  @Override
-  public VersionedList<Lease<T>> getLeaseMeta() {
-    if (leaseFilters == null || leaseFilters.isEmpty()) {
-      return super.getLeaseMeta();
+    @Override
+    public VersionedList<Lease<T>> getLeaseMeta() {
+        if (leaseFilters == null || leaseFilters.isEmpty()) {
+            return super.getLeaseMeta();
+        }
+        VersionedList<Lease<T>> rawVersionedList = super.getLeaseMeta();
+        List<Lease<T>> leaseList = rawVersionedList.getClusterMembers();
+        for (LeaseFilter filter : leaseFilters) {
+            leaseList = filterOut(leaseList, filter);
+        }
+        return new VersionedList<>(rawVersionedList.getEpoch(), leaseList);
     }
-    VersionedList<Lease<T>> rawVersionedList = super.getLeaseMeta();
-    List<Lease<T>> leaseList = rawVersionedList.getClusterMembers();
-    for (LeaseFilter filter : leaseFilters) {
-      leaseList = filterOut(leaseList, filter);
-    }
-    return new VersionedList<>(rawVersionedList.getEpoch(), leaseList);
-  }
 
-  protected List<Lease<T>> filterOut(List<Lease<T>> inputs, LeaseFilter filter) {
-    List<Lease<T>> leases = Lists.newArrayListWithCapacity(inputs.size());
-    for (Lease<T> lease : inputs) {
-      if (filter.allowSelect(lease)) {
-        leases.add(lease);
-      }
+    protected List<Lease<T>> filterOut(List<Lease<T>> inputs, LeaseFilter filter) {
+        List<Lease<T>> leases = Lists.newArrayListWithCapacity(inputs.size());
+        for (Lease<T> lease : inputs) {
+            if (filter.allowSelect(lease)) {
+                leases.add(lease);
+            }
+        }
+        return leases;
     }
-    return leases;
-  }
 
-  @VisibleForTesting
-  protected AbstractEvictableFilterableLeaseManager<T> setLeaseFilters(
-      List<LeaseFilter> leaseFilters) {
-    this.leaseFilters = leaseFilters;
-    return this;
-  }
+    @VisibleForTesting
+    protected AbstractEvictableFilterableLeaseManager<T> setLeaseFilters(
+            List<LeaseFilter> leaseFilters) {
+        this.leaseFilters = leaseFilters;
+        return this;
+    }
 }

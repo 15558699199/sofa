@@ -47,30 +47,26 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
  * @author huzijie
  * @version ComponentManagerImplTests.java, v 0.1 2023年04月10日 3:37 PM huzijie Exp $
  */
-@ExtendWith({ MockitoExtension.class, OutputCaptureExtension.class })
+@ExtendWith({MockitoExtension.class, OutputCaptureExtension.class})
 public class ComponentManagerImplTests {
 
     static {
         LogOutPutUtils.openOutPutForLoggers(ComponentManagerImpl.class);
     }
 
-    @Mock
-    private ClientFactoryInternal       clientFactoryInternal;
-
-    @Mock
-    private DemoComponent               componentInfoA;
-
-    @Mock
-    private DemoComponent               componentInfoB;
-
-    private ComponentManagerImpl        componentManager;
-
     private final ClientFactoryInternal clientFactory = new ClientFactoryImpl();
+    @Mock
+    private ClientFactoryInternal clientFactoryInternal;
+    @Mock
+    private DemoComponent componentInfoA;
+    @Mock
+    private DemoComponent componentInfoB;
+    private ComponentManagerImpl componentManager;
 
     @BeforeEach
     public void setUp() {
         componentManager = new ComponentManagerImpl(clientFactoryInternal, this.getClass()
-            .getClassLoader());
+                .getClassLoader());
     }
 
     @Test
@@ -84,11 +80,11 @@ public class ComponentManagerImplTests {
         assertThat(componentManager.getComponents()).contains(componentInfoA, componentInfoB);
         assertThat(componentManager.getComponentTypes()).containsExactly(componentInfoA.getType());
         assertThat(componentManager.getComponentInfosByType(componentInfoA.getType()))
-            .containsExactly(componentInfoA, componentInfoB);
+                .containsExactly(componentInfoA, componentInfoB);
         assertThat(componentManager.getComponentInfo(componentInfoA.getName())).isEqualTo(
-            componentInfoA);
+                componentInfoA);
         assertThat(componentManager.getComponentInfosByApplicationContext(null)).containsExactly(
-            componentInfoA, componentInfoB);
+                componentInfoA, componentInfoB);
     }
 
     @Test
@@ -97,12 +93,12 @@ public class ComponentManagerImplTests {
         componentManager.register(componentInfoA);
         assertThat(componentManager.getComponents()).contains(componentInfoA);
         assertThat(componentManager.getComponentInfosByType(componentInfoA.getType()))
-            .containsExactly(componentInfoA);
+                .containsExactly(componentInfoA);
 
         componentManager.unregister(componentInfoA);
         assertThat(componentManager.getComponents()).doesNotContain(componentInfoA);
         assertThat(componentManager.getComponentInfosByType(componentInfoA.getType()))
-            .doesNotContain(componentInfoA);
+                .doesNotContain(componentInfoA);
     }
 
     @Test
@@ -158,11 +154,11 @@ public class ComponentManagerImplTests {
     public void normalShutdown() {
         ComponentManager componentManager = initComponentManager(false, false);
         ComponentInfo demoComponentInfo = componentManager
-            .getComponentInfosByType(DEMO_COMPONENT_TYPE).stream().findFirst().get();
+                .getComponentInfosByType(DEMO_COMPONENT_TYPE).stream().findFirst().get();
         ComponentInfo springComponentInfo = componentManager
-            .getComponentInfosByType(SPRING_COMPONENT_TYPE).stream().findFirst().get();
+                .getComponentInfosByType(SPRING_COMPONENT_TYPE).stream().findFirst().get();
         GenericApplicationContext applicationContext = (GenericApplicationContext) springComponentInfo
-            .getImplementation().getTarget();
+                .getImplementation().getTarget();
 
         assertThat(componentManager.size()).isEqualTo(2);
         assertThat(demoComponentInfo.isActivated()).isTrue();
@@ -179,11 +175,11 @@ public class ComponentManagerImplTests {
     public void skipAllComponentShutdown() {
         ComponentManager componentManager = initComponentManager(true, false);
         ComponentInfo demoComponentInfo = componentManager
-            .getComponentInfosByType(DEMO_COMPONENT_TYPE).stream().findFirst().get();
+                .getComponentInfosByType(DEMO_COMPONENT_TYPE).stream().findFirst().get();
         ComponentInfo springComponentInfo = componentManager
-            .getComponentInfosByType(SPRING_COMPONENT_TYPE).stream().findFirst().get();
+                .getComponentInfosByType(SPRING_COMPONENT_TYPE).stream().findFirst().get();
         GenericApplicationContext applicationContext = (GenericApplicationContext) springComponentInfo
-            .getImplementation().getTarget();
+                .getImplementation().getTarget();
 
         assertThat(componentManager.size()).isEqualTo(2);
         assertThat(demoComponentInfo.isActivated()).isTrue();
@@ -200,11 +196,11 @@ public class ComponentManagerImplTests {
     public void skipCommonComponentShutdown() {
         ComponentManager componentManager = initComponentManager(false, true);
         ComponentInfo demoComponentInfo = componentManager
-            .getComponentInfosByType(DEMO_COMPONENT_TYPE).stream().findFirst().get();
+                .getComponentInfosByType(DEMO_COMPONENT_TYPE).stream().findFirst().get();
         ComponentInfo springComponentInfo = componentManager
-            .getComponentInfosByType(SPRING_COMPONENT_TYPE).stream().findFirst().get();
+                .getComponentInfosByType(SPRING_COMPONENT_TYPE).stream().findFirst().get();
         GenericApplicationContext applicationContext = (GenericApplicationContext) springComponentInfo
-            .getImplementation().getTarget();
+                .getImplementation().getTarget();
 
         assertThat(componentManager.size()).isEqualTo(2);
         assertThat(demoComponentInfo.isActivated()).isTrue();
@@ -219,7 +215,7 @@ public class ComponentManagerImplTests {
 
     private ComponentManager initComponentManager(boolean skipAll, boolean skipComponent) {
         StandardSofaRuntimeManager sofaRuntimeManager = new StandardSofaRuntimeManager("testApp",
-            this.getClass().getClassLoader(), clientFactory);
+                this.getClass().getClassLoader(), clientFactory);
         ComponentManager componentManager = sofaRuntimeManager.getComponentManager();
         SofaRuntimeContext sofaRuntimeContext = sofaRuntimeManager.getSofaRuntimeContext();
         sofaRuntimeContext.getProperties().setSkipAllComponentShutdown(skipAll);
@@ -230,9 +226,9 @@ public class ComponentManagerImplTests {
 
         GenericApplicationContext applicationContext = new GenericApplicationContext();
         ComponentName springComponentName = ComponentNameFactory.createComponentName(
-            SPRING_COMPONENT_TYPE, "testModule");
+                SPRING_COMPONENT_TYPE, "testModule");
         ComponentInfo springComponentInfo = new SpringContextComponent(springComponentName,
-            new SpringContextImplementation(applicationContext), sofaRuntimeContext);
+                new SpringContextImplementation(applicationContext), sofaRuntimeContext);
         applicationContext.refresh();
         componentManager.register(springComponentInfo);
 

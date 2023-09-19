@@ -22,41 +22,42 @@ import com.alipay.sofa.registry.common.model.metaserver.ProvideDataChangeEvent;
 import com.alipay.sofa.registry.remoting.ChannelHandler;
 import com.alipay.sofa.registry.server.session.providedata.FetchBlackListService;
 import com.alipay.sofa.registry.server.shared.providedata.SystemPropertyProcessorManager;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
 public class NotifyProvideDataChangeHandlerTest {
 
-  private NotifyProvideDataChangeHandler newHandler() {
-    NotifyProvideDataChangeHandler handler = new NotifyProvideDataChangeHandler();
-    handler.metaNodeExecutor =
-        new ThreadPoolExecutor(10, 10, 10, TimeUnit.MINUTES, new LinkedBlockingQueue<>());
-    Assert.assertNotNull(handler.getExecutor());
-    Assert.assertEquals(handler.interest(), ProvideDataChangeEvent.class);
-    Assert.assertEquals(handler.getConnectNodeType(), Node.NodeType.META);
-    Assert.assertEquals(handler.getType(), ChannelHandler.HandlerType.PROCESSER);
-    Assert.assertEquals(handler.getInvokeType(), ChannelHandler.InvokeType.SYNC);
-    return handler;
-  }
+    private static ProvideDataChangeEvent request(String dataInfoId) {
+        return new ProvideDataChangeEvent(dataInfoId, 10);
+    }
 
-  private SystemPropertyProcessorManager newProvideDataProcessorManager() {
-    SystemPropertyProcessorManager provideDataProcessorManager =
-        new SystemPropertyProcessorManager();
-    provideDataProcessorManager.addSystemDataProcessor(new FetchBlackListService());
-    return provideDataProcessorManager;
-  }
+    private NotifyProvideDataChangeHandler newHandler() {
+        NotifyProvideDataChangeHandler handler = new NotifyProvideDataChangeHandler();
+        handler.metaNodeExecutor =
+                new ThreadPoolExecutor(10, 10, 10, TimeUnit.MINUTES, new LinkedBlockingQueue<>());
+        Assert.assertNotNull(handler.getExecutor());
+        Assert.assertEquals(handler.interest(), ProvideDataChangeEvent.class);
+        Assert.assertEquals(handler.getConnectNodeType(), Node.NodeType.META);
+        Assert.assertEquals(handler.getType(), ChannelHandler.HandlerType.PROCESSER);
+        Assert.assertEquals(handler.getInvokeType(), ChannelHandler.InvokeType.SYNC);
+        return handler;
+    }
 
-  @Test
-  public void testHandle() {
-    NotifyProvideDataChangeHandler handler = newHandler();
-    handler.systemPropertyProcessorManager = newProvideDataProcessorManager();
-    Assert.assertNull(handler.doHandle(null, request(ValueConstants.BLACK_LIST_DATA_ID)));
-  }
+    private SystemPropertyProcessorManager newProvideDataProcessorManager() {
+        SystemPropertyProcessorManager provideDataProcessorManager =
+                new SystemPropertyProcessorManager();
+        provideDataProcessorManager.addSystemDataProcessor(new FetchBlackListService());
+        return provideDataProcessorManager;
+    }
 
-  private static ProvideDataChangeEvent request(String dataInfoId) {
-    return new ProvideDataChangeEvent(dataInfoId, 10);
-  }
+    @Test
+    public void testHandle() {
+        NotifyProvideDataChangeHandler handler = newHandler();
+        handler.systemPropertyProcessorManager = newProvideDataProcessorManager();
+        Assert.assertNull(handler.doHandle(null, request(ValueConstants.BLACK_LIST_DATA_ID)));
+    }
 }

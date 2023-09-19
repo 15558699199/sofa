@@ -20,6 +20,7 @@ import com.alipay.sofa.registry.observer.UnblockingObserver;
 
 /**
  * @author chen.zhu
- *     <p>Dec 15, 2020
+ * <p>Dec 15, 2020
  */
-public interface SessionManagerObserver extends UnblockingObserver {}
+public interface SessionManagerObserver extends UnblockingObserver {
+}

@@ -35,7 +35,7 @@ public class GenericParamModel {
     /**
      * Setter method for property <code>name</code>.
      *
-     * @param name  value to be assigned to property name
+     * @param name value to be assigned to property name
      */
     public void setName(String name) {
         this.name = name;

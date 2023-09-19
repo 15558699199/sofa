@@ -18,21 +18,25 @@ package com.alipay.sofa.rpc.client.aft;
 
 /**
  * 资源度量结果状态
- * 
+ *
  * @author <a href="mailto:lw111072@antfin.com">liangen</a>
  */
 public enum MeasureState {
 
-    /**健康*/
+    /**
+     * 健康
+     */
     HEALTH("health"),
 
-    /**异常*/
+    /**
+     * 异常
+     */
     ABNORMAL("abnormal"),
 
-    /**忽略*/
-    IGNORE("ignore")
-
-    ;
+    /**
+     * 忽略
+     */
+    IGNORE("ignore");
 
     private final String name;
 

@@ -42,11 +42,11 @@ public class RuntimeContextBeanFactoryPostProcessorTests extends SofaRuntimeMana
         genericApplicationContext = new AnnotationConfigApplicationContext();
         genericApplicationContext.registerBean(RuntimeContextBeanFactoryPostProcessor.class);
         genericApplicationContext.getBeanFactory().registerSingleton("sofaRuntimeManager",
-            sofaRuntimeManager);
+                sofaRuntimeManager);
         genericApplicationContext.getBeanFactory().registerSingleton("bindingConverterFactory",
-            bindingConverterFactory);
+                bindingConverterFactory);
         genericApplicationContext.getBeanFactory().registerSingleton("bindingAdapterFactory",
-            bindingAdapterFactory);
+                bindingAdapterFactory);
 
     }
 

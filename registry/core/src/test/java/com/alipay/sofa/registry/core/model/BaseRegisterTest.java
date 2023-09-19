@@ -20,33 +20,33 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class BaseRegisterTest {
-  @Test
-  public void test() {
-    BaseRegister register = new BaseRegister();
-    register.setInstanceId("x1");
-    Assert.assertEquals(register.getInstanceId(), "x1");
+    @Test
+    public void test() {
+        BaseRegister register = new BaseRegister();
+        register.setInstanceId("x1");
+        Assert.assertEquals(register.getInstanceId(), "x1");
 
-    register.setZone("x2");
-    Assert.assertEquals(register.getZone(), "x2");
+        register.setZone("x2");
+        Assert.assertEquals(register.getZone(), "x2");
 
-    register.setGroup("x3");
-    Assert.assertEquals(register.getGroup(), "x3");
+        register.setGroup("x3");
+        Assert.assertEquals(register.getGroup(), "x3");
 
-    register.setProcessId("x4");
-    Assert.assertEquals(register.getProcessId(), "x4");
+        register.setProcessId("x4");
+        Assert.assertEquals(register.getProcessId(), "x4");
 
-    register.setClientId("x5");
-    Assert.assertEquals(register.getClientId(), "x5");
+        register.setClientId("x5");
+        Assert.assertEquals(register.getClientId(), "x5");
 
-    register.setIp("x6");
-    Assert.assertEquals(register.getIp(), "x6");
+        register.setIp("x6");
+        Assert.assertEquals(register.getIp(), "x6");
 
-    register.setPort(999);
-    Assert.assertEquals(register.getPort().intValue(), 999);
+        register.setPort(999);
+        Assert.assertEquals(register.getPort().intValue(), 999);
 
-    register.setDataInfoId("x7");
-    Assert.assertEquals(register.getDataInfoId(), "x7");
+        register.setDataInfoId("x7");
+        Assert.assertEquals(register.getDataInfoId(), "x7");
 
-    Assert.assertNotNull(register.toString());
-  }
+        Assert.assertNotNull(register.toString());
+    }
 }

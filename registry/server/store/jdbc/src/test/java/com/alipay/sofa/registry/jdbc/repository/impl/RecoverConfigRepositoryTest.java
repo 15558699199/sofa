@@ -22,13 +22,14 @@ import com.alipay.sofa.registry.common.model.constants.ValueConstants;
 import com.alipay.sofa.registry.jdbc.AbstractH2DbTestBase;
 import com.alipay.sofa.registry.store.api.config.DefaultCommonConfigBean;
 import com.alipay.sofa.registry.store.api.meta.ProvideDataRepository;
-import java.util.Map;
-import java.util.Set;
-import javax.annotation.Resource;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
+
+import javax.annotation.Resource;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author xiaojian.xj
@@ -36,50 +37,53 @@ import org.springframework.util.CollectionUtils;
  */
 public class RecoverConfigRepositoryTest extends AbstractH2DbTestBase {
 
-  @Resource private RecoverConfigJdbcRepository recoverConfigJdbcRepository;
+    @Resource
+    private RecoverConfigJdbcRepository recoverConfigJdbcRepository;
 
-  @Resource private DefaultCommonConfigBean defaultCommonConfig;
+    @Resource
+    private DefaultCommonConfigBean defaultCommonConfig;
 
-  @Autowired private ProvideDataRepository provideDataRepository;
+    @Autowired
+    private ProvideDataRepository provideDataRepository;
 
-  @Test
-  public void testSaveConfig() {
-    defaultCommonConfig.setClusterId(CLUSTER_ID);
-    defaultCommonConfig.setRecoverClusterId(CLUSTER_ID);
+    @Test
+    public void testSaveConfig() {
+        defaultCommonConfig.setClusterId(CLUSTER_ID);
+        defaultCommonConfig.setRecoverClusterId(CLUSTER_ID);
 
-    PersistenceData persistenceData =
-        PersistenceDataBuilder.createPersistenceData(
-            ValueConstants.STOP_PUSH_DATA_SWITCH_DATA_ID, "false");
+        PersistenceData persistenceData =
+                PersistenceDataBuilder.createPersistenceData(
+                        ValueConstants.STOP_PUSH_DATA_SWITCH_DATA_ID, "false");
 
-    PersistenceData exist = provideDataRepository.get(ValueConstants.STOP_PUSH_DATA_SWITCH_DATA_ID);
-    long expectVersion = exist == null ? 0 : exist.getVersion();
-    boolean put = provideDataRepository.put(persistenceData, expectVersion);
-    Assert.assertTrue(put);
+        PersistenceData exist = provideDataRepository.get(ValueConstants.STOP_PUSH_DATA_SWITCH_DATA_ID);
+        long expectVersion = exist == null ? 0 : exist.getVersion();
+        boolean put = provideDataRepository.put(persistenceData, expectVersion);
+        Assert.assertTrue(put);
 
-    recoverConfigJdbcRepository.save(
-        "provide_data", ValueConstants.STOP_PUSH_DATA_SWITCH_DATA_ID, RECOVER_CLUSTER_ID);
-    recoverConfigJdbcRepository.save("app_revision", "all", RECOVER_CLUSTER_ID);
-    recoverConfigJdbcRepository.doRefresh();
+        recoverConfigJdbcRepository.save(
+                "provide_data", ValueConstants.STOP_PUSH_DATA_SWITCH_DATA_ID, RECOVER_CLUSTER_ID);
+        recoverConfigJdbcRepository.save("app_revision", "all", RECOVER_CLUSTER_ID);
+        recoverConfigJdbcRepository.doRefresh();
 
-    Set<String> data = recoverConfigJdbcRepository.queryKey("provide_data");
-    Assert.assertTrue(data.contains(ValueConstants.STOP_PUSH_DATA_SWITCH_DATA_ID));
-    Assert.assertFalse(data.contains(ValueConstants.BLACK_LIST_DATA_ID));
-    data = recoverConfigJdbcRepository.queryKey("app_revision");
-    Assert.assertTrue(data.contains("all"));
+        Set<String> data = recoverConfigJdbcRepository.queryKey("provide_data");
+        Assert.assertTrue(data.contains(ValueConstants.STOP_PUSH_DATA_SWITCH_DATA_ID));
+        Assert.assertFalse(data.contains(ValueConstants.BLACK_LIST_DATA_ID));
+        data = recoverConfigJdbcRepository.queryKey("app_revision");
+        Assert.assertTrue(data.contains("all"));
 
-    Map<String, PersistenceData> all = provideDataRepository.getAll();
-    Assert.assertEquals(all.get(ValueConstants.STOP_PUSH_DATA_SWITCH_DATA_ID).getData(), "false");
+        Map<String, PersistenceData> all = provideDataRepository.getAll();
+        Assert.assertEquals(all.get(ValueConstants.STOP_PUSH_DATA_SWITCH_DATA_ID).getData(), "false");
 
-    defaultCommonConfig.setClusterId(CLUSTER_ID);
-    defaultCommonConfig.setRecoverClusterId(RECOVER_CLUSTER_ID);
+        defaultCommonConfig.setClusterId(CLUSTER_ID);
+        defaultCommonConfig.setRecoverClusterId(RECOVER_CLUSTER_ID);
 
-    all = provideDataRepository.getAll();
-    Assert.assertEquals(all.get(ValueConstants.STOP_PUSH_DATA_SWITCH_DATA_ID).getData(), "false");
+        all = provideDataRepository.getAll();
+        Assert.assertEquals(all.get(ValueConstants.STOP_PUSH_DATA_SWITCH_DATA_ID).getData(), "false");
 
-    recoverConfigJdbcRepository.remove(
-        "provide_data", ValueConstants.STOP_PUSH_DATA_SWITCH_DATA_ID);
-    recoverConfigJdbcRepository.doRefresh();
-    data = recoverConfigJdbcRepository.queryKey("provide_data");
-    Assert.assertTrue(CollectionUtils.isEmpty(data));
-  }
+        recoverConfigJdbcRepository.remove(
+                "provide_data", ValueConstants.STOP_PUSH_DATA_SWITCH_DATA_ID);
+        recoverConfigJdbcRepository.doRefresh();
+        data = recoverConfigJdbcRepository.queryKey("provide_data");
+        Assert.assertTrue(CollectionUtils.isEmpty(data));
+    }
 }

@@ -29,11 +29,11 @@ public class ProtobufServiceClientMain {
 
     public static void main(String[] args) {
         ConsumerConfig<ProtoService> consumerConfig = new ConsumerConfig<ProtoService>()
-            .setInterfaceId(ProtoService.class.getName()) // 指定接口
-            .setProtocol("bolt") // 指定协议
-            .setDirectUrl("bolt://127.0.0.1:12200") // 指定直连地址
-            .setSerialization("protobuf") // 指定序列化协议，默认为hessian
-            .setConnectTimeout(10 * 1000);
+                .setInterfaceId(ProtoService.class.getName()) // 指定接口
+                .setProtocol("bolt") // 指定协议
+                .setDirectUrl("bolt://127.0.0.1:12200") // 指定直连地址
+                .setSerialization("protobuf") // 指定序列化协议，默认为hessian
+                .setConnectTimeout(10 * 1000);
 
         ProtoService helloService = consumerConfig.refer();
 

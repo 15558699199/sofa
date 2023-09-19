@@ -22,25 +22,19 @@ import com.alipay.sofa.rpc.common.config.RpcConfigKeys;
 import com.alipay.sofa.rpc.core.exception.SofaRpcRuntimeException;
 import com.alipay.sofa.rpc.log.LogCodes;
 import io.netty.handler.codec.http2.Http2SecurityUtil;
-import io.netty.handler.ssl.ApplicationProtocolConfig;
-import io.netty.handler.ssl.ApplicationProtocolNames;
-import io.netty.handler.ssl.OpenSsl;
-import io.netty.handler.ssl.SslContext;
-import io.netty.handler.ssl.SslProvider;
-import io.netty.handler.ssl.SupportedCipherSuiteFilter;
+import io.netty.handler.ssl.*;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 
 /**
- *
  * @author <a href="mailto:zhanggeng.zg@antfin.com">GengZhang</a>
  * @since 5.4.0
  */
 @Unstable
 public class SslContextBuilder {
 
-    public static final boolean SSL              = SofaConfigs.getOrDefault(RpcConfigKeys.REMOTING_HTTP_SSL_ENABLE);
-    public static final String  CERTIFICATE_PATH = SofaConfigs.getOrDefault(RpcConfigKeys.CERTIFICATE_PATH);
-    public static final String  PRIVATE_KEY_PATH = SofaConfigs.getOrDefault(RpcConfigKeys.PRIVATE_KEY_PATH);
+    public static final boolean SSL = SofaConfigs.getOrDefault(RpcConfigKeys.REMOTING_HTTP_SSL_ENABLE);
+    public static final String CERTIFICATE_PATH = SofaConfigs.getOrDefault(RpcConfigKeys.CERTIFICATE_PATH);
+    public static final String PRIVATE_KEY_PATH = SofaConfigs.getOrDefault(RpcConfigKeys.PRIVATE_KEY_PATH);
 
     public static SslContext build() {
         // Configure SSL.
@@ -50,19 +44,19 @@ public class SslContextBuilder {
                 SslProvider provider = OpenSsl.isAlpnSupported() ? SslProvider.OPENSSL : SslProvider.JDK;
                 SelfSignedCer ssc = new SelfSignedCer(CERTIFICATE_PATH, PRIVATE_KEY_PATH);
                 sslCtx = io.netty.handler.ssl.SslContextBuilder.forServer(ssc.certificate(), ssc.privateKey())
-                    .sslProvider(provider)
-                    /* NOTE: the cipher filter may not include all ciphers required by the HTTP/2 specification.
-                     * Please refer to the HTTP/2 specification for cipher requirements. */
-                    .ciphers(Http2SecurityUtil.CIPHERS, SupportedCipherSuiteFilter.INSTANCE)
-                    .applicationProtocolConfig(new ApplicationProtocolConfig(
-                        ApplicationProtocolConfig.Protocol.ALPN,
-                        // NO_ADVERTISE is currently the only mode supported by both OpenSsl and JDK providers.
-                        ApplicationProtocolConfig.SelectorFailureBehavior.NO_ADVERTISE,
-                        // ACCEPT is currently the only mode supported by both OpenSsl and JDK providers.
-                        ApplicationProtocolConfig.SelectedListenerFailureBehavior.ACCEPT,
-                        ApplicationProtocolNames.HTTP_2,
-                        ApplicationProtocolNames.HTTP_1_1))
-                    .build();
+                        .sslProvider(provider)
+                        /* NOTE: the cipher filter may not include all ciphers required by the HTTP/2 specification.
+                         * Please refer to the HTTP/2 specification for cipher requirements. */
+                        .ciphers(Http2SecurityUtil.CIPHERS, SupportedCipherSuiteFilter.INSTANCE)
+                        .applicationProtocolConfig(new ApplicationProtocolConfig(
+                                ApplicationProtocolConfig.Protocol.ALPN,
+                                // NO_ADVERTISE is currently the only mode supported by both OpenSsl and JDK providers.
+                                ApplicationProtocolConfig.SelectorFailureBehavior.NO_ADVERTISE,
+                                // ACCEPT is currently the only mode supported by both OpenSsl and JDK providers.
+                                ApplicationProtocolConfig.SelectedListenerFailureBehavior.ACCEPT,
+                                ApplicationProtocolNames.HTTP_2,
+                                ApplicationProtocolNames.HTTP_1_1))
+                        .build();
             } else {
                 sslCtx = null;
             }
@@ -81,22 +75,22 @@ public class SslContextBuilder {
             if (SSL) {
                 SslProvider provider = OpenSsl.isAlpnSupported() ? SslProvider.OPENSSL : SslProvider.JDK;
                 sslCtx = io.netty.handler.ssl.SslContextBuilder.forClient()
-                    .sslProvider(provider)
-                    /* NOTE: the cipher filter may not include all ciphers required by the HTTP/2
-                     * specification. Please refer to the HTTP/2 specification for cipher
-                     * requirements.*/
-                    .ciphers(Http2SecurityUtil.CIPHERS, SupportedCipherSuiteFilter.INSTANCE)
-                    .trustManager(InsecureTrustManagerFactory.INSTANCE)
-                    .applicationProtocolConfig(
-                        new ApplicationProtocolConfig(
-                            ApplicationProtocolConfig.Protocol.ALPN,
-                            // NO_ADVERTISE is currently the only mode supported by both OpenSsl and JDK providers.
-                            ApplicationProtocolConfig.SelectorFailureBehavior.NO_ADVERTISE,
-                            // ACCEPT is currently the only mode supported by both OpenSsl and JDK providers.
-                            ApplicationProtocolConfig.SelectedListenerFailureBehavior.ACCEPT,
-                            ApplicationProtocolNames.HTTP_2,
-                            ApplicationProtocolNames.HTTP_1_1))
-                    .build();
+                        .sslProvider(provider)
+                        /* NOTE: the cipher filter may not include all ciphers required by the HTTP/2
+                         * specification. Please refer to the HTTP/2 specification for cipher
+                         * requirements.*/
+                        .ciphers(Http2SecurityUtil.CIPHERS, SupportedCipherSuiteFilter.INSTANCE)
+                        .trustManager(InsecureTrustManagerFactory.INSTANCE)
+                        .applicationProtocolConfig(
+                                new ApplicationProtocolConfig(
+                                        ApplicationProtocolConfig.Protocol.ALPN,
+                                        // NO_ADVERTISE is currently the only mode supported by both OpenSsl and JDK providers.
+                                        ApplicationProtocolConfig.SelectorFailureBehavior.NO_ADVERTISE,
+                                        // ACCEPT is currently the only mode supported by both OpenSsl and JDK providers.
+                                        ApplicationProtocolConfig.SelectedListenerFailureBehavior.ACCEPT,
+                                        ApplicationProtocolNames.HTTP_2,
+                                        ApplicationProtocolNames.HTTP_1_1))
+                        .build();
             } else {
                 sslCtx = null;
             }

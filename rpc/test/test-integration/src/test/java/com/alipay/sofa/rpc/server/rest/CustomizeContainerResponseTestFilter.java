@@ -39,7 +39,7 @@ public class CustomizeContainerResponseTestFilter implements ContainerResponseFi
 
     @Override
     public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext)
-        throws IOException {
+            throws IOException {
         invoked = true;
     }
 }

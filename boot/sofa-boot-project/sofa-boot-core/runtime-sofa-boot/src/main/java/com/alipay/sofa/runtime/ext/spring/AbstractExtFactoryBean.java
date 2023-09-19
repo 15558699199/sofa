@@ -18,11 +18,7 @@ package com.alipay.sofa.runtime.ext.spring;
 
 import com.alipay.sofa.runtime.spi.component.SofaRuntimeContext;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.BeanFactoryAware;
-import org.springframework.beans.factory.BeanNameAware;
-import org.springframework.beans.factory.FactoryBean;
-import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.*;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.Ordered;
@@ -34,26 +30,19 @@ import org.springframework.core.Ordered;
  * @since 2.6.0
  */
 public class AbstractExtFactoryBean implements BeanFactoryAware, ApplicationContextAware,
-                                   BeanNameAware, FactoryBean, Ordered, InitializingBean {
+        BeanNameAware, FactoryBean, Ordered, InitializingBean {
 
-    protected String             beanName;
-
+    public final static String LINK_SYMBOL = "$";
+    protected String beanName;
     protected SofaRuntimeContext sofaRuntimeContext;
-
     protected ApplicationContext applicationContext;
-
     /**
      * Spring bean context for looking up spring's bean
      */
-    protected BeanFactory        beanFactory;
-
-    protected String             targetBeanName;
-
-    protected Object             target;
-
+    protected BeanFactory beanFactory;
+    protected String targetBeanName;
+    protected Object target;
     protected ClassLoaderWrapper beanClassLoaderWrapper;
-
-    public final static String   LINK_SYMBOL = "$";
 
     @Override
     public void afterPropertiesSet() throws Exception {
@@ -77,6 +66,7 @@ public class AbstractExtFactoryBean implements BeanFactoryAware, ApplicationCont
 
     /**
      * no real bean exist
+     *
      * @return null
      * @throws Exception any exception
      */
@@ -87,6 +77,7 @@ public class AbstractExtFactoryBean implements BeanFactoryAware, ApplicationCont
 
     /**
      * no real bean exist
+     *
      * @return String.class
      */
     @Override

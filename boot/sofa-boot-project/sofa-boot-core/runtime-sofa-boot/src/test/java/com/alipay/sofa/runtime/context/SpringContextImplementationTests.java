@@ -37,7 +37,7 @@ public class SpringContextImplementationTests {
         ApplicationContext applicationContext = Mockito.mock(ApplicationContext.class);
         Mockito.when(applicationContext.getDisplayName()).thenReturn("TestContext");
         SpringContextImplementation implementation = new SpringContextImplementation(
-            applicationContext);
+                applicationContext);
 
         // Act
         String result = implementation.getName();
@@ -51,7 +51,7 @@ public class SpringContextImplementationTests {
         // Arrange
         ApplicationContext applicationContext = Mockito.mock(ApplicationContext.class);
         SpringContextImplementation implementation = new SpringContextImplementation(
-            applicationContext);
+                applicationContext);
 
         // Act
         Object result = implementation.getTarget();
@@ -65,7 +65,7 @@ public class SpringContextImplementationTests {
         // Arrange
         ApplicationContext applicationContext = new GenericApplicationContext();
         SpringContextImplementation implementation = new SpringContextImplementation(
-            applicationContext);
+                applicationContext);
 
         // Act
         Class<?> result = implementation.getTargetClass();
@@ -79,7 +79,7 @@ public class SpringContextImplementationTests {
         // Arrange
         ApplicationContext applicationContext = Mockito.mock(ApplicationContext.class);
         SpringContextImplementation implementation = new SpringContextImplementation(
-            applicationContext);
+                applicationContext);
 
         // Act
         boolean result = implementation.isSingleton();
@@ -93,7 +93,7 @@ public class SpringContextImplementationTests {
         // Arrange
         ApplicationContext applicationContext = Mockito.mock(ApplicationContext.class);
         SpringContextImplementation implementation = new SpringContextImplementation(
-            applicationContext);
+                applicationContext);
 
         // Act
         boolean result = implementation.isLazyInit();
@@ -108,7 +108,7 @@ public class SpringContextImplementationTests {
         ApplicationContext applicationContext1 = Mockito.mock(ApplicationContext.class);
         ApplicationContext applicationContext2 = Mockito.mock(ApplicationContext.class);
         SpringContextImplementation implementation = new SpringContextImplementation(
-            applicationContext1);
+                applicationContext1);
 
         // Act
         implementation.setTarget(applicationContext2);
@@ -122,7 +122,7 @@ public class SpringContextImplementationTests {
         // Arrange
         ApplicationContext applicationContext = Mockito.mock(ApplicationContext.class);
         SpringContextImplementation implementation = new SpringContextImplementation(
-            applicationContext);
+                applicationContext);
 
         // Act
         boolean result = implementation.isFactory();

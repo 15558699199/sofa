@@ -21,6 +21,14 @@ import com.salesforce.jprotoc.ProtocPlugin;
 
 public class ReactorSofaTripleGenerator extends AbstractGenerator {
 
+    public static void main(String[] args) {
+        if (args.length == 0) {
+            ProtocPlugin.generate(new ReactorSofaTripleGenerator());
+        } else {
+            ProtocPlugin.debug(new ReactorSofaTripleGenerator(), args[0]);
+        }
+    }
+
     @Override
     protected String getClassPrefix() {
         return "ReactorSofa";
@@ -29,13 +37,5 @@ public class ReactorSofaTripleGenerator extends AbstractGenerator {
     @Override
     protected String getClassSuffix() {
         return "Triple";
-    }
-
-    public static void main(String[] args) {
-        if (args.length == 0) {
-            ProtocPlugin.generate(new ReactorSofaTripleGenerator());
-        } else {
-            ProtocPlugin.debug(new ReactorSofaTripleGenerator(), args[0]);
-        }
     }
 }

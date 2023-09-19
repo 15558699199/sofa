@@ -23,15 +23,13 @@ import com.alipay.sofa.rpc.server.bolt.pb.EchoRequest;
 import com.alipay.sofa.rpc.server.bolt.pb.EchoResponse;
 
 /**
- *
- *
  * @author <a href=mailto:zhanggeng.zg@antfin.com>GengZhang</a>
  */
 public class DSampleServiceImpl implements SampleService {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(DSampleServiceImpl.class);
 
-    private String              reqBaggage;
+    private String reqBaggage;
 
     @Override
     public String hello() {

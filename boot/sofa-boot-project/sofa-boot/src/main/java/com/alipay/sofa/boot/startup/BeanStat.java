@@ -26,19 +26,19 @@ public class BeanStat extends ChildrenStat<BeanStat> {
 
     private String type;
 
-    private long   realRefreshElapsedTime;
+    private long realRefreshElapsedTime;
 
     @Deprecated
     private String beanClassName;
 
     @Deprecated
-    private long   beanRefreshStartTime;
+    private long beanRefreshStartTime;
 
     @Deprecated
-    private long   beanRefreshEndTime;
+    private long beanRefreshEndTime;
 
     @Deprecated
-    private long   refreshElapsedTime;
+    private long refreshElapsedTime;
 
     public String getType() {
         return type;

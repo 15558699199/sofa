@@ -29,8 +29,6 @@ import java.lang.reflect.Proxy;
 import java.util.HashMap;
 
 /**
- *
- *
  * @author <a href="mailto:zhanggeng.zg@antfin.com">GengZhang</a>
  */
 public class JavassistProxyTest {
@@ -78,7 +76,7 @@ public class JavassistProxyTest {
 
         Assert.assertEquals("sayHello", another1.sayHello("xxxx"));
         another1.sayNoting();
-        Assert.assertArrayEquals(new int[] { 6, 7, 8 }, another1.sayNums(null, new HashMap()));
+        Assert.assertArrayEquals(new int[]{6, 7, 8}, another1.sayNums(null, new HashMap()));
         Assert.assertNull(another1.sayNum2(1.2D));
 
         boolean error = false;

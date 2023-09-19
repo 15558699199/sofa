@@ -20,32 +20,34 @@ import com.alipay.sofa.registry.log.Logger;
 import com.alipay.sofa.registry.server.data.multi.cluster.executor.MultiClusterExecutorManager;
 import com.alipay.sofa.registry.server.data.multi.cluster.loggers.Loggers;
 import com.alipay.sofa.registry.server.data.remoting.dataserver.handler.BaseSlotDiffPublisherRequestHandler;
-import java.util.concurrent.Executor;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.concurrent.Executor;
 
 /**
  * @author xiaojian.xj
  * @version : MultiClusterSlotDiffPublisherRequestHandler.java, v 0.1 2022年05月16日 21:51 xiaojian.xj
- *     Exp $
+ * Exp $
  */
 public class MultiClusterSlotDiffPublisherRequestHandler
-    extends BaseSlotDiffPublisherRequestHandler {
+        extends BaseSlotDiffPublisherRequestHandler {
 
-  private static final Logger LOGGER = Loggers.MULTI_CLUSTER_SRV_LOGGER;
+    private static final Logger LOGGER = Loggers.MULTI_CLUSTER_SRV_LOGGER;
 
-  @Autowired private MultiClusterExecutorManager multiClusterExecutorManager;
+    @Autowired
+    private MultiClusterExecutorManager multiClusterExecutorManager;
 
-  public MultiClusterSlotDiffPublisherRequestHandler() {
-    super(LOGGER);
-  }
+    public MultiClusterSlotDiffPublisherRequestHandler() {
+        super(LOGGER);
+    }
 
-  /**
-   * specify executor for processor handler
-   *
-   * @return Executor
-   */
-  @Override
-  public Executor getExecutor() {
-    return multiClusterExecutorManager.getRemoteSlotSyncProcessorExecutor();
-  }
+    /**
+     * specify executor for processor handler
+     *
+     * @return Executor
+     */
+    @Override
+    public Executor getExecutor() {
+        return multiClusterExecutorManager.getRemoteSlotSyncProcessorExecutor();
+    }
 }

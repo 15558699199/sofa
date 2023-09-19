@@ -22,12 +22,12 @@ package com.alipay.sofa.registry.remoting;
  */
 public class RemotingException extends RuntimeException {
 
-  /**
-   * constructor
-   *
-   * @param s
-   */
-  public RemotingException(String s) {
-    super(s);
-  }
+    /**
+     * constructor
+     *
+     * @param s
+     */
+    public RemotingException(String s) {
+        super(s);
+    }
 }

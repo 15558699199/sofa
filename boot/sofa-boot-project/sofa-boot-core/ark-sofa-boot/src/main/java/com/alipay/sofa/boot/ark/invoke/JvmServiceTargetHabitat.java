@@ -30,7 +30,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class JvmServiceTargetHabitat {
 
-    private final String                        bizName;
+    private final String bizName;
 
     /**
      * Key as version

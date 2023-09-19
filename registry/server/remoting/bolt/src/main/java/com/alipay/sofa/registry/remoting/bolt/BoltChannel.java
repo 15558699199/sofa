@@ -21,10 +21,11 @@ import com.alipay.remoting.Connection;
 import com.alipay.sofa.registry.exception.SofaRegistryRuntimeException;
 import com.alipay.sofa.registry.remoting.Channel;
 import com.alipay.sofa.registry.util.StringFormatter;
+
+import javax.ws.rs.client.WebTarget;
 import java.net.InetSocketAddress;
 import java.util.HashMap;
 import java.util.Map;
-import javax.ws.rs.client.WebTarget;
 
 /**
  * @author shangyu.wh
@@ -33,123 +34,122 @@ import javax.ws.rs.client.WebTarget;
  */
 public class BoltChannel implements Channel {
 
-  private final Connection connection;
+    private final Connection connection;
 
-  private AsyncContext asyncContext;
+    private AsyncContext asyncContext;
 
-  private Map<String, Object> attributes;
+    private Map<String, Object> attributes;
+    private volatile boolean markProtobuf;
 
-  public BoltChannel(Connection conn) {
-    if (conn == null) {
-      throw new SofaRegistryRuntimeException("conn is null.");
+    public BoltChannel(Connection conn) {
+        if (conn == null) {
+            throw new SofaRegistryRuntimeException("conn is null.");
+        }
+        this.connection = conn;
     }
-    this.connection = conn;
-  }
 
-  private volatile boolean markProtobuf;
-
-  @Override
-  public InetSocketAddress getRemoteAddress() {
-    return connection.getRemoteAddress();
-  }
-
-  @Override
-  public InetSocketAddress getLocalAddress() {
-    return connection.getLocalAddress();
-  }
-
-  @Override
-  public boolean isConnected() {
-    return connection.isFine();
-  }
-
-  @Override
-  public void setConnAttribute(String key, Object value) {
-
-    if (value == null) {
-      connection.removeAttribute(key);
-    } else {
-      connection.setAttribute(key, value);
+    @Override
+    public InetSocketAddress getRemoteAddress() {
+        return connection.getRemoteAddress();
     }
-  }
 
-  @Override
-  public Object getConnAttribute(String key) {
-    return connection.getAttribute(key);
-  }
-
-  @Override
-  public synchronized Object getAttribute(String key) {
-    return attributes == null ? null : attributes.get(key);
-  }
-
-  @Override
-  public synchronized void setAttribute(String key, Object value) {
-
-    if (attributes == null) {
-      attributes = new HashMap<>();
+    @Override
+    public InetSocketAddress getLocalAddress() {
+        return connection.getLocalAddress();
     }
-    if (value == null) {
-      attributes.remove(key);
-    } else {
-      attributes.put(key, value);
+
+    @Override
+    public boolean isConnected() {
+        return connection.isFine();
     }
-  }
 
-  @Override
-  public WebTarget getWebTarget() {
-    return null;
-  }
+    @Override
+    public void setConnAttribute(String key, Object value) {
 
-  @Override
-  public void close() {
-    this.connection.close();
-  }
-
-  /**
-   * Getter method for property <tt>connection</tt>.
-   *
-   * @return property value of connection
-   */
-  public Connection getConnection() {
-    return connection;
-  }
-
-  /**
-   * Getter method for property <tt>asyncContext</tt>.
-   *
-   * @return property value of asyncContext
-   */
-  public AsyncContext getAsyncContext() {
-    return asyncContext;
-  }
-
-  /**
-   * Setter method for property <tt>asyncContext</tt>.
-   *
-   * @param asyncContext value to be assigned to property asyncContext
-   */
-  public void setAsyncContext(AsyncContext asyncContext) {
-    this.asyncContext = asyncContext;
-  }
-
-  public void markProtobuf() {
-    if (!markProtobuf) {
-      this.markProtobuf = true;
+        if (value == null) {
+            connection.removeAttribute(key);
+        } else {
+            connection.setAttribute(key, value);
+        }
     }
-  }
 
-  public boolean isMarkProtobuf() {
-    return markProtobuf;
-  }
+    @Override
+    public Object getConnAttribute(String key) {
+        return connection.getAttribute(key);
+    }
 
-  @Override
-  public String toString() {
-    return StringFormatter.format(
-        "connected={},remote={},local={},pb={}",
-        isConnected(),
-        getRemoteAddress(),
-        getLocalAddress(),
-        markProtobuf);
-  }
+    @Override
+    public synchronized Object getAttribute(String key) {
+        return attributes == null ? null : attributes.get(key);
+    }
+
+    @Override
+    public synchronized void setAttribute(String key, Object value) {
+
+        if (attributes == null) {
+            attributes = new HashMap<>();
+        }
+        if (value == null) {
+            attributes.remove(key);
+        } else {
+            attributes.put(key, value);
+        }
+    }
+
+    @Override
+    public WebTarget getWebTarget() {
+        return null;
+    }
+
+    @Override
+    public void close() {
+        this.connection.close();
+    }
+
+    /**
+     * Getter method for property <tt>connection</tt>.
+     *
+     * @return property value of connection
+     */
+    public Connection getConnection() {
+        return connection;
+    }
+
+    /**
+     * Getter method for property <tt>asyncContext</tt>.
+     *
+     * @return property value of asyncContext
+     */
+    public AsyncContext getAsyncContext() {
+        return asyncContext;
+    }
+
+    /**
+     * Setter method for property <tt>asyncContext</tt>.
+     *
+     * @param asyncContext value to be assigned to property asyncContext
+     */
+    public void setAsyncContext(AsyncContext asyncContext) {
+        this.asyncContext = asyncContext;
+    }
+
+    public void markProtobuf() {
+        if (!markProtobuf) {
+            this.markProtobuf = true;
+        }
+    }
+
+    public boolean isMarkProtobuf() {
+        return markProtobuf;
+    }
+
+    @Override
+    public String toString() {
+        return StringFormatter.format(
+                "connected={},remote={},local={},pb={}",
+                isConnected(),
+                getRemoteAddress(),
+                getLocalAddress(),
+                markProtobuf);
+    }
 }

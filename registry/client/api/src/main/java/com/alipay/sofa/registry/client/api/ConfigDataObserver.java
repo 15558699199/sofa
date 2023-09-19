@@ -26,11 +26,11 @@ import com.alipay.sofa.registry.client.api.model.ConfigData;
  */
 public interface ConfigDataObserver {
 
-  /**
-   * Handle data.
-   *
-   * @param dataId the data id
-   * @param configData the persistence data
-   */
-  void handleData(String dataId, ConfigData configData);
+    /**
+     * Handle data.
+     *
+     * @param dataId     the data id
+     * @param configData the persistence data
+     */
+    void handleData(String dataId, ConfigData configData);
 }

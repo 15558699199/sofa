@@ -25,11 +25,7 @@ import com.alipay.sofa.rpc.common.Version;
 import com.alipay.sofa.rpc.common.utils.CommonUtils;
 import com.alipay.sofa.rpc.common.utils.NetUtils;
 import com.alipay.sofa.rpc.common.utils.StringUtils;
-import com.alipay.sofa.rpc.config.AbstractInterfaceConfig;
-import com.alipay.sofa.rpc.config.ConfigUniqueNameGenerator;
-import com.alipay.sofa.rpc.config.ConsumerConfig;
-import com.alipay.sofa.rpc.config.ProviderConfig;
-import com.alipay.sofa.rpc.config.ServerConfig;
+import com.alipay.sofa.rpc.config.*;
 import com.alipay.sofa.rpc.context.RpcRuntimeContext;
 
 import java.util.ArrayList;
@@ -74,8 +70,8 @@ public class RegistryUtils {
                 Map<String, String> metaData = convertProviderToMap(providerConfig, server);
                 //noinspection unchecked
                 sb.append(server.getProtocol()).append("://").append(host).append(":")
-                    .append(port).append(server.getContextPath()).append("?version=1.0")
-                    .append(convertMap2Pair(metaData));
+                        .append(port).append(server.getContextPath()).append("?version=1.0")
+                        .append(convertMap2Pair(metaData));
                 urls.add(sb.toString());
             }
             return urls;
@@ -88,7 +84,7 @@ public class RegistryUtils {
         List<ProviderInfo> result = new ArrayList<ProviderInfo>();
         for (ProviderInfo providerInfo : providerInfos) {
             if (providerInfo.getProtocolType().equalsIgnoreCase(protocol)
-                && StringUtils.equals(consumerConfig.getUniqueId(),
+                    && StringUtils.equals(consumerConfig.getUniqueId(),
                     providerInfo.getAttr(ProviderInfoAttrs.ATTR_UNIQUEID))) {
                 result.add(providerInfo);
             }
@@ -133,17 +129,17 @@ public class RegistryUtils {
         String host = SystemInfo.getLocalHost();
         //noinspection unchecked
         sb.append(consumerConfig.getProtocol()).append("://").append(host).append("?version=1.0")
-            .append(getKeyPairs(RpcConstants.CONFIG_KEY_UNIQUEID, consumerConfig.getUniqueId()))
-            .append(getKeyPairs(RpcConstants.CONFIG_KEY_PID, RpcRuntimeContext.PID))
-            .append(getKeyPairs(RpcConstants.CONFIG_KEY_TIMEOUT, consumerConfig.getTimeout()))
-            .append(getKeyPairs(RpcConstants.CONFIG_KEY_ID, consumerConfig.getId()))
-            .append(getKeyPairs(RpcConstants.CONFIG_KEY_GENERIC, consumerConfig.isGeneric()))
-            .append(getKeyPairs(RpcConstants.CONFIG_KEY_INTERFACE, consumerConfig.getInterfaceId()))
-            .append(getKeyPairs(RpcConstants.CONFIG_KEY_APP_NAME, consumerConfig.getAppName()))
-            .append(getKeyPairs(RpcConstants.CONFIG_KEY_SERIALIZATION,
-                consumerConfig.getSerialization()))
-            .append(getKeyPairs(ProviderInfoAttrs.ATTR_START_TIME, RpcRuntimeContext.now()))
-            .append(convertMap2Pair(consumerConfig.getParameters()));
+                .append(getKeyPairs(RpcConstants.CONFIG_KEY_UNIQUEID, consumerConfig.getUniqueId()))
+                .append(getKeyPairs(RpcConstants.CONFIG_KEY_PID, RpcRuntimeContext.PID))
+                .append(getKeyPairs(RpcConstants.CONFIG_KEY_TIMEOUT, consumerConfig.getTimeout()))
+                .append(getKeyPairs(RpcConstants.CONFIG_KEY_ID, consumerConfig.getId()))
+                .append(getKeyPairs(RpcConstants.CONFIG_KEY_GENERIC, consumerConfig.isGeneric()))
+                .append(getKeyPairs(RpcConstants.CONFIG_KEY_INTERFACE, consumerConfig.getInterfaceId()))
+                .append(getKeyPairs(RpcConstants.CONFIG_KEY_APP_NAME, consumerConfig.getAppName()))
+                .append(getKeyPairs(RpcConstants.CONFIG_KEY_SERIALIZATION,
+                        consumerConfig.getSerialization()))
+                .append(getKeyPairs(ProviderInfoAttrs.ATTR_START_TIME, RpcRuntimeContext.now()))
+                .append(convertMap2Pair(consumerConfig.getParameters()));
         addCommonAttrs(sb);
         return sb.toString();
     }
@@ -219,11 +215,11 @@ public class RegistryUtils {
         String startTimeStr = providerInfo.getStaticAttr(ProviderInfoAttrs.ATTR_START_TIME);
 
         if (StringUtils.isNotBlank(warmupTimeStr) && StringUtils.isNotBlank(warmupWeightStr) &&
-            StringUtils.isNotBlank(startTimeStr)) {
+                StringUtils.isNotBlank(startTimeStr)) {
 
             long warmupTime = CommonUtils.parseLong(warmupTimeStr, 0);
             int warmupWeight = CommonUtils.parseInt(warmupWeightStr,
-                Integer.parseInt(providerInfo.getStaticAttr(ProviderInfoAttrs.ATTR_WEIGHT)));
+                    Integer.parseInt(providerInfo.getStaticAttr(ProviderInfoAttrs.ATTR_WEIGHT)));
             long startTime = CommonUtils.parseLong(startTimeStr, 0);
             long warmupEndTime = startTime + warmupTime;
 

@@ -17,8 +17,9 @@
 package com.alipay.sofa.registry.jdbc.mapper;
 
 import com.alipay.sofa.registry.jdbc.domain.MultiClusterSyncDomain;
-import java.util.List;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * @author xiaojian.xj
@@ -26,52 +27,52 @@ import org.apache.ibatis.annotations.Param;
  */
 public interface MultiClusterSyncMapper {
 
-  /**
-   * insert data
-   *
-   * @param data data
-   * @return int
-   */
-  public int save(MultiClusterSyncDomain data);
+    /**
+     * insert data
+     *
+     * @param data data
+     * @return int
+     */
+    public int save(MultiClusterSyncDomain data);
 
-  /**
-   * update meta address with exceptVersion cas
-   *
-   * @param data data
-   * @param exceptVersion exceptVersion
-   * @return int
-   */
-  public int update(
-      @Param("data") MultiClusterSyncDomain data, @Param("exceptVersion") long exceptVersion);
+    /**
+     * update meta address with exceptVersion cas
+     *
+     * @param data          data
+     * @param exceptVersion exceptVersion
+     * @return int
+     */
+    public int update(
+            @Param("data") MultiClusterSyncDomain data, @Param("exceptVersion") long exceptVersion);
 
-  /**
-   * query MultiClusterSyncInfo
-   *
-   * @param dataCenter dataCenter
-   * @return List
-   */
-  public List<MultiClusterSyncDomain> queryByCluster(@Param("dataCenter") String dataCenter);
+    /**
+     * query MultiClusterSyncInfo
+     *
+     * @param dataCenter dataCenter
+     * @return List
+     */
+    public List<MultiClusterSyncDomain> queryByCluster(@Param("dataCenter") String dataCenter);
 
-  /**
-   * query MultiClusterSyncInfo
-   *
-   * @param dataCenter dataCenter
-   * @param remoteDataCenter remoteDataCenter
-   * @return MultiClusterSyncDomain
-   */
-  public MultiClusterSyncDomain query(
-      @Param("dataCenter") String dataCenter, @Param("remoteDataCenter") String remoteDataCenter);
+    /**
+     * query MultiClusterSyncInfo
+     *
+     * @param dataCenter       dataCenter
+     * @param remoteDataCenter remoteDataCenter
+     * @return MultiClusterSyncDomain
+     */
+    public MultiClusterSyncDomain query(
+            @Param("dataCenter") String dataCenter, @Param("remoteDataCenter") String remoteDataCenter);
 
-  /**
-   * remove provideData
-   *
-   * @param dataCenter dataCenter
-   * @param remoteDataCenter remoteDataCenter
-   * @param dataVersion dataVersion
-   * @return int
-   */
-  public int remove(
-      @Param("dataCenter") String dataCenter,
-      @Param("remoteDataCenter") String remoteDataCenter,
-      @Param("dataVersion") long dataVersion);
+    /**
+     * remove provideData
+     *
+     * @param dataCenter       dataCenter
+     * @param remoteDataCenter remoteDataCenter
+     * @param dataVersion      dataVersion
+     * @return int
+     */
+    public int remove(
+            @Param("dataCenter") String dataCenter,
+            @Param("remoteDataCenter") String remoteDataCenter,
+            @Param("dataVersion") long dataVersion);
 }

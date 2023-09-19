@@ -20,17 +20,17 @@ import com.alipay.sofa.registry.util.StringFormatter;
 import org.junit.Assert;
 
 public class TestUtils {
-  public static void assertException(Class<? extends Throwable> eclazz, Runnable runnable) {
-    try {
-      runnable.run();
-      Assert.assertTrue(false);
-    } catch (Throwable exception) {
-      Assert.assertEquals(exception.getClass(), eclazz);
+    public static void assertException(Class<? extends Throwable> eclazz, Runnable runnable) {
+        try {
+            runnable.run();
+            Assert.assertTrue(false);
+        } catch (Throwable exception) {
+            Assert.assertEquals(exception.getClass(), eclazz);
+        }
     }
-  }
 
-  public static void assertBetween(long v, long low, long high) {
-    Assert.assertTrue(StringFormatter.format("v={}, low={}"), v >= low);
-    Assert.assertTrue(StringFormatter.format("v={}, high={}"), v <= high);
-  }
+    public static void assertBetween(long v, long low, long high) {
+        Assert.assertTrue(StringFormatter.format("v={}, low={}"), v >= low);
+        Assert.assertTrue(StringFormatter.format("v={}, high={}"), v <= high);
+    }
 }

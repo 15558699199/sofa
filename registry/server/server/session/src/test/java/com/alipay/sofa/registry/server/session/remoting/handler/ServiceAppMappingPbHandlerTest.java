@@ -16,9 +16,6 @@
  */
 package com.alipay.sofa.registry.server.session.remoting.handler;
 
-import static org.mockito.Matchers.anyList;
-import static org.mockito.Mockito.*;
-
 import com.alipay.sofa.registry.common.model.Node;
 import com.alipay.sofa.registry.common.model.client.pb.ServiceAppMappingRequest;
 import com.alipay.sofa.registry.common.model.client.pb.ServiceAppMappingResponse;
@@ -34,47 +31,50 @@ import org.assertj.core.util.Lists;
 import org.junit.Assert;
 import org.junit.Test;
 
+import static org.mockito.Matchers.anyList;
+import static org.mockito.Mockito.*;
+
 public class ServiceAppMappingPbHandlerTest {
-  @Test
-  public void testCheckParam() {
-    ServiceAppMappingPbHandler handler = newHandler();
-    handler.checkParam(request());
-  }
+    private static ServiceAppMappingRequest request() {
+        ServiceAppMappingRequest.Builder builder = ServiceAppMappingRequest.newBuilder();
+        builder.addServiceIds("testServiceIds");
+        return builder.build();
+    }
 
-  private ServiceAppMappingPbHandler newHandler() {
-    ServiceAppMappingPbHandler handler = new ServiceAppMappingPbHandler();
-    handler.executorManager = new ExecutorManager(TestUtils.newSessionConfig("testDc"));
-    Assert.assertNotNull(handler.getExecutor());
-    Assert.assertEquals(handler.interest(), ServiceAppMappingRequest.class);
-    Assert.assertEquals(handler.getConnectNodeType(), Node.NodeType.CLIENT);
-    Assert.assertEquals(handler.getType(), ChannelHandler.HandlerType.PROCESSER);
-    Assert.assertEquals(handler.getInvokeType(), ChannelHandler.InvokeType.SYNC);
-    handler.appRevisionHandlerStrategy = mock(AppRevisionHandlerStrategy.class);
-    return handler;
-  }
+    @Test
+    public void testCheckParam() {
+        ServiceAppMappingPbHandler handler = newHandler();
+        handler.checkParam(request());
+    }
 
-  @Test
-  public void testHandle() {
-    ServiceAppMappingPbHandler handler = newHandler();
-    Channel channel = new TestUtils.MockBlotChannel(9600, "192.168.0.3", 56555);
-    handler.doHandle(channel, request());
-    verify(handler.appRevisionHandlerStrategy, times(1)).queryApps(anyList(), anyString());
-  }
+    private ServiceAppMappingPbHandler newHandler() {
+        ServiceAppMappingPbHandler handler = new ServiceAppMappingPbHandler();
+        handler.executorManager = new ExecutorManager(TestUtils.newSessionConfig("testDc"));
+        Assert.assertNotNull(handler.getExecutor());
+        Assert.assertEquals(handler.interest(), ServiceAppMappingRequest.class);
+        Assert.assertEquals(handler.getConnectNodeType(), Node.NodeType.CLIENT);
+        Assert.assertEquals(handler.getType(), ChannelHandler.HandlerType.PROCESSER);
+        Assert.assertEquals(handler.getInvokeType(), ChannelHandler.InvokeType.SYNC);
+        handler.appRevisionHandlerStrategy = mock(AppRevisionHandlerStrategy.class);
+        return handler;
+    }
 
-  @Test
-  public void testStopPush() {
-    PushSwitchService pushSwitchService = mock(PushSwitchService.class);
-    when(pushSwitchService.canIpPushLocal(anyString())).thenReturn(false);
-    DefaultAppRevisionHandlerStrategy strategy = new DefaultAppRevisionHandlerStrategy();
-    strategy.setPushSwitchService(pushSwitchService);
+    @Test
+    public void testHandle() {
+        ServiceAppMappingPbHandler handler = newHandler();
+        Channel channel = new TestUtils.MockBlotChannel(9600, "192.168.0.3", 56555);
+        handler.doHandle(channel, request());
+        verify(handler.appRevisionHandlerStrategy, times(1)).queryApps(anyList(), anyString());
+    }
 
-    ServiceAppMappingResponse response = strategy.queryApps(Lists.newArrayList("123"), "");
-    Assert.assertEquals(ValueConstants.METADATA_STATUS_DATA_NOT_FOUND, response.getStatusCode());
-  }
+    @Test
+    public void testStopPush() {
+        PushSwitchService pushSwitchService = mock(PushSwitchService.class);
+        when(pushSwitchService.canIpPushLocal(anyString())).thenReturn(false);
+        DefaultAppRevisionHandlerStrategy strategy = new DefaultAppRevisionHandlerStrategy();
+        strategy.setPushSwitchService(pushSwitchService);
 
-  private static ServiceAppMappingRequest request() {
-    ServiceAppMappingRequest.Builder builder = ServiceAppMappingRequest.newBuilder();
-    builder.addServiceIds("testServiceIds");
-    return builder.build();
-  }
+        ServiceAppMappingResponse response = strategy.queryApps(Lists.newArrayList("123"), "");
+        Assert.assertEquals(ValueConstants.METADATA_STATUS_DATA_NOT_FOUND, response.getStatusCode());
+    }
 }

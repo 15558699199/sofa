@@ -30,7 +30,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Integration tests for {@link ProxyBeanFactoryPostProcessor}.
- * 
+ *
  * @author ruoshan
  * @author huzijie
  * @since 2.6.1
@@ -44,27 +44,27 @@ public class ProxyBeanFactoryPostProcessorTests {
 
     @Autowired
     @Qualifier("&proxyFactoryBean1")
-    private ProxyFactoryBean    proxyFactoryBean1;
+    private ProxyFactoryBean proxyFactoryBean1;
 
     @Autowired
     @Qualifier("&proxyFactoryBean2")
-    private ProxyFactoryBean    proxyFactoryBean2;
+    private ProxyFactoryBean proxyFactoryBean2;
 
     @Autowired
     @Qualifier("&proxyFactoryBean3")
-    private ProxyFactoryBean    proxyFactoryBean3;
+    private ProxyFactoryBean proxyFactoryBean3;
 
     @Autowired
     @Qualifier("&proxyFactoryBean4")
-    private ProxyFactoryBean    proxyFactoryBean4;
+    private ProxyFactoryBean proxyFactoryBean4;
 
     @Autowired
     @Qualifier("&proxyFactoryBean5")
-    private ProxyFactoryBean    proxyFactoryBean5;
+    private ProxyFactoryBean proxyFactoryBean5;
 
     @Autowired
     @Qualifier("&proxyFactoryBean6")
-    private ProxyFactoryBean    proxyFactoryBean6;
+    private ProxyFactoryBean proxyFactoryBean6;
 
     @Test
     public void verifyClassType() {

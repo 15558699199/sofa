@@ -35,179 +35,182 @@ import com.alipay.sofa.registry.server.meta.slot.SlotManager;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
 /**
  * @author chen.zhu
- *     <p>Nov 24, 2020
+ * <p>Nov 24, 2020
  */
 @Component
 public class DefaultDataServerManager extends AbstractEvictableFilterableLeaseManager<DataNode>
-    implements DataServerManager {
+        implements DataServerManager {
 
-  private static final Logger logger = LoggerFactory.getLogger(DefaultDataServerManager.class);
+    private static final Logger logger = LoggerFactory.getLogger(DefaultDataServerManager.class);
+    private final Map<String, DataServerStats> dataServerStatses = Maps.newConcurrentMap();
+    @Autowired
+    private MetaServerConfig metaServerConfig;
+    @Autowired
+    private SlotManager slotManager;
 
-  @Autowired private MetaServerConfig metaServerConfig;
-
-  @Autowired private SlotManager slotManager;
-
-  private final Map<String, DataServerStats> dataServerStatses = Maps.newConcurrentMap();
-
-  /** Constructor. */
-  public DefaultDataServerManager() {}
-
-  /**
-   * Constructor.
-   *
-   * @param metaServerConfig the meta server config
-   * @param metaLeaderService metaLeaderService
-   */
-  public DefaultDataServerManager(
-      MetaServerConfig metaServerConfig, MetaLeaderService metaLeaderService) {
-    this.metaServerConfig = metaServerConfig;
-    this.metaLeaderService = metaLeaderService;
-  }
-
-  /**
-   * Post construct.
-   *
-   * @throws Exception the exception
-   */
-  @PostConstruct
-  public void postConstruct() throws Exception {
-    LifecycleHelper.initializeIfPossible(this);
-    LifecycleHelper.startIfPossible(this);
-  }
-
-  /**
-   * Pre destory.
-   *
-   * @throws Exception the exception
-   */
-  @PreDestroy
-  public void preDestory() throws Exception {
-    LifecycleHelper.stopIfPossible(this);
-    LifecycleHelper.disposeIfPossible(this);
-  }
-
-  @Override
-  public void register(Lease<DataNode> lease) {
-    super.register(lease);
-    notifyObservers(new NodeAdded<>(lease.getRenewal()));
-  }
-
-  @Override
-  public boolean cancel(Lease<DataNode> lease) {
-    boolean result = super.cancel(lease);
-    if (result) {
-      notifyObservers(new NodeRemoved<>(lease.getRenewal()));
-      Metrics.Heartbeat.onDataEvict(lease.getRenewal().getIp());
-    }
-    return result;
-  }
-
-  @Override
-  public boolean renew(DataNode renewal, int leaseDuration) {
-    Metrics.Heartbeat.onDataHeartbeat(renewal.getIp());
-    return super.renew(renewal, leaseDuration);
-  }
-
-  @Override
-  protected int getIntervalMilli() {
-    return metaServerConfig.getExpireCheckIntervalMillis();
-  }
-
-  @Override
-  protected int getEvictBetweenMilli() {
-    return metaServerConfig.getExpireCheckIntervalMillis();
-  }
-
-  @VisibleForTesting
-  DefaultDataServerManager setMetaServerConfig(MetaServerConfig metaServerConfig) {
-    this.metaServerConfig = metaServerConfig;
-    return this;
-  }
-
-  @VisibleForTesting
-  DefaultDataServerManager setSlotManager(SlotManager slotManager) {
-    this.slotManager = slotManager;
-    return this;
-  }
-
-  /**
-   * To string string.
-   *
-   * @return the string
-   */
-  @Override
-  public String toString() {
-    return "DefaultDataServerManager";
-  }
-
-  /**
-   * On heartbeat.
-   *
-   * @param heartbeat the heartbeat
-   */
-  @Override
-  public void onHeartbeat(HeartbeatRequest<DataNode> heartbeat) {
-    String dataServer = heartbeat.getNode().getIp();
-    dataServerStatses.put(
-        dataServer,
-        new DataServerStats(dataServer, heartbeat.getSlotTableEpoch(), heartbeat.getSlotStatus()));
-    learnFromData(heartbeat);
-  }
-
-  protected void learnFromData(HeartbeatRequest<DataNode> heartbeat) {
-    if (!amILeader()) {
-      logger.info("data server heartbeat on follower.leader is:{}", metaLeaderService.getLeader());
-      return;
+    /**
+     * Constructor.
+     */
+    public DefaultDataServerManager() {
     }
 
-    if (!metaLeaderService.isWarmuped()) {
-      logger.info("leader:{} is warming up.", metaLeaderService.getLeader());
-      return;
+    /**
+     * Constructor.
+     *
+     * @param metaServerConfig  the meta server config
+     * @param metaLeaderService metaLeaderService
+     */
+    public DefaultDataServerManager(
+            MetaServerConfig metaServerConfig, MetaLeaderService metaLeaderService) {
+        this.metaServerConfig = metaServerConfig;
+        this.metaLeaderService = metaLeaderService;
     }
 
-    if (heartbeat.getSlotTable() == null) {
-      logger.info("data server:{} heartbeat slotTable is null.", heartbeat.getNode().getIp());
-      return;
+    /**
+     * Post construct.
+     *
+     * @throws Exception the exception
+     */
+    @PostConstruct
+    public void postConstruct() throws Exception {
+        LifecycleHelper.initializeIfPossible(this);
+        LifecycleHelper.startIfPossible(this);
     }
 
-    SlotTable slotTable = heartbeat.getSlotTable();
-    slotManager.refresh(slotTable);
-  }
+    /**
+     * Pre destory.
+     *
+     * @throws Exception the exception
+     */
+    @PreDestroy
+    public void preDestory() throws Exception {
+        LifecycleHelper.stopIfPossible(this);
+        LifecycleHelper.disposeIfPossible(this);
+    }
 
-  @Override
-  public List<DataServerStats> getDataServersStats() {
-    return Collections.unmodifiableList(Lists.newLinkedList(dataServerStatses.values()));
-  }
+    @Override
+    public void register(Lease<DataNode> lease) {
+        super.register(lease);
+        notifyObservers(new NodeAdded<>(lease.getRenewal()));
+    }
 
-  @Override
-  public VersionedList<DataNode> getDataServerMetaInfo() {
-    VersionedList<Lease<DataNode>> leaseMetaInfo = getLeaseMeta();
-    List<DataNode> dataNodes = Lists.newArrayList();
-    leaseMetaInfo
-        .getClusterMembers()
-        .forEach(
-            lease -> {
-              dataNodes.add(lease.getRenewal());
-            });
-    return new VersionedList<>(leaseMetaInfo.getEpoch(), dataNodes);
-  }
+    @Override
+    public boolean cancel(Lease<DataNode> lease) {
+        boolean result = super.cancel(lease);
+        if (result) {
+            notifyObservers(new NodeRemoved<>(lease.getRenewal()));
+            Metrics.Heartbeat.onDataEvict(lease.getRenewal().getIp());
+        }
+        return result;
+    }
 
-  @Override
-  public long getEpoch() {
-    return currentEpoch.get();
-  }
+    @Override
+    public boolean renew(DataNode renewal, int leaseDuration) {
+        Metrics.Heartbeat.onDataHeartbeat(renewal.getIp());
+        return super.renew(renewal, leaseDuration);
+    }
 
-  public MetaServerConfig getMetaServerConfig() {
-    return metaServerConfig;
-  }
+    @Override
+    protected int getIntervalMilli() {
+        return metaServerConfig.getExpireCheckIntervalMillis();
+    }
+
+    @Override
+    protected int getEvictBetweenMilli() {
+        return metaServerConfig.getExpireCheckIntervalMillis();
+    }
+
+    @VisibleForTesting
+    DefaultDataServerManager setSlotManager(SlotManager slotManager) {
+        this.slotManager = slotManager;
+        return this;
+    }
+
+    /**
+     * To string string.
+     *
+     * @return the string
+     */
+    @Override
+    public String toString() {
+        return "DefaultDataServerManager";
+    }
+
+    /**
+     * On heartbeat.
+     *
+     * @param heartbeat the heartbeat
+     */
+    @Override
+    public void onHeartbeat(HeartbeatRequest<DataNode> heartbeat) {
+        String dataServer = heartbeat.getNode().getIp();
+        dataServerStatses.put(
+                dataServer,
+                new DataServerStats(dataServer, heartbeat.getSlotTableEpoch(), heartbeat.getSlotStatus()));
+        learnFromData(heartbeat);
+    }
+
+    protected void learnFromData(HeartbeatRequest<DataNode> heartbeat) {
+        if (!amILeader()) {
+            logger.info("data server heartbeat on follower.leader is:{}", metaLeaderService.getLeader());
+            return;
+        }
+
+        if (!metaLeaderService.isWarmuped()) {
+            logger.info("leader:{} is warming up.", metaLeaderService.getLeader());
+            return;
+        }
+
+        if (heartbeat.getSlotTable() == null) {
+            logger.info("data server:{} heartbeat slotTable is null.", heartbeat.getNode().getIp());
+            return;
+        }
+
+        SlotTable slotTable = heartbeat.getSlotTable();
+        slotManager.refresh(slotTable);
+    }
+
+    @Override
+    public List<DataServerStats> getDataServersStats() {
+        return Collections.unmodifiableList(Lists.newLinkedList(dataServerStatses.values()));
+    }
+
+    @Override
+    public VersionedList<DataNode> getDataServerMetaInfo() {
+        VersionedList<Lease<DataNode>> leaseMetaInfo = getLeaseMeta();
+        List<DataNode> dataNodes = Lists.newArrayList();
+        leaseMetaInfo
+                .getClusterMembers()
+                .forEach(
+                        lease -> {
+                            dataNodes.add(lease.getRenewal());
+                        });
+        return new VersionedList<>(leaseMetaInfo.getEpoch(), dataNodes);
+    }
+
+    @Override
+    public long getEpoch() {
+        return currentEpoch.get();
+    }
+
+    public MetaServerConfig getMetaServerConfig() {
+        return metaServerConfig;
+    }
+
+    @VisibleForTesting
+    DefaultDataServerManager setMetaServerConfig(MetaServerConfig metaServerConfig) {
+        this.metaServerConfig = metaServerConfig;
+        return this;
+    }
 }

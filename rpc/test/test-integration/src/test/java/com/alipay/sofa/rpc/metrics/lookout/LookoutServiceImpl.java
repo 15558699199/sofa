@@ -19,15 +19,14 @@ package com.alipay.sofa.rpc.metrics.lookout;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- *
  * @author <a href="mailto:lw111072@antfin.com">LiWei.Liangen</a>
  */
 public class LookoutServiceImpl implements LookoutService {
 
-    private final AtomicInteger countSync     = new AtomicInteger();
-    private final AtomicInteger countFuture   = new AtomicInteger();
+    private final AtomicInteger countSync = new AtomicInteger();
+    private final AtomicInteger countFuture = new AtomicInteger();
     private final AtomicInteger countCallback = new AtomicInteger();
-    private final AtomicInteger countOneway   = new AtomicInteger();
+    private final AtomicInteger countOneway = new AtomicInteger();
 
     @Override
     public String saySync(String string) throws InterruptedException {

@@ -43,7 +43,7 @@ public class SofaBizUninstallEventHandler implements EventHandler<BeforeBizStopE
         DynamicJvmServiceProxyFinder.getInstance().afterBizUninstall(biz);
 
         SofaRuntimeManager sofaRuntimeManager = SofaRuntimeContainer.getSofaRuntimeManager(biz
-            .getBizClassLoader());
+                .getBizClassLoader());
 
         if (sofaRuntimeManager == null) {
             throw new IllegalStateException("No SofaRuntimeManager match classLoader");

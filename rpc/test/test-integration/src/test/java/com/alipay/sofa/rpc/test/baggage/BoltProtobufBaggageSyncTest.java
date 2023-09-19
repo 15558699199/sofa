@@ -28,8 +28,6 @@ import com.alipay.sofa.rpc.server.bolt.pb.Group;
 import org.junit.Assert;
 
 /**
- *
- *
  * @author <a href="mailto:zhanggeng.zg@antfin.com">GengZhang</a>
  */
 public class BoltProtobufBaggageSyncTest extends BaggageBaseTest {

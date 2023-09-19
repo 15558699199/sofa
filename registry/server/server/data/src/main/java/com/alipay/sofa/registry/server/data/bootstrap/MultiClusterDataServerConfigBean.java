@@ -26,286 +26,286 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = MultiClusterDataServerConfigBean.PREFIX)
 public class MultiClusterDataServerConfigBean implements MultiClusterDataServerConfig {
 
-  public static final String PREFIX = "data.remote.server";
+    public static final String PREFIX = "data.remote.server";
 
-  private volatile int syncRemoteSlotLeaderIntervalSecs = 6;
+    private volatile int syncRemoteSlotLeaderIntervalSecs = 6;
 
-  private volatile int syncRemoteSlotLeaderTimeoutMillis = 3000;
+    private volatile int syncRemoteSlotLeaderTimeoutMillis = 3000;
 
-  private volatile int syncRemoteSlotLeaderPort = 9627;
+    private volatile int syncRemoteSlotLeaderPort = 9627;
 
-  private volatile int syncRemoteSlotLeaderConnNum = 3;
+    private volatile int syncRemoteSlotLeaderConnNum = 3;
 
-  private volatile int remoteSyncSlotLeaderExecutorThreadSize = OsUtils.getCpuCount() * 10;
+    private volatile int remoteSyncSlotLeaderExecutorThreadSize = OsUtils.getCpuCount() * 10;
 
-  private volatile int remoteSyncSlotLeaderExecutorQueueSize = 10000;
+    private volatile int remoteSyncSlotLeaderExecutorQueueSize = 10000;
 
-  private volatile int remoteSyncDataIdExecutorThreadSize = OsUtils.getCpuCount() * 3;
+    private volatile int remoteSyncDataIdExecutorThreadSize = OsUtils.getCpuCount() * 3;
 
-  private volatile int remoteSyncDataIdExecutorQueueSize = 1000;
+    private volatile int remoteSyncDataIdExecutorQueueSize = 1000;
 
-  private volatile int remoteDataChangeExecutorThreadSize = OsUtils.getCpuCount() * 3;
+    private volatile int remoteDataChangeExecutorThreadSize = OsUtils.getCpuCount() * 3;
 
-  private volatile int remoteDataChangeExecutorQueueSize = 3000;
+    private volatile int remoteDataChangeExecutorQueueSize = 3000;
 
-  private volatile int syncSlotLowWaterMark = 1024 * 256;
-  private volatile int syncSlotHighWaterMark = 1024 * 320;
+    private volatile int syncSlotLowWaterMark = 1024 * 256;
+    private volatile int syncSlotHighWaterMark = 1024 * 320;
 
-  private volatile int remoteSlotSyncRequestExecutorMinPoolSize = OsUtils.getCpuCount() * 3;
+    private volatile int remoteSlotSyncRequestExecutorMinPoolSize = OsUtils.getCpuCount() * 3;
 
-  private volatile int remoteSlotSyncRequestExecutorMaxPoolSize = OsUtils.getCpuCount() * 5;
+    private volatile int remoteSlotSyncRequestExecutorMaxPoolSize = OsUtils.getCpuCount() * 5;
 
-  private volatile int remoteSlotSyncRequestExecutorQueueSize = 1000;
+    private volatile int remoteSlotSyncRequestExecutorQueueSize = 1000;
 
-  private volatile int multiClusterConfigReloadMillis = 60 * 1000;
+    private volatile int multiClusterConfigReloadMillis = 60 * 1000;
 
-  @Override
-  public int getSyncRemoteSlotLeaderIntervalSecs() {
-    return syncRemoteSlotLeaderIntervalSecs;
-  }
+    @Override
+    public int getSyncRemoteSlotLeaderIntervalSecs() {
+        return syncRemoteSlotLeaderIntervalSecs;
+    }
 
-  @Override
-  public int getSyncRemoteSlotLeaderTimeoutMillis() {
-    return syncRemoteSlotLeaderTimeoutMillis;
-  }
+    /**
+     * Setter method for property <tt>syncRemoteSlotLeaderIntervalSecs</tt>.
+     *
+     * @param syncRemoteSlotLeaderIntervalSecs value to be assigned to property
+     *                                         syncRemoteSlotLeaderIntervalSecs
+     */
+    public void setSyncRemoteSlotLeaderIntervalSecs(int syncRemoteSlotLeaderIntervalSecs) {
+        this.syncRemoteSlotLeaderIntervalSecs = syncRemoteSlotLeaderIntervalSecs;
+    }
 
-  @Override
-  public int getSyncRemoteSlotLeaderPort() {
-    return syncRemoteSlotLeaderPort;
-  }
+    @Override
+    public int getSyncRemoteSlotLeaderTimeoutMillis() {
+        return syncRemoteSlotLeaderTimeoutMillis;
+    }
 
-  @Override
-  public int getSyncRemoteSlotLeaderConnNum() {
-    return syncRemoteSlotLeaderConnNum;
-  }
+    /**
+     * Setter method for property <tt>syncRemoteSlotLeaderTimeoutMillis</tt>.
+     *
+     * @param syncRemoteSlotLeaderTimeoutMillis value to be assigned to property
+     *                                          syncRemoteSlotLeaderTimeoutMillis
+     */
+    public void setSyncRemoteSlotLeaderTimeoutMillis(int syncRemoteSlotLeaderTimeoutMillis) {
+        this.syncRemoteSlotLeaderTimeoutMillis = syncRemoteSlotLeaderTimeoutMillis;
+    }
 
-  @Override
-  public int getRemoteSyncSlotLeaderExecutorThreadSize() {
-    return remoteSyncSlotLeaderExecutorThreadSize;
-  }
+    @Override
+    public int getSyncRemoteSlotLeaderPort() {
+        return syncRemoteSlotLeaderPort;
+    }
 
-  @Override
-  public int getRemoteSyncSlotLeaderExecutorQueueSize() {
-    return remoteSyncSlotLeaderExecutorQueueSize;
-  }
+    /**
+     * Setter method for property <tt>syncRemoteSlotLeaderPort</tt>.
+     *
+     * @param syncRemoteSlotLeaderPort value to be assigned to property syncRemoteSlotLeaderPort
+     */
+    public void setSyncRemoteSlotLeaderPort(int syncRemoteSlotLeaderPort) {
+        this.syncRemoteSlotLeaderPort = syncRemoteSlotLeaderPort;
+    }
 
-  /**
-   * Setter method for property <tt>syncRemoteSlotLeaderIntervalSecs</tt>.
-   *
-   * @param syncRemoteSlotLeaderIntervalSecs value to be assigned to property
-   *     syncRemoteSlotLeaderIntervalSecs
-   */
-  public void setSyncRemoteSlotLeaderIntervalSecs(int syncRemoteSlotLeaderIntervalSecs) {
-    this.syncRemoteSlotLeaderIntervalSecs = syncRemoteSlotLeaderIntervalSecs;
-  }
+    @Override
+    public int getSyncRemoteSlotLeaderConnNum() {
+        return syncRemoteSlotLeaderConnNum;
+    }
 
-  /**
-   * Setter method for property <tt>syncRemoteSlotLeaderTimeoutMillis</tt>.
-   *
-   * @param syncRemoteSlotLeaderTimeoutMillis value to be assigned to property
-   *     syncRemoteSlotLeaderTimeoutMillis
-   */
-  public void setSyncRemoteSlotLeaderTimeoutMillis(int syncRemoteSlotLeaderTimeoutMillis) {
-    this.syncRemoteSlotLeaderTimeoutMillis = syncRemoteSlotLeaderTimeoutMillis;
-  }
+    /**
+     * Setter method for property <tt>syncRemoteSlotLeaderConnNum</tt>.
+     *
+     * @param syncRemoteSlotLeaderConnNum value to be assigned to property syncRemoteSlotLeaderConnNum
+     */
+    public void setSyncRemoteSlotLeaderConnNum(int syncRemoteSlotLeaderConnNum) {
+        this.syncRemoteSlotLeaderConnNum = syncRemoteSlotLeaderConnNum;
+    }
 
-  /**
-   * Setter method for property <tt>syncRemoteSlotLeaderPort</tt>.
-   *
-   * @param syncRemoteSlotLeaderPort value to be assigned to property syncRemoteSlotLeaderPort
-   */
-  public void setSyncRemoteSlotLeaderPort(int syncRemoteSlotLeaderPort) {
-    this.syncRemoteSlotLeaderPort = syncRemoteSlotLeaderPort;
-  }
+    @Override
+    public int getRemoteSyncSlotLeaderExecutorThreadSize() {
+        return remoteSyncSlotLeaderExecutorThreadSize;
+    }
 
-  /**
-   * Setter method for property <tt>syncRemoteSlotLeaderConnNum</tt>.
-   *
-   * @param syncRemoteSlotLeaderConnNum value to be assigned to property syncRemoteSlotLeaderConnNum
-   */
-  public void setSyncRemoteSlotLeaderConnNum(int syncRemoteSlotLeaderConnNum) {
-    this.syncRemoteSlotLeaderConnNum = syncRemoteSlotLeaderConnNum;
-  }
+    /**
+     * Setter method for property <tt>remoteSyncSlotLeaderExecutorThreadSize</tt>.
+     *
+     * @param remoteSyncSlotLeaderExecutorThreadSize value to be assigned to property
+     *                                               remoteSyncSlotLeaderExecutorThreadSize
+     */
+    public void setRemoteSyncSlotLeaderExecutorThreadSize(
+            int remoteSyncSlotLeaderExecutorThreadSize) {
+        this.remoteSyncSlotLeaderExecutorThreadSize = remoteSyncSlotLeaderExecutorThreadSize;
+    }
 
-  /**
-   * Setter method for property <tt>remoteSyncSlotLeaderExecutorThreadSize</tt>.
-   *
-   * @param remoteSyncSlotLeaderExecutorThreadSize value to be assigned to property
-   *     remoteSyncSlotLeaderExecutorThreadSize
-   */
-  public void setRemoteSyncSlotLeaderExecutorThreadSize(
-      int remoteSyncSlotLeaderExecutorThreadSize) {
-    this.remoteSyncSlotLeaderExecutorThreadSize = remoteSyncSlotLeaderExecutorThreadSize;
-  }
+    @Override
+    public int getRemoteSyncSlotLeaderExecutorQueueSize() {
+        return remoteSyncSlotLeaderExecutorQueueSize;
+    }
 
-  /**
-   * Setter method for property <tt>remoteSyncSlotLeaderExecutorQueueSize</tt>.
-   *
-   * @param remoteSyncSlotLeaderExecutorQueueSize value to be assigned to property
-   *     remoteSyncSlotLeaderExecutorQueueSize
-   */
-  public void setRemoteSyncSlotLeaderExecutorQueueSize(int remoteSyncSlotLeaderExecutorQueueSize) {
-    this.remoteSyncSlotLeaderExecutorQueueSize = remoteSyncSlotLeaderExecutorQueueSize;
-  }
+    /**
+     * Setter method for property <tt>remoteSyncSlotLeaderExecutorQueueSize</tt>.
+     *
+     * @param remoteSyncSlotLeaderExecutorQueueSize value to be assigned to property
+     *                                              remoteSyncSlotLeaderExecutorQueueSize
+     */
+    public void setRemoteSyncSlotLeaderExecutorQueueSize(int remoteSyncSlotLeaderExecutorQueueSize) {
+        this.remoteSyncSlotLeaderExecutorQueueSize = remoteSyncSlotLeaderExecutorQueueSize;
+    }
 
-  /**
-   * Getter method for property <tt>syncSlotLowWaterMark</tt>.
-   *
-   * @return property value of syncSlotLowWaterMark
-   */
-  @Override
-  public int getSyncSlotLowWaterMark() {
-    return syncSlotLowWaterMark;
-  }
+    /**
+     * Getter method for property <tt>syncSlotLowWaterMark</tt>.
+     *
+     * @return property value of syncSlotLowWaterMark
+     */
+    @Override
+    public int getSyncSlotLowWaterMark() {
+        return syncSlotLowWaterMark;
+    }
 
-  /**
-   * Setter method for property <tt>syncSlotLowWaterMark</tt>.
-   *
-   * @param syncSlotLowWaterMark value to be assigned to property syncSlotLowWaterMark
-   */
-  public void setSyncSlotLowWaterMark(int syncSlotLowWaterMark) {
-    this.syncSlotLowWaterMark = syncSlotLowWaterMark;
-  }
+    /**
+     * Setter method for property <tt>syncSlotLowWaterMark</tt>.
+     *
+     * @param syncSlotLowWaterMark value to be assigned to property syncSlotLowWaterMark
+     */
+    public void setSyncSlotLowWaterMark(int syncSlotLowWaterMark) {
+        this.syncSlotLowWaterMark = syncSlotLowWaterMark;
+    }
 
-  /**
-   * Getter method for property <tt>syncSlotHighWaterMark</tt>.
-   *
-   * @return property value of syncSlotHighWaterMark
-   */
-  @Override
-  public int getSyncSlotHighWaterMark() {
-    return syncSlotHighWaterMark;
-  }
+    /**
+     * Getter method for property <tt>syncSlotHighWaterMark</tt>.
+     *
+     * @return property value of syncSlotHighWaterMark
+     */
+    @Override
+    public int getSyncSlotHighWaterMark() {
+        return syncSlotHighWaterMark;
+    }
 
-  @Override
-  public int getRemoteSlotSyncRequestExecutorMinPoolSize() {
-    return remoteSlotSyncRequestExecutorMinPoolSize;
-  }
+    /**
+     * Setter method for property <tt>syncSlotHighWaterMark</tt>.
+     *
+     * @param syncSlotHighWaterMark value to be assigned to property syncSlotHighWaterMark
+     */
+    public void setSyncSlotHighWaterMark(int syncSlotHighWaterMark) {
+        this.syncSlotHighWaterMark = syncSlotHighWaterMark;
+    }
 
-  @Override
-  public int getRemoteSlotSyncRequestExecutorMaxPoolSize() {
-    return remoteSlotSyncRequestExecutorMaxPoolSize;
-  }
+    @Override
+    public int getRemoteSlotSyncRequestExecutorMinPoolSize() {
+        return remoteSlotSyncRequestExecutorMinPoolSize;
+    }
 
-  @Override
-  public int getRemoteSlotSyncRequestExecutorQueueSize() {
-    return remoteSlotSyncRequestExecutorQueueSize;
-  }
+    /**
+     * Setter method for property <tt>remoteSlotSyncRequestExecutorMinPoolSize</tt>.
+     *
+     * @param remoteSlotSyncRequestExecutorMinPoolSize value to be assigned to property
+     *                                                 remoteSlotSyncRequestExecutorMinPoolSize
+     */
+    public void setRemoteSlotSyncRequestExecutorMinPoolSize(
+            int remoteSlotSyncRequestExecutorMinPoolSize) {
+        this.remoteSlotSyncRequestExecutorMinPoolSize = remoteSlotSyncRequestExecutorMinPoolSize;
+    }
 
-  @Override
-  public int getRemoteDataChangeExecutorThreadSize() {
-    return remoteDataChangeExecutorThreadSize;
-  }
+    @Override
+    public int getRemoteSlotSyncRequestExecutorMaxPoolSize() {
+        return remoteSlotSyncRequestExecutorMaxPoolSize;
+    }
 
-  @Override
-  public int getRemoteDataChangeExecutorQueueSize() {
-    return remoteDataChangeExecutorQueueSize;
-  }
+    /**
+     * Setter method for property <tt>remoteSlotSyncRequestExecutorMaxPoolSize</tt>.
+     *
+     * @param remoteSlotSyncRequestExecutorMaxPoolSize value to be assigned to property
+     *                                                 remoteSlotSyncRequestExecutorMaxPoolSize
+     */
+    public void setRemoteSlotSyncRequestExecutorMaxPoolSize(
+            int remoteSlotSyncRequestExecutorMaxPoolSize) {
+        this.remoteSlotSyncRequestExecutorMaxPoolSize = remoteSlotSyncRequestExecutorMaxPoolSize;
+    }
 
-  @Override
-  public int getRemoteSyncDataIdExecutorThreadSize() {
-    return remoteSyncDataIdExecutorThreadSize;
-  }
+    @Override
+    public int getRemoteSlotSyncRequestExecutorQueueSize() {
+        return remoteSlotSyncRequestExecutorQueueSize;
+    }
 
-  @Override
-  public int getRemoteSyncDataIdExecutorQueueSize() {
-    return remoteSyncDataIdExecutorQueueSize;
-  }
+    /**
+     * Setter method for property <tt>remoteSlotSyncRequestExecutorQueueSize</tt>.
+     *
+     * @param remoteSlotSyncRequestExecutorQueueSize value to be assigned to property
+     *                                               remoteSlotSyncRequestExecutorQueueSize
+     */
+    public void setRemoteSlotSyncRequestExecutorQueueSize(
+            int remoteSlotSyncRequestExecutorQueueSize) {
+        this.remoteSlotSyncRequestExecutorQueueSize = remoteSlotSyncRequestExecutorQueueSize;
+    }
 
-  @Override
-  public int getMultiClusterConfigReloadMillis() {
-    return multiClusterConfigReloadMillis;
-  }
+    @Override
+    public int getRemoteDataChangeExecutorThreadSize() {
+        return remoteDataChangeExecutorThreadSize;
+    }
 
-  /**
-   * Setter method for property <tt>multiClusterConfigReloadMillis</tt>.
-   *
-   * @param multiClusterConfigReloadMillis value to be assigned to property
-   *     multiClusterConfigReloadMillis
-   */
-  public void setMultiClusterConfigReloadMillis(int multiClusterConfigReloadMillis) {
-    this.multiClusterConfigReloadMillis = multiClusterConfigReloadMillis;
-  }
+    /**
+     * Setter method for property <tt>remoteDataChangeExecutorThreadSize</tt>.
+     *
+     * @param remoteDataChangeExecutorThreadSize value to be assigned to property
+     *                                           remoteDataChangeExecutorThreadSize
+     */
+    public void setRemoteDataChangeExecutorThreadSize(int remoteDataChangeExecutorThreadSize) {
+        this.remoteDataChangeExecutorThreadSize = remoteDataChangeExecutorThreadSize;
+    }
 
-  /**
-   * Setter method for property <tt>remoteSyncDataIdExecutorThreadSize</tt>.
-   *
-   * @param remoteSyncDataIdExecutorThreadSize value to be assigned to property
-   *     remoteSyncDataIdExecutorThreadSize
-   */
-  public void setRemoteSyncDataIdExecutorThreadSize(int remoteSyncDataIdExecutorThreadSize) {
-    this.remoteSyncDataIdExecutorThreadSize = remoteSyncDataIdExecutorThreadSize;
-  }
+    @Override
+    public int getRemoteDataChangeExecutorQueueSize() {
+        return remoteDataChangeExecutorQueueSize;
+    }
 
-  /**
-   * Setter method for property <tt>remoteSyncDataIdExecutorQueueSize</tt>.
-   *
-   * @param remoteSyncDataIdExecutorQueueSize value to be assigned to property
-   *     remoteSyncDataIdExecutorQueueSize
-   */
-  public void setRemoteSyncDataIdExecutorQueueSize(int remoteSyncDataIdExecutorQueueSize) {
-    this.remoteSyncDataIdExecutorQueueSize = remoteSyncDataIdExecutorQueueSize;
-  }
+    /**
+     * Setter method for property <tt>remoteDataChangeExecutorQueueSize</tt>.
+     *
+     * @param remoteDataChangeExecutorQueueSize value to be assigned to property
+     *                                          remoteDataChangeExecutorQueueSize
+     */
+    public void setRemoteDataChangeExecutorQueueSize(int remoteDataChangeExecutorQueueSize) {
+        this.remoteDataChangeExecutorQueueSize = remoteDataChangeExecutorQueueSize;
+    }
 
-  /**
-   * Setter method for property <tt>remoteDataChangeExecutorThreadSize</tt>.
-   *
-   * @param remoteDataChangeExecutorThreadSize value to be assigned to property
-   *     remoteDataChangeExecutorThreadSize
-   */
-  public void setRemoteDataChangeExecutorThreadSize(int remoteDataChangeExecutorThreadSize) {
-    this.remoteDataChangeExecutorThreadSize = remoteDataChangeExecutorThreadSize;
-  }
+    @Override
+    public int getRemoteSyncDataIdExecutorThreadSize() {
+        return remoteSyncDataIdExecutorThreadSize;
+    }
 
-  /**
-   * Setter method for property <tt>remoteDataChangeExecutorQueueSize</tt>.
-   *
-   * @param remoteDataChangeExecutorQueueSize value to be assigned to property
-   *     remoteDataChangeExecutorQueueSize
-   */
-  public void setRemoteDataChangeExecutorQueueSize(int remoteDataChangeExecutorQueueSize) {
-    this.remoteDataChangeExecutorQueueSize = remoteDataChangeExecutorQueueSize;
-  }
+    /**
+     * Setter method for property <tt>remoteSyncDataIdExecutorThreadSize</tt>.
+     *
+     * @param remoteSyncDataIdExecutorThreadSize value to be assigned to property
+     *                                           remoteSyncDataIdExecutorThreadSize
+     */
+    public void setRemoteSyncDataIdExecutorThreadSize(int remoteSyncDataIdExecutorThreadSize) {
+        this.remoteSyncDataIdExecutorThreadSize = remoteSyncDataIdExecutorThreadSize;
+    }
 
-  /**
-   * Setter method for property <tt>remoteSlotSyncRequestExecutorMinPoolSize</tt>.
-   *
-   * @param remoteSlotSyncRequestExecutorMinPoolSize value to be assigned to property
-   *     remoteSlotSyncRequestExecutorMinPoolSize
-   */
-  public void setRemoteSlotSyncRequestExecutorMinPoolSize(
-      int remoteSlotSyncRequestExecutorMinPoolSize) {
-    this.remoteSlotSyncRequestExecutorMinPoolSize = remoteSlotSyncRequestExecutorMinPoolSize;
-  }
+    @Override
+    public int getRemoteSyncDataIdExecutorQueueSize() {
+        return remoteSyncDataIdExecutorQueueSize;
+    }
 
-  /**
-   * Setter method for property <tt>remoteSlotSyncRequestExecutorMaxPoolSize</tt>.
-   *
-   * @param remoteSlotSyncRequestExecutorMaxPoolSize value to be assigned to property
-   *     remoteSlotSyncRequestExecutorMaxPoolSize
-   */
-  public void setRemoteSlotSyncRequestExecutorMaxPoolSize(
-      int remoteSlotSyncRequestExecutorMaxPoolSize) {
-    this.remoteSlotSyncRequestExecutorMaxPoolSize = remoteSlotSyncRequestExecutorMaxPoolSize;
-  }
+    /**
+     * Setter method for property <tt>remoteSyncDataIdExecutorQueueSize</tt>.
+     *
+     * @param remoteSyncDataIdExecutorQueueSize value to be assigned to property
+     *                                          remoteSyncDataIdExecutorQueueSize
+     */
+    public void setRemoteSyncDataIdExecutorQueueSize(int remoteSyncDataIdExecutorQueueSize) {
+        this.remoteSyncDataIdExecutorQueueSize = remoteSyncDataIdExecutorQueueSize;
+    }
 
-  /**
-   * Setter method for property <tt>remoteSlotSyncRequestExecutorQueueSize</tt>.
-   *
-   * @param remoteSlotSyncRequestExecutorQueueSize value to be assigned to property
-   *     remoteSlotSyncRequestExecutorQueueSize
-   */
-  public void setRemoteSlotSyncRequestExecutorQueueSize(
-      int remoteSlotSyncRequestExecutorQueueSize) {
-    this.remoteSlotSyncRequestExecutorQueueSize = remoteSlotSyncRequestExecutorQueueSize;
-  }
+    @Override
+    public int getMultiClusterConfigReloadMillis() {
+        return multiClusterConfigReloadMillis;
+    }
 
-  /**
-   * Setter method for property <tt>syncSlotHighWaterMark</tt>.
-   *
-   * @param syncSlotHighWaterMark value to be assigned to property syncSlotHighWaterMark
-   */
-  public void setSyncSlotHighWaterMark(int syncSlotHighWaterMark) {
-    this.syncSlotHighWaterMark = syncSlotHighWaterMark;
-  }
+    /**
+     * Setter method for property <tt>multiClusterConfigReloadMillis</tt>.
+     *
+     * @param multiClusterConfigReloadMillis value to be assigned to property
+     *                                       multiClusterConfigReloadMillis
+     */
+    public void setMultiClusterConfigReloadMillis(int multiClusterConfigReloadMillis) {
+        this.multiClusterConfigReloadMillis = multiClusterConfigReloadMillis;
+    }
 }

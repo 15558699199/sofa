@@ -20,12 +20,12 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class TraceIDTest {
-  @Test
-  public void test() {
-    TraceID id = TraceID.newTraceID();
-    for (int i = 0; i < 100; i++) {
-      TraceID other = TraceID.newTraceID();
-      Assert.assertNotEquals(id.toString(), other.toString());
+    @Test
+    public void test() {
+        TraceID id = TraceID.newTraceID();
+        for (int i = 0; i < 100; i++) {
+            TraceID other = TraceID.newTraceID();
+            Assert.assertNotEquals(id.toString(), other.toString());
+        }
     }
-  }
 }

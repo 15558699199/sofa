@@ -17,9 +17,10 @@
 package com.alipay.sofa.registry.jdbc.mapper;
 
 import com.alipay.sofa.registry.jdbc.domain.ClientManagerAddressDomain;
+import org.apache.ibatis.annotations.Param;
+
 import java.util.Date;
 import java.util.List;
-import org.apache.ibatis.annotations.Param;
 
 /**
  * @author xiaojian.xj
@@ -27,41 +28,41 @@ import org.apache.ibatis.annotations.Param;
  */
 public interface ClientManagerAddressMapper {
 
-  /**
-   * query after than maxId
-   *
-   * @param dataCenter dataCenter
-   * @param maxId maxId
-   * @param limit limit
-   * @return List
-   */
-  List<ClientManagerAddressDomain> queryAfterThanByLimit(
-      @Param("dataCenter") String dataCenter,
-      @Param("maxId") long maxId,
-      @Param("limit") long limit);
+    /**
+     * query after than maxId
+     *
+     * @param dataCenter dataCenter
+     * @param maxId      maxId
+     * @param limit      limit
+     * @return List
+     */
+    List<ClientManagerAddressDomain> queryAfterThanByLimit(
+            @Param("dataCenter") String dataCenter,
+            @Param("maxId") long maxId,
+            @Param("limit") long limit);
 
-  /**
-   * @param clientManagerAddress clientManagerAddress
-   * @return effect rows
-   */
-  int update(ClientManagerAddressDomain clientManagerAddress);
+    /**
+     * @param clientManagerAddress clientManagerAddress
+     * @return effect rows
+     */
+    int update(ClientManagerAddressDomain clientManagerAddress);
 
-  /**
-   * insert on replace
-   *
-   * @param clientManagerAddress clientManagerAddress
-   * @return int
-   */
-  int insertOnReplace(ClientManagerAddressDomain clientManagerAddress);
+    /**
+     * insert on replace
+     *
+     * @param clientManagerAddress clientManagerAddress
+     * @return int
+     */
+    int insertOnReplace(ClientManagerAddressDomain clientManagerAddress);
 
-  List<String> getExpireAddress(
-      @Param("dataCenter") String dataCenter,
-      @Param("expireDate") Date expireDate,
-      @Param("limit") int limit);
+    List<String> getExpireAddress(
+            @Param("dataCenter") String dataCenter,
+            @Param("expireDate") Date expireDate,
+            @Param("limit") int limit);
 
-  int cleanExpired(
-      @Param("dataCenter") String dataCenter, @Param("expireAddress") List<String> expireAddress);
+    int cleanExpired(
+            @Param("dataCenter") String dataCenter, @Param("expireAddress") List<String> expireAddress);
 
-  int getClientOffSizeBefore(
-      @Param("dataCenter") String dataCenter, @Param("expireDate") Date expireDate);
+    int getClientOffSizeBefore(
+            @Param("dataCenter") String dataCenter, @Param("expireDate") Date expireDate);
 }

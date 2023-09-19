@@ -26,9 +26,9 @@ import java.util.HashMap;
  * @author <a href=mailto:orezsilence@163.com>zhangchengxi</a>
  */
 public class SafeConcurrentHashMapTest {
-    public static final String    KEY   = "key";
-    public static final String    VALUE = "value";
-    private SafeConcurrentHashMap map   = new SafeConcurrentHashMap();
+    public static final String KEY = "key";
+    public static final String VALUE = "value";
+    private SafeConcurrentHashMap map = new SafeConcurrentHashMap();
 
     @Before
     public void before() {

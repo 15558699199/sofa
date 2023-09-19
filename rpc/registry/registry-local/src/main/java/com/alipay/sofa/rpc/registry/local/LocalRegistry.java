@@ -56,47 +56,41 @@ public class LocalRegistry extends Registry {
     /**
      * Logger
      */
-    private static final Logger                 LOGGER          = LoggerFactory.getLogger(LocalRegistry.class);
-
-    /**
-     * 定时加载
-     */
-    private ScheduledService                    scheduledExecutorService;
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(LocalRegistry.class);
     /**
      * 内存里的服务列表 {service : [provider...]}
      */
-    protected Map<String, ProviderGroup>        memoryCache     = new ConcurrentHashMap<String, ProviderGroup>();
-
-    /**
-     * 内存发生了变化，如果为true，则将触发写入文件动作
-     */
-    private boolean                             needBackup      = false;
-
-    /**
-     * 是否订阅通知（即扫描文件变化），默认为true
-     * 如果FileRegistry是被动加载（例如作为注册中心备份的）的，建议false，防止重复通知
-     */
-    private boolean                             subscribe       = true;
-
+    protected Map<String, ProviderGroup> memoryCache = new ConcurrentHashMap<String, ProviderGroup>();
     /**
      * 订阅者通知列表（key为订阅者关键字，value为ConsumerConfig列表）
      */
     protected Map<String, List<ConsumerConfig>> notifyListeners = new ConcurrentHashMap<String, List<ConsumerConfig>>();
-
+    /**
+     * 定时加载
+     */
+    private ScheduledService scheduledExecutorService;
+    /**
+     * 内存发生了变化，如果为true，则将触发写入文件动作
+     */
+    private boolean needBackup = false;
+    /**
+     * 是否订阅通知（即扫描文件变化），默认为true
+     * 如果FileRegistry是被动加载（例如作为注册中心备份的）的，建议false，防止重复通知
+     */
+    private boolean subscribe = true;
     /**
      * 最后一次digest值
      */
-    private String                              lastDigest;
+    private String lastDigest;
 
     /**
      * 扫描周期，毫秒
      */
-    private int                                 scanPeriod      = 2000;
+    private int scanPeriod = 2000;
     /**
      * 输出和备份文件目录
      */
-    private String                              regFile;
+    private String regFile;
 
     /**
      * 注册中心配置
@@ -124,7 +118,7 @@ public class LocalRegistry extends Registry {
         }
         // 开始扫描
         this.scanPeriod = CommonUtils.parseInt(registryConfig.getParameter("registry.local.scan.period"),
-            scanPeriod);
+                scanPeriod);
         Runnable task = new Runnable() {
             @Override
             public void run() {
@@ -144,12 +138,12 @@ public class LocalRegistry extends Registry {
         };
         //启动扫描线程
         scheduledExecutorService = new ScheduledService("LocalRegistry-Back-Load",
-            ScheduledService.MODE_FIXEDDELAY,
-            task, //定时load任务
-            scanPeriod, // 延迟一个周期
-            scanPeriod, // 一个周期循环
-            TimeUnit.MILLISECONDS
-                ).start();
+                ScheduledService.MODE_FIXEDDELAY,
+                task, //定时load任务
+                scanPeriod, // 延迟一个周期
+                scanPeriod, // 一个周期循环
+                TimeUnit.MILLISECONDS
+        ).start();
 
     }
 
@@ -265,11 +259,11 @@ public class LocalRegistry extends Registry {
                     doUnRegister(serviceName, providerInfo);
                     if (LOGGER.isInfoEnabled(appName)) {
                         LOGGER.infoWithApp(appName,
-                            LogCodes.getLog(LogCodes.INFO_ROUTE_REGISTRY_UNPUB, serviceName, "1"));
+                                LogCodes.getLog(LogCodes.INFO_ROUTE_REGISTRY_UNPUB, serviceName, "1"));
                     }
                 } catch (Exception e) {
                     LOGGER.errorWithApp(appName, LogCodes.getLog(LogCodes.INFO_ROUTE_REGISTRY_UNPUB, serviceName, "0"),
-                        e);
+                            e);
                 }
             }
         }

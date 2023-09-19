@@ -16,14 +16,6 @@
  */
 package com.alipay.sofa.rpc.boot.container;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-
-import org.slf4j.Logger;
-import org.springframework.util.StringUtils;
-
 import com.alipay.sofa.rpc.boot.config.SofaBootRpcConfigConstants;
 import com.alipay.sofa.rpc.boot.log.SofaBootRpcLoggerFactory;
 import com.alipay.sofa.rpc.boot.runtime.binding.RpcBinding;
@@ -33,6 +25,13 @@ import com.alipay.sofa.rpc.config.ServerConfig;
 import com.alipay.sofa.rpc.registry.Registry;
 import com.alipay.sofa.rpc.registry.RegistryFactory;
 import com.alipay.sofa.runtime.spi.binding.Contract;
+import org.slf4j.Logger;
+import org.springframework.util.StringUtils;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * ProviderConfig持有者.维护编程界面级别的RPC组件。
@@ -40,19 +39,17 @@ import com.alipay.sofa.runtime.spi.binding.Contract;
  * @author <a href="mailto:lw111072@antfin.com">LiWei</a>
  */
 public class ProviderConfigContainer {
-    private static final Logger                         LOGGER                = SofaBootRpcLoggerFactory
-                                                                                  .getLogger(ProviderConfigContainer.class);
-
-    /**
-     * 是否允许发布ProviderConfig
-     */
-    private boolean                                     allowPublish          = false;
-
+    private static final Logger LOGGER = SofaBootRpcLoggerFactory
+            .getLogger(ProviderConfigContainer.class);
     /**
      * ProviderConfig 缓存
      */
     private final ConcurrentMap<String, ProviderConfig> RPC_SERVICE_CONTAINER = new ConcurrentHashMap<String, ProviderConfig>(
-                                                                                  256);
+            256);
+    /**
+     * 是否允许发布ProviderConfig
+     */
+    private boolean allowPublish = false;
 
     /**
      * 增加 ProviderConfig
@@ -65,7 +62,7 @@ public class ProviderConfigContainer {
             if (RPC_SERVICE_CONTAINER.containsKey(key)) {
                 if (LOGGER.isWarnEnabled()) {
                     LOGGER.warn("The same services and protocols already exist.key[" + key
-                                + "];protocol[" + providerConfig.getServer().get(0) + "]");
+                            + "];protocol[" + providerConfig.getServer().get(0) + "]");
                 }
             } else {
                 RPC_SERVICE_CONTAINER.put(key, providerConfig);
@@ -109,7 +106,7 @@ public class ProviderConfigContainer {
 
             ServerConfig serverConfig = (ServerConfig) providerConfig.getServer().get(0);
             if (!serverConfig.getProtocol().equalsIgnoreCase(
-                SofaBootRpcConfigConstants.RPC_PROTOCOL_DUBBO)) {
+                    SofaBootRpcConfigConstants.RPC_PROTOCOL_DUBBO)) {
                 providerConfig.setRegister(true);
 
                 List<RegistryConfig> registrys = providerConfig.getRegistry();
@@ -123,8 +120,8 @@ public class ProviderConfigContainer {
 
                     if (LOGGER.isInfoEnabled()) {
                         LOGGER.info("service published.  interfaceId["
-                                    + providerConfig.getInterfaceId() + "]; protocol["
-                                    + serverConfig.getProtocol() + "]");
+                                + providerConfig.getInterfaceId() + "]; protocol["
+                                + serverConfig.getProtocol() + "]");
                     }
                 }
 
@@ -140,14 +137,14 @@ public class ProviderConfigContainer {
 
             ServerConfig serverConfig = (ServerConfig) providerConfig.getServer().get(0);
             if (serverConfig.getProtocol().equalsIgnoreCase(
-                SofaBootRpcConfigConstants.RPC_PROTOCOL_DUBBO)) {
+                    SofaBootRpcConfigConstants.RPC_PROTOCOL_DUBBO)) {
                 providerConfig.setRegister(true);
                 providerConfig.export();
 
                 if (LOGGER.isInfoEnabled()) {
                     LOGGER.info("service published.  interfaceId["
-                                + providerConfig.getInterfaceId() + "]; protocol["
-                                + serverConfig.getProtocol() + "]");
+                            + providerConfig.getInterfaceId() + "]; protocol["
+                            + serverConfig.getProtocol() + "]");
                 }
             }
         }
@@ -203,7 +200,7 @@ public class ProviderConfigContainer {
         }
 
         return new StringBuilder(contract.getInterfaceType().getName()).append(version)
-            .append(uniqueId).append(protocol).toString();
+                .append(uniqueId).append(protocol).toString();
     }
 
 }

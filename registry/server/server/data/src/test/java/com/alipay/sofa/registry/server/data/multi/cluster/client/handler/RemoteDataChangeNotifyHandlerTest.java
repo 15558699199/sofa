@@ -16,25 +16,24 @@
  */
 package com.alipay.sofa.registry.server.data.multi.cluster.client.handler;
 
-import static org.mockito.Matchers.anySet;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import com.alipay.sofa.registry.common.model.Node.NodeType;
 import com.alipay.sofa.registry.common.model.TraceTimes;
 import com.alipay.sofa.registry.common.model.dataserver.DatumVersion;
 import com.alipay.sofa.registry.common.model.sessionserver.DataChangeRequest;
 import com.alipay.sofa.registry.server.data.bootstrap.DataServerConfig;
 import com.alipay.sofa.registry.server.data.multi.cluster.slot.MultiClusterSlotManager;
-import java.util.Collections;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+
+import java.util.Collections;
+
+import static org.mockito.Matchers.anySet;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.*;
 
 /**
  * @author xiaojian.xj
@@ -43,46 +42,49 @@ import org.mockito.runners.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class RemoteDataChangeNotifyHandlerTest {
 
-  @InjectMocks private RemoteDataChangeNotifyHandler remoteDataChangeNotifyHandler;
+    @InjectMocks
+    private RemoteDataChangeNotifyHandler remoteDataChangeNotifyHandler;
 
-  private String testDc = "testDc";
+    private String testDc = "testDc";
 
-  @Mock private DataServerConfig dataServerConfig;
+    @Mock
+    private DataServerConfig dataServerConfig;
 
-  @Mock private MultiClusterSlotManager multiClusterSlotManager;
+    @Mock
+    private MultiClusterSlotManager multiClusterSlotManager;
 
-  @Test
-  public void testCheckParam() {
-    Assert.assertEquals(DataChangeRequest.class, remoteDataChangeNotifyHandler.interest());
-    Assert.assertEquals(NodeType.DATA, remoteDataChangeNotifyHandler.getConnectNodeType());
+    @Test
+    public void testCheckParam() {
+        Assert.assertEquals(DataChangeRequest.class, remoteDataChangeNotifyHandler.interest());
+        Assert.assertEquals(NodeType.DATA, remoteDataChangeNotifyHandler.getConnectNodeType());
 
-    DataChangeRequest request =
-        new DataChangeRequest(
-            testDc,
-            Collections.singletonMap(
-                "RemoteDataChangeNotifyHandlerTest-datainfoid",
-                new DatumVersion(System.currentTimeMillis())),
-            new TraceTimes());
-    remoteDataChangeNotifyHandler.checkParam(request);
-  }
+        DataChangeRequest request =
+                new DataChangeRequest(
+                        testDc,
+                        Collections.singletonMap(
+                                "RemoteDataChangeNotifyHandlerTest-datainfoid",
+                                new DatumVersion(System.currentTimeMillis())),
+                        new TraceTimes());
+        remoteDataChangeNotifyHandler.checkParam(request);
+    }
 
-  @Test
-  public void testHandle() {
+    @Test
+    public void testHandle() {
 
-    DataChangeRequest request =
-        new DataChangeRequest(
-            testDc,
-            Collections.singletonMap(
-                "RemoteDataChangeNotifyHandlerTest-datainfoid",
-                new DatumVersion(System.currentTimeMillis())),
-            new TraceTimes());
+        DataChangeRequest request =
+                new DataChangeRequest(
+                        testDc,
+                        Collections.singletonMap(
+                                "RemoteDataChangeNotifyHandlerTest-datainfoid",
+                                new DatumVersion(System.currentTimeMillis())),
+                        new TraceTimes());
 
-    when(dataServerConfig.isLocalDataCenter(anyString())).thenReturn(true);
-    Assert.assertNull(remoteDataChangeNotifyHandler.doHandle(null, request));
-    verify(multiClusterSlotManager, times(0)).dataChangeNotify(anyString(), anySet());
+        when(dataServerConfig.isLocalDataCenter(anyString())).thenReturn(true);
+        Assert.assertNull(remoteDataChangeNotifyHandler.doHandle(null, request));
+        verify(multiClusterSlotManager, times(0)).dataChangeNotify(anyString(), anySet());
 
-    when(dataServerConfig.isLocalDataCenter(anyString())).thenReturn(false);
-    Assert.assertNull(remoteDataChangeNotifyHandler.doHandle(null, request));
-    verify(multiClusterSlotManager, times(1)).dataChangeNotify(anyString(), anySet());
-  }
+        when(dataServerConfig.isLocalDataCenter(anyString())).thenReturn(false);
+        Assert.assertNull(remoteDataChangeNotifyHandler.doHandle(null, request));
+        verify(multiClusterSlotManager, times(1)).dataChangeNotify(anyString(), anySet());
+    }
 }

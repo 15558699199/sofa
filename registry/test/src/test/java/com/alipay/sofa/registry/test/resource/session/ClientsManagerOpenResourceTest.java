@@ -16,10 +16,6 @@
  */
 package com.alipay.sofa.registry.test.resource.session;
 
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.when;
-
 import com.alipay.sofa.registry.client.api.model.RegistryType;
 import com.alipay.sofa.registry.client.api.registration.PublisherRegistration;
 import com.alipay.sofa.registry.client.constants.ValueConstants;
@@ -28,13 +24,18 @@ import com.alipay.sofa.registry.common.model.store.URL;
 import com.alipay.sofa.registry.server.session.resource.ClientManagerResource;
 import com.alipay.sofa.registry.test.BaseIntegrationTest;
 import com.alipay.sofa.registry.util.ConcurrentUtils;
-import java.util.Arrays;
-import java.util.concurrent.TimeUnit;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
+
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
 
 /**
  * @author xuanbei
@@ -42,49 +43,49 @@ import org.springframework.test.context.junit4.SpringRunner;
  */
 @RunWith(SpringRunner.class)
 public class ClientsManagerOpenResourceTest extends BaseIntegrationTest {
-  private String dataId = "test-dataId-ZoneClientOff-" + System.currentTimeMillis();
-  private String value = "test client off";
+    private String dataId = "test-dataId-ZoneClientOff-" + System.currentTimeMillis();
+    private String value = "test client off";
 
-  @Test
-  public void testZoneClientOff() throws Exception {
-    startServerIfNecessary();
-    ClientManagerResource clientManagerResource =
-        (ClientManagerResource) sessionApplicationContext.getBean("clientManagerResource");
-    ClientManagerResource mockedResource = spy(clientManagerResource);
-    when(mockedResource.getOtherConsoleServersCurrentZone())
-        .thenReturn(Arrays.asList(new URL(LOCAL_ADDRESS, consolePort)));
+    @Test
+    public void testZoneClientOff() throws Exception {
+        startServerIfNecessary();
+        ClientManagerResource clientManagerResource =
+                (ClientManagerResource) sessionApplicationContext.getBean("clientManagerResource");
+        ClientManagerResource mockedResource = spy(clientManagerResource);
+        when(mockedResource.getOtherConsoleServersCurrentZone())
+                .thenReturn(Arrays.asList(new URL(LOCAL_ADDRESS, consolePort)));
 
-    CommonResponse response =
-        mockedResource.clientOffInZone(sessionChannel.getLocalAddress().getHostString());
-    assertTrue(response.getMessage(), response.isSuccess());
+        CommonResponse response =
+                mockedResource.clientOffInZone(sessionChannel.getLocalAddress().getHostString());
+        assertTrue(response.getMessage(), response.isSuccess());
 
-    PublisherRegistration registration = new PublisherRegistration(dataId);
-    registryClient1.register(registration, value);
-    Thread.sleep(3000L);
+        PublisherRegistration registration = new PublisherRegistration(dataId);
+        registryClient1.register(registration, value);
+        Thread.sleep(3000L);
 
-    long count =
-        sessionDataStore.getDataList().stream().filter(p -> p.getDataId().equals(dataId)).count();
-    Assert.assertEquals(count, 1);
+        long count =
+                sessionDataStore.getDataList().stream().filter(p -> p.getDataId().equals(dataId)).count();
+        Assert.assertEquals(count, 1);
 
-    response = mockedResource.clientOffInZone(sessionChannel.getLocalAddress().getHostString());
-    assertTrue(response.isSuccess());
+        response = mockedResource.clientOffInZone(sessionChannel.getLocalAddress().getHostString());
+        assertTrue(response.isSuccess());
 
-    count =
-        sessionDataStore.getDataList().stream().filter(p -> p.getDataId().equals(dataId)).count();
-    Assert.assertEquals(count, 0);
+        count =
+                sessionDataStore.getDataList().stream().filter(p -> p.getDataId().equals(dataId)).count();
+        Assert.assertEquals(count, 0);
 
-    // clientOn
-    response = mockedResource.clientOn(sessionChannel.getLocalAddress().getHostString());
-    assertTrue(response.getMessage(), response.isSuccess());
-    Thread.sleep(5000L);
-    count =
-        sessionDataStore.getDataList().stream().filter(p -> p.getDataId().equals(dataId)).count();
-    Assert.assertEquals(count, 1);
-  }
+        // clientOn
+        response = mockedResource.clientOn(sessionChannel.getLocalAddress().getHostString());
+        assertTrue(response.getMessage(), response.isSuccess());
+        Thread.sleep(5000L);
+        count =
+                sessionDataStore.getDataList().stream().filter(p -> p.getDataId().equals(dataId)).count();
+        Assert.assertEquals(count, 1);
+    }
 
-  @After
-  public void clean() {
-    registryClient1.unregister(dataId, ValueConstants.DEFAULT_GROUP, RegistryType.PUBLISHER);
-    ConcurrentUtils.sleepUninterruptibly(2, TimeUnit.SECONDS);
-  }
+    @After
+    public void clean() {
+        registryClient1.unregister(dataId, ValueConstants.DEFAULT_GROUP, RegistryType.PUBLISHER);
+        ConcurrentUtils.sleepUninterruptibly(2, TimeUnit.SECONDS);
+    }
 }

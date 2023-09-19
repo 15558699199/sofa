@@ -22,69 +22,71 @@ import com.alipay.sofa.registry.log.Logger;
 import com.alipay.sofa.registry.server.data.multi.cluster.executor.MultiClusterExecutorManager;
 import com.alipay.sofa.registry.server.data.multi.cluster.loggers.Loggers;
 import com.alipay.sofa.registry.server.data.remoting.dataserver.handler.BaseSlotDiffDigestRequestHandler;
-import java.util.concurrent.Executor;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.concurrent.Executor;
 
 /**
  * @author xiaojian.xj
  * @version : MultiClusterSlotDiffDigestRequestHandler.java, v 0.1 2022年05月16日 20:57 xiaojian.xj Exp
- *     $
+ * $
  */
 public class MultiClusterSlotDiffDigestRequestHandler extends BaseSlotDiffDigestRequestHandler {
 
-  private static final Logger LOGGER = Loggers.MULTI_CLUSTER_SRV_LOGGER;
+    private static final Logger LOGGER = Loggers.MULTI_CLUSTER_SRV_LOGGER;
 
-  @Autowired private MultiClusterExecutorManager multiClusterExecutorManager;
+    @Autowired
+    private MultiClusterExecutorManager multiClusterExecutorManager;
 
-  public MultiClusterSlotDiffDigestRequestHandler() {
-    super(LOGGER);
-  }
-
-  /**
-   * specify executor for processor handler
-   *
-   * @return Executor
-   */
-  @Override
-  public Executor getExecutor() {
-    return multiClusterExecutorManager.getRemoteSlotSyncProcessorExecutor();
-  }
-
-  @Override
-  protected boolean preCheck(DataSlotDiffDigestRequest request) {
-    return doCheck(request);
-  }
-
-  private boolean doCheck(DataSlotDiffDigestRequest request) {
-    if (!slotManager.isLeader(dataServerConfig.getLocalDataCenter(), request.getSlotId())) {
-      LOGGER.warn(
-          "sync slot request from {}, not leader of {}",
-          request.getLocalDataCenter(),
-          request.getSlotId());
-      return false;
+    public MultiClusterSlotDiffDigestRequestHandler() {
+        super(LOGGER);
     }
 
-    SlotAccess slotAccess =
-        slotManager.checkSlotAccess(
-            dataServerConfig.getLocalDataCenter(),
-            request.getSlotId(),
-            request.getSlotTableEpoch(),
-            request.getSlotLeaderEpoch());
-
-    if (!slotAccess.isAccept()) {
-      LOGGER.warn(
-          "sync slot request from {}, slotId={}, slotAccess={}, request={}",
-          request.getLocalDataCenter(),
-          request.getSlotId(),
-          slotAccess,
-          request);
+    /**
+     * specify executor for processor handler
+     *
+     * @return Executor
+     */
+    @Override
+    public Executor getExecutor() {
+        return multiClusterExecutorManager.getRemoteSlotSyncProcessorExecutor();
     }
 
-    return slotAccess.isAccept();
-  }
+    @Override
+    protected boolean preCheck(DataSlotDiffDigestRequest request) {
+        return doCheck(request);
+    }
 
-  @Override
-  protected boolean postCheck(DataSlotDiffDigestRequest request) {
-    return doCheck(request);
-  }
+    private boolean doCheck(DataSlotDiffDigestRequest request) {
+        if (!slotManager.isLeader(dataServerConfig.getLocalDataCenter(), request.getSlotId())) {
+            LOGGER.warn(
+                    "sync slot request from {}, not leader of {}",
+                    request.getLocalDataCenter(),
+                    request.getSlotId());
+            return false;
+        }
+
+        SlotAccess slotAccess =
+                slotManager.checkSlotAccess(
+                        dataServerConfig.getLocalDataCenter(),
+                        request.getSlotId(),
+                        request.getSlotTableEpoch(),
+                        request.getSlotLeaderEpoch());
+
+        if (!slotAccess.isAccept()) {
+            LOGGER.warn(
+                    "sync slot request from {}, slotId={}, slotAccess={}, request={}",
+                    request.getLocalDataCenter(),
+                    request.getSlotId(),
+                    slotAccess,
+                    request);
+        }
+
+        return slotAccess.isAccept();
+    }
+
+    @Override
+    protected boolean postCheck(DataSlotDiffDigestRequest request) {
+        return doCheck(request);
+    }
 }

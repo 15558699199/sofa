@@ -31,7 +31,7 @@ public interface DynamicServiceProxyManager {
     /**
      * Get a ServiceProxy instance.
      *
-     * @param contract contract
+     * @param contract    contract
      * @param classLoader classLoader
      * @return ServiceProxy instance.
      */
@@ -40,7 +40,7 @@ public interface DynamicServiceProxyManager {
     /**
      * Get a ServiceComponent instance.
      *
-     * @param contract contract
+     * @param contract    contract
      * @param classLoader classLoader
      * @return ServiceComponent instance.
      */

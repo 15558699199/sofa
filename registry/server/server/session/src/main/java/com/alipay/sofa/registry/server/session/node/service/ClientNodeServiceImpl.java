@@ -27,27 +27,28 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @version $Id: ClientNode.java, v 0.1 2017-12-12 11:56 shangyu.wh Exp $
  */
 public class ClientNodeServiceImpl implements ClientNodeService {
-  @Autowired private NodeExchanger clientNodeExchanger;
+    @Autowired
+    private NodeExchanger clientNodeExchanger;
 
-  @Override
-  public void pushWithCallback(Object object, URL url, CallbackHandler callbackHandler) {
-    Request<Object> request =
-        new Request<Object>() {
-          @Override
-          public Object getRequestBody() {
-            return object;
-          }
+    @Override
+    public void pushWithCallback(Object object, URL url, CallbackHandler callbackHandler) {
+        Request<Object> request =
+                new Request<Object>() {
+                    @Override
+                    public Object getRequestBody() {
+                        return object;
+                    }
 
-          @Override
-          public URL getRequestUrl() {
-            return url;
-          }
+                    @Override
+                    public URL getRequestUrl() {
+                        return url;
+                    }
 
-          @Override
-          public CallbackHandler getCallBackHandler() {
-            return callbackHandler;
-          }
-        };
-    clientNodeExchanger.request(request);
-  }
+                    @Override
+                    public CallbackHandler getCallBackHandler() {
+                        return callbackHandler;
+                    }
+                };
+        clientNodeExchanger.request(request);
+    }
 }

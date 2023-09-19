@@ -21,40 +21,41 @@ import com.alipay.sofa.registry.common.model.client.pb.MetaHeartbeatResponse;
 import com.alipay.sofa.registry.common.model.client.pb.ServiceAppMappingResponse;
 import com.alipay.sofa.registry.common.model.store.AppRevision;
 import com.alipay.sofa.registry.core.model.RegisterResponse;
+
 import java.util.List;
 
 public interface AppRevisionHandlerStrategy {
 
-  /**
-   * appRevision register
-   *
-   * @param appRevision appRevision
-   * @param response response
-   */
-  void handleAppRevisionRegister(
-      AppRevision appRevision, RegisterResponse response, String remoteAddress);
+    /**
+     * appRevision register
+     *
+     * @param appRevision appRevision
+     * @param response    response
+     */
+    void handleAppRevisionRegister(
+            AppRevision appRevision, RegisterResponse response, String remoteAddress);
 
-  /**
-   * query apps by services
-   *
-   * @param services services
-   * @return ServiceAppMappingResponse
-   */
-  ServiceAppMappingResponse queryApps(List<String> services, String remoteIp);
+    /**
+     * query apps by services
+     *
+     * @param services services
+     * @return ServiceAppMappingResponse
+     */
+    ServiceAppMappingResponse queryApps(List<String> services, String remoteIp);
 
-  /**
-   * query appRevision
-   *
-   * @param revisions revisions
-   * @return GetRevisionsResponse
-   */
-  GetRevisionsResponse queryRevision(List<String> revisions);
+    /**
+     * query appRevision
+     *
+     * @param revisions revisions
+     * @return GetRevisionsResponse
+     */
+    GetRevisionsResponse queryRevision(List<String> revisions);
 
-  /**
-   * revision heartbeat
-   *
-   * @param revisions revisions
-   * @return MetaHeartbeatResponse
-   */
-  MetaHeartbeatResponse heartbeat(List<String> revisions);
+    /**
+     * revision heartbeat
+     *
+     * @param revisions revisions
+     * @return MetaHeartbeatResponse
+     */
+    MetaHeartbeatResponse heartbeat(List<String> revisions);
 }

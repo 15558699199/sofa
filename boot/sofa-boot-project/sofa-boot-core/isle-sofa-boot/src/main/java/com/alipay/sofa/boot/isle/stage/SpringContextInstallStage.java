@@ -52,20 +52,17 @@ import java.util.stream.Collectors;
  */
 public class SpringContextInstallStage extends AbstractPipelineStage implements InitializingBean {
 
-    private static final Logger   LOGGER                                 = SofaBootLoggerFactory
-                                                                             .getLogger(SpringContextInstallStage.class);
-
-    public static final String    SOFA_MODULE_REFRESH_EXECUTOR_BEAN_NAME = "sofaModuleRefreshExecutor";
-
-    public static final String    SPRING_CONTEXT_INSTALL_STAGE_NAME      = "SpringContextInstallStage";
-
+    public static final String SOFA_MODULE_REFRESH_EXECUTOR_BEAN_NAME = "sofaModuleRefreshExecutor";
+    public static final String SPRING_CONTEXT_INSTALL_STAGE_NAME = "SpringContextInstallStage";
+    private static final Logger LOGGER = SofaBootLoggerFactory
+            .getLogger(SpringContextInstallStage.class);
     protected SpringContextLoader springContextLoader;
 
-    protected boolean             moduleStartUpParallel;
+    protected boolean moduleStartUpParallel;
 
-    protected boolean             ignoreModuleInstallFailure;
+    protected boolean ignoreModuleInstallFailure;
 
-    protected ExecutorService     moduleRefreshExecutorService;
+    protected ExecutorService moduleRefreshExecutorService;
 
     @Override
     public void afterPropertiesSet() throws Exception {
@@ -73,9 +70,9 @@ public class SpringContextInstallStage extends AbstractPipelineStage implements 
         Assert.notNull(springContextLoader, "springContextLoader must not be null");
         if (moduleStartUpParallel) {
             moduleRefreshExecutorService = (ExecutorService) applicationContext.getBean(
-                SOFA_MODULE_REFRESH_EXECUTOR_BEAN_NAME, Supplier.class).get();
+                    SOFA_MODULE_REFRESH_EXECUTOR_BEAN_NAME, Supplier.class).get();
             Assert.notNull(moduleRefreshExecutorService,
-                "moduleRefreshExecutorService must not be null");
+                    "moduleRefreshExecutorService must not be null");
         }
     }
 
@@ -160,7 +157,7 @@ public class SpringContextInstallStage extends AbstractPipelineStage implements 
             for (final DeploymentDescriptor deployment : rootDescriptors) {
                 refreshRecursively(deployment, latch, futures);
             }
-            
+
             try {
                 latch.await();
             } catch (InterruptedException e) {
@@ -185,7 +182,7 @@ public class SpringContextInstallStage extends AbstractPipelineStage implements 
      * Refresh all {@link ApplicationContext} recursively
      */
     private void refreshRecursively(DeploymentDescriptor deployment,
-                                  CountDownLatch latch, List<Future<?>> futures) {
+                                    CountDownLatch latch, List<Future<?>> futures) {
         futures.add(moduleRefreshExecutorService.submit(() -> {
             String oldName = Thread.currentThread().getName();
             try {
@@ -226,7 +223,7 @@ public class SpringContextInstallStage extends AbstractPipelineStage implements 
         moduleStat.setEndTime(System.currentTimeMillis());
         moduleStat.setThreadName(Thread.currentThread().getName());
         ConfigurableApplicationContext ctx = (ConfigurableApplicationContext) deployment
-            .getApplicationContext();
+                .getApplicationContext();
         if (startupReporter != null && baseStat != null) {
             moduleStat.setChildren(startupReporter.generateBeanStats(ctx));
             ((ChildrenStat<ModuleStat>) baseStat).addChild(moduleStat);

@@ -21,9 +21,9 @@ import org.junit.Test;
 
 public class CompressResourceTest {
 
-  @Test
-  public void test() {
-    CompressResource resource = new CompressResource();
-    resource.compressPushService = new CompressPushService();
-  }
+    @Test
+    public void test() {
+        CompressResource resource = new CompressResource();
+        resource.compressPushService = new CompressPushService();
+    }
 }

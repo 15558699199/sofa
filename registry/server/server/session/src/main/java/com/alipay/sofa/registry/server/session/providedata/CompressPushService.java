@@ -29,103 +29,105 @@ import com.alipay.sofa.registry.server.session.bootstrap.SessionServerConfig;
 import com.alipay.sofa.registry.server.shared.providedata.AbstractFetchSystemPropertyService;
 import com.alipay.sofa.registry.server.shared.providedata.SystemDataStorage;
 import com.alipay.sofa.registry.util.JsonUtils;
-import java.util.List;
-import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.List;
+import java.util.Map;
+
 public class CompressPushService
-    extends AbstractFetchSystemPropertyService<CompressPushService.CompressStorage> {
-  private static final Logger LOGGER = LoggerFactory.getLogger(CompressPushSwitch.class);
+        extends AbstractFetchSystemPropertyService<CompressPushService.CompressStorage> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(CompressPushSwitch.class);
 
-  @Autowired private SessionServerConfig sessionServerConfig;
+    @Autowired
+    private SessionServerConfig sessionServerConfig;
 
-  public CompressPushService() {
-    super(
-        ValueConstants.COMPRESS_PUSH_SWITCH_DATA_ID,
-        new CompressStorage(INIT_VERSION, CompressPushSwitch.defaultSwitch()));
-  }
-
-  @Override
-  protected int getSystemPropertyIntervalMillis() {
-    return sessionServerConfig.getSystemPropertyIntervalMillis();
-  }
-
-  @Override
-  protected boolean doProcess(CompressStorage expect, ProvideData data) {
-    final String switchString = ProvideData.toString(data);
-    if (StringUtils.isBlank(switchString)) {
-      LOGGER.info("Fetch session push compressed enabled content empty");
-      return true;
+    public CompressPushService() {
+        super(
+                ValueConstants.COMPRESS_PUSH_SWITCH_DATA_ID,
+                new CompressStorage(INIT_VERSION, CompressPushSwitch.defaultSwitch()));
     }
-    try {
-      CompressPushSwitch compressPushSwitch =
-          JsonUtils.read(switchString, CompressPushSwitch.class);
-      CompressStorage update = new CompressStorage(data.getVersion(), compressPushSwitch);
-      if (!compareAndSet(expect, update)) {
-        return false;
-      }
-      LOGGER.info(
-          "Fetch session push compressed, prev={}, current={}",
-          expect.compressPushSwitch,
-          switchString);
-      return true;
-    } catch (Throwable e) {
-      LOGGER.error("Fetch session push compressed enabled error", e);
-    }
-    return false;
-  }
 
-  public CompressPushSwitch getCompressSwitch() {
-    return storage.get().compressPushSwitch;
-  }
-
-  public Compressor getCompressor(
-      Map<String, List<DataBox>> data, String[] acceptEncodes, String clientIp) {
-    CompressPushSwitch compressPushSwitch = getCompressSwitch();
-    if (!compressEnabled(compressPushSwitch, clientIp)) {
-      return null;
-    }
-    if (dataBoxesMapSize(data) < compressPushSwitch.getCompressMinSize()) {
-      return null;
-    }
-    return CompressUtils.find(acceptEncodes, compressPushSwitch.getForbidEncodes());
-  }
-
-  private static boolean compressEnabled(CompressPushSwitch compressPushSwitch, String clientIp) {
-    if (compressPushSwitch.isEnabled()) {
-      return true;
-    }
-    if (compressPushSwitch
-        .getEnabledSessions()
-        .contains(NetUtil.getLocalAddress().getHostAddress())) {
-      return true;
-    }
-    if (compressPushSwitch.getEnabledClients().contains(clientIp)) {
-      return true;
-    }
-    return false;
-  }
-
-  private static int dataBoxesMapSize(Map<String, List<DataBox>> dataBoxesMap) {
-    int size = 0;
-    for (Map.Entry<String, List<DataBox>> boxesEntry : dataBoxesMap.entrySet()) {
-      size += boxesEntry.getKey().length();
-      for (DataBox box : boxesEntry.getValue()) {
-        if (!StringUtils.isBlank(box.getData())) {
-          size += box.getData().length();
+    private static boolean compressEnabled(CompressPushSwitch compressPushSwitch, String clientIp) {
+        if (compressPushSwitch.isEnabled()) {
+            return true;
         }
-      }
+        if (compressPushSwitch
+                .getEnabledSessions()
+                .contains(NetUtil.getLocalAddress().getHostAddress())) {
+            return true;
+        }
+        if (compressPushSwitch.getEnabledClients().contains(clientIp)) {
+            return true;
+        }
+        return false;
     }
-    return size;
-  }
 
-  protected static class CompressStorage extends SystemDataStorage {
-    protected final CompressPushSwitch compressPushSwitch;
-
-    public CompressStorage(long version, CompressPushSwitch compressPushSwitch) {
-      super(version);
-      this.compressPushSwitch = compressPushSwitch;
+    private static int dataBoxesMapSize(Map<String, List<DataBox>> dataBoxesMap) {
+        int size = 0;
+        for (Map.Entry<String, List<DataBox>> boxesEntry : dataBoxesMap.entrySet()) {
+            size += boxesEntry.getKey().length();
+            for (DataBox box : boxesEntry.getValue()) {
+                if (!StringUtils.isBlank(box.getData())) {
+                    size += box.getData().length();
+                }
+            }
+        }
+        return size;
     }
-  }
+
+    @Override
+    protected int getSystemPropertyIntervalMillis() {
+        return sessionServerConfig.getSystemPropertyIntervalMillis();
+    }
+
+    @Override
+    protected boolean doProcess(CompressStorage expect, ProvideData data) {
+        final String switchString = ProvideData.toString(data);
+        if (StringUtils.isBlank(switchString)) {
+            LOGGER.info("Fetch session push compressed enabled content empty");
+            return true;
+        }
+        try {
+            CompressPushSwitch compressPushSwitch =
+                    JsonUtils.read(switchString, CompressPushSwitch.class);
+            CompressStorage update = new CompressStorage(data.getVersion(), compressPushSwitch);
+            if (!compareAndSet(expect, update)) {
+                return false;
+            }
+            LOGGER.info(
+                    "Fetch session push compressed, prev={}, current={}",
+                    expect.compressPushSwitch,
+                    switchString);
+            return true;
+        } catch (Throwable e) {
+            LOGGER.error("Fetch session push compressed enabled error", e);
+        }
+        return false;
+    }
+
+    public CompressPushSwitch getCompressSwitch() {
+        return storage.get().compressPushSwitch;
+    }
+
+    public Compressor getCompressor(
+            Map<String, List<DataBox>> data, String[] acceptEncodes, String clientIp) {
+        CompressPushSwitch compressPushSwitch = getCompressSwitch();
+        if (!compressEnabled(compressPushSwitch, clientIp)) {
+            return null;
+        }
+        if (dataBoxesMapSize(data) < compressPushSwitch.getCompressMinSize()) {
+            return null;
+        }
+        return CompressUtils.find(acceptEncodes, compressPushSwitch.getForbidEncodes());
+    }
+
+    protected static class CompressStorage extends SystemDataStorage {
+        protected final CompressPushSwitch compressPushSwitch;
+
+        public CompressStorage(long version, CompressPushSwitch compressPushSwitch) {
+            super(version);
+            this.compressPushSwitch = compressPushSwitch;
+        }
+    }
 }

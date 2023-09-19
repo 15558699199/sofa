@@ -16,30 +16,31 @@
  */
 package com.alipay.sofa.registry.server.meta.resource;
 
-import static org.mockito.Mockito.spy;
-
 import com.alipay.sofa.registry.server.meta.AbstractMetaServerTestBase;
 import com.alipay.sofa.registry.server.meta.provide.data.ProvideDataService;
-import java.util.Map;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Map;
+
+import static org.mockito.Mockito.spy;
+
 public class SlotSyncResourceTest extends AbstractMetaServerTestBase {
 
-  private SlotSyncResource slotSyncResource;
+    private SlotSyncResource slotSyncResource;
 
-  private ProvideDataService provideDataService = spy(new InMemoryProvideDataRepo());
+    private ProvideDataService provideDataService = spy(new InMemoryProvideDataRepo());
 
-  @Before
-  public void before() {
-    slotSyncResource = new SlotSyncResource().setProvideDataService(provideDataService);
-  }
+    @Before
+    public void before() {
+        slotSyncResource = new SlotSyncResource().setProvideDataService(provideDataService);
+    }
 
-  @Test
-  public void testGetSlotSync() throws Exception {
-    Map<String, Object> result = slotSyncResource.getSlotSync();
-    Assert.assertEquals("null", result.get("syncSessionIntervalSec"));
-    Assert.assertEquals("null", result.get("dataDatumExpire"));
-  }
+    @Test
+    public void testGetSlotSync() throws Exception {
+        Map<String, Object> result = slotSyncResource.getSlotSync();
+        Assert.assertEquals("null", result.get("syncSessionIntervalSec"));
+        Assert.assertEquals("null", result.get("dataDatumExpire"));
+    }
 }

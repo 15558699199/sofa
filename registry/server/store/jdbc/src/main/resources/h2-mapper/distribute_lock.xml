@@ -36,30 +36,25 @@
 
     <insert id="competeLockOnInsert" parameterType="com.alipay.sofa.registry.common.model.elector.DistributeLockInfo">
         <![CDATA[
-       INSERT INTO distribute_lock
-       (
-           data_center,
-           lock_name,
-           owner,
-           duration,
-           gmt_create,
-           gmt_modified,
-           term,
-           term_duration
-       )
-       VALUES
-       (
-           #{dataCenter},
-           #{lockName},
-           #{owner},
-           #{duration},
-           NOW(3),
-           NOW(3),
-           0,
-           0
-       )
-       ON DUPLICATE KEY UPDATE lock_name = #{lockName}
-       ]]>
+        INSERT INTO distribute_lock
+        (data_center,
+         lock_name,
+         owner,
+         duration,
+         gmt_create,
+         gmt_modified,
+         term,
+         term_duration)
+        VALUES (#{dataCenter},
+                #{lockName},
+                #{owner},
+                #{duration},
+                NOW(3),
+                NOW(3),
+                0,
+                0) ON DUPLICATE KEY
+        UPDATE lock_name = #{lockName}
+        ]]>
     </insert>
 
     <update id="competeLockOnUpdate">
@@ -72,20 +67,31 @@
 
     <update id="ownerHeartbeat" parameterType="com.alipay.sofa.registry.common.model.elector.DistributeLockInfo">
         <![CDATA[
-          update distribute_lock set owner = #{owner}, gmt_modified =  NOW(3), `term_duration` = (`term_duration` + 1)
-          where data_center = #{dataCenter} and lock_name = #{lockName} and owner = #{owner}
+        update distribute_lock
+        set owner           = #{owner},
+            gmt_modified    = NOW(3),
+            `term_duration` = (`term_duration` + 1)
+        where data_center = #{dataCenter}
+          and lock_name = #{lockName}
+          and owner = #{owner}
         ]]>
     </update>
 
     <select id="queryDistLock" resultMap="distributeLockResultMap">
-        select *, NOW(3) as gmt_db_server_time, EXTRACT(EPOCH FROM gmt_modified)*1000000000 as gmt_modified_unixnanos from distribute_lock
-        where data_center = #{dataCenter} and lock_name = #{lockName}
+        select *, NOW(3) as gmt_db_server_time, EXTRACT(EPOCH FROM gmt_modified) * 1000000000 as gmt_modified_unixnanos
+        from distribute_lock
+        where data_center = #{dataCenter}
+          and lock_name = #{lockName}
     </select>
 
     <update id="forceRefresh" parameterType="com.alipay.sofa.registry.common.model.elector.DistributeLockInfo">
         <![CDATA[
-          update distribute_lock set duration = #{duration}, gmt_modified = NOW(3)
-          where data_center = #{dataCenter} and lock_name = #{lockName} and owner = #{owner}
+        update distribute_lock
+        set duration     = #{duration},
+            gmt_modified = NOW(3)
+        where data_center = #{dataCenter}
+          and lock_name = #{lockName}
+          and owner = #{owner}
         ]]>
     </update>
 

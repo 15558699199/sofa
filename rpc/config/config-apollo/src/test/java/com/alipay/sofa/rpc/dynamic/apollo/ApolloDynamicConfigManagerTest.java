@@ -24,8 +24,8 @@ import org.junit.Test;
 
 public class ApolloDynamicConfigManagerTest {
 
-    private final static Logger        logger                     = LoggerFactory
-                                                                      .getLogger(ApolloDynamicConfigManagerTest.class);
+    private final static Logger logger = LoggerFactory
+            .getLogger(ApolloDynamicConfigManagerTest.class);
 
     private ApolloDynamicConfigManager apolloDynamicConfigManager = new ApolloDynamicConfigManager("test");
 

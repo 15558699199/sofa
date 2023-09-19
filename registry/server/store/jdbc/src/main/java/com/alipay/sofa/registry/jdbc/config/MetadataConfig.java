@@ -21,15 +21,15 @@ package com.alipay.sofa.registry.jdbc.config;
  * @version $Id: MetadataConfig.java, v 0.1 2021年02月24日 15:20 xiaojian.xj Exp $
  */
 public interface MetadataConfig {
-  int getRevisionRenewIntervalMinutes();
+    int getRevisionRenewIntervalMinutes();
 
-  int getInterfaceAppsIndexRenewIntervalMinutes();
+    int getInterfaceAppsIndexRenewIntervalMinutes();
 
-  int getInterfaceAppsExecutorPoolSize();
+    int getInterfaceAppsExecutorPoolSize();
 
-  int getInterfaceAppsExecutorQueueSize();
+    int getInterfaceAppsExecutorQueueSize();
 
-  int getClientManagerExecutorPoolSize();
+    int getClientManagerExecutorPoolSize();
 
-  int getClientManagerExecutorQueueSize();
+    int getClientManagerExecutorQueueSize();
 }

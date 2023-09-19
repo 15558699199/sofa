@@ -25,11 +25,11 @@ import com.alipay.sofa.rpc.core.response.SofaResponse;
  */
 public class TestSyncFilter extends Filter {
 
-    String   interfaceName;
-    String   targetServiceUniqueName;
-    String   methodName;
-    String   invokeType;
-    String   targetAppName;
+    String interfaceName;
+    String targetServiceUniqueName;
+    String methodName;
+    String invokeType;
+    String targetAppName;
     Object[] args;
 
     @Override

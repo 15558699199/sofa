@@ -1,6 +1,3 @@
-
-
-
 syntax = "proto3";
 
 option java_multiple_files = true;
@@ -8,17 +5,17 @@ option java_package = "triple";
 option java_outer_classname = "GenericProto";
 
 service GenericService {
-    rpc generic (Request) returns (Response) {}
+  rpc generic (Request) returns (Response) {}
 }
 
 message Request {
-    string serializeType = 1;
-    repeated bytes  args = 2;
-    repeated string argTypes = 3;
+  string serializeType = 1;
+  repeated bytes  args = 2;
+  repeated string argTypes = 3;
 }
 
 message Response {
-    string serializeType = 1;
-    bytes  data = 2;
-    string type = 3;
+  string serializeType = 1;
+  bytes  data = 2;
+  string type = 3;
 }

@@ -24,74 +24,75 @@ import io.prometheus.client.Counter;
  */
 public class MetadataMetrics {
 
-  private MetadataMetrics() {}
+    private MetadataMetrics() {
+    }
 
-  static final class Fetch {
-    static final Counter FETCH_REVISION_COUNTER =
-        Counter.build()
-            .namespace("metadata")
-            .subsystem("revision")
-            .name("fetch_revision_total")
-            .help("fetch revision")
-            .labelNames("hit")
-            .register();
-    static final Counter.Child REVISION_CACHE_HIT_COUNTER = FETCH_REVISION_COUNTER.labels("Y");
-    static final Counter.Child REVISION_CACHE_MISS_COUNTER = FETCH_REVISION_COUNTER.labels("N");
+    static final class Fetch {
+        static final Counter FETCH_REVISION_COUNTER =
+                Counter.build()
+                        .namespace("metadata")
+                        .subsystem("revision")
+                        .name("fetch_revision_total")
+                        .help("fetch revision")
+                        .labelNames("hit")
+                        .register();
+        static final Counter.Child REVISION_CACHE_HIT_COUNTER = FETCH_REVISION_COUNTER.labels("Y");
+        static final Counter.Child REVISION_CACHE_MISS_COUNTER = FETCH_REVISION_COUNTER.labels("N");
 
-    static final Counter FETCH_APPS_COUNTER =
-        Counter.build()
-            .namespace("metadata")
-            .subsystem("apps")
-            .name("fetch_apps_total")
-            .help("query apps")
-            .labelNames("hit")
-            .register();
-    static final Counter.Child APPS_CACHE_HIT_COUNTER = FETCH_APPS_COUNTER.labels("Y");
-    static final Counter.Child APPS_CACHE_MISS_COUNTER = FETCH_APPS_COUNTER.labels("N");
-  }
+        static final Counter FETCH_APPS_COUNTER =
+                Counter.build()
+                        .namespace("metadata")
+                        .subsystem("apps")
+                        .name("fetch_apps_total")
+                        .help("query apps")
+                        .labelNames("hit")
+                        .register();
+        static final Counter.Child APPS_CACHE_HIT_COUNTER = FETCH_APPS_COUNTER.labels("Y");
+        static final Counter.Child APPS_CACHE_MISS_COUNTER = FETCH_APPS_COUNTER.labels("N");
+    }
 
-  public static final class Register {
+    public static final class Register {
 
-    public static final Counter REVISION_REGISTER_COUNTER =
-        Counter.build()
-            .namespace("metadata")
-            .subsystem("revision")
-            .name("revision_register_total")
-            .help("revision register")
-            .register();
-  }
+        public static final Counter REVISION_REGISTER_COUNTER =
+                Counter.build()
+                        .namespace("metadata")
+                        .subsystem("revision")
+                        .name("revision_register_total")
+                        .help("revision register")
+                        .register();
+    }
 
-  public static final class ProvideData {
-    public static final Counter PROVIDE_DATA_UPDATE_COUNTER =
-        Counter.build()
-            .namespace("metadata")
-            .subsystem("provideData")
-            .name("provideData_update_total")
-            .help("provideData_update")
-            .register();
+    public static final class ProvideData {
+        public static final Counter PROVIDE_DATA_UPDATE_COUNTER =
+                Counter.build()
+                        .namespace("metadata")
+                        .subsystem("provideData")
+                        .name("provideData_update_total")
+                        .help("provideData_update")
+                        .register();
 
-    public static final Counter PROVIDE_DATA_QUERY_COUNTER =
-        Counter.build()
-            .namespace("metadata")
-            .subsystem("provideData")
-            .name("provideData_query_total")
-            .help("provideData_query")
-            .register();
+        public static final Counter PROVIDE_DATA_QUERY_COUNTER =
+                Counter.build()
+                        .namespace("metadata")
+                        .subsystem("provideData")
+                        .name("provideData_query_total")
+                        .help("provideData_query")
+                        .register();
 
-    public static final Counter CLIENT_MANAGER_UPDATE_COUNTER =
-        Counter.build()
-            .namespace("metadata")
-            .subsystem("clientManager")
-            .name("clientManager_update_total")
-            .help("clientManager_update")
-            .register();
+        public static final Counter CLIENT_MANAGER_UPDATE_COUNTER =
+                Counter.build()
+                        .namespace("metadata")
+                        .subsystem("clientManager")
+                        .name("clientManager_update_total")
+                        .help("clientManager_update")
+                        .register();
 
-    public static final Counter CLIENT_MANAGER_QUERY_COUNTER =
-        Counter.build()
-            .namespace("metadata")
-            .subsystem("clientManager")
-            .name("clientManager_query_total")
-            .help("clientManager_query")
-            .register();
-  }
+        public static final Counter CLIENT_MANAGER_QUERY_COUNTER =
+                Counter.build()
+                        .namespace("metadata")
+                        .subsystem("clientManager")
+                        .name("clientManager_query_total")
+                        .help("clientManager_query")
+                        .register();
+    }
 }

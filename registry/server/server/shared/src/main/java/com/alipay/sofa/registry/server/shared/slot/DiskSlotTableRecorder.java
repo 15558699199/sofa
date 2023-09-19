@@ -23,24 +23,24 @@ import com.alipay.sofa.registry.util.JsonUtils;
 
 /**
  * @author chen.zhu
- *     <p>Dec 25, 2020
+ * <p>Dec 25, 2020
  */
 public class DiskSlotTableRecorder implements SlotTableRecorder {
 
-  private static final Logger logger = LoggerFactory.getLogger(DiskSlotTableRecorder.class);
+    private static final Logger logger = LoggerFactory.getLogger(DiskSlotTableRecorder.class);
 
-  private volatile SlotTable lastRecord;
+    private volatile SlotTable lastRecord;
 
-  @Override
-  public void record(SlotTable slotTable) {
-    try {
-      if (lastRecord == null || lastRecord.getEpoch() != slotTable.getEpoch()) {
-        String slotStr = JsonUtils.writeValueAsString(slotTable);
-        logger.info("[record] record slot: {}", slotStr);
-        this.lastRecord = slotTable;
-      }
-    } catch (Throwable e) {
-      logger.error("[record]", e);
+    @Override
+    public void record(SlotTable slotTable) {
+        try {
+            if (lastRecord == null || lastRecord.getEpoch() != slotTable.getEpoch()) {
+                String slotStr = JsonUtils.writeValueAsString(slotTable);
+                logger.info("[record] record slot: {}", slotStr);
+                this.lastRecord = slotTable;
+            }
+        } catch (Throwable e) {
+            logger.error("[record]", e);
+        }
     }
-  }
 }

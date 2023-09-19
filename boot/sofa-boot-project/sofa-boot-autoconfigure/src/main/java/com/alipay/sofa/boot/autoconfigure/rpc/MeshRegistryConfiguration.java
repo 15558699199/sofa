@@ -24,6 +24,7 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * Mesh Registry configuration
+ *
  * @author yuanxuan
  * @version : MeshRegistryConfiguration.java, v 0.1 2023年01月31日 17:10 yuanxuan Exp $
  */

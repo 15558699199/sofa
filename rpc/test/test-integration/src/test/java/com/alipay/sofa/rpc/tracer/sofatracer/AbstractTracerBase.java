@@ -81,10 +81,10 @@ public abstract class AbstractTracerBase extends ActivelyDestroyTest {
     protected void removeRpcDigestStatLogType() throws Exception {
         System.setProperty("stat_log_interval", "5");
         AsyncCommonDigestAppenderManager asyncDigestManager = SofaTracerDigestReporterAsyncManager
-            .getSofaTracerDigestReporterAsyncManager();
+                .getSofaTracerDigestReporterAsyncManager();
         //stat
         Map<Long, SofaTracerStatisticReporterManager> cycleTimesManager = SofaTracerStatisticReporterCycleTimesManager
-            .getCycleTimesManager();
+                .getCycleTimesManager();
         for (Map.Entry<Long, SofaTracerStatisticReporterManager> entry : cycleTimesManager.entrySet()) {
             SofaTracerStatisticReporterManager manager = entry.getValue();
             manager.getStatReporters().clear();

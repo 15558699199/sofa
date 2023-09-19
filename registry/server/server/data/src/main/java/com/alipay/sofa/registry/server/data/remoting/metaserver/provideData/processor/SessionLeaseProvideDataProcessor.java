@@ -31,38 +31,39 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @version 1.0: DatumExpireProvideDataProcessor.java, v 0.1 2019-12-26 20:30 kezhu.wukz Exp $
  */
 public class SessionLeaseProvideDataProcessor implements ProvideDataProcessor {
-  private static final Logger LOGGER =
-      LoggerFactory.getLogger(SessionLeaseProvideDataProcessor.class);
+    private static final Logger LOGGER =
+            LoggerFactory.getLogger(SessionLeaseProvideDataProcessor.class);
 
-  @Autowired private DataServerConfig dataServerConfig;
+    @Autowired
+    private DataServerConfig dataServerConfig;
 
-  @Override
-  public boolean processData(ProvideData provideData) {
-    if (provideData == null) {
-      LOGGER.info("Fetch data sessionLease null");
-      return false;
+    @Override
+    public boolean processData(ProvideData provideData) {
+        if (provideData == null) {
+            LOGGER.info("Fetch data sessionLease null");
+            return false;
+        }
+
+        final Integer data = ProvideData.toInteger(provideData);
+        if (data == null) {
+            LOGGER.info("Fetch data sessionLease content null");
+            return false;
+        }
+
+        LOGGER.info("Fetch sessionLeaseSec {}", data);
+        SessionLeaseManager.validateSessionLeaseSec(data);
+        dataServerConfig.setSessionLeaseSecs(data);
+
+        return true;
     }
 
-    final Integer data = ProvideData.toInteger(provideData);
-    if (data == null) {
-      LOGGER.info("Fetch data sessionLease content null");
-      return false;
+    @VisibleForTesting
+    void setDataServerConfig(DataServerConfig dataServerConfig) {
+        this.dataServerConfig = dataServerConfig;
     }
 
-    LOGGER.info("Fetch sessionLeaseSec {}", data);
-    SessionLeaseManager.validateSessionLeaseSec(data);
-    dataServerConfig.setSessionLeaseSecs(data);
-
-    return true;
-  }
-
-  @VisibleForTesting
-  void setDataServerConfig(DataServerConfig dataServerConfig) {
-    this.dataServerConfig = dataServerConfig;
-  }
-
-  @Override
-  public boolean support(String dataInfoId) {
-    return ValueConstants.DATA_SESSION_LEASE_SEC.equals(dataInfoId);
-  }
+    @Override
+    public boolean support(String dataInfoId) {
+        return ValueConstants.DATA_SESSION_LEASE_SEC.equals(dataInfoId);
+    }
 }

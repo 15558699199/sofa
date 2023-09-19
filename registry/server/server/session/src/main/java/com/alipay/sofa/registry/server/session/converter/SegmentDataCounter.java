@@ -19,6 +19,7 @@ package com.alipay.sofa.registry.server.session.converter;
 import com.alipay.sofa.registry.core.model.DataBox;
 import com.alipay.sofa.registry.core.model.MultiSegmentData;
 import com.google.common.collect.Lists;
+
 import java.util.List;
 
 /**
@@ -27,40 +28,40 @@ import java.util.List;
  */
 public final class SegmentDataCounter {
 
-  private final MultiSegmentData segmentData;
+    private final MultiSegmentData segmentData;
 
-  private int dataCount;
+    private int dataCount;
 
-  public SegmentDataCounter(MultiSegmentData segmentData) {
-    this.segmentData = segmentData;
-    this.dataCount = 0;
-  }
-
-  public void put(String zone, List<DataBox> datas) {
-    if (datas == null) {
-      datas = Lists.newArrayList();
+    public SegmentDataCounter(MultiSegmentData segmentData) {
+        this.segmentData = segmentData;
+        this.dataCount = 0;
     }
-    this.segmentData.getUnzipData().put(zone, datas);
-    this.dataCount += datas.size();
 
-    segmentData.getDataCount().put(zone, datas.size());
-  }
+    public void put(String zone, List<DataBox> datas) {
+        if (datas == null) {
+            datas = Lists.newArrayList();
+        }
+        this.segmentData.getUnzipData().put(zone, datas);
+        this.dataCount += datas.size();
 
-  /**
-   * Getter method for property <tt>segmentData</tt>.
-   *
-   * @return property value of segmentData
-   */
-  public MultiSegmentData getSegmentData() {
-    return segmentData;
-  }
+        segmentData.getDataCount().put(zone, datas.size());
+    }
 
-  /**
-   * Getter method for property <tt>dataCount</tt>.
-   *
-   * @return property value of dataCount
-   */
-  public int getDataCount() {
-    return dataCount;
-  }
+    /**
+     * Getter method for property <tt>segmentData</tt>.
+     *
+     * @return property value of segmentData
+     */
+    public MultiSegmentData getSegmentData() {
+        return segmentData;
+    }
+
+    /**
+     * Getter method for property <tt>dataCount</tt>.
+     *
+     * @return property value of dataCount
+     */
+    public int getDataCount() {
+        return dataCount;
+    }
 }

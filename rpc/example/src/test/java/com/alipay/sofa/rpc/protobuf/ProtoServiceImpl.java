@@ -23,9 +23,9 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class ProtoServiceImpl implements ProtoService {
 
-    private int           sleep;
+    private int sleep;
 
-    private String        result;
+    private String result;
 
     private AtomicInteger counter = new AtomicInteger();
 
@@ -51,9 +51,9 @@ public class ProtoServiceImpl implements ProtoService {
         }
         counter.incrementAndGet();
         EchoResponse response = EchoResponse.newBuilder()
-            .setCode(200)
-            .setMessage(result != null ? result : "protobuf works! " + req.getName())
-            .build();
+                .setCode(200)
+                .setMessage(result != null ? result : "protobuf works! " + req.getName())
+                .build();
         return response;
     }
 

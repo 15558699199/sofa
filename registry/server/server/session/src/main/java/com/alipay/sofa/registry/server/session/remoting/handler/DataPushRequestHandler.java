@@ -28,8 +28,9 @@ import com.alipay.sofa.registry.server.session.push.PushSwitchService;
 import com.alipay.sofa.registry.server.shared.remoting.AbstractClientHandler;
 import com.alipay.sofa.registry.server.shared.remoting.RemotingHelper;
 import com.alipay.sofa.registry.util.ParaCheckUtil;
-import java.util.concurrent.Executor;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.concurrent.Executor;
 
 /**
  * current for standard env temp publisher push
@@ -39,47 +40,51 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class DataPushRequestHandler extends AbstractClientHandler<DataPushRequest> {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(DataPushRequestHandler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DataPushRequestHandler.class);
 
-  @Autowired FirePushService firePushService;
+    @Autowired
+    FirePushService firePushService;
 
-  @Autowired ExecutorManager executorManager;
+    @Autowired
+    ExecutorManager executorManager;
 
-  @Autowired SessionServerConfig sessionServerConfig;
+    @Autowired
+    SessionServerConfig sessionServerConfig;
 
-  @Autowired PushSwitchService pushSwitchService;
+    @Autowired
+    PushSwitchService pushSwitchService;
 
-  @Override
-  public Executor getExecutor() {
-    return executorManager.getDataChangeRequestExecutor();
-  }
-
-  @Override
-  public void checkParam(DataPushRequest request) {
-    ParaCheckUtil.checkNotNull(request.getDatum(), "request.datum");
-  }
-
-  @Override
-  protected NodeType getConnectNodeType() {
-    return NodeType.DATA;
-  }
-
-  @Override
-  public Object doHandle(Channel channel, DataPushRequest request) {
-    if (!pushSwitchService.canLocalDataCenterPush()) {
-      return null;
+    @Override
+    public Executor getExecutor() {
+        return executorManager.getDataChangeRequestExecutor();
     }
-    try {
-      firePushService.fireOnDatum(request.getDatum(), RemotingHelper.getRemoteHostAddress(channel));
-    } catch (Throwable e) {
-      LOGGER.error("DataPush Request error!", e);
-      throw new RuntimeException("DataPush Request error!", e);
-    }
-    return null;
-  }
 
-  @Override
-  public Class interest() {
-    return DataPushRequest.class;
-  }
+    @Override
+    public void checkParam(DataPushRequest request) {
+        ParaCheckUtil.checkNotNull(request.getDatum(), "request.datum");
+    }
+
+    @Override
+    protected NodeType getConnectNodeType() {
+        return NodeType.DATA;
+    }
+
+    @Override
+    public Object doHandle(Channel channel, DataPushRequest request) {
+        if (!pushSwitchService.canLocalDataCenterPush()) {
+            return null;
+        }
+        try {
+            firePushService.fireOnDatum(request.getDatum(), RemotingHelper.getRemoteHostAddress(channel));
+        } catch (Throwable e) {
+            LOGGER.error("DataPush Request error!", e);
+            throw new RuntimeException("DataPush Request error!", e);
+        }
+        return null;
+    }
+
+    @Override
+    public Class interest() {
+        return DataPushRequest.class;
+    }
 }

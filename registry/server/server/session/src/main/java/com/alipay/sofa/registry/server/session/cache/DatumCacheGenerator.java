@@ -22,53 +22,57 @@ import com.alipay.sofa.registry.log.Logger;
 import com.alipay.sofa.registry.log.LoggerFactory;
 import com.alipay.sofa.registry.server.session.node.service.DataNodeService;
 import com.alipay.sofa.registry.util.ParaCheckUtil;
-import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
+
+import java.util.Set;
 
 /**
  * @author shangyu.wh
  * @version $Id: DatumCacheGenerator.java, v 0.1 2018-11-19 16:15 shangyu.wh Exp $
  */
 public class DatumCacheGenerator implements CacheGenerator {
-  private static final Logger LOGGER = LoggerFactory.getLogger("CACHE-GEN");
-  /** DataNode service */
-  @Autowired DataNodeService dataNodeService;
+    private static final Logger LOGGER = LoggerFactory.getLogger("CACHE-GEN");
+    /**
+     * DataNode service
+     */
+    @Autowired
+    DataNodeService dataNodeService;
 
-  @Override
-  public Value generatePayload(Key key) {
-    EntityType entityType = key.getEntityType();
-    if (entityType instanceof DatumKey) {
-      DatumKey datumKey = (DatumKey) entityType;
+    @Override
+    public Value generatePayload(Key key) {
+        EntityType entityType = key.getEntityType();
+        if (entityType instanceof DatumKey) {
+            DatumKey datumKey = (DatumKey) entityType;
 
-      final Set<String> dataCenters = datumKey.getDataCenters();
-      final String dataInfoId = datumKey.getDataInfoId();
-      ParaCheckUtil.checkNotEmpty(dataCenters, "dataCenter");
-      ParaCheckUtil.checkNotBlank(dataInfoId, "dataInfoId");
-      final long now = System.currentTimeMillis();
-      MultiSubDatum datum = dataNodeService.fetch(dataInfoId, dataCenters);
-      final long span = System.currentTimeMillis() - now;
-      if (datum == null || CollectionUtils.isEmpty(datum.getDatumMap())) {
-        LOGGER.info("loadNil,{},{},span={}", dataInfoId, dataCenters, span);
-      } else {
-        for (String dataCenter : dataCenters) {
-          SubDatum subDatum = datum.getSubDatum(dataCenter);
-          // some datacenter datum not exist
-          if (subDatum == null) {
-            LOGGER.info("loadNil,{},{},span={}", dataInfoId, dataCenter, span);
-          }
+            final Set<String> dataCenters = datumKey.getDataCenters();
+            final String dataInfoId = datumKey.getDataInfoId();
+            ParaCheckUtil.checkNotEmpty(dataCenters, "dataCenter");
+            ParaCheckUtil.checkNotBlank(dataInfoId, "dataInfoId");
+            final long now = System.currentTimeMillis();
+            MultiSubDatum datum = dataNodeService.fetch(dataInfoId, dataCenters);
+            final long span = System.currentTimeMillis() - now;
+            if (datum == null || CollectionUtils.isEmpty(datum.getDatumMap())) {
+                LOGGER.info("loadNil,{},{},span={}", dataInfoId, dataCenters, span);
+            } else {
+                for (String dataCenter : dataCenters) {
+                    SubDatum subDatum = datum.getSubDatum(dataCenter);
+                    // some datacenter datum not exist
+                    if (subDatum == null) {
+                        LOGGER.info("loadNil,{},{},span={}", dataInfoId, dataCenter, span);
+                    }
+                }
+                LOGGER.info(
+                        "loadD,{},{},{},{},{},span={}",
+                        dataInfoId,
+                        dataCenters,
+                        datum.getPubNum(),
+                        datum.getDataBoxBytes(),
+                        datum.getVersion(),
+                        span);
+            }
+            return new Value(datum);
         }
-        LOGGER.info(
-            "loadD,{},{},{},{},{},span={}",
-            dataInfoId,
-            dataCenters,
-            datum.getPubNum(),
-            datum.getDataBoxBytes(),
-            datum.getVersion(),
-            span);
-      }
-      return new Value(datum);
+        throw new IllegalArgumentException("unsupported key type:" + entityType);
     }
-    throw new IllegalArgumentException("unsupported key type:" + entityType);
-  }
 }

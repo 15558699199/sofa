@@ -17,19 +17,20 @@
 package com.alipay.sofa.registry.util;
 
 import com.google.common.collect.Lists;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+
 public class RevisionUtilsTest {
-  @Test
-  public void test() {
-    List<String> list = Lists.newArrayList("xx1", "yy2");
-    String digest1 = RevisionUtils.revisionsDigest(list);
-    String digest2 =
-        MessageDigests.toHexString(
-            MessageDigests.md5().digest("xx1yy2".getBytes(StandardCharsets.UTF_8)));
-    Assert.assertEquals(digest1, digest2);
-  }
+    @Test
+    public void test() {
+        List<String> list = Lists.newArrayList("xx1", "yy2");
+        String digest1 = RevisionUtils.revisionsDigest(list);
+        String digest2 =
+                MessageDigests.toHexString(
+                        MessageDigests.md5().digest("xx1yy2".getBytes(StandardCharsets.UTF_8)));
+        Assert.assertEquals(digest1, digest2);
+    }
 }

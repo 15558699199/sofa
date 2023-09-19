@@ -19,6 +19,7 @@ package com.alipay.sofa.rpc.common.struct;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.internal.util.collections.Sets;
+
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;

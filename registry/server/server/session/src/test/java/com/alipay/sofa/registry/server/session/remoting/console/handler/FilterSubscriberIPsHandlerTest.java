@@ -16,27 +16,27 @@
  */
 package com.alipay.sofa.registry.server.session.remoting.console.handler;
 
-import static org.mockito.Mockito.mock;
-
 import com.alipay.sofa.registry.common.model.CommonResponse;
 import com.alipay.sofa.registry.common.model.sessionserver.FilterSubscriberIPsRequest;
 import com.alipay.sofa.registry.server.session.store.Interests;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class FilterSubscriberIPsHandlerTest {
-  private FilterSubscriberIPsHandler newHandler() {
-    FilterSubscriberIPsHandler handler = new FilterSubscriberIPsHandler();
-    Assert.assertEquals(FilterSubscriberIPsRequest.class, handler.interest());
-    return handler;
-  }
+import static org.mockito.Mockito.mock;
 
-  @Test
-  public void testHandle() {
-    FilterSubscriberIPsHandler handler = newHandler();
-    handler.sessionInterests = mock(Interests.class);
-    CommonResponse obj =
-        (CommonResponse) handler.doHandle(null, new FilterSubscriberIPsRequest("DEFAULT_GROUP", 1));
-    Assert.assertTrue(obj.isSuccess());
-  }
+public class FilterSubscriberIPsHandlerTest {
+    private FilterSubscriberIPsHandler newHandler() {
+        FilterSubscriberIPsHandler handler = new FilterSubscriberIPsHandler();
+        Assert.assertEquals(FilterSubscriberIPsRequest.class, handler.interest());
+        return handler;
+    }
+
+    @Test
+    public void testHandle() {
+        FilterSubscriberIPsHandler handler = newHandler();
+        handler.sessionInterests = mock(Interests.class);
+        CommonResponse obj =
+                (CommonResponse) handler.doHandle(null, new FilterSubscriberIPsRequest("DEFAULT_GROUP", 1));
+        Assert.assertTrue(obj.isSuccess());
+    }
 }

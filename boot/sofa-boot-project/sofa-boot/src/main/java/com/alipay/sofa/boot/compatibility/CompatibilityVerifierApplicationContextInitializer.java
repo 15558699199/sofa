@@ -33,8 +33,8 @@ import java.util.List;
  * @version CompatibilityVerifierApplicationContextInitializer.java, v 0.1 2023年08月03日 4:44 PM huzijie Exp $
  */
 public class CompatibilityVerifierApplicationContextInitializer
-                                                               implements
-                                                               ApplicationContextInitializer<ConfigurableApplicationContext> {
+        implements
+        ApplicationContextInitializer<ConfigurableApplicationContext> {
 
     public static final String COMPATIBILITY_VERIFIER_ENABLED = "sofa.boot.compatibility-verifier.enabled";
 
@@ -43,26 +43,26 @@ public class CompatibilityVerifierApplicationContextInitializer
         Environment environment = applicationContext.getEnvironment();
         if (!Boolean.parseBoolean(environment.getProperty(COMPATIBILITY_VERIFIER_ENABLED, "true"))) {
             Logger logger = LoggerFactory
-                .getLogger(CompatibilityVerifierApplicationContextInitializer.class);
+                    .getLogger(CompatibilityVerifierApplicationContextInitializer.class);
             logger.info("Skip SOFABoot compatibility Verifier");
             return;
         }
 
         // Load all CompatibilityVerifier and verify.
         CompositeCompatibilityVerifier compositeCompatibilityVerifier = new CompositeCompatibilityVerifier(
-            getCompatibilityVerifierInstances(environment));
+                getCompatibilityVerifierInstances(environment));
         compositeCompatibilityVerifier.verifyCompatibilities();
     }
 
     private List<CompatibilityVerifier> getCompatibilityVerifierInstances(Environment environment) {
 
         SpringFactoriesLoader.ArgumentResolver argumentResolver = SpringFactoriesLoader.ArgumentResolver
-            .of(Environment.class, environment);
+                .of(Environment.class, environment);
         SpringFactoriesLoader springFactoriesLoader = SpringFactoriesLoader
-            .forDefaultResourceLocation();
+                .forDefaultResourceLocation();
         // Use names and ensure unique to protect against duplicates
         List<CompatibilityVerifier> instances = springFactoriesLoader.load(
-            CompatibilityVerifier.class, argumentResolver);
+                CompatibilityVerifier.class, argumentResolver);
         AnnotationAwareOrderComparator.sort(instances);
         return instances;
     }

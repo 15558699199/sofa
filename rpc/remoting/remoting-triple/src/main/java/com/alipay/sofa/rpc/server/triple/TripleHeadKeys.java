@@ -27,88 +27,72 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class TripleHeadKeys {
 
-    protected static ConcurrentHashMap<String, Key<String>> keyMap                    = new ConcurrentHashMap<String, Key<String>>();
+    public static final Key<String> HEAD_KEY_TARGET_SERVICE = Key
+            .of(RemotingConstants.HEAD_TARGET_SERVICE,
+                    Metadata.ASCII_STRING_MARSHALLER);
+    public static final Key<String> HEAD_KEY_METHOD_NAME = Key
+            .of(RemotingConstants.HEAD_METHOD_NAME,
+                    Metadata.ASCII_STRING_MARSHALLER);
+    public static final Key<String> HEAD_KEY_TARGET_APP = Key
+            .of(RemotingConstants.HEAD_TARGET_APP,
+                    Metadata.ASCII_STRING_MARSHALLER);
+    public static final Key<String> HEAD_KEY_SERVICE_VERSION = Key
+            .of("tri-service-version",
+                    Metadata.ASCII_STRING_MARSHALLER);
+    public static final Key<String> HEAD_KEY_TRACE_ID = Key
+            .of("tri-trace-traceid",
+                    Metadata.ASCII_STRING_MARSHALLER);
+    public static final Key<String> HEAD_KEY_RPC_ID = Key
+            .of("tri-trace-rpcid",
 
-    public static final Key<String>                         HEAD_KEY_TARGET_SERVICE   = Key
-                                                                                          .of(RemotingConstants.HEAD_TARGET_SERVICE,
-                                                                                              Metadata.ASCII_STRING_MARSHALLER);
-
-    public static final Key<String>                         HEAD_KEY_METHOD_NAME      = Key
-                                                                                          .of(RemotingConstants.HEAD_METHOD_NAME,
-                                                                                              Metadata.ASCII_STRING_MARSHALLER);
-
-    public static final Key<String>                         HEAD_KEY_TARGET_APP       = Key
-                                                                                          .of(RemotingConstants.HEAD_TARGET_APP,
-                                                                                              Metadata.ASCII_STRING_MARSHALLER);
-
-    public static final Key<String>                         HEAD_KEY_SERVICE_VERSION  = Key
-                                                                                          .of("tri-service-version",
-                                                                                              Metadata.ASCII_STRING_MARSHALLER);
-
-    public static final Key<String>                         HEAD_KEY_TRACE_ID         = Key
-                                                                                          .of("tri-trace-traceid",
-                                                                                              Metadata.ASCII_STRING_MARSHALLER);
-
-    public static final Key<String>                         HEAD_KEY_RPC_ID           = Key
-                                                                                          .of("tri-trace-rpcid",
-
-                                                                                              Metadata.ASCII_STRING_MARSHALLER);
+                    Metadata.ASCII_STRING_MARSHALLER);
     //will be lowercase in http2
-    public static final Key<String>                         HEAD_KEY_OLD_TRACE_ID     = Key
-                                                                                          .of("SOFA-TraceId",
-                                                                                              Metadata.ASCII_STRING_MARSHALLER);
+    public static final Key<String> HEAD_KEY_OLD_TRACE_ID = Key
+            .of("SOFA-TraceId",
+                    Metadata.ASCII_STRING_MARSHALLER);
+    public static final Key<String> HEAD_KEY_OLD_RPC_ID = Key
+            .of("SOFA-RpcId",
+                    Metadata.ASCII_STRING_MARSHALLER);
     //will be lowercase in http2
-
-    public static final Key<String>                         HEAD_KEY_OLD_RPC_ID       = Key
-                                                                                          .of("SOFA-RpcId",
-                                                                                              Metadata.ASCII_STRING_MARSHALLER);
-
-    public static final Key<String>                         HEAD_KEY_META_TYPE        = Key
-                                                                                          .of("tri-type",
-                                                                                              Metadata.ASCII_STRING_MARSHALLER);
-
-    public static final Key<String>                         HEAD_KEY_SAMP_TYPE        = Key
-                                                                                          .of("tri-trace-samp",
-                                                                                              Metadata.ASCII_STRING_MARSHALLER);
-    public static final Key<String>                         HEAD_KEY_CURRENT_APP      = Key
-                                                                                          .of("tri-trace-current-app",
-                                                                                              Metadata.ASCII_STRING_MARSHALLER);
-
-    public static final Key<String>                         HEAD_KEY_INVOKE_TYPE      = Key
-                                                                                          .of("tri-trace-invoke-type",
-                                                                                              Metadata.ASCII_STRING_MARSHALLER);
-
-    public static final Key<String>                         HEAD_KEY_PROTOCOL_TYPE    = Key
-                                                                                          .of("tri-trace-protocol-type",
-                                                                                              Metadata.ASCII_STRING_MARSHALLER);
-    public static final Key<String>                         HEAD_KEY_BIZ_BAGGAGE_TYPE = Key
-                                                                                          .of("tri-trace-biz-baggage",
-                                                                                              Metadata.ASCII_STRING_MARSHALLER);
-    public static final Key<String>                         HEAD_KEY_SYS_BAGGAGE_TYPE = Key
-                                                                                          .of("tri-trace-sys-baggage",
-                                                                                              Metadata.ASCII_STRING_MARSHALLER);
-
-    public static final Key<String>                         HEAD_KEY_UNIT_INFO        = Key
-                                                                                          .of("tri-unit-info",
-                                                                                              Metadata.ASCII_STRING_MARSHALLER);
-
-    public static final Key<String>                         HEAD_KEY_SOURCE_TENANTID  = Key
-                                                                                          .of("tri-tenantid",
-                                                                                              Metadata.ASCII_STRING_MARSHALLER);
-
-    public static final Key<String>                         HEAD_KEY_TARGET_TENANTID  = Key
-                                                                                          .of("tri-target-tenantid",
-                                                                                              Metadata.ASCII_STRING_MARSHALLER);
-
+    public static final Key<String> HEAD_KEY_META_TYPE = Key
+            .of("tri-type",
+                    Metadata.ASCII_STRING_MARSHALLER);
+    public static final Key<String> HEAD_KEY_SAMP_TYPE = Key
+            .of("tri-trace-samp",
+                    Metadata.ASCII_STRING_MARSHALLER);
+    public static final Key<String> HEAD_KEY_CURRENT_APP = Key
+            .of("tri-trace-current-app",
+                    Metadata.ASCII_STRING_MARSHALLER);
+    public static final Key<String> HEAD_KEY_INVOKE_TYPE = Key
+            .of("tri-trace-invoke-type",
+                    Metadata.ASCII_STRING_MARSHALLER);
+    public static final Key<String> HEAD_KEY_PROTOCOL_TYPE = Key
+            .of("tri-trace-protocol-type",
+                    Metadata.ASCII_STRING_MARSHALLER);
+    public static final Key<String> HEAD_KEY_BIZ_BAGGAGE_TYPE = Key
+            .of("tri-trace-biz-baggage",
+                    Metadata.ASCII_STRING_MARSHALLER);
+    public static final Key<String> HEAD_KEY_SYS_BAGGAGE_TYPE = Key
+            .of("tri-trace-sys-baggage",
+                    Metadata.ASCII_STRING_MARSHALLER);
+    public static final Key<String> HEAD_KEY_UNIT_INFO = Key
+            .of("tri-unit-info",
+                    Metadata.ASCII_STRING_MARSHALLER);
+    public static final Key<String> HEAD_KEY_SOURCE_TENANTID = Key
+            .of("tri-tenantid",
+                    Metadata.ASCII_STRING_MARSHALLER);
+    public static final Key<String> HEAD_KEY_TARGET_TENANTID = Key
+            .of("tri-target-tenantid",
+                    Metadata.ASCII_STRING_MARSHALLER);
     //for auth
-    public static final Key<String>                         HEAD_KEY_CONSUMER_APP     = Key
-                                                                                          .of("tri-consumer-appname",
-                                                                                              Metadata.ASCII_STRING_MARSHALLER);
-
+    public static final Key<String> HEAD_KEY_CONSUMER_APP = Key
+            .of("tri-consumer-appname",
+                    Metadata.ASCII_STRING_MARSHALLER);
     //for auth
-    public static final Key<String>                         HEAD_KEY_TRAFFIC_TYPE     = Key
-                                                                                          .of("tri-traffic-type",
-                                                                                              Metadata.ASCII_STRING_MARSHALLER);
+    public static final Key<String> HEAD_KEY_TRAFFIC_TYPE = Key
+            .of("tri-traffic-type",
+                    Metadata.ASCII_STRING_MARSHALLER);
+    protected static ConcurrentHashMap<String, Key<String>> keyMap = new ConcurrentHashMap<String, Key<String>>();
 
     public static Key<String> getKey(String key) {
         Key<String> headKey = keyMap.get(key);

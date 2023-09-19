@@ -30,37 +30,38 @@
 
     <insert id="save" parameterType="com.alipay.sofa.registry.jdbc.domain.RecoverConfigDomain">
         <![CDATA[
-       INSERT INTO recover_config
-       (
-           property_table,
-           property_key,
-           gmt_create,
-           gmt_modified
-       )
-       VALUES
-       (
-           #{propertyTable},
-           #{propertyKey},
-           CURRENT_TIMESTAMP,
-           CURRENT_TIMESTAMP
-       )
-       ]]>
+        INSERT INTO recover_config
+        (property_table,
+         property_key,
+         gmt_create,
+         gmt_modified)
+        VALUES (#{propertyTable},
+                #{propertyKey},
+                CURRENT_TIMESTAMP,
+                CURRENT_TIMESTAMP)
+        ]]>
     </insert>
 
     <select id="query" resultMap="recoverConfigResultMap">
-        <![CDATA[ select * from recover_config
-                  where property_table = #{propertyTable}
+        <![CDATA[
+        select *
+        from recover_config
+        where property_table = #{propertyTable}
         ]]>
     </select>
 
     <select id="queryAll" resultMap="recoverConfigResultMap">
-        <![CDATA[ select * from recover_config
+        <![CDATA[
+        select *
+        from recover_config
         ]]>
     </select>
 
     <delete id="remove">
-        delete from recover_config
-        where property_table = #{propertyTable} and property_key = #{propertyKey}
+        delete
+        from recover_config
+        where property_table = #{propertyTable}
+          and property_key = #{propertyKey}
     </delete>
 
 

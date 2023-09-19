@@ -19,12 +19,7 @@ package com.alipay.sofa.rpc.bootstrap.dubbo;
 import com.alipay.sofa.rpc.bootstrap.ConsumerBootstrap;
 import com.alipay.sofa.rpc.common.RpcConstants;
 import com.alipay.sofa.rpc.common.SystemInfo;
-import com.alipay.sofa.rpc.config.ApplicationConfig;
-import com.alipay.sofa.rpc.config.ConsumerConfig;
-import com.alipay.sofa.rpc.config.MethodConfig;
-import com.alipay.sofa.rpc.config.ProviderConfig;
-import com.alipay.sofa.rpc.config.RegistryConfig;
-import com.alipay.sofa.rpc.config.ServerConfig;
+import com.alipay.sofa.rpc.config.*;
 import com.alipay.sofa.rpc.registry.base.BaseZkTest;
 import com.alipay.sofa.rpc.test.HelloService;
 import com.alipay.sofa.rpc.test.HelloServiceImpl;
@@ -49,7 +44,7 @@ public class DubboServerTest extends BaseZkTest {
     @BeforeClass
     public static void beforeClass() {
         OLD_VALUE_DUBBO_CONFIG_IGNORE_DUPLICATED_INTERFACE = System
-            .getProperty(ConfigKeys.DUBBO_CONFIG_IGNORE_DUPLICATED_INTERFACE);
+                .getProperty(ConfigKeys.DUBBO_CONFIG_IGNORE_DUPLICATED_INTERFACE);
         OLD_VALUE_DUBBO_CONFIG_MODE = System.getProperty(ConfigKeys.DUBBO_CONFIG_MODE);
         System.setProperty(ConfigKeys.DUBBO_CONFIG_IGNORE_DUPLICATED_INTERFACE, "true");
         System.setProperty(ConfigKeys.DUBBO_CONFIG_MODE, ConfigMode.IGNORE.name());
@@ -59,7 +54,7 @@ public class DubboServerTest extends BaseZkTest {
     public static void afterClass() {
         if (OLD_VALUE_DUBBO_CONFIG_IGNORE_DUPLICATED_INTERFACE != null) {
             System.setProperty(ConfigKeys.DUBBO_CONFIG_IGNORE_DUPLICATED_INTERFACE,
-                OLD_VALUE_DUBBO_CONFIG_IGNORE_DUPLICATED_INTERFACE);
+                    OLD_VALUE_DUBBO_CONFIG_IGNORE_DUPLICATED_INTERFACE);
         } else {
             System.clearProperty(ConfigKeys.DUBBO_CONFIG_IGNORE_DUPLICATED_INTERFACE);
         }
@@ -76,10 +71,10 @@ public class DubboServerTest extends BaseZkTest {
     public void testRegistrySync() {
         // 只有1个线程 执行
         ServerConfig serverConfig = new ServerConfig()
-            .setStopTimeout(10)
-            .setPort(20880)
-            .setProtocol("dubbo")
-            .setQueues(100).setCoreThreads(1).setMaxThreads(2).setHost(SystemInfo.getLocalHost());
+                .setStopTimeout(10)
+                .setPort(20880)
+                .setProtocol("dubbo")
+                .setQueues(100).setCoreThreads(1).setMaxThreads(2).setHost(SystemInfo.getLocalHost());
 
         // 发布一个服务，每个请求要执行1秒
         ApplicationConfig serverApplacation = new ApplicationConfig();
@@ -88,10 +83,10 @@ public class DubboServerTest extends BaseZkTest {
         RegistryConfig registryConfig;
 
         registryConfig = new RegistryConfig()
-            .setProtocol(RpcConstants.REGISTRY_PROTOCOL_ZK)
-            .setAddress("127.0.0.1:2181")
-            .setSubscribe(true)
-            .setRegister(true);
+                .setProtocol(RpcConstants.REGISTRY_PROTOCOL_ZK)
+                .setAddress("127.0.0.1:2181")
+                .setSubscribe(true)
+                .setRegister(true);
 
         List<MethodConfig> methodConfigs = new ArrayList<MethodConfig>();
         MethodConfig methodConfig = new MethodConfig();
@@ -101,27 +96,27 @@ public class DubboServerTest extends BaseZkTest {
 
         registryConfigs.add(registryConfig);
         ProviderConfig<HelloService> providerConfig = new ProviderConfig<HelloService>()
-            .setInterfaceId(HelloService.class.getName())
-            .setRef(new HelloServiceImpl())
-            .setServer(serverConfig)
-            //.setParameter(RpcConstants.CONFIG_HIDDEN_KEY_WARNING, "false")
-            .setRegister(true)
-            .setBootstrap("dubbo")
-            .setRegistry(registryConfigs)
-            .setApplication(serverApplacation);
+                .setInterfaceId(HelloService.class.getName())
+                .setRef(new HelloServiceImpl())
+                .setServer(serverConfig)
+                //.setParameter(RpcConstants.CONFIG_HIDDEN_KEY_WARNING, "false")
+                .setRegister(true)
+                .setBootstrap("dubbo")
+                .setRegistry(registryConfigs)
+                .setApplication(serverApplacation);
         providerConfig.export();
 
         ApplicationConfig clientApplication = new ApplicationConfig();
         clientApplication.setAppName("client");
         ConsumerConfig<HelloService> consumerConfig = new ConsumerConfig<HelloService>()
-            .setInterfaceId(HelloService.class.getName())
-            .setTimeout(30000)
-            .setRegister(true)
-            .setProtocol("dubbo")
-            .setApplication(clientApplication)
-            .setRegistry(registryConfigs)
-            .setMethods(methodConfigs)
-            .setInJVM(false);
+                .setInterfaceId(HelloService.class.getName())
+                .setTimeout(30000)
+                .setRegister(true)
+                .setProtocol("dubbo")
+                .setApplication(clientApplication)
+                .setRegistry(registryConfigs)
+                .setMethods(methodConfigs)
+                .setInJVM(false);
         final HelloService demoService = consumerConfig.refer();
 
         String result = demoService.sayHello("xxx", 22);

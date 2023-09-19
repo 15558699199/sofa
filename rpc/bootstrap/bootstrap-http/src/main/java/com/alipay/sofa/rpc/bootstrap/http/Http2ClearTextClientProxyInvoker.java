@@ -41,7 +41,7 @@ public class Http2ClearTextClientProxyInvoker extends DefaultClientProxyInvoker 
     protected Byte parseSerializeType(String serialization) {
         Byte serializeType;
         if (SERIALIZE_HESSIAN.equals(serialization)
-            || SERIALIZE_HESSIAN2.equals(serialization)) {
+                || SERIALIZE_HESSIAN2.equals(serialization)) {
             serializeType = RemotingConstants.SERIALIZE_CODE_HESSIAN;
             return serializeType;
         } else {

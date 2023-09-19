@@ -23,13 +23,14 @@ import com.alipay.sofa.registry.common.model.store.Subscriber;
 import com.alipay.sofa.registry.server.session.connections.ConnectionsService;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.CollectionUtils;
 
 /**
  * @author xiaojian.xj
@@ -37,69 +38,74 @@ import org.springframework.util.CollectionUtils;
  */
 public class FetchPubSubDataInfoIdService {
 
-  @Autowired private ConnectionsService connectionsService;
+    /**
+     * store subscribers
+     */
+    @Autowired
+    protected Interests sessionInterests;
+    /**
+     * store publishers
+     */
+    @Autowired
+    protected DataStore sessionDataStore;
+    @Autowired
+    private ConnectionsService connectionsService;
 
-  /** store subscribers */
-  @Autowired protected Interests sessionInterests;
+    public PubSubDataInfoIdResp queryByIps(Set<String> ips) {
 
-  /** store publishers */
-  @Autowired protected DataStore sessionDataStore;
+        PubSubDataInfoIdResp resp = new PubSubDataInfoIdResp();
+        List<ConnectId> connectIds = connectionsService.getIpConnects(ips);
+        if (CollectionUtils.isEmpty(connectIds)) {
+            return resp;
+        }
 
-  public PubSubDataInfoIdResp queryByIps(Set<String> ips) {
+        Map<ConnectId, Map<String, Publisher>> connectIdPubMap =
+                sessionDataStore.queryByConnectIds(Sets.newHashSet(connectIds));
+        Map<ConnectId, Map<String, Subscriber>> connectIdSubMap =
+                sessionInterests.queryByConnectIds(Sets.newHashSet(connectIds));
 
-    PubSubDataInfoIdResp resp = new PubSubDataInfoIdResp();
-    List<ConnectId> connectIds = connectionsService.getIpConnects(ips);
-    if (CollectionUtils.isEmpty(connectIds)) {
-      return resp;
+        // collect pub and sub dataInfoIds
+        Map<String, Set<String>> pubs = parsePubDataInfoIds(connectIdPubMap);
+        Map<String, Set<String>> subs = parseSubDataInfoIds(connectIdSubMap);
+
+        resp.setPubDataInfoIds(pubs);
+        resp.setSubDataInfoIds(subs);
+        return resp;
     }
 
-    Map<ConnectId, Map<String, Publisher>> connectIdPubMap =
-        sessionDataStore.queryByConnectIds(Sets.newHashSet(connectIds));
-    Map<ConnectId, Map<String, Subscriber>> connectIdSubMap =
-        sessionInterests.queryByConnectIds(Sets.newHashSet(connectIds));
-
-    // collect pub and sub dataInfoIds
-    Map<String, Set<String>> pubs = parsePubDataInfoIds(connectIdPubMap);
-    Map<String, Set<String>> subs = parseSubDataInfoIds(connectIdSubMap);
-
-    resp.setPubDataInfoIds(pubs);
-    resp.setSubDataInfoIds(subs);
-    return resp;
-  }
-
-  protected Map<String, Set<String>> parsePubDataInfoIds(
-      Map<ConnectId, Map<String, Publisher>> connectIdPubMap) {
-    Map<String, Set<String>> pubs = Maps.newHashMapWithExpectedSize(connectIdPubMap.size());
-    for (Entry<ConnectId, Map<String, Publisher>> pubEntry : connectIdPubMap.entrySet()) {
-      if (CollectionUtils.isEmpty(pubEntry.getValue())) {
-        continue;
-      }
-      Set<String> set =
-          pubs.computeIfAbsent(pubEntry.getKey().getClientHostAddress(), k -> Sets.newHashSet());
-      Set<String> collect =
-          pubEntry.getValue().values().stream()
-              .map(Publisher::getDataInfoId)
-              .collect(Collectors.toSet());
-      set.addAll(collect);
+    protected Map<String, Set<String>> parsePubDataInfoIds(
+            Map<ConnectId, Map<String, Publisher>> connectIdPubMap) {
+        Map<String, Set<String>> pubs = Maps.newHashMapWithExpectedSize(connectIdPubMap.size());
+        for (Entry<ConnectId, Map<String, Publisher>> pubEntry : connectIdPubMap.entrySet()) {
+            if (CollectionUtils.isEmpty(pubEntry.getValue())) {
+                continue;
+            }
+            Set<String> set =
+                    pubs.computeIfAbsent(pubEntry.getKey().getClientHostAddress(), k -> Sets.newHashSet());
+            Set<String> collect =
+                    pubEntry.getValue().values().stream()
+                            .map(Publisher::getDataInfoId)
+                            .collect(Collectors.toSet());
+            set.addAll(collect);
+        }
+        return pubs;
     }
-    return pubs;
-  }
 
-  protected Map<String, Set<String>> parseSubDataInfoIds(
-      Map<ConnectId, Map<String, Subscriber>> connectIdSubMap) {
-    Map<String, Set<String>> subs = Maps.newHashMapWithExpectedSize(connectIdSubMap.size());
-    for (Entry<ConnectId, Map<String, Subscriber>> subEntry : connectIdSubMap.entrySet()) {
-      if (CollectionUtils.isEmpty(subEntry.getValue())) {
-        continue;
-      }
-      Set<String> set =
-          subs.computeIfAbsent(subEntry.getKey().getClientHostAddress(), k -> Sets.newHashSet());
-      Set<String> collect =
-          subEntry.getValue().values().stream()
-              .map(Subscriber::getDataInfoId)
-              .collect(Collectors.toSet());
-      set.addAll(collect);
+    protected Map<String, Set<String>> parseSubDataInfoIds(
+            Map<ConnectId, Map<String, Subscriber>> connectIdSubMap) {
+        Map<String, Set<String>> subs = Maps.newHashMapWithExpectedSize(connectIdSubMap.size());
+        for (Entry<ConnectId, Map<String, Subscriber>> subEntry : connectIdSubMap.entrySet()) {
+            if (CollectionUtils.isEmpty(subEntry.getValue())) {
+                continue;
+            }
+            Set<String> set =
+                    subs.computeIfAbsent(subEntry.getKey().getClientHostAddress(), k -> Sets.newHashSet());
+            Set<String> collect =
+                    subEntry.getValue().values().stream()
+                            .map(Subscriber::getDataInfoId)
+                            .collect(Collectors.toSet());
+            set.addAll(collect);
+        }
+        return subs;
     }
-    return subs;
-  }
 }

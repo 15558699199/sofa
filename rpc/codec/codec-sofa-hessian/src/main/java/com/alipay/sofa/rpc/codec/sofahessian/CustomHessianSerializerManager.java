@@ -27,7 +27,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class CustomHessianSerializerManager {
 
     private final static Map<Class, CustomHessianSerializer> CUSTOM_SERIALIZERS = new ConcurrentHashMap<Class, CustomHessianSerializer>(
-                                                                                    2);
+            2);
 
     public static CustomHessianSerializer getSerializer(Class clazz) {
         return CUSTOM_SERIALIZERS.get(clazz);

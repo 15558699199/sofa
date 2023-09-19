@@ -35,8 +35,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class SofaTracerAutoConfigurationTests {
 
     private final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
-                                                             .withConfiguration(AutoConfigurations
-                                                                 .of(SofaTracerAutoConfiguration.class));
+            .withConfiguration(AutoConfigurations
+                    .of(SofaTracerAutoConfiguration.class));
 
     @Test
     public void hasSpanReportListenerHolder() {

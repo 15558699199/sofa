@@ -17,9 +17,8 @@
 package com.alipay.sofa.smoke.tests.runtime.service;
 
 /**
-*
-* @author huzijie
-* @version SampleNoService.java, v 0.1 2022年05月26日 4:24 PM huzijie Exp $
-*/
+ * @author huzijie
+ * @version SampleNoService.java, v 0.1 2022年05月26日 4:24 PM huzijie Exp $
+ */
 public class SampleNoService {
 }

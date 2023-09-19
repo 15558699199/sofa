@@ -23,6 +23,6 @@ package com.alipay.sofa.smoke.tests.test.mock.injector;
  * @version InjectMockToGenericBeanExtensionTests.java, v 0.1 2023年08月21日 8:19 PM huzijie Exp $
  */
 public class InjectMockToGenericBeanExtensionTests
-                                                  extends
-                                                  InjectMockToGenericBeanTestBase<InjectMockToGenericBeanTestBase.ThingImpl, InjectMockToGenericBeanTestBase.SomethingImpl> {
+        extends
+        InjectMockToGenericBeanTestBase<InjectMockToGenericBeanTestBase.ThingImpl, InjectMockToGenericBeanTestBase.SomethingImpl> {
 }

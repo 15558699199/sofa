@@ -31,12 +31,7 @@ import com.alipay.sofa.rpc.log.LogCodes;
 import com.alipay.sofa.rpc.log.Logger;
 import com.alipay.sofa.rpc.log.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -51,35 +46,18 @@ import static com.alipay.sofa.rpc.registry.sofa.SofaRegistryHelper.PROTOCOL_TYPE
  */
 public class SofaRegistrySubscribeCallback implements SubscriberDataObserver, ConfigDataObserver {
 
+    public static final String CONFIG_SEPARATOR = "#";
+    //registry constants
+    public static final String DEFAULT_ZONE = "DEFAULT_ZONE";
     /**
      * Logger
      */
-    private static final Logger                             LOGGER                = LoggerFactory
-                                                                                      .getLogger(SofaRegistrySubscribeCallback.class);
-
-    public static final String                              CONFIG_SEPARATOR      = "#";
-
-    //registry constants
-    public static final String                              DEFAULT_ZONE          = "DEFAULT_ZONE";
-
+    private static final Logger LOGGER = LoggerFactory
+            .getLogger(SofaRegistrySubscribeCallback.class);
     /**
      * 一个dataId对应多个Listeners
      */
     ConcurrentHashMap<ConsumerConfig, ProviderInfoListener> providerInfoListeners = new ConcurrentHashMap<ConsumerConfig, ProviderInfoListener>();
-
-    /**
-     * 某次订阅到的服务数据
-     */
-    private UserData                                        lastUserData;
-
-    /**
-     * 某次订阅到的配置数据
-     */
-    private ConfigData                                      lastConfigData;
-
-    public SofaRegistrySubscribeCallback() {
-    }
-
     /**
      * 是否同时拿到服务列表和服务参数<br/>
      * 0.都没拿到<br/>
@@ -88,7 +66,18 @@ public class SofaRegistrySubscribeCallback implements SubscriberDataObserver, Co
      * 3 或者 null ：都拿到过
      * 本次只使用provider
      */
-    AtomicBoolean[] flag = new AtomicBoolean[] { new AtomicBoolean(), new AtomicBoolean() };
+    AtomicBoolean[] flag = new AtomicBoolean[]{new AtomicBoolean(), new AtomicBoolean()};
+    /**
+     * 某次订阅到的服务数据
+     */
+    private UserData lastUserData;
+    /**
+     * 某次订阅到的配置数据
+     */
+    private ConfigData lastConfigData;
+
+    public SofaRegistrySubscribeCallback() {
+    }
 
     @Override
     public void handleData(String dataId, UserData userData) {
@@ -178,7 +167,7 @@ public class SofaRegistrySubscribeCallback implements SubscriberDataObserver, Co
 
             final Map<String, List<String>> listZoneData = userData.getZoneData();
             final String[] configDatas = StringUtils.split(
-                configData == null ? StringUtils.EMPTY : configData.getData(), CONFIG_SEPARATOR);
+                    configData == null ? StringUtils.EMPTY : configData.getData(), CONFIG_SEPARATOR);
             final List<String> attrData = Arrays.asList(configDatas);
             for (String key : listZoneData.keySet()) {
                 final List<ProviderInfo> providerInfos = mergeProviderInfo(listZoneData.get(key), attrData);
@@ -210,7 +199,7 @@ public class SofaRegistrySubscribeCallback implements SubscriberDataObserver, Co
                 ProviderInfo origin = iterator.next();
                 for (ProviderInfo over : override) {
                     if (PROTOCOL_TYPE_OVERRIDE.equals(over.getProtocolType()) &&
-                        StringUtils.equals(origin.getHost(), over.getHost()) && origin.getPort() == over.getPort()) {
+                            StringUtils.equals(origin.getHost(), over.getHost()) && origin.getPort() == over.getPort()) {
                         // host 和 port 相同 认为是一个地址
                         if (over.getWeight() != origin.getWeight()) {
                             origin.setWeight(over.getWeight());
@@ -242,9 +231,9 @@ public class SofaRegistrySubscribeCallback implements SubscriberDataObserver, Co
         // 同一个key重复订阅多次，提醒用户需要检查一下是否是代码问题
         if (LOGGER.isWarnEnabled(consumerConfig.getAppName()) && providerInfoListeners.size() > 5) {
             LOGGER.warnWithApp(consumerConfig.getAppName(),
-                "Duplicate to add provider listener of {} " +
-                    "more than 5 times, now is {}, please check it",
-                dataId, providerInfoListeners.size());
+                    "Duplicate to add provider listener of {} " +
+                            "more than 5 times, now is {}, please check it",
+                    dataId, providerInfoListeners.size());
         }
     }
 
@@ -285,7 +274,7 @@ public class SofaRegistrySubscribeCallback implements SubscriberDataObserver, Co
         }
         if (LOGGER.isInfoEnabled()) {
             LOGGER.info(LogCodes.getLog(LogCodes.INFO_ROUTE_REGISTRY_URLS_HANDLE,
-                dataId, count, sb.toString()));
+                    dataId, count, sb.toString()));
         }
     }
 
@@ -308,8 +297,8 @@ public class SofaRegistrySubscribeCallback implements SubscriberDataObserver, Co
 
         if (LOGGER.isInfoEnabled()) {
             LOGGER.info(LogCodes.getLiteLog(
-                "Receive RPC config info: service[{0}]\n  usable config info[{1}]\n{2}",
-                dataId, count, sb.toString()));
+                    "Receive RPC config info: service[{0}]\n  usable config info[{1}]\n{2}",
+                    dataId, count, sb.toString()));
         }
     }
 
@@ -349,7 +338,7 @@ public class SofaRegistrySubscribeCallback implements SubscriberDataObserver, Co
     private void notifyToListener(ProviderInfoListener listener, ComposeUserData mergedResult) {
 
         if ("".equalsIgnoreCase(mergedResult.getLocalZone()) ||
-            DEFAULT_ZONE.equalsIgnoreCase(mergedResult.getLocalZone())) {
+                DEFAULT_ZONE.equalsIgnoreCase(mergedResult.getLocalZone())) {
             listener.updateProviders(new ProviderGroup(flatComposeData(mergedResult)));
         } else {
             final Map<String, List<ProviderInfo>> zoneData = mergedResult.getZoneData();

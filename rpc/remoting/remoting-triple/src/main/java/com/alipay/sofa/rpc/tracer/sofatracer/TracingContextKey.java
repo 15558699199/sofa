@@ -24,13 +24,13 @@ import io.opentracing.SpanContext;
 
 public class TracingContextKey {
 
-    public static final String                    KEY_NAME              = "io.opentracing.active-span";
-    public static final String                    KEY_CONTEXT_NAME      = "io.opentracing.active-span-context";
-    private static final Context.Key<Span>        key                   = Context.key(KEY_NAME);
-    private static final Context.Key<SpanContext> keyContext            = Context.key(KEY_CONTEXT_NAME);
-    public static final String                    KEY_SOFA_REQUEST_NAME = "io.opentracing.sofa-request";
-    private static final Context.Key<SofaRequest> keySofaRequest        = Context.key(KEY_SOFA_REQUEST_NAME);
-    private static final Context.Key<Metadata>    keyMetadata           = Context.key("io.opentracing.metadata");
+    public static final String KEY_NAME = "io.opentracing.active-span";
+    public static final String KEY_CONTEXT_NAME = "io.opentracing.active-span-context";
+    public static final String KEY_SOFA_REQUEST_NAME = "io.opentracing.sofa-request";
+    private static final Context.Key<Span> key = Context.key(KEY_NAME);
+    private static final Context.Key<SpanContext> keyContext = Context.key(KEY_CONTEXT_NAME);
+    private static final Context.Key<SofaRequest> keySofaRequest = Context.key(KEY_SOFA_REQUEST_NAME);
+    private static final Context.Key<Metadata> keyMetadata = Context.key("io.opentracing.metadata");
 
     /**
      * Retrieves the active span.

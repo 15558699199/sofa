@@ -46,22 +46,22 @@ import static com.alipay.sofa.rpc.registry.utils.RegistryUtils.convertInstanceTo
  */
 public class HealthServiceInformer {
 
-    private static final Logger           LOGGER = LoggerFactory
-                                                     .getLogger(HealthServiceInformer.class);
+    private static final Logger LOGGER = LoggerFactory
+            .getLogger(HealthServiceInformer.class);
 
-    private String                        serviceName;
+    private String serviceName;
 
-    private String                        tag;
+    private String tag;
 
     private Response<List<HealthService>> currentData;
 
-    private ConsulClient                  consulClient;
+    private ConsulClient consulClient;
 
-    private ConsulRegistryProperties      properties;
+    private ConsulRegistryProperties properties;
 
-    private List<ProviderInfoListener>    listeners;
+    private List<ProviderInfoListener> listeners;
 
-    private ScheduledExecutorService      watchExecutor;
+    private ScheduledExecutorService watchExecutor;
 
     public HealthServiceInformer(String serviceName, String tag, ConsulClient consulClient, ConsulRegistryProperties properties) {
         this.serviceName = serviceName;
@@ -87,7 +87,7 @@ public class HealthServiceInformer {
             ProviderGroup providerGroup = new ProviderGroup(currentProviders());
             listeners.stream().filter(Objects::nonNull).forEach(l -> l.updateProviders(providerGroup));
         } catch (Exception e) {
-            LOGGER.error(LogCodes.getLog(LogCodes.ERROR_WATCH_HEALTH ,"Consul"), e);
+            LOGGER.error(LogCodes.getLog(LogCodes.ERROR_WATCH_HEALTH, "Consul"), e);
         }
     }
 

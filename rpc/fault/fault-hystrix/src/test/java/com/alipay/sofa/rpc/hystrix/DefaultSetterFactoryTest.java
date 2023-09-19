@@ -19,11 +19,7 @@ package com.alipay.sofa.rpc.hystrix;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
@@ -45,7 +41,7 @@ public class DefaultSetterFactoryTest {
 
     @Documented
     @Retention(RetentionPolicy.RUNTIME)
-    @Target({ ElementType.METHOD })
+    @Target({ElementType.METHOD})
     @interface HystrixCommandKey {
 
         String value();

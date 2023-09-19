@@ -23,42 +23,44 @@ import com.alipay.sofa.registry.common.model.slot.func.Crc32cSlotFunction;
 import com.alipay.sofa.registry.remoting.Channel;
 import com.alipay.sofa.registry.server.shared.remoting.AbstractClientHandler;
 import com.alipay.sofa.registry.store.api.repository.AppRevisionRepository;
-import java.util.Set;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ThreadPoolExecutor;
 import org.glassfish.jersey.internal.guava.Sets;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Set;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ThreadPoolExecutor;
+
 public class AppRevisionSliceHandler extends AbstractClientHandler<AppRevisionSliceRequest> {
 
-  @Autowired ThreadPoolExecutor metaNodeExecutor;
+    @Autowired
+    protected AppRevisionRepository appRevisionJdbcRepository;
+    @Autowired
+    ThreadPoolExecutor metaNodeExecutor;
 
-  @Autowired protected AppRevisionRepository appRevisionJdbcRepository;
-
-  @Override
-  protected Node.NodeType getConnectNodeType() {
-    return Node.NodeType.META;
-  }
-
-  @Override
-  public Object doHandle(Channel channel, AppRevisionSliceRequest request) {
-    Set<String> revisions = Sets.newHashSet();
-    Crc32cSlotFunction function = new Crc32cSlotFunction(request.getSlotNum());
-    for (String revision : appRevisionJdbcRepository.availableRevisions()) {
-      if (function.slotOf(revision) == request.getSlotId()) {
-        revisions.add(revision);
-      }
+    @Override
+    protected Node.NodeType getConnectNodeType() {
+        return Node.NodeType.META;
     }
-    return new AppRevisionSlice(revisions);
-  }
 
-  @Override
-  public Class interest() {
-    return AppRevisionSliceRequest.class;
-  }
+    @Override
+    public Object doHandle(Channel channel, AppRevisionSliceRequest request) {
+        Set<String> revisions = Sets.newHashSet();
+        Crc32cSlotFunction function = new Crc32cSlotFunction(request.getSlotNum());
+        for (String revision : appRevisionJdbcRepository.availableRevisions()) {
+            if (function.slotOf(revision) == request.getSlotId()) {
+                revisions.add(revision);
+            }
+        }
+        return new AppRevisionSlice(revisions);
+    }
 
-  @Override
-  public Executor getExecutor() {
-    return metaNodeExecutor;
-  }
+    @Override
+    public Class interest() {
+        return AppRevisionSliceRequest.class;
+    }
+
+    @Override
+    public Executor getExecutor() {
+        return metaNodeExecutor;
+    }
 }

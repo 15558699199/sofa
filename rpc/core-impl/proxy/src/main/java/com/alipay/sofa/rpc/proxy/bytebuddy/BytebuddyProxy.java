@@ -37,51 +37,17 @@ import java.util.concurrent.ConcurrentHashMap;
 @Extension("bytebuddy")
 public class BytebuddyProxy implements Proxy {
 
-    private boolean                        disableCache    = false;
+    /**
+     * 原始类和代理类的映射
+     */
+    private static final Map<Class, Class> PROXY_CLASS_MAP = new ConcurrentHashMap<Class, Class>();
+    private boolean disableCache = false;
 
     {
         String disableCacheStr = System.getProperty("sofa.rpc.proxy.disableCache");
         if (disableCacheStr != null) {
             disableCache = Boolean.parseBoolean(disableCacheStr);
         }
-    }
-
-    /**
-     * 原始类和代理类的映射
-     */
-    private static final Map<Class, Class> PROXY_CLASS_MAP = new ConcurrentHashMap<Class, Class>();
-
-    @Override
-    public <T> T getProxy(Class<T> interfaceClass, Invoker proxyInvoker) {
-
-        Class<? extends T> cls = null;
-        if (!disableCache) {
-            cls = PROXY_CLASS_MAP.get(interfaceClass);
-        }
-        if (cls == null) {
-            cls = new ByteBuddy()
-                .subclass(interfaceClass)
-                .method(
-                    ElementMatchers.isDeclaredBy(interfaceClass).or(ElementMatchers.isEquals())
-                        .or(ElementMatchers.isToString().or(ElementMatchers.isHashCode())))
-                .intercept(MethodDelegation.to(new BytebuddyInvocationHandler(proxyInvoker), "handler"))
-                .make()
-                .load(interfaceClass.getClassLoader(), ClassLoadingStrategy.Default.INJECTION)
-                .getLoaded();
-
-            PROXY_CLASS_MAP.put(interfaceClass, cls);
-        }
-        try {
-            return cls.newInstance();
-        } catch (Throwable t) {
-            throw new SofaRpcRuntimeException(LogCodes.getLog(LogCodes.ERROR_PROXY_CONSTRUCT, "bytebuddy"), t);
-        }
-
-    }
-
-    @Override
-    public Invoker getInvoker(Object proxyObject) {
-        return parseInvoker(proxyObject);
     }
 
     public static Invoker parseInvoker(Object proxyObject) {
@@ -96,5 +62,38 @@ public class BytebuddyProxy implements Proxy {
         } catch (Exception e) {
             return null;
         }
+    }
+
+    @Override
+    public <T> T getProxy(Class<T> interfaceClass, Invoker proxyInvoker) {
+
+        Class<? extends T> cls = null;
+        if (!disableCache) {
+            cls = PROXY_CLASS_MAP.get(interfaceClass);
+        }
+        if (cls == null) {
+            cls = new ByteBuddy()
+                    .subclass(interfaceClass)
+                    .method(
+                            ElementMatchers.isDeclaredBy(interfaceClass).or(ElementMatchers.isEquals())
+                                    .or(ElementMatchers.isToString().or(ElementMatchers.isHashCode())))
+                    .intercept(MethodDelegation.to(new BytebuddyInvocationHandler(proxyInvoker), "handler"))
+                    .make()
+                    .load(interfaceClass.getClassLoader(), ClassLoadingStrategy.Default.INJECTION)
+                    .getLoaded();
+
+            PROXY_CLASS_MAP.put(interfaceClass, cls);
+        }
+        try {
+            return cls.newInstance();
+        } catch (Throwable t) {
+            throw new SofaRpcRuntimeException(LogCodes.getLog(LogCodes.ERROR_PROXY_CONSTRUCT, "bytebuddy"), t);
+        }
+
+    }
+
+    @Override
+    public Invoker getInvoker(Object proxyObject) {
+        return parseInvoker(proxyObject);
     }
 }

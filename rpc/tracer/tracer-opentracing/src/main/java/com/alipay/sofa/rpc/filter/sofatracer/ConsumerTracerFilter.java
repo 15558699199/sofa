@@ -55,7 +55,7 @@ public class ConsumerTracerFilter extends Filter {
 
         RpcInternalContext context = RpcInternalContext.getContext();
         clientSpan.setTag(RpcSpanTags.ROUTE_RECORD,
-            (String) context.getAttachment(RpcConstants.INTERNAL_KEY_ROUTER_RECORD));
+                (String) context.getAttachment(RpcConstants.INTERNAL_KEY_ROUTER_RECORD));
 
         ProviderInfo providerInfo = context.getProviderInfo();
         if (providerInfo != null) {

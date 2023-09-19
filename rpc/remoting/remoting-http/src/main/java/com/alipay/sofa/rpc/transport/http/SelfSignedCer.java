@@ -21,7 +21,7 @@ import java.security.cert.CertificateException;
 
 /**
  * Set path for certificate and privateKey separately
- * 
+ *
  * @author <a href="mailto:466178395@qq.com">LiHao</a>
  */
 public final class SelfSignedCer {
@@ -32,10 +32,8 @@ public final class SelfSignedCer {
     /**
      * initiate a new class.
      *
-     * @param certificatePath
-     *            path of certificate
-     * @param privateKeyPath
-     *            path of privateKey
+     * @param certificatePath path of certificate
+     * @param privateKeyPath  path of privateKey
      */
     public SelfSignedCer(String certificatePath, String privateKeyPath) throws CertificateException {
 

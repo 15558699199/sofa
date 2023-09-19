@@ -35,13 +35,10 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.*;
+import java.util.Map.Entry;
 
 /**
  * @author xiaojian.xj
@@ -49,178 +46,182 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class FetchBlackListService extends AbstractFetchSystemPropertyService<BlacklistStorage> {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(FetchBlackListService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(FetchBlackListService.class);
 
-  @Autowired private Registry sessionRegistry;
+    @Autowired
+    private Registry sessionRegistry;
 
-  @Autowired private ConnectionsService connectionsService;
+    @Autowired
+    private ConnectionsService connectionsService;
 
-  @Autowired private SessionServerConfig sessionServerConfig;
+    @Autowired
+    private SessionServerConfig sessionServerConfig;
 
-  public FetchBlackListService() {
-    super(
-        ValueConstants.BLACK_LIST_DATA_ID,
-        new BlacklistStorage(INIT_VERSION, Lists.newArrayList()));
-  }
-
-  private Map<String, Map<String, Set<String>>> convertBlacklistConfig(
-      String config, List<BlacklistConfig> blacklistConfigs) {
-
-    TypeReference<Map<String, Map<String, Set<String>>>> typeReference =
-        new TypeReference<Map<String, Map<String, Set<String>>>>() {};
-
-    ObjectMapper mapper = JsonUtils.getJacksonObjectMapper();
-
-    Map<String, Map<String, Set<String>>> blacklistConfigMap;
-    try {
-      blacklistConfigMap = mapper.readValue(config, typeReference);
-    } catch (Throwable e) {
-      LOGGER.error("Parser config json error!", e);
-      return null;
+    public FetchBlackListService() {
+        super(
+                ValueConstants.BLACK_LIST_DATA_ID,
+                new BlacklistStorage(INIT_VERSION, Lists.newArrayList()));
     }
-    if (null == blacklistConfigMap) {
-      LOGGER.info("[cmd] setBlacklistConfig fail, params is null");
-      return null;
-    }
-    try {
-      for (Entry<String, Map<String, Set<String>>> configEntry : blacklistConfigMap.entrySet()) {
-        BlacklistConfig blacklistConfig = new BlacklistConfig();
-        blacklistConfig.setType(configEntry.getKey());
 
-        List<MatchType> matchTypeList = new ArrayList();
+    private Map<String, Map<String, Set<String>>> convertBlacklistConfig(
+            String config, List<BlacklistConfig> blacklistConfigs) {
 
-        Map<String, Set<String>> matchTypeMap = configEntry.getValue();
-        for (Entry<String, Set<String>> typeEntry : matchTypeMap.entrySet()) {
-          String type = typeEntry.getKey();
+        TypeReference<Map<String, Map<String, Set<String>>>> typeReference =
+                new TypeReference<Map<String, Map<String, Set<String>>>>() {
+                };
 
-          MatchType<String> ipFullMatchType = new MatchType();
-          ipFullMatchType.setType(type);
-          ipFullMatchType.setPatternSet(typeEntry.getValue());
-          matchTypeList.add(ipFullMatchType);
+        ObjectMapper mapper = JsonUtils.getJacksonObjectMapper();
+
+        Map<String, Map<String, Set<String>>> blacklistConfigMap;
+        try {
+            blacklistConfigMap = mapper.readValue(config, typeReference);
+        } catch (Throwable e) {
+            LOGGER.error("Parser config json error!", e);
+            return null;
         }
-        blacklistConfig.setMatchTypes(matchTypeList);
-        blacklistConfigs.add(blacklistConfig);
-      }
-      return blacklistConfigMap;
-    } catch (Throwable e) {
-      LOGGER.error("[cmd] setBlacklistConfig error", e);
-      return null;
-    }
-  }
+        if (null == blacklistConfigMap) {
+            LOGGER.info("[cmd] setBlacklistConfig fail, params is null");
+            return null;
+        }
+        try {
+            for (Entry<String, Map<String, Set<String>>> configEntry : blacklistConfigMap.entrySet()) {
+                BlacklistConfig blacklistConfig = new BlacklistConfig();
+                blacklistConfig.setType(configEntry.getKey());
 
-  private void clientOffBlackIp(Map<String, Map<String, Set<String>>> blacklistConfigMap) {
-    if (blacklistConfigMap != null) {
-      Set<String> ipSet = new HashSet();
+                List<MatchType> matchTypeList = new ArrayList();
 
-      for (Map.Entry<String, Map<String, Set<String>>> configEntry :
-          blacklistConfigMap.entrySet()) {
-        if (BlacklistConstants.FORBIDDEN_PUB.equals(configEntry.getKey())
-            || BlacklistConstants.FORBIDDEN_SUB_BY_PREFIX.equals(configEntry.getKey())) {
-          Map<String, Set<String>> typeMap = configEntry.getValue();
-          if (typeMap != null) {
-            for (Map.Entry<String, Set<String>> typeEntry : typeMap.entrySet()) {
-              if (BlacklistConstants.IP_FULL.equals(typeEntry.getKey())) {
-                if (typeEntry.getValue() != null) {
-                  ipSet.addAll(typeEntry.getValue());
+                Map<String, Set<String>> matchTypeMap = configEntry.getValue();
+                for (Entry<String, Set<String>> typeEntry : matchTypeMap.entrySet()) {
+                    String type = typeEntry.getKey();
+
+                    MatchType<String> ipFullMatchType = new MatchType();
+                    ipFullMatchType.setType(type);
+                    ipFullMatchType.setPatternSet(typeEntry.getValue());
+                    matchTypeList.add(ipFullMatchType);
                 }
-              }
+                blacklistConfig.setMatchTypes(matchTypeList);
+                blacklistConfigs.add(blacklistConfig);
             }
-          }
+            return blacklistConfigMap;
+        } catch (Throwable e) {
+            LOGGER.error("[cmd] setBlacklistConfig error", e);
+            return null;
         }
-      }
-
-      List<ConnectId> conIds = connectionsService.getIpConnects(ipSet);
-      // blacklist remove pub, sub, watch
-      sessionRegistry.blacklist(conIds);
-    }
-  }
-
-  @Override
-  protected int getSystemPropertyIntervalMillis() {
-    return sessionServerConfig.getSystemPropertyIntervalMillis();
-  }
-
-  @Override
-  protected boolean doProcess(BlacklistStorage expect, ProvideData provideData) {
-    // black list data
-    final String data = ProvideData.toString(provideData);
-    if (data == null) {
-      LOGGER.warn("Fetch session blacklist content null");
-      return false;
     }
 
-    LOGGER.info("Fetch session blacklist {}", data);
+    private void clientOffBlackIp(Map<String, Map<String, Set<String>>> blacklistConfigMap) {
+        if (blacklistConfigMap != null) {
+            Set<String> ipSet = new HashSet();
 
-    List<BlacklistConfig> blacklistConfigs = new ArrayList();
-    // {"FORBIDDEN_PUB":{"IP_FULL":["1.1.1.1"]},"FORBIDDEN_SUB_BY_PREFIX":{"IP_FULL":["1.1.1.1"]}}
-    Map<String, Map<String, Set<String>>> blacklistConfigMap =
-        convertBlacklistConfig(data, blacklistConfigs);
-    clientOffBlackIp(blacklistConfigMap);
+            for (Map.Entry<String, Map<String, Set<String>>> configEntry :
+                    blacklistConfigMap.entrySet()) {
+                if (BlacklistConstants.FORBIDDEN_PUB.equals(configEntry.getKey())
+                        || BlacklistConstants.FORBIDDEN_SUB_BY_PREFIX.equals(configEntry.getKey())) {
+                    Map<String, Set<String>> typeMap = configEntry.getValue();
+                    if (typeMap != null) {
+                        for (Map.Entry<String, Set<String>> typeEntry : typeMap.entrySet()) {
+                            if (BlacklistConstants.IP_FULL.equals(typeEntry.getKey())) {
+                                if (typeEntry.getValue() != null) {
+                                    ipSet.addAll(typeEntry.getValue());
+                                }
+                            }
+                        }
+                    }
+                }
+            }
 
-    // after cancel success
-    try {
-      BlacklistStorage update = new BlacklistStorage(provideData.getVersion(), blacklistConfigs);
-      if (compareAndSet(expect, update)) {
-        return true;
-      }
-    } catch (Throwable t) {
-      LOGGER.error("update blacklist:{} error.", provideData, t);
+            List<ConnectId> conIds = connectionsService.getIpConnects(ipSet);
+            // blacklist remove pub, sub, watch
+            sessionRegistry.blacklist(conIds);
+        }
     }
 
-    return false;
-  }
-
-  protected static class BlacklistStorage extends SystemDataStorage {
-    final List<BlacklistConfig> blacklistConfigList;
-
-    public BlacklistStorage(long version, List<BlacklistConfig> blacklistConfigList) {
-      super(version);
-      this.blacklistConfigList = blacklistConfigList;
+    @Override
+    protected int getSystemPropertyIntervalMillis() {
+        return sessionServerConfig.getSystemPropertyIntervalMillis();
     }
-  }
 
-  /**
-   * Getter method for property <tt>blacklistConfigList</tt>.
-   *
-   * @return property value of blacklistConfigList
-   */
-  public List<BlacklistConfig> getBlacklistConfigList() {
-    return storage.get().blacklistConfigList;
-  }
+    @Override
+    protected boolean doProcess(BlacklistStorage expect, ProvideData provideData) {
+        // black list data
+        final String data = ProvideData.toString(provideData);
+        if (data == null) {
+            LOGGER.warn("Fetch session blacklist content null");
+            return false;
+        }
 
-  /**
-   * Setter method for property <tt>sessionRegistry</tt>.
-   *
-   * @param sessionRegistry value to be assigned to property sessionRegistry
-   * @return FetchBlackListService
-   */
-  @VisibleForTesting
-  public FetchBlackListService setSessionRegistry(Registry sessionRegistry) {
-    this.sessionRegistry = sessionRegistry;
-    return this;
-  }
+        LOGGER.info("Fetch session blacklist {}", data);
 
-  /**
-   * Setter method for property <tt>connectionsService</tt>.
-   *
-   * @param connectionsService value to be assigned to property connectionsService
-   * @return FetchBlackListService
-   */
-  @VisibleForTesting
-  public FetchBlackListService setConnectionsService(ConnectionsService connectionsService) {
-    this.connectionsService = connectionsService;
-    return this;
-  }
+        List<BlacklistConfig> blacklistConfigs = new ArrayList();
+        // {"FORBIDDEN_PUB":{"IP_FULL":["1.1.1.1"]},"FORBIDDEN_SUB_BY_PREFIX":{"IP_FULL":["1.1.1.1"]}}
+        Map<String, Map<String, Set<String>>> blacklistConfigMap =
+                convertBlacklistConfig(data, blacklistConfigs);
+        clientOffBlackIp(blacklistConfigMap);
 
-  /**
-   * Setter method for property <tt>sessionServerConfig</tt>.
-   *
-   * @param sessionServerConfig value to be assigned to property sessionServerConfig
-   * @return FetchBlackListService
-   */
-  @VisibleForTesting
-  public FetchBlackListService setSessionServerConfig(SessionServerConfig sessionServerConfig) {
-    this.sessionServerConfig = sessionServerConfig;
-    return this;
-  }
+        // after cancel success
+        try {
+            BlacklistStorage update = new BlacklistStorage(provideData.getVersion(), blacklistConfigs);
+            if (compareAndSet(expect, update)) {
+                return true;
+            }
+        } catch (Throwable t) {
+            LOGGER.error("update blacklist:{} error.", provideData, t);
+        }
+
+        return false;
+    }
+
+    /**
+     * Getter method for property <tt>blacklistConfigList</tt>.
+     *
+     * @return property value of blacklistConfigList
+     */
+    public List<BlacklistConfig> getBlacklistConfigList() {
+        return storage.get().blacklistConfigList;
+    }
+
+    /**
+     * Setter method for property <tt>sessionRegistry</tt>.
+     *
+     * @param sessionRegistry value to be assigned to property sessionRegistry
+     * @return FetchBlackListService
+     */
+    @VisibleForTesting
+    public FetchBlackListService setSessionRegistry(Registry sessionRegistry) {
+        this.sessionRegistry = sessionRegistry;
+        return this;
+    }
+
+    /**
+     * Setter method for property <tt>connectionsService</tt>.
+     *
+     * @param connectionsService value to be assigned to property connectionsService
+     * @return FetchBlackListService
+     */
+    @VisibleForTesting
+    public FetchBlackListService setConnectionsService(ConnectionsService connectionsService) {
+        this.connectionsService = connectionsService;
+        return this;
+    }
+
+    /**
+     * Setter method for property <tt>sessionServerConfig</tt>.
+     *
+     * @param sessionServerConfig value to be assigned to property sessionServerConfig
+     * @return FetchBlackListService
+     */
+    @VisibleForTesting
+    public FetchBlackListService setSessionServerConfig(SessionServerConfig sessionServerConfig) {
+        this.sessionServerConfig = sessionServerConfig;
+        return this;
+    }
+
+    protected static class BlacklistStorage extends SystemDataStorage {
+        final List<BlacklistConfig> blacklistConfigList;
+
+        public BlacklistStorage(long version, List<BlacklistConfig> blacklistConfigList) {
+            super(version);
+            this.blacklistConfigList = blacklistConfigList;
+        }
+    }
 }

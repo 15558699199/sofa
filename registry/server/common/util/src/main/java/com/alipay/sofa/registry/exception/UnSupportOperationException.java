@@ -22,7 +22,7 @@ package com.alipay.sofa.registry.exception;
  */
 public class UnSupportOperationException extends SofaRegistryRuntimeException {
 
-  public UnSupportOperationException(String operation) {
-    super("not support operation: " + operation);
-  }
+    public UnSupportOperationException(String operation) {
+        super("not support operation: " + operation);
+    }
 }

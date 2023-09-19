@@ -21,71 +21,71 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class ConsecutiveSuccess {
 
-  private final ArrayDeque<record> records;
-  private final int size;
-  private final long expiredIntervalMs;
-  private final ReentrantLock lock = new ReentrantLock();
+    private final ArrayDeque<record> records;
+    private final int size;
+    private final long expiredIntervalMs;
+    private final ReentrantLock lock = new ReentrantLock();
 
-  public ConsecutiveSuccess(int size, long expiredIntervalMs) {
-    this.size = size;
-    this.expiredIntervalMs = expiredIntervalMs;
-    records = new ArrayDeque<>(size);
-  }
-
-  public void success() {
-    add(new record(System.currentTimeMillis(), true));
-  }
-
-  public void fail() {
-    add(new record(System.currentTimeMillis(), false));
-  }
-
-  private void add(record record) {
-    lock.lock();
-    try {
-      if (records.size() >= this.size) {
-        records.pollFirst();
-      }
-      records.addLast(record);
-    } finally {
-      lock.unlock();
+    public ConsecutiveSuccess(int size, long expiredIntervalMs) {
+        this.size = size;
+        this.expiredIntervalMs = expiredIntervalMs;
+        records = new ArrayDeque<>(size);
     }
-  }
 
-  public boolean check() {
-    long currentTs = System.currentTimeMillis();
-    lock.lock();
-    try {
-      if (records.size() < size) {
-        return false;
-      }
-      for (record r : records) {
-        if (!r.success || r.timestamp < currentTs - expiredIntervalMs) {
-          return false;
+    public void success() {
+        add(new record(System.currentTimeMillis(), true));
+    }
+
+    public void fail() {
+        add(new record(System.currentTimeMillis(), false));
+    }
+
+    private void add(record record) {
+        lock.lock();
+        try {
+            if (records.size() >= this.size) {
+                records.pollFirst();
+            }
+            records.addLast(record);
+        } finally {
+            lock.unlock();
         }
-      }
-      return true;
-    } finally {
-      lock.unlock();
     }
-  }
 
-  public void clear() {
-    lock.lock();
-    try {
-      records.clear();
-    } finally {
-      lock.unlock();
+    public boolean check() {
+        long currentTs = System.currentTimeMillis();
+        lock.lock();
+        try {
+            if (records.size() < size) {
+                return false;
+            }
+            for (record r : records) {
+                if (!r.success || r.timestamp < currentTs - expiredIntervalMs) {
+                    return false;
+                }
+            }
+            return true;
+        } finally {
+            lock.unlock();
+        }
     }
-  }
 
-  private static final class record {
-    private final long timestamp;
-    private final boolean success;
-
-    private record(long timestamp, boolean success) {
-      this.timestamp = timestamp;
-      this.success = success;
+    public void clear() {
+        lock.lock();
+        try {
+            records.clear();
+        } finally {
+            lock.unlock();
+        }
     }
-  }
+
+    private static final class record {
+        private final long timestamp;
+        private final boolean success;
+
+        private record(long timestamp, boolean success) {
+            this.timestamp = timestamp;
+            this.success = success;
+        }
+    }
 }

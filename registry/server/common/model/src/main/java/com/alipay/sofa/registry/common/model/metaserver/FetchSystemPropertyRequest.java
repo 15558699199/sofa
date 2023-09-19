@@ -24,41 +24,41 @@ import java.io.Serializable;
  */
 public class FetchSystemPropertyRequest implements Serializable {
 
-  private final String dataInfoId;
+    private final String dataInfoId;
 
-  private final long version;
+    private final long version;
 
-  public FetchSystemPropertyRequest(String dataInfoId, long version) {
-    this.dataInfoId = dataInfoId;
-    this.version = version;
-  }
+    public FetchSystemPropertyRequest(String dataInfoId, long version) {
+        this.dataInfoId = dataInfoId;
+        this.version = version;
+    }
 
-  /**
-   * Getter method for property <tt>dataInfoId</tt>.
-   *
-   * @return property value of dataInfoId
-   */
-  public String getDataInfoId() {
-    return dataInfoId;
-  }
+    /**
+     * Getter method for property <tt>dataInfoId</tt>.
+     *
+     * @return property value of dataInfoId
+     */
+    public String getDataInfoId() {
+        return dataInfoId;
+    }
 
-  /**
-   * Getter method for property <tt>version</tt>.
-   *
-   * @return property value of version
-   */
-  public long getVersion() {
-    return version;
-  }
+    /**
+     * Getter method for property <tt>version</tt>.
+     *
+     * @return property value of version
+     */
+    public long getVersion() {
+        return version;
+    }
 
-  @Override
-  public String toString() {
-    return "FetchSystemPropertyRequest{"
-        + "dataInfoId='"
-        + dataInfoId
-        + '\''
-        + ", version="
-        + version
-        + '}';
-  }
+    @Override
+    public String toString() {
+        return "FetchSystemPropertyRequest{"
+                + "dataInfoId='"
+                + dataInfoId
+                + '\''
+                + ", version="
+                + version
+                + '}';
+    }
 }

@@ -35,8 +35,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class FeignClientAutoConfigurationTests {
 
     private final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
-                                                             .withConfiguration(AutoConfigurations
-                                                                 .of(FeignClientAutoConfiguration.class));
+            .withConfiguration(AutoConfigurations
+                    .of(FeignClientAutoConfiguration.class));
 
     @Test
     public void registerFeignContextBeanPostProcessor() {

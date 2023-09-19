@@ -24,114 +24,126 @@ import java.util.Set;
  */
 public class MultiSegmentSyncSwitch {
 
-  /** multi sync switch */
-  private final boolean multiSync;
+    /**
+     * multi sync switch
+     */
+    private final boolean multiSync;
 
-  /** multi sync switch */
-  private final boolean multiPush;
+    /**
+     * multi sync switch
+     */
+    private final boolean multiPush;
 
-  /** remote dataCenter */
-  private final String remoteDataCenter;
+    /**
+     * remote dataCenter
+     */
+    private final String remoteDataCenter;
 
-  /** allow sync multi group */
-  private final Set<String> synPublisherGroups;
+    /**
+     * allow sync multi group
+     */
+    private final Set<String> synPublisherGroups;
 
-  /** allow sync multi dataInfoId */
-  private final Set<String> syncDataInfoIds;
+    /**
+     * allow sync multi dataInfoId
+     */
+    private final Set<String> syncDataInfoIds;
 
-  /** dataInfoId will not multi sync, this priority is higher than syncGroups and syncDataInfoIds */
-  private final Set<String> ignoreDataInfoIds;
+    /**
+     * dataInfoId will not multi sync, this priority is higher than syncGroups and syncDataInfoIds
+     */
+    private final Set<String> ignoreDataInfoIds;
 
-  private final long dataVersion;
+    private final long dataVersion;
 
-  public boolean isMultiSync() {
-    return this.multiSync;
-  }
+    public MultiSegmentSyncSwitch(
+            boolean multiSync,
+            boolean multiPush,
+            String remoteDataCenter,
+            Set<String> synPublisherGroups,
+            Set<String> syncDataInfoIds,
+            Set<String> ignoreDataInfoIds,
+            long dataVersion) {
+        this.multiSync = multiSync;
+        this.multiPush = multiPush;
+        this.remoteDataCenter = remoteDataCenter;
+        this.synPublisherGroups = synPublisherGroups;
+        this.syncDataInfoIds = syncDataInfoIds;
+        this.ignoreDataInfoIds = ignoreDataInfoIds;
+        this.dataVersion = dataVersion;
+    }
 
-  public boolean isMultiPush() {
-    return this.multiPush;
-  }
+    public boolean isMultiSync() {
+        return this.multiSync;
+    }
 
-  /**
-   * Getter method for property <tt>remoteDataCenter</tt>.
-   *
-   * @return property value of remoteDataCenter
-   */
-  public String getRemoteDataCenter() {
-    return remoteDataCenter;
-  }
+    public boolean isMultiPush() {
+        return this.multiPush;
+    }
 
-  /**
-   * Getter method for property <tt>synPublisherGroups</tt>.
-   *
-   * @return property value of synPublisherGroups
-   */
-  public Set<String> getSynPublisherGroups() {
-    return synPublisherGroups;
-  }
+    /**
+     * Getter method for property <tt>remoteDataCenter</tt>.
+     *
+     * @return property value of remoteDataCenter
+     */
+    public String getRemoteDataCenter() {
+        return remoteDataCenter;
+    }
 
-  /**
-   * Getter method for property <tt>syncDataInfoIds</tt>.
-   *
-   * @return property value of syncDataInfoIds
-   */
-  public Set<String> getSyncDataInfoIds() {
-    return syncDataInfoIds;
-  }
+    /**
+     * Getter method for property <tt>synPublisherGroups</tt>.
+     *
+     * @return property value of synPublisherGroups
+     */
+    public Set<String> getSynPublisherGroups() {
+        return synPublisherGroups;
+    }
 
-  /**
-   * Getter method for property <tt>ignoreDataInfoIds</tt>.
-   *
-   * @return property value of ignoreDataInfoIds
-   */
-  public Set<String> getIgnoreDataInfoIds() {
-    return ignoreDataInfoIds;
-  }
+    /**
+     * Getter method for property <tt>syncDataInfoIds</tt>.
+     *
+     * @return property value of syncDataInfoIds
+     */
+    public Set<String> getSyncDataInfoIds() {
+        return syncDataInfoIds;
+    }
 
-  /**
-   * Getter method for property <tt>dataVersion</tt>.
-   *
-   * @return property value of dataVersion
-   */
-  public long getDataVersion() {
-    return dataVersion;
-  }
+    /**
+     * Getter method for property <tt>ignoreDataInfoIds</tt>.
+     *
+     * @return property value of ignoreDataInfoIds
+     */
+    public Set<String> getIgnoreDataInfoIds() {
+        return ignoreDataInfoIds;
+    }
 
-  public MultiSegmentSyncSwitch(
-      boolean multiSync,
-      boolean multiPush,
-      String remoteDataCenter,
-      Set<String> synPublisherGroups,
-      Set<String> syncDataInfoIds,
-      Set<String> ignoreDataInfoIds,
-      long dataVersion) {
-    this.multiSync = multiSync;
-    this.multiPush = multiPush;
-    this.remoteDataCenter = remoteDataCenter;
-    this.synPublisherGroups = synPublisherGroups;
-    this.syncDataInfoIds = syncDataInfoIds;
-    this.ignoreDataInfoIds = ignoreDataInfoIds;
-    this.dataVersion = dataVersion;
-  }
+    /**
+     * Getter method for property <tt>dataVersion</tt>.
+     *
+     * @return property value of dataVersion
+     */
+    public long getDataVersion() {
+        return dataVersion;
+    }
 
-  @Override
-  public String toString() {
-    return "MultiSegmentSyncSwitch{"
-        + "multiSync="
-        + multiSync
-        + ", multiPush="
-        + multiPush
-        + ", remoteDataCenter='"
-        + remoteDataCenter
-        + '\''
-        + ", synPublisherGroups="
-        + synPublisherGroups
-        + ", syncDataInfoIds="
-        + syncDataInfoIds
-        + ", ignoreDataInfoIds="
-        + ignoreDataInfoIds
-        + ", dataVersion="
-        + dataVersion
-        + '}';
-  }
+    @Override
+    public String toString() {
+        return "MultiSegmentSyncSwitch{"
+                + "multiSync="
+                + multiSync
+                + ", multiPush="
+                + multiPush
+                + ", remoteDataCenter='"
+                + remoteDataCenter
+                + '\''
+                + ", synPublisherGroups="
+                + synPublisherGroups
+                + ", syncDataInfoIds="
+                + syncDataInfoIds
+                + ", ignoreDataInfoIds="
+                + ignoreDataInfoIds
+                + ", dataVersion="
+                + dataVersion
+                + '}';
+    }
 }

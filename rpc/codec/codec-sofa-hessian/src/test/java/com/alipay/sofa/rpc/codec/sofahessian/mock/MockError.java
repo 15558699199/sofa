@@ -17,7 +17,6 @@
 package com.alipay.sofa.rpc.codec.sofahessian.mock;
 
 /**
- *
  * @author xingqi
  * @version : MocKError.java, v 0.1 2022年10月20日 2:05 PM xingqi Exp $
  */

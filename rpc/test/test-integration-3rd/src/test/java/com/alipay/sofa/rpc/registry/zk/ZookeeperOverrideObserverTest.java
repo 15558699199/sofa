@@ -51,36 +51,36 @@ public class ZookeeperOverrideObserverTest extends BaseZkTest {
 
         try {
             RegistryConfig registryConfig = new RegistryConfig().setProtocol(RpcConstants.REGISTRY_PROTOCOL_ZK)
-                .setAddress("127.0.0.1:2181");
+                    .setAddress("127.0.0.1:2181");
             ZookeeperRegistry registry = (ZookeeperRegistry) RegistryFactory
-                .getRegistry(registryConfig);
+                    .getRegistry(registryConfig);
             registry.start();
 
             ServerConfig serverConfig = new ServerConfig().setPort(22222)
-                .setProtocol(RpcConstants.PROTOCOL_TYPE_BOLT);
+                    .setProtocol(RpcConstants.PROTOCOL_TYPE_BOLT);
             ProviderConfig<OverrideService> providerConfig = new ProviderConfig<OverrideService>()
-                .setInterfaceId(OverrideService.class.getName()).setRef(new OverrideServiceImpl(22222))
-                .setServer(serverConfig).setRegistry(registryConfig)
-                .setParameter(ProviderInfoAttrs.ATTR_WARMUP_TIME, "2000")
-                .setParameter(ProviderInfoAttrs.ATTR_WARMUP_WEIGHT, "100").setWeight(0);
+                    .setInterfaceId(OverrideService.class.getName()).setRef(new OverrideServiceImpl(22222))
+                    .setServer(serverConfig).setRegistry(registryConfig)
+                    .setParameter(ProviderInfoAttrs.ATTR_WARMUP_TIME, "2000")
+                    .setParameter(ProviderInfoAttrs.ATTR_WARMUP_WEIGHT, "100").setWeight(0);
 
             ServerConfig serverConfig2 = new ServerConfig().setPort(22111)
-                .setProtocol(RpcConstants.PROTOCOL_TYPE_BOLT);
+                    .setProtocol(RpcConstants.PROTOCOL_TYPE_BOLT);
             ProviderConfig<OverrideService> providerConfig2 = new ProviderConfig<OverrideService>()
-                .setInterfaceId(OverrideService.class.getName()).setRef(new OverrideServiceImpl(22111))
-                .setServer(serverConfig2).setRegistry(registryConfig).setRepeatedExportLimit(-1)
-                .setWeight(0);
+                    .setInterfaceId(OverrideService.class.getName()).setRef(new OverrideServiceImpl(22111))
+                    .setServer(serverConfig2).setRegistry(registryConfig).setRepeatedExportLimit(-1)
+                    .setWeight(0);
 
             providerConfig.export();
             providerConfig2.export();
 
             ConsumerConfig<OverrideService> consumerConfig = new ConsumerConfig<OverrideService>()
-                .setInterfaceId(OverrideService.class.getName()).setRegistry(registryConfig)
-                .setTimeout(3333).setProtocol(RpcConstants.PROTOCOL_TYPE_BOLT);
+                    .setInterfaceId(OverrideService.class.getName()).setRegistry(registryConfig)
+                    .setTimeout(3333).setProtocol(RpcConstants.PROTOCOL_TYPE_BOLT);
             OverrideService overrideService = consumerConfig.refer();
 
             AddressHolder addressHolder = consumerConfig.getConsumerBootstrap().getCluster()
-                .getAddressHolder();
+                    .getAddressHolder();
             Assert.assertTrue(addressHolder.getAllProviderSize() == 2);
 
             providerConfig2.unExport();
@@ -88,17 +88,17 @@ public class ZookeeperOverrideObserverTest extends BaseZkTest {
             Assert.assertTrue(delayGetSize(addressHolder, 1, 100) == 1);
 
             List<String> path = registry.getZkClient().getChildren()
-                .forPath("/sofa-rpc/" + OverrideService.class.getCanonicalName() + "/providers");
+                    .forPath("/sofa-rpc/" + OverrideService.class.getCanonicalName() + "/providers");
             String url = URLDecoder.decode(path.get(0), "UTF-8");
             ProviderInfo providerInfo = ProviderHelper.toProviderInfo(url);
 
             // 模拟下发一个override
             String override1 = providerInfo.getProtocolType() + "://" + providerInfo.getHost() + ":"
-                + providerInfo.getPort() + "?timeout=2345";
+                    + providerInfo.getPort() + "?timeout=2345";
             String overridePath1 = "/sofa-rpc/" + OverrideService.class.getCanonicalName() + "/overrides/"
-                + URLEncoder.encode(override1, "UTF-8");
+                    + URLEncoder.encode(override1, "UTF-8");
             registry.getZkClient().create().creatingParentContainersIfNeeded()
-                .withMode(CreateMode.PERSISTENT).forPath(overridePath1);
+                    .withMode(CreateMode.PERSISTENT).forPath(overridePath1);
             Assert.assertTrue(delayGetTimeout(consumerConfig, 2345, 100) == 2345);
 
             // 删除目前没有影响
@@ -108,11 +108,11 @@ public class ZookeeperOverrideObserverTest extends BaseZkTest {
 
             // 恢复到3333
             String override2 = providerInfo.getProtocolType() + "://" + providerInfo.getHost() + ":"
-                + providerInfo.getPort() + "?timeout=3333";
+                    + providerInfo.getPort() + "?timeout=3333";
             String overridePath2 = "/sofa-rpc/" + OverrideService.class.getCanonicalName() + "/overrides/"
-                + URLEncoder.encode(override2, "UTF-8");
+                    + URLEncoder.encode(override2, "UTF-8");
             registry.getZkClient().create().creatingParentContainersIfNeeded()
-                .withMode(CreateMode.PERSISTENT).forPath(overridePath2);
+                    .withMode(CreateMode.PERSISTENT).forPath(overridePath2);
             Assert.assertTrue(delayGetTimeout(consumerConfig, 3333, 100) == 3333);
 
             // 清除持久化的 path

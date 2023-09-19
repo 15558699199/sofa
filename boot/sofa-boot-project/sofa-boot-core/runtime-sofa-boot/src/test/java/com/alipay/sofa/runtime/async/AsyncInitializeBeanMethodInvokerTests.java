@@ -39,14 +39,11 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class AsyncInitializeBeanMethodInvokerTests {
 
+    private final String currentThreadName = Thread.currentThread().getName();
+    private final String beanName = "test";
     @Mock
-    private AsyncInitMethodManager           asyncInitMethodManager;
-
-    private final String                     currentThreadName = Thread.currentThread().getName();
-
-    private final String                     beanName          = "test";
-
-    private SampleService                    asyncSampleService;
+    private AsyncInitMethodManager asyncInitMethodManager;
+    private SampleService asyncSampleService;
 
     private AsyncInitializeBeanMethodInvoker asyncInitializeBeanMethodInvoker;
 
@@ -55,7 +52,7 @@ public class AsyncInitializeBeanMethodInvokerTests {
         ProxyFactory proxyFactory = new ProxyFactory();
         proxyFactory.setInterfaces(SampleService.class);
         asyncInitializeBeanMethodInvoker = new AsyncInitializeBeanMethodInvoker(
-            asyncInitMethodManager, new AsyncSampleServiceImpl(), beanName, "service");
+                asyncInitMethodManager, new AsyncSampleServiceImpl(), beanName, "service");
         proxyFactory.addAdvice(asyncInitializeBeanMethodInvoker);
         asyncSampleService = (SampleService) proxyFactory.getProxy();
     }

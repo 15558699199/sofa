@@ -26,24 +26,23 @@ import javax.ws.rs.ext.Provider;
 import java.io.IOException;
 
 /**
- *
  * @author <a href="mailto:lw111072@antfin.com">liangen</a>
  */
 @Provider
 public class ContainerResponseTestFilter implements ContainerResponseFilter {
     private final static Logger LOGGER = LoggerFactory.getLogger(ContainerResponseTestFilter.class);
 
-    private static String       name   = "X";
-
-    @Override
-    public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext)
-        throws IOException {
-        LOGGER.info("服务端response filter生效");
-        name = "C";
-
-    }
+    private static String name = "X";
 
     public static String getName() {
         return name;
+    }
+
+    @Override
+    public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext)
+            throws IOException {
+        LOGGER.info("服务端response filter生效");
+        name = "C";
+
     }
 }

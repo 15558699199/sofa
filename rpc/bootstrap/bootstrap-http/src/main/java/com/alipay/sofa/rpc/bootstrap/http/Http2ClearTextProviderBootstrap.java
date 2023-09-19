@@ -21,7 +21,6 @@ import com.alipay.sofa.rpc.config.ProviderConfig;
 import com.alipay.sofa.rpc.ext.Extension;
 
 /**
- *
  * @author <a href="mailto:zhiyuan.lzy@antfin.com">zhiyuan.lzy</a>
  */
 @Extension("h2c")

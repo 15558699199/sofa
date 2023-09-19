@@ -19,12 +19,7 @@ package com.alipay.sofa.boot.isle.stage;
 import com.alipay.sofa.boot.isle.ApplicationRuntimeModel;
 import com.alipay.sofa.boot.isle.MockDeploymentDescriptor;
 import com.alipay.sofa.boot.isle.SampleDeploymentDescriptor;
-import com.alipay.sofa.boot.isle.deployment.DefaultModuleDeploymentValidator;
-import com.alipay.sofa.boot.isle.deployment.DependencyTree;
-import com.alipay.sofa.boot.isle.deployment.DeployRegistry;
-import com.alipay.sofa.boot.isle.deployment.DeploymentDescriptor;
-import com.alipay.sofa.boot.isle.deployment.DeploymentDescriptorConfiguration;
-import com.alipay.sofa.boot.isle.deployment.DeploymentException;
+import com.alipay.sofa.boot.isle.deployment.*;
 import com.alipay.sofa.boot.isle.profile.DefaultSofaModuleProfileChecker;
 import com.alipay.sofa.boot.util.LogOutPutUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -161,16 +156,16 @@ public class ModelCreatingStageTests {
         MockDeploymentDescriptor deploymentDescriptor1 = new MockDeploymentDescriptor("pending1");
         MockDeploymentDescriptor deploymentDescriptor2 = new MockDeploymentDescriptor("pending2");
         List<DependencyTree.Entry<String, DeploymentDescriptor>> pendingEntries = List.of(
-            new DependencyTree.Entry<>("pending1", deploymentDescriptor1),
-            new DependencyTree.Entry<>("pending2", deploymentDescriptor2));
+                new DependencyTree.Entry<>("pending1", deploymentDescriptor1),
+                new DependencyTree.Entry<>("pending2", deploymentDescriptor2));
         Mockito.when(application.getAllDeployments()).thenReturn(
-            List.of(deploymentDescriptor1, deploymentDescriptor2));
+                List.of(deploymentDescriptor1, deploymentDescriptor2));
         Mockito.when(application.getDeployRegistry().getPendingEntries())
-            .thenReturn(pendingEntries);
+                .thenReturn(pendingEntries);
         Mockito.when(application.getDeployRegistry().getMissingRequirements()).thenReturn(
-            List.of(
-                new DependencyTree.Entry<>("missing1", new MockDeploymentDescriptor("missing1")),
-                new DependencyTree.Entry<>("missing2", new MockDeploymentDescriptor("missing2"))));
+                List.of(
+                        new DependencyTree.Entry<>("missing1", new MockDeploymentDescriptor("missing1")),
+                        new DependencyTree.Entry<>("missing2", new MockDeploymentDescriptor("missing2"))));
 
         ModelCreatingStage stage = new ModelCreatingStage();
         stage.setApplicationRuntimeModel(application);
@@ -178,16 +173,16 @@ public class ModelCreatingStageTests {
         String errorMessage = stage.getErrorMessageByApplicationModule(application);
 
         assertThat(errorMessage).contains("01-12000").contains("pending1").contains("pending2")
-            .contains("depends on").contains("can not be resolved").contains("Missing modules")
-            .contains("missing1").contains("missing2")
-            .contains("Please add the corresponding modules");
+                .contains("depends on").contains("can not be resolved").contains("Missing modules")
+                .contains("missing1").contains("missing2")
+                .contains("Please add the corresponding modules");
     }
 
     @Test
     void testWriteMessageToStringBuilder() {
         StringBuilder sb = new StringBuilder();
         List<DeploymentDescriptor> deploys = List.of(new MockDeploymentDescriptor("dd1"),
-            new MockDeploymentDescriptor("dd2"));
+                new MockDeploymentDescriptor("dd2"));
 
         ModelCreatingStage stage = new ModelCreatingStage();
         stage.writeMessageToStringBuilder(sb, deploys, "Test");

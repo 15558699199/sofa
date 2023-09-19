@@ -16,14 +16,12 @@
  */
 package com.alipay.sofa.registry.client.event;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import com.alipay.sofa.registry.client.api.RegistryClientConfig;
 import com.alipay.sofa.registry.client.provider.DefaultRegistryClientConfigBuilder;
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 /**
  * @author zhuoyu.sjw
@@ -31,59 +29,59 @@ import org.junit.Test;
  */
 public class DefaultEventBusTest {
 
-  private DefaultEventBus eventBus;
+    private DefaultEventBus eventBus;
 
-  @Before
-  public void setUp() {
-    RegistryClientConfig config =
-        DefaultRegistryClientConfigBuilder.start().setEventBusEnable(true).build();
-    eventBus = new DefaultEventBus(config);
-  }
-
-  @Test
-  public void isEnable0() {
-    RegistryClientConfig config =
-        DefaultRegistryClientConfigBuilder.start().setEventBusEnable(false).build();
-    eventBus = new DefaultEventBus(config);
-    assertFalse(eventBus.isEnable());
-  }
-
-  @Test
-  public void isEnable1() {
-    RegistryClientConfig config =
-        DefaultRegistryClientConfigBuilder.start().setEventBusEnable(true).build();
-    eventBus = new DefaultEventBus(config);
-    assertTrue(eventBus.isEnable());
-  }
-
-  @Test
-  public void register() {
-    TestEventSubscriber testEventSubscriber = new TestEventSubscriber(true);
-
-    try {
-      assertFalse(eventBus.isEnable(TestEvent.class));
-      eventBus.register(TestEvent.class, testEventSubscriber);
-      assertTrue(eventBus.isEnable(TestEvent.class));
-    } finally {
-      eventBus.unRegister(TestEvent.class, testEventSubscriber);
+    @Before
+    public void setUp() {
+        RegistryClientConfig config =
+                DefaultRegistryClientConfigBuilder.start().setEventBusEnable(true).build();
+        eventBus = new DefaultEventBus(config);
     }
-    assertFalse(eventBus.isEnable(TestEvent.class));
-  }
 
-  @Test
-  public void post() {
-    TestEventSubscriber testEventSubscriber = new TestEventSubscriber(true);
-
-    try {
-      assertFalse(eventBus.isEnable(TestEvent.class));
-      eventBus.register(TestEvent.class, testEventSubscriber);
-      assertTrue(eventBus.isEnable(TestEvent.class));
-      final String data = "test-data";
-      eventBus.post(new TestEvent(data));
-      assertEquals(data, testEventSubscriber.getCache());
-    } finally {
-      eventBus.unRegister(TestEvent.class, testEventSubscriber);
+    @Test
+    public void isEnable0() {
+        RegistryClientConfig config =
+                DefaultRegistryClientConfigBuilder.start().setEventBusEnable(false).build();
+        eventBus = new DefaultEventBus(config);
+        assertFalse(eventBus.isEnable());
     }
-    assertFalse(eventBus.isEnable(TestEvent.class));
-  }
+
+    @Test
+    public void isEnable1() {
+        RegistryClientConfig config =
+                DefaultRegistryClientConfigBuilder.start().setEventBusEnable(true).build();
+        eventBus = new DefaultEventBus(config);
+        assertTrue(eventBus.isEnable());
+    }
+
+    @Test
+    public void register() {
+        TestEventSubscriber testEventSubscriber = new TestEventSubscriber(true);
+
+        try {
+            assertFalse(eventBus.isEnable(TestEvent.class));
+            eventBus.register(TestEvent.class, testEventSubscriber);
+            assertTrue(eventBus.isEnable(TestEvent.class));
+        } finally {
+            eventBus.unRegister(TestEvent.class, testEventSubscriber);
+        }
+        assertFalse(eventBus.isEnable(TestEvent.class));
+    }
+
+    @Test
+    public void post() {
+        TestEventSubscriber testEventSubscriber = new TestEventSubscriber(true);
+
+        try {
+            assertFalse(eventBus.isEnable(TestEvent.class));
+            eventBus.register(TestEvent.class, testEventSubscriber);
+            assertTrue(eventBus.isEnable(TestEvent.class));
+            final String data = "test-data";
+            eventBus.post(new TestEvent(data));
+            assertEquals(data, testEventSubscriber.getCache());
+        } finally {
+            eventBus.unRegister(TestEvent.class, testEventSubscriber);
+        }
+        assertFalse(eventBus.isEnable(TestEvent.class));
+    }
 }

@@ -19,8 +19,8 @@
             </Policies>
             <DefaultRolloverStrategy max="30">
                 <Delete basePath="${LOG_HOME}" maxDepth="2">
-                    <IfFileName glob="registry-test.log.*" />
-                    <IfLastModified age="30d" />
+                    <IfFileName glob="registry-test.log.*"/>
+                    <IfLastModified age="30d"/>
                 </Delete>
             </DefaultRolloverStrategy>
         </RollingRandomAccessFile>
@@ -35,8 +35,8 @@
             </Policies>
             <DefaultRolloverStrategy max="30">
                 <Delete basePath="${LOG_HOME}" maxDepth="2">
-                    <IfFileName glob="registry-elector.log.*" />
-                    <IfLastModified age="30d" />
+                    <IfFileName glob="registry-elector.log.*"/>
+                    <IfLastModified age="30d"/>
                 </Delete>
             </DefaultRolloverStrategy>
         </RollingRandomAccessFile>
@@ -48,8 +48,8 @@
             </Policies>
             <DefaultRolloverStrategy max="30">
                 <Delete basePath="${LOG_HOME}" maxDepth="2">
-                    <IfFileName glob="registry-jetty.log.*" />
-                    <IfLastModified age="30d" />
+                    <IfFileName glob="registry-jetty.log.*"/>
+                    <IfLastModified age="30d"/>
                 </Delete>
             </DefaultRolloverStrategy>
         </RollingRandomAccessFile>

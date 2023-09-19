@@ -16,8 +16,8 @@
  */
 package com.alipay.sofa.registry.remoting;
 
-import java.net.InetSocketAddress;
 import javax.ws.rs.client.WebTarget;
+import java.net.InetSocketAddress;
 
 /**
  * @author shangyu.wh
@@ -25,65 +25,65 @@ import javax.ws.rs.client.WebTarget;
  */
 public interface Channel {
 
-  /**
-   * get remote address.
-   *
-   * @return remote address.
-   */
-  InetSocketAddress getRemoteAddress();
+    /**
+     * get remote address.
+     *
+     * @return remote address.
+     */
+    InetSocketAddress getRemoteAddress();
 
-  /**
-   * get local address.
-   *
-   * @return local address.
-   */
-  InetSocketAddress getLocalAddress();
+    /**
+     * get local address.
+     *
+     * @return local address.
+     */
+    InetSocketAddress getLocalAddress();
 
-  /**
-   * is connected.
-   *
-   * @return connected
-   */
-  boolean isConnected();
+    /**
+     * is connected.
+     *
+     * @return connected
+     */
+    boolean isConnected();
 
-  /**
-   * get attribute in context.
-   *
-   * @param key key.
-   * @return value.
-   */
-  Object getAttribute(String key);
+    /**
+     * get attribute in context.
+     *
+     * @param key key.
+     * @return value.
+     */
+    Object getAttribute(String key);
 
-  /**
-   * set attribute in context.
-   *
-   * @param key key.
-   * @param value value.
-   */
-  void setAttribute(String key, Object value);
+    /**
+     * set attribute in context.
+     *
+     * @param key   key.
+     * @param value value.
+     */
+    void setAttribute(String key, Object value);
 
-  /**
-   * get attribute in connection.
-   *
-   * @param key key.
-   * @return value.
-   */
-  Object getConnAttribute(String key);
+    /**
+     * get attribute in connection.
+     *
+     * @param key key.
+     * @return value.
+     */
+    Object getConnAttribute(String key);
 
-  /**
-   * set attribute in connection.
-   *
-   * @param key key.
-   * @param value value.
-   */
-  void setConnAttribute(String key, Object value);
+    /**
+     * set attribute in connection.
+     *
+     * @param key   key.
+     * @param value value.
+     */
+    void setConnAttribute(String key, Object value);
 
-  /**
-   * for rest api
-   *
-   * @return
-   */
-  WebTarget getWebTarget();
+    /**
+     * for rest api
+     *
+     * @return
+     */
+    WebTarget getWebTarget();
 
-  void close();
+    void close();
 }

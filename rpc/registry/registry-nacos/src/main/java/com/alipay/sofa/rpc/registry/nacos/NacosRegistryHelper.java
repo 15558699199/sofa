@@ -37,6 +37,7 @@ import java.util.Map;
 
 /**
  * The type Nacos registry helper.
+ *
  * @author <a href=mailto:jervyshi@gmail.com>JervyShi</a>
  */
 class NacosRegistryHelper {
@@ -51,13 +52,14 @@ class NacosRegistryHelper {
      * 2. here we didn't use ConfigUniqueNameGenerator.getUniqueName()
      * because I think this method is only for old version compatible,
      * and here we needn't version here anymore.
+     *
      * @param config   producer config or consumer config
      * @param protocol protocol for config
      * @return unique service name
      */
     static String buildServiceName(AbstractInterfaceConfig config, String protocol) {
         if (RpcConstants.PROTOCOL_TYPE_BOLT.equals(protocol)
-            || RpcConstants.PROTOCOL_TYPE_TR.equals(protocol)) {
+                || RpcConstants.PROTOCOL_TYPE_TR.equals(protocol)) {
             return ConfigUniqueNameGenerator.getServiceName(config) + ":DEFAULT";
         } else {
             return ConfigUniqueNameGenerator.getServiceName(config) + ":" + protocol;
@@ -67,7 +69,7 @@ class NacosRegistryHelper {
     /**
      * Convert provider to instances list.
      *
-     * @param providerConfig the provider config 
+     * @param providerConfig the provider config
      * @return the list
      */
     static List<Instance> convertProviderToInstances(ProviderConfig providerConfig) {
@@ -111,7 +113,7 @@ class NacosRegistryHelper {
     /**
      * Convert instances to providers list.
      *
-     * @param allInstances the all instances 
+     * @param allInstances the all instances
      * @return the list
      */
     static List<ProviderInfo> convertInstancesToProviders(List<Instance> allInstances) {

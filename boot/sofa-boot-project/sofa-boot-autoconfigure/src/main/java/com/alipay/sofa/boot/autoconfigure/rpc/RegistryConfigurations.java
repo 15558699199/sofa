@@ -17,19 +17,18 @@
 package com.alipay.sofa.boot.autoconfigure.rpc;
 
 /**
- *
  * @author yuanxuan
  * @version : RegistryConfigurations.java, v 0.1 2023年02月01日 16:07 yuanxuan Exp $
  */
 public class RegistryConfigurations {
 
     public static String[] registryConfigurationClass() {
-        return new String[] { LocalRegistryConfiguration.class.getName(),
+        return new String[]{LocalRegistryConfiguration.class.getName(),
                 ZookeeperRegistryConfiguration.class.getName(),
                 NacosRegistryConfiguration.class.getName(),
                 MulticastRegistryConfiguration.class.getName(),
                 MeshRegistryConfiguration.class.getName(),
                 ConsulRegistryConfiguration.class.getName(),
-                SofaRegistryConfiguration.class.getName() };
+                SofaRegistryConfiguration.class.getName()};
     }
 }

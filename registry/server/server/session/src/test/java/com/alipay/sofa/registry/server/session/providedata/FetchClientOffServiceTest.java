@@ -16,12 +16,6 @@
  */
 package com.alipay.sofa.registry.server.session.providedata;
 
-import static com.alipay.sofa.registry.common.model.constants.ValueConstants.CLIENT_OFF;
-import static org.mockito.Matchers.anyList;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 import com.alipay.sofa.registry.common.model.CollectionSdks;
 import com.alipay.sofa.registry.common.model.metaserver.ClientManagerAddress.AddressVersion;
 import com.alipay.sofa.registry.common.model.store.URL;
@@ -34,14 +28,21 @@ import com.alipay.sofa.registry.server.session.connections.ConnectionsService;
 import com.alipay.sofa.registry.server.session.providedata.FetchClientOffAddressService.ClientOffAddressResp;
 import com.alipay.sofa.registry.server.session.registry.Registry;
 import com.google.common.collect.Maps;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Set;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mockito;
+
+import java.util.Collections;
+import java.util.Map;
+import java.util.Set;
+
+import static com.alipay.sofa.registry.common.model.constants.ValueConstants.CLIENT_OFF;
+import static org.mockito.Matchers.anyList;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * @author xiaojian.xj
@@ -49,99 +50,99 @@ import org.mockito.Mockito;
  */
 public class FetchClientOffServiceTest {
 
-  private static Registry sessionRegistry;
+    private static Registry sessionRegistry;
 
-  private static SessionServerConfig sessionServerConfig;
+    private static SessionServerConfig sessionServerConfig;
 
-  private static ConnectionsService connectionsService;
+    private static ConnectionsService connectionsService;
 
-  private static FetchClientOffAddressService fetchClientOffAddressService;
+    private static FetchClientOffAddressService fetchClientOffAddressService;
 
-  private static URL url = new URL("0.0.0.0", 12345);
-  private static BoltServer server = new BoltServer(url, Collections.emptyList());
+    private static URL url = new URL("0.0.0.0", 12345);
+    private static BoltServer server = new BoltServer(url, Collections.emptyList());
 
-  private static BoltClient boltClient = new BoltClient(1);
-  private static Channel channel;
+    private static BoltClient boltClient = new BoltClient(1);
+    private static Channel channel;
 
-  @BeforeClass
-  public static void beforeFetchStopPushServiceTest() {
+    @BeforeClass
+    public static void beforeFetchStopPushServiceTest() {
 
-    // MockitoAnnotations.initMocks(this);
-    sessionRegistry = mock(Registry.class);
-    sessionServerConfig = mock(SessionServerConfig.class);
-    connectionsService = mock(ConnectionsService.class);
+        // MockitoAnnotations.initMocks(this);
+        sessionRegistry = mock(Registry.class);
+        sessionServerConfig = mock(SessionServerConfig.class);
+        connectionsService = mock(ConnectionsService.class);
 
-    when(sessionServerConfig.getClientManagerIntervalMillis()).thenReturn(1000);
-    fetchClientOffAddressService = new FetchClientOffAddressService();
-    fetchClientOffAddressService
-        .setSessionServerConfig(sessionServerConfig)
-        .setSessionRegistry(sessionRegistry)
-        .setConnectionsService(connectionsService);
+        when(sessionServerConfig.getClientManagerIntervalMillis()).thenReturn(1000);
+        fetchClientOffAddressService = new FetchClientOffAddressService();
+        fetchClientOffAddressService
+                .setSessionServerConfig(sessionServerConfig)
+                .setSessionRegistry(sessionRegistry)
+                .setConnectionsService(connectionsService);
 
-    server.configWaterMark(1024 * 32, 1024 * 64);
-    server.initServer();
-    Assert.assertFalse(server.isOpen());
-    Assert.assertTrue(server.isClosed());
-    server.startServer();
-    Assert.assertTrue(server.isOpen());
-    Assert.assertFalse(server.isClosed());
+        server.configWaterMark(1024 * 32, 1024 * 64);
+        server.initServer();
+        Assert.assertFalse(server.isOpen());
+        Assert.assertTrue(server.isClosed());
+        server.startServer();
+        Assert.assertTrue(server.isOpen());
+        Assert.assertFalse(server.isClosed());
 
-    channel = boltClient.connect(url);
-  }
-
-  @AfterClass
-  public static void after() {
-    server.close();
-  }
-
-  @Test
-  public void test() throws InterruptedException {
-    fetchClientOffAddressService.postConstruct();
-    Assert.assertEquals(0, fetchClientOffAddressService.getClientOffAddress().size());
-
-    Set<String> offIps = CollectionSdks.toIpSet("1.1.1.1;2.2.2.2;3.3.3.3");
-
-    Map<String, AddressVersion> addressVersionMap = Maps.newHashMapWithExpectedSize(offIps.size());
-    for (String openIp : offIps) {
-      addressVersionMap.put(openIp, new AddressVersion(System.currentTimeMillis(), openIp, true));
+        channel = boltClient.connect(url);
     }
 
-    Assert.assertTrue(
-        fetchClientOffAddressService.doProcess(
-            fetchClientOffAddressService.getStorage(),
-            new ClientOffAddressResp(1L, addressVersionMap, Collections.EMPTY_SET)));
-    Assert.assertEquals(offIps.size(), fetchClientOffAddressService.getClientOffAddress().size());
-
-    Thread.sleep(3000);
-    offIps = CollectionSdks.toIpSet("1.1.1.1;2.2.2.2");
-
-    Map<String, AddressVersion> addressVersionMapV1 =
-        Maps.newHashMapWithExpectedSize(offIps.size());
-    for (String openIp : offIps) {
-      addressVersionMapV1.put(openIp, new AddressVersion(System.currentTimeMillis(), openIp, true));
+    @AfterClass
+    public static void after() {
+        server.close();
     }
-    Assert.assertTrue(
-        fetchClientOffAddressService.doProcess(
-            fetchClientOffAddressService.getStorage(),
-            new ClientOffAddressResp(1L, addressVersionMapV1, Collections.singleton("3.3.3.3"))));
-    Assert.assertEquals(offIps.size(), fetchClientOffAddressService.getClientOffAddress().size());
-  }
 
-  @Test
-  public void testClientOpenFailWatcher() throws InterruptedException {
+    @Test
+    public void test() throws InterruptedException {
+        fetchClientOffAddressService.postConstruct();
+        Assert.assertEquals(0, fetchClientOffAddressService.getClientOffAddress().size());
 
-    BoltChannel boltChannel = (BoltChannel) this.channel;
+        Set<String> offIps = CollectionSdks.toIpSet("1.1.1.1;2.2.2.2;3.3.3.3");
 
-    boltChannel.setConnAttribute(CLIENT_OFF, Boolean.TRUE);
+        Map<String, AddressVersion> addressVersionMap = Maps.newHashMapWithExpectedSize(offIps.size());
+        for (String openIp : offIps) {
+            addressVersionMap.put(openIp, new AddressVersion(System.currentTimeMillis(), openIp, true));
+        }
 
-    when(connectionsService.getAllChannel()).thenReturn(Collections.singletonList(this.channel));
-    when(connectionsService.getIpFromConnectId(anyString())).thenReturn(url.getIpAddress());
+        Assert.assertTrue(
+                fetchClientOffAddressService.doProcess(
+                        fetchClientOffAddressService.getStorage(),
+                        new ClientOffAddressResp(1L, addressVersionMap, Collections.EMPTY_SET)));
+        Assert.assertEquals(offIps.size(), fetchClientOffAddressService.getClientOffAddress().size());
 
-    fetchClientOffAddressService.processClientOpen();
-    Thread.sleep(2000);
-    boltChannel.setConnAttribute(CLIENT_OFF, null);
-    fetchClientOffAddressService.processClientOpen();
+        Thread.sleep(3000);
+        offIps = CollectionSdks.toIpSet("1.1.1.1;2.2.2.2");
 
-    Mockito.verify(connectionsService, Mockito.times(1)).closeIpConnects(anyList());
-  }
+        Map<String, AddressVersion> addressVersionMapV1 =
+                Maps.newHashMapWithExpectedSize(offIps.size());
+        for (String openIp : offIps) {
+            addressVersionMapV1.put(openIp, new AddressVersion(System.currentTimeMillis(), openIp, true));
+        }
+        Assert.assertTrue(
+                fetchClientOffAddressService.doProcess(
+                        fetchClientOffAddressService.getStorage(),
+                        new ClientOffAddressResp(1L, addressVersionMapV1, Collections.singleton("3.3.3.3"))));
+        Assert.assertEquals(offIps.size(), fetchClientOffAddressService.getClientOffAddress().size());
+    }
+
+    @Test
+    public void testClientOpenFailWatcher() throws InterruptedException {
+
+        BoltChannel boltChannel = (BoltChannel) this.channel;
+
+        boltChannel.setConnAttribute(CLIENT_OFF, Boolean.TRUE);
+
+        when(connectionsService.getAllChannel()).thenReturn(Collections.singletonList(this.channel));
+        when(connectionsService.getIpFromConnectId(anyString())).thenReturn(url.getIpAddress());
+
+        fetchClientOffAddressService.processClientOpen();
+        Thread.sleep(2000);
+        boltChannel.setConnAttribute(CLIENT_OFF, null);
+        fetchClientOffAddressService.processClientOpen();
+
+        Mockito.verify(connectionsService, Mockito.times(1)).closeIpConnects(anyList());
+    }
 }

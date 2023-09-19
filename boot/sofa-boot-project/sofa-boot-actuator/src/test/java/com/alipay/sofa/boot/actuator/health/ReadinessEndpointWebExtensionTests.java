@@ -41,10 +41,10 @@ public class ReadinessEndpointWebExtensionTests {
     private ReadinessEndpointWebExtension endpointWebExtension;
 
     @Mock
-    private ReadinessEndpoint             readinessEndpoint;
+    private ReadinessEndpoint readinessEndpoint;
 
     @Mock
-    private HttpCodeStatusMapper          statusCodeMapper;
+    private HttpCodeStatusMapper statusCodeMapper;
 
     @Test
     public void getHealthSuccess() {

@@ -16,9 +16,6 @@
  */
 package com.alipay.sofa.rpc.http2;
 
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import com.alipay.sofa.rpc.common.config.RpcConfigKeys;
 import com.alipay.sofa.rpc.common.utils.ReflectUtils;
 import com.alipay.sofa.rpc.config.ApplicationConfig;
@@ -32,10 +29,11 @@ import com.alipay.sofa.rpc.protobuf.ProtoServiceImpl;
 import com.alipay.sofa.rpc.server.http.Http2WithSSLServer;
 import com.alipay.sofa.rpc.test.HelloService;
 import com.alipay.sofa.rpc.test.HelloServiceImpl;
-import com.alipay.sofa.rpc.transport.http.SslContextBuilder;
+
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- *
  * @author <a href="mailto:466178395@qq.com">LiHao</a>
  */
 public class Http2WithSSLServerMain {
@@ -57,19 +55,19 @@ public class Http2WithSSLServerMain {
         ServerConfig serverConfig = new ServerConfig().setProtocol("h2").setPort(12300).setDaemon(false);
 
         ProviderConfig<ProtoService> providerConfig = new ProviderConfig<ProtoService>()
-            .setInterfaceId(ProtoService.class.getName())
-            .setApplication(application)
-            .setRef(new ProtoServiceImpl())
-            .setServer(serverConfig);
+                .setInterfaceId(ProtoService.class.getName())
+                .setApplication(application)
+                .setRef(new ProtoServiceImpl())
+                .setServer(serverConfig);
 
         providerConfig.export();
 
         ProviderConfig<HelloService> providerConfig2 = new ProviderConfig<HelloService>()
-            .setInterfaceId(HelloService.class.getName())
-            .setApplication(application)
-            .setRef(new HelloServiceImpl())
-            .setServer(serverConfig)
-            .setRegister(false);
+                .setInterfaceId(HelloService.class.getName())
+                .setApplication(application)
+                .setRef(new HelloServiceImpl())
+                .setServer(serverConfig)
+                .setRegister(false);
         providerConfig2.export();
         // http://127.0.0.1:12300/com.alipay.sofa.rpc.test.HelloService/sayHello
 

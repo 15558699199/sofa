@@ -21,24 +21,25 @@ import com.alipay.sofa.registry.server.shared.providedata.AbstractProvideDataWat
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class ConfigProvideDataWatcher extends AbstractProvideDataWatcher {
-  @Autowired protected SessionServerConfig sessionServerConfig;
+    @Autowired
+    protected SessionServerConfig sessionServerConfig;
 
-  public ConfigProvideDataWatcher() {
-    super("config");
-  }
+    public ConfigProvideDataWatcher() {
+        super("config");
+    }
 
-  @Override
-  protected int fetchBatchSize() {
-    return sessionServerConfig.getWatchConfigFetchBatchSize();
-  }
+    @Override
+    protected int fetchBatchSize() {
+        return sessionServerConfig.getWatchConfigFetchBatchSize();
+    }
 
-  @Override
-  protected int fetchIntervalMillis() {
-    return sessionServerConfig.getWatchConfigFetchIntervalMillis();
-  }
+    @Override
+    protected int fetchIntervalMillis() {
+        return sessionServerConfig.getWatchConfigFetchIntervalMillis();
+    }
 
-  @Override
-  protected int watcherLeaseSecs() {
-    return sessionServerConfig.getWatchConfigFetchLeaseSecs();
-  }
+    @Override
+    protected int watcherLeaseSecs() {
+        return sessionServerConfig.getWatchConfigFetchLeaseSecs();
+    }
 }

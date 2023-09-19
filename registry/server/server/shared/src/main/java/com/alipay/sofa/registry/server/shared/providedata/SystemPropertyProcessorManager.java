@@ -25,55 +25,55 @@ import java.util.Collection;
  */
 public class SystemPropertyProcessorManager {
 
-  private Collection<AbstractFetchSystemPropertyService> systemDataProcessors = new ArrayList<>();
+    private Collection<AbstractFetchSystemPropertyService> systemDataProcessors = new ArrayList<>();
 
-  private Collection<AbstractFetchPersistenceSystemProperty> systemDataPersistenceProcessors =
-      new ArrayList<>();
+    private Collection<AbstractFetchPersistenceSystemProperty> systemDataPersistenceProcessors =
+            new ArrayList<>();
 
-  public void addSystemDataProcessor(AbstractFetchSystemPropertyService systemDataProcessor) {
-    systemDataProcessors.add(systemDataProcessor);
-  }
-
-  public void addSystemDataPersistenceProcessor(
-      AbstractFetchPersistenceSystemProperty systemDataProcessor) {
-    systemDataPersistenceProcessors.add(systemDataProcessor);
-  }
-
-  public boolean doFetch(String dataInfoId) {
-    for (FetchSystemPropertyService systemDataProcessor : systemDataProcessors) {
-      if (systemDataProcessor.support(dataInfoId)) {
-        return systemDataProcessor.doFetch();
-      }
-    }
-    for (FetchSystemPropertyService systemDataProcessor : systemDataPersistenceProcessors) {
-      if (systemDataProcessor.support(dataInfoId)) {
-        return systemDataProcessor.doFetch();
-      }
+    public void addSystemDataProcessor(AbstractFetchSystemPropertyService systemDataProcessor) {
+        systemDataProcessors.add(systemDataProcessor);
     }
 
-    return false;
-  }
-
-  public boolean startFetchMetaSystemProperty() {
-    boolean success = true;
-
-    for (AbstractFetchSystemPropertyService systemDataProcessor : systemDataProcessors) {
-      if (!systemDataProcessor.start()) {
-        success = false;
-      }
+    public void addSystemDataPersistenceProcessor(
+            AbstractFetchPersistenceSystemProperty systemDataProcessor) {
+        systemDataPersistenceProcessors.add(systemDataProcessor);
     }
-    return success;
-  }
 
-  public boolean startFetchPersistenceSystemProperty() {
-    boolean success = true;
+    public boolean doFetch(String dataInfoId) {
+        for (FetchSystemPropertyService systemDataProcessor : systemDataProcessors) {
+            if (systemDataProcessor.support(dataInfoId)) {
+                return systemDataProcessor.doFetch();
+            }
+        }
+        for (FetchSystemPropertyService systemDataProcessor : systemDataPersistenceProcessors) {
+            if (systemDataProcessor.support(dataInfoId)) {
+                return systemDataProcessor.doFetch();
+            }
+        }
 
-    for (AbstractFetchPersistenceSystemProperty systemDataProcessor :
-        systemDataPersistenceProcessors) {
-      if (!systemDataProcessor.start()) {
-        success = false;
-      }
+        return false;
     }
-    return success;
-  }
+
+    public boolean startFetchMetaSystemProperty() {
+        boolean success = true;
+
+        for (AbstractFetchSystemPropertyService systemDataProcessor : systemDataProcessors) {
+            if (!systemDataProcessor.start()) {
+                success = false;
+            }
+        }
+        return success;
+    }
+
+    public boolean startFetchPersistenceSystemProperty() {
+        boolean success = true;
+
+        for (AbstractFetchPersistenceSystemProperty systemDataProcessor :
+                systemDataPersistenceProcessors) {
+            if (!systemDataProcessor.start()) {
+                success = false;
+            }
+        }
+        return success;
+    }
 }

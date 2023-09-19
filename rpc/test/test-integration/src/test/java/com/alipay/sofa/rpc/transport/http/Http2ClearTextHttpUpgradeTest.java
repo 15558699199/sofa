@@ -51,7 +51,7 @@ public class Http2ClearTextHttpUpgradeTest extends ActivelyDestroyTest {
      * Keep the config parameter previous value for restore it later
      */
     private static boolean useH2cPriorKnowledge = RpcConfigs
-                                                    .getBooleanValue(RpcOptions.TRANSPORT_CLIENT_H2C_USE_PRIOR_KNOWLEDGE);
+            .getBooleanValue(RpcOptions.TRANSPORT_CLIENT_H2C_USE_PRIOR_KNOWLEDGE);
 
     @BeforeClass
     public static void adBeforeClass() {
@@ -62,31 +62,41 @@ public class Http2ClearTextHttpUpgradeTest extends ActivelyDestroyTest {
         ActivelyDestroyTest.adBeforeClass();
     }
 
+    @AfterClass
+    public static void adAfterClass() {
+        ActivelyDestroyTest.adAfterClass();
+
+        /**
+         * restore config parameter to previous value
+         */
+        RpcConfigs.putValue(RpcOptions.TRANSPORT_CLIENT_H2C_USE_PRIOR_KNOWLEDGE, useH2cPriorKnowledge);
+    }
+
     @Test
     public void testProtobuf() {
         // 只有1个线程 执行
         ServerConfig serverConfig = new ServerConfig()
-            .setStopTimeout(60000)
-            .setPort(12300)
-            .setProtocol(RpcConstants.PROTOCOL_TYPE_H2C)
-            .setDaemon(true);
+                .setStopTimeout(60000)
+                .setPort(12300)
+                .setProtocol(RpcConstants.PROTOCOL_TYPE_H2C)
+                .setDaemon(true);
 
         // 发布一个服务，每个请求要执行1秒
         ProviderConfig<HttpService> providerConfig = new ProviderConfig<HttpService>()
-            .setInterfaceId(HttpService.class.getName())
-            .setRef(new HttpServiceImpl())
-            .setApplication(new ApplicationConfig().setAppName("serverApp"))
-            .setServer(serverConfig)
-            .setRegister(false);
+                .setInterfaceId(HttpService.class.getName())
+                .setRef(new HttpServiceImpl())
+                .setApplication(new ApplicationConfig().setAppName("serverApp"))
+                .setServer(serverConfig)
+                .setRegister(false);
         providerConfig.export();
 
         {
             ConsumerConfig<HttpService> consumerConfig = new ConsumerConfig<HttpService>()
-                .setInterfaceId(HttpService.class.getName())
-                .setSerialization(RpcConstants.SERIALIZE_PROTOBUF)
-                .setDirectUrl("h2c://127.0.0.1:12300")
-                .setApplication(new ApplicationConfig().setAppName("clientApp"))
-                .setProtocol(RpcConstants.PROTOCOL_TYPE_H2C);
+                    .setInterfaceId(HttpService.class.getName())
+                    .setSerialization(RpcConstants.SERIALIZE_PROTOBUF)
+                    .setDirectUrl("h2c://127.0.0.1:12300")
+                    .setApplication(new ApplicationConfig().setAppName("clientApp"))
+                    .setProtocol(RpcConstants.PROTOCOL_TYPE_H2C);
 
             HttpService httpService = consumerConfig.refer();
 
@@ -98,13 +108,13 @@ public class Http2ClearTextHttpUpgradeTest extends ActivelyDestroyTest {
 
         {
             ConsumerConfig<HttpService> consumerConfig2 = new ConsumerConfig<HttpService>()
-                .setInterfaceId(HttpService.class.getName())
-                .setSerialization(RpcConstants.SERIALIZE_PROTOBUF)
-                .setDirectUrl("h2c://127.0.0.1:12300")
-                .setApplication(new ApplicationConfig().setAppName("clientApp"))
-                .setProtocol(RpcConstants.PROTOCOL_TYPE_H2C)
-                .setInvokeType(RpcConstants.INVOKER_TYPE_ONEWAY)
-                .setRepeatedReferLimit(-1);
+                    .setInterfaceId(HttpService.class.getName())
+                    .setSerialization(RpcConstants.SERIALIZE_PROTOBUF)
+                    .setDirectUrl("h2c://127.0.0.1:12300")
+                    .setApplication(new ApplicationConfig().setAppName("clientApp"))
+                    .setProtocol(RpcConstants.PROTOCOL_TYPE_H2C)
+                    .setInvokeType(RpcConstants.INVOKER_TYPE_ONEWAY)
+                    .setRepeatedReferLimit(-1);
             HttpService httpService2 = consumerConfig2.refer();
             EchoRequest request = EchoRequest.newBuilder().setGroup(Group.A).setName("xxx").build();
             try {
@@ -118,13 +128,13 @@ public class Http2ClearTextHttpUpgradeTest extends ActivelyDestroyTest {
 
         {
             ConsumerConfig<HttpService> consumerConfig3 = new ConsumerConfig<HttpService>()
-                .setInterfaceId(HttpService.class.getName())
-                .setSerialization(RpcConstants.SERIALIZE_PROTOBUF)
-                .setDirectUrl("h2c://127.0.0.1:12300")
-                .setApplication(new ApplicationConfig().setAppName("clientApp"))
-                .setProtocol(RpcConstants.PROTOCOL_TYPE_H2C)
-                .setInvokeType(RpcConstants.INVOKER_TYPE_FUTURE)
-                .setRepeatedReferLimit(-1);
+                    .setInterfaceId(HttpService.class.getName())
+                    .setSerialization(RpcConstants.SERIALIZE_PROTOBUF)
+                    .setDirectUrl("h2c://127.0.0.1:12300")
+                    .setApplication(new ApplicationConfig().setAppName("clientApp"))
+                    .setProtocol(RpcConstants.PROTOCOL_TYPE_H2C)
+                    .setInvokeType(RpcConstants.INVOKER_TYPE_FUTURE)
+                    .setRepeatedReferLimit(-1);
             HttpService httpService3 = consumerConfig3.refer();
             EchoRequest request = EchoRequest.newBuilder().setGroup(Group.A).setName("xxx").build();
             EchoResponse response = httpService3.echoPb(request);
@@ -145,30 +155,30 @@ public class Http2ClearTextHttpUpgradeTest extends ActivelyDestroyTest {
             final EchoResponse[] result = new EchoResponse[1];
             final CountDownLatch latch = new CountDownLatch(1);
             ConsumerConfig<HttpService> consumerConfig4 = new ConsumerConfig<HttpService>()
-                .setInterfaceId(HttpService.class.getName())
-                .setSerialization(RpcConstants.SERIALIZE_PROTOBUF)
-                .setDirectUrl("h2c://127.0.0.1:12300")
-                .setApplication(new ApplicationConfig().setAppName("clientApp"))
-                .setProtocol(RpcConstants.PROTOCOL_TYPE_H2C)
-                .setInvokeType(RpcConstants.INVOKER_TYPE_CALLBACK)
-                .setOnReturn(new SofaResponseCallback() {
-                    @Override
-                    public void onAppResponse(Object appResponse, String methodName, RequestBase request) {
-                        result[0] = (EchoResponse) appResponse;
-                        latch.countDown();
-                    }
+                    .setInterfaceId(HttpService.class.getName())
+                    .setSerialization(RpcConstants.SERIALIZE_PROTOBUF)
+                    .setDirectUrl("h2c://127.0.0.1:12300")
+                    .setApplication(new ApplicationConfig().setAppName("clientApp"))
+                    .setProtocol(RpcConstants.PROTOCOL_TYPE_H2C)
+                    .setInvokeType(RpcConstants.INVOKER_TYPE_CALLBACK)
+                    .setOnReturn(new SofaResponseCallback() {
+                        @Override
+                        public void onAppResponse(Object appResponse, String methodName, RequestBase request) {
+                            result[0] = (EchoResponse) appResponse;
+                            latch.countDown();
+                        }
 
-                    @Override
-                    public void onAppException(Throwable throwable, String methodName, RequestBase request) {
-                        latch.countDown();
-                    }
+                        @Override
+                        public void onAppException(Throwable throwable, String methodName, RequestBase request) {
+                            latch.countDown();
+                        }
 
-                    @Override
-                    public void onSofaException(SofaRpcException sofaException, String methodName, RequestBase request) {
-                        latch.countDown();
-                    }
-                })
-                .setRepeatedReferLimit(-1);
+                        @Override
+                        public void onSofaException(SofaRpcException sofaException, String methodName, RequestBase request) {
+                            latch.countDown();
+                        }
+                    })
+                    .setRepeatedReferLimit(-1);
             HttpService httpService4 = consumerConfig4.refer();
             EchoRequest request = EchoRequest.newBuilder().setGroup(Group.A).setName("xxx").build();
             EchoResponse response = httpService4.echoPb(request);
@@ -185,15 +195,5 @@ public class Http2ClearTextHttpUpgradeTest extends ActivelyDestroyTest {
                 Assert.fail();
             }
         }
-    }
-
-    @AfterClass
-    public static void adAfterClass() {
-        ActivelyDestroyTest.adAfterClass();
-
-        /**
-         * restore config parameter to previous value
-         */
-        RpcConfigs.putValue(RpcOptions.TRANSPORT_CLIENT_H2C_USE_PRIOR_KNOWLEDGE, useH2cPriorKnowledge);
     }
 }

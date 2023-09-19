@@ -16,187 +16,192 @@
  */
 package com.alipay.sofa.registry.lifecycle.impl;
 
-import com.alipay.sofa.registry.lifecycle.*;
+import com.alipay.sofa.registry.lifecycle.Lifecycle;
+import com.alipay.sofa.registry.lifecycle.LifecycleController;
+import com.alipay.sofa.registry.lifecycle.LifecycleState;
 import com.alipay.sofa.registry.log.Logger;
+
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * @author chen.zhu
- *     <p>Nov 13, 2020
+ * <p>Nov 13, 2020
  */
 public class DefaultLifecycleState implements LifecycleState {
 
-  private final Logger logger;
+    private final Logger logger;
 
-  private final AtomicReference<LifecyclePhase> phase = new AtomicReference<>();
+    private final AtomicReference<LifecyclePhase> phase = new AtomicReference<>();
 
-  private final AtomicReference<LifecyclePhase> previoisPhase = new AtomicReference<>();
+    private final AtomicReference<LifecyclePhase> previoisPhase = new AtomicReference<>();
 
-  private final Lifecycle lifecycle;
+    private final Lifecycle lifecycle;
 
-  private final LifecycleController lifecycleController;
+    private final LifecycleController lifecycleController;
 
-  public DefaultLifecycleState(
-      Lifecycle lifecycle, LifecycleController lifecycleController, Logger logger) {
-    this.lifecycle = lifecycle;
-    this.lifecycleController = lifecycleController;
-    this.logger = logger;
-  }
-
-  @Override
-  public boolean isEmpty() {
-    return phase.get() == null;
-  }
-
-  @Override
-  public boolean isInitializing() {
-
-    LifecyclePhase currentPhase = getPhase();
-    return currentPhase != null && currentPhase.equals(LifecyclePhase.INITIALIZING);
-  }
-
-  @Override
-  public boolean isInitialized() {
-
-    LifecyclePhase currentPhase = getPhase();
-    return currentPhase != null
-        && phaseNameIn(
-            currentPhase,
-            LifecyclePhase.INITIALIZED,
-            LifecyclePhase.STARTING,
-            LifecyclePhase.STARTED,
-            LifecyclePhase.STOPPING,
-            LifecyclePhase.STOPPED);
-  }
-
-  @Override
-  public boolean isStarting() {
-
-    LifecyclePhase currentPhase = getPhase();
-    return currentPhase != null && currentPhase.equals(LifecyclePhase.STARTING);
-  }
-
-  @Override
-  public boolean isStarted() {
-
-    LifecyclePhase currentPhase = getPhase();
-    return currentPhase == LifecyclePhase.STARTED;
-  }
-
-  @Override
-  public boolean isStopping() {
-
-    LifecyclePhase currentPhase = getPhase();
-    return currentPhase == LifecyclePhase.STOPPING;
-  }
-
-  @Override
-  public boolean isStopped() {
-
-    LifecyclePhase phaseName = getPhase();
-    return phaseName == null
-        || (phaseNameIn(
-            phaseName,
-            LifecyclePhase.INITIALIZED,
-            LifecyclePhase.STOPPED,
-            LifecyclePhase.DISPOSING,
-            LifecyclePhase.DISPOSED));
-  }
-
-  @Override
-  public boolean isPositivelyStopped() {
-
-    LifecyclePhase phaseName = getPhase();
-    return phaseName != null
-        && phaseNameIn(
-            phaseName, LifecyclePhase.STOPPED, LifecyclePhase.DISPOSING, LifecyclePhase.DISPOSED);
-  }
-
-  private boolean phaseNameIn(LifecyclePhase phase, LifecyclePhase... ins) {
-
-    for (LifecyclePhase in : ins) {
-      if (phase == in) {
-        return true;
-      }
+    public DefaultLifecycleState(
+            Lifecycle lifecycle, LifecycleController lifecycleController, Logger logger) {
+        this.lifecycle = lifecycle;
+        this.lifecycleController = lifecycleController;
+        this.logger = logger;
     }
-    return false;
-  }
 
-  @Override
-  public boolean isDisposing() {
-
-    LifecyclePhase phaseName = getPhase();
-    return phaseName == LifecyclePhase.DISPOSING;
-  }
-
-  @Override
-  public boolean isDisposed() {
-
-    LifecyclePhase phaseName = getPhase();
-    return phaseName == null || phaseName == LifecyclePhase.DISPOSED;
-  }
-
-  @Override
-  public boolean isPositivelyDisposed() {
-
-    LifecyclePhase phaseName = getPhase();
-    return phaseName != null && phaseNameIn(getPhase(), LifecyclePhase.DISPOSED);
-  }
-
-  @Override
-  public LifecyclePhase getPhase() {
-    return phase.get();
-  }
-
-  @Override
-  public void setPhase(LifecyclePhase currentPhase) {
-    if (logger.isInfoEnabled()) {
-      logger.info(
-          "[setPhaseName]{}({}) --> {}",
-          lifecycle,
-          lifecycle.getClass().getSimpleName(),
-          currentPhase);
+    @Override
+    public boolean isEmpty() {
+        return phase.get() == null;
     }
-    previoisPhase.set(phase.get());
-    phase.set(currentPhase);
-  }
 
-  @Override
-  public String toString() {
-    return String.format("%s, %s", lifecycle.toString(), phase.get());
-  }
+    @Override
+    public boolean isInitializing() {
 
-  /** only support rollback once */
-  @Override
-  public void rollback(Exception e) {
-    if (logger.isInfoEnabled()) {
-      logger.info(
-          "[rollback]{},{} -> {}, reason:{}",
-          this,
-          phase.get(),
-          previoisPhase.get(),
-          e.getMessage());
+        LifecyclePhase currentPhase = getPhase();
+        return currentPhase != null && currentPhase.equals(LifecyclePhase.INITIALIZING);
     }
-    phase.set(previoisPhase.get());
-  }
 
-  @Override
-  public boolean canInitialize() {
-    return lifecycleController.canInitialize(getPhase());
-  }
+    @Override
+    public boolean isInitialized() {
 
-  @Override
-  public boolean canStart() {
-    return lifecycleController.canStart(getPhase());
-  }
+        LifecyclePhase currentPhase = getPhase();
+        return currentPhase != null
+                && phaseNameIn(
+                currentPhase,
+                LifecyclePhase.INITIALIZED,
+                LifecyclePhase.STARTING,
+                LifecyclePhase.STARTED,
+                LifecyclePhase.STOPPING,
+                LifecyclePhase.STOPPED);
+    }
 
-  @Override
-  public boolean canStop() {
-    return lifecycleController.canStop(getPhase());
-  }
+    @Override
+    public boolean isStarting() {
 
-  @Override
-  public boolean canDispose() {
-    return lifecycleController.canDispose(getPhase());
-  }
+        LifecyclePhase currentPhase = getPhase();
+        return currentPhase != null && currentPhase.equals(LifecyclePhase.STARTING);
+    }
+
+    @Override
+    public boolean isStarted() {
+
+        LifecyclePhase currentPhase = getPhase();
+        return currentPhase == LifecyclePhase.STARTED;
+    }
+
+    @Override
+    public boolean isStopping() {
+
+        LifecyclePhase currentPhase = getPhase();
+        return currentPhase == LifecyclePhase.STOPPING;
+    }
+
+    @Override
+    public boolean isStopped() {
+
+        LifecyclePhase phaseName = getPhase();
+        return phaseName == null
+                || (phaseNameIn(
+                phaseName,
+                LifecyclePhase.INITIALIZED,
+                LifecyclePhase.STOPPED,
+                LifecyclePhase.DISPOSING,
+                LifecyclePhase.DISPOSED));
+    }
+
+    @Override
+    public boolean isPositivelyStopped() {
+
+        LifecyclePhase phaseName = getPhase();
+        return phaseName != null
+                && phaseNameIn(
+                phaseName, LifecyclePhase.STOPPED, LifecyclePhase.DISPOSING, LifecyclePhase.DISPOSED);
+    }
+
+    private boolean phaseNameIn(LifecyclePhase phase, LifecyclePhase... ins) {
+
+        for (LifecyclePhase in : ins) {
+            if (phase == in) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean isDisposing() {
+
+        LifecyclePhase phaseName = getPhase();
+        return phaseName == LifecyclePhase.DISPOSING;
+    }
+
+    @Override
+    public boolean isDisposed() {
+
+        LifecyclePhase phaseName = getPhase();
+        return phaseName == null || phaseName == LifecyclePhase.DISPOSED;
+    }
+
+    @Override
+    public boolean isPositivelyDisposed() {
+
+        LifecyclePhase phaseName = getPhase();
+        return phaseName != null && phaseNameIn(getPhase(), LifecyclePhase.DISPOSED);
+    }
+
+    @Override
+    public LifecyclePhase getPhase() {
+        return phase.get();
+    }
+
+    @Override
+    public void setPhase(LifecyclePhase currentPhase) {
+        if (logger.isInfoEnabled()) {
+            logger.info(
+                    "[setPhaseName]{}({}) --> {}",
+                    lifecycle,
+                    lifecycle.getClass().getSimpleName(),
+                    currentPhase);
+        }
+        previoisPhase.set(phase.get());
+        phase.set(currentPhase);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s, %s", lifecycle.toString(), phase.get());
+    }
+
+    /**
+     * only support rollback once
+     */
+    @Override
+    public void rollback(Exception e) {
+        if (logger.isInfoEnabled()) {
+            logger.info(
+                    "[rollback]{},{} -> {}, reason:{}",
+                    this,
+                    phase.get(),
+                    previoisPhase.get(),
+                    e.getMessage());
+        }
+        phase.set(previoisPhase.get());
+    }
+
+    @Override
+    public boolean canInitialize() {
+        return lifecycleController.canInitialize(getPhase());
+    }
+
+    @Override
+    public boolean canStart() {
+        return lifecycleController.canStart(getPhase());
+    }
+
+    @Override
+    public boolean canStop() {
+        return lifecycleController.canStop(getPhase());
+    }
+
+    @Override
+    public boolean canDispose() {
+        return lifecycleController.canDispose(getPhase());
+    }
 }

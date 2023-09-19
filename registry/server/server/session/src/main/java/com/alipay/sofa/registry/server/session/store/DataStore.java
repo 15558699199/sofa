@@ -17,6 +17,7 @@
 package com.alipay.sofa.registry.server.session.store;
 
 import com.alipay.sofa.registry.common.model.store.Publisher;
+
 import java.util.Map;
 
 /**
@@ -25,6 +26,6 @@ import java.util.Map;
  */
 public interface DataStore extends DataManager<Publisher, String, String> {
 
-  Map<String /*dataInfoId*/, Map<String /*registerId*/, Publisher>> getDataInfoIdPublishers(
-      int slotId);
+    Map<String /*dataInfoId*/, Map<String /*registerId*/, Publisher>> getDataInfoIdPublishers(
+            int slotId);
 }

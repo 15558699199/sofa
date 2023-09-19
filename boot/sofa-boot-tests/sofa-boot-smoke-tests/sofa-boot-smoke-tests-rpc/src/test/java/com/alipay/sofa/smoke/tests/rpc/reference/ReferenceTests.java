@@ -21,8 +21,8 @@ import com.alipay.sofa.rpc.boot.container.ServerConfigContainer;
 import com.alipay.sofa.rpc.config.ServerConfig;
 import com.alipay.sofa.rpc.core.exception.SofaRouteException;
 import com.alipay.sofa.smoke.tests.rpc.ActivelyDestroyTests;
-import com.alipay.sofa.smoke.tests.rpc.boot.bean.invoke.HelloSyncService;
 import com.alipay.sofa.smoke.tests.rpc.boot.RpcSofaBootApplication;
+import com.alipay.sofa.smoke.tests.rpc.boot.bean.invoke.HelloSyncService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -46,7 +46,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 public class ReferenceTests extends ActivelyDestroyTests {
 
     @Autowired
-    private HelloSyncService      helloSyncService;
+    private HelloSyncService helloSyncService;
 
     @Autowired
     private ServerConfigContainer serverConfigContainer;
@@ -54,9 +54,9 @@ public class ReferenceTests extends ActivelyDestroyTests {
     @Test
     public void noServerStarted() {
         List<String> protocols = List.of(SofaBootRpcConfigConstants.RPC_PROTOCOL_BOLT,
-            SofaBootRpcConfigConstants.RPC_PROTOCOL_REST,
-            SofaBootRpcConfigConstants.RPC_PROTOCOL_H2C,
-            SofaBootRpcConfigConstants.RPC_PROTOCOL_DUBBO);
+                SofaBootRpcConfigConstants.RPC_PROTOCOL_REST,
+                SofaBootRpcConfigConstants.RPC_PROTOCOL_H2C,
+                SofaBootRpcConfigConstants.RPC_PROTOCOL_DUBBO);
 
         for (String protocol : protocols) {
             ServerConfig serverConfig = serverConfigContainer.getServerConfig(protocol);

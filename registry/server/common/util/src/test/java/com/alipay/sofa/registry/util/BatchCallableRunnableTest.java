@@ -18,12 +18,13 @@ package com.alipay.sofa.registry.util;
 
 import com.alipay.sofa.registry.util.BatchCallableRunnable.InvokeFuture;
 import com.alipay.sofa.registry.util.BatchCallableRunnable.TaskEvent;
+import org.junit.Assert;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
-import org.junit.Assert;
 
 /**
  * @author xiaojian.xj
@@ -31,94 +32,94 @@ import org.junit.Assert;
  */
 public class BatchCallableRunnableTest {
 
-  @org.junit.Test
-  public void testBatchRunnable() throws InterruptedException {
-    Test test = new Test();
-    test.init();
-    Map<Integer, InvokeFuture> futures = new HashMap<>();
-    for (int i = 0; i <= 255; i++) {
-      TaskEvent taskEvent = test.new TaskEvent(i);
-      InvokeFuture future = test.commit(taskEvent);
-      futures.putIfAbsent(i, future);
+    @org.junit.Test
+    public void testBatchRunnable() throws InterruptedException {
+        Test test = new Test();
+        test.init();
+        Map<Integer, InvokeFuture> futures = new HashMap<>();
+        for (int i = 0; i <= 255; i++) {
+            TaskEvent taskEvent = test.new TaskEvent(i);
+            InvokeFuture future = test.commit(taskEvent);
+            futures.putIfAbsent(i, future);
+        }
+
+        for (Entry<Integer, InvokeFuture> entry : futures.entrySet()) {
+
+            InvokeFuture future = entry.getValue();
+            String result = (String) future.getResponse();
+            Assert.assertEquals("hello " + entry.getKey().intValue(), result);
+        }
     }
 
-    for (Entry<Integer, InvokeFuture> entry : futures.entrySet()) {
-
-      InvokeFuture future = entry.getValue();
-      String result = (String) future.getResponse();
-      Assert.assertEquals("hello " + entry.getKey().intValue(), result);
-    }
-  }
-
-  @org.junit.Test
-  public void testBatchRunnable_False() throws InterruptedException {
-    Test test = new Test();
-    test.retFalse = true;
-    test.init();
-    InvokeFuture future = test.commit(test.new TaskEvent(10));
-    Assert.assertFalse(future.isSuccess());
-  }
-
-  @org.junit.Test
-  public void testBatchRunnable_Exception() throws InterruptedException {
-    Test test = new Test();
-    test.exception = true;
-    test.init();
-    InvokeFuture future = test.commit(test.new TaskEvent(10));
-    Assert.assertFalse(future.isSuccess());
-    Assert.assertTrue("@@@" + future.getMessage(), future.getMessage() != null);
-  }
-
-  @org.junit.Test
-  public void testFuture() throws Exception {
-    InvokeFuture future = new InvokeFuture();
-    future.fail();
-    Assert.assertFalse(future.isSuccess());
-
-    future = new InvokeFuture();
-    future.error("xxx");
-    Assert.assertFalse(future.isSuccess());
-    Assert.assertEquals(future.getMessage(), "xxx");
-
-    future = new InvokeFuture();
-    future.finish();
-    Assert.assertFalse(future.isSuccess());
-
-    future = new InvokeFuture();
-    Object obj = new Object();
-    future.putResponse(obj);
-    future.finish();
-    Assert.assertTrue(future.isSuccess());
-    Assert.assertEquals(future.getResponse(), obj);
-  }
-
-  public class Test extends BatchCallableRunnable<Integer, String> {
-    boolean exception;
-    boolean retFalse;
-
-    public Test() {
-      super(1, TimeUnit.SECONDS, 100);
+    @org.junit.Test
+    public void testBatchRunnable_False() throws InterruptedException {
+        Test test = new Test();
+        test.retFalse = true;
+        test.init();
+        InvokeFuture future = test.commit(test.new TaskEvent(10));
+        Assert.assertFalse(future.isSuccess());
     }
 
-    @Override
-    public boolean batchProcess(List<TaskEvent> taskEvents) {
-      if (taskEvents == null || taskEvents.size() == 0) {
-        return true;
-      }
-
-      if (retFalse) {
-        return false;
-      }
-
-      if (exception) {
-        throw new RuntimeException();
-      }
-
-      for (TaskEvent taskEvent : taskEvents) {
-        Integer data = taskEvent.getData();
-        taskEvent.getFuture().putResponse("hello " + data);
-      }
-      return true;
+    @org.junit.Test
+    public void testBatchRunnable_Exception() throws InterruptedException {
+        Test test = new Test();
+        test.exception = true;
+        test.init();
+        InvokeFuture future = test.commit(test.new TaskEvent(10));
+        Assert.assertFalse(future.isSuccess());
+        Assert.assertTrue("@@@" + future.getMessage(), future.getMessage() != null);
     }
-  }
+
+    @org.junit.Test
+    public void testFuture() throws Exception {
+        InvokeFuture future = new InvokeFuture();
+        future.fail();
+        Assert.assertFalse(future.isSuccess());
+
+        future = new InvokeFuture();
+        future.error("xxx");
+        Assert.assertFalse(future.isSuccess());
+        Assert.assertEquals(future.getMessage(), "xxx");
+
+        future = new InvokeFuture();
+        future.finish();
+        Assert.assertFalse(future.isSuccess());
+
+        future = new InvokeFuture();
+        Object obj = new Object();
+        future.putResponse(obj);
+        future.finish();
+        Assert.assertTrue(future.isSuccess());
+        Assert.assertEquals(future.getResponse(), obj);
+    }
+
+    public class Test extends BatchCallableRunnable<Integer, String> {
+        boolean exception;
+        boolean retFalse;
+
+        public Test() {
+            super(1, TimeUnit.SECONDS, 100);
+        }
+
+        @Override
+        public boolean batchProcess(List<TaskEvent> taskEvents) {
+            if (taskEvents == null || taskEvents.size() == 0) {
+                return true;
+            }
+
+            if (retFalse) {
+                return false;
+            }
+
+            if (exception) {
+                throw new RuntimeException();
+            }
+
+            for (TaskEvent taskEvent : taskEvents) {
+                Integer data = taskEvent.getData();
+                taskEvent.getFuture().putResponse("hello " + data);
+            }
+            return true;
+        }
+    }
 }

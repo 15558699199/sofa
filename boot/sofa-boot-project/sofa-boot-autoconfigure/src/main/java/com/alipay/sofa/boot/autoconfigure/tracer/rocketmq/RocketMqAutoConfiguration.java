@@ -38,8 +38,8 @@ import org.springframework.core.env.Environment;
  * @since 3.9.1
  */
 @AutoConfiguration(before = RocketMQAutoConfiguration.class)
-@ConditionalOnClass({ MQProducer.class, RocketMQListenerContainer.class,
-                     RocketMqProducerPostProcessor.class })
+@ConditionalOnClass({MQProducer.class, RocketMQListenerContainer.class,
+        RocketMqProducerPostProcessor.class})
 @ConditionalOnProperty(name = "sofa.boot.tracer.rocketmq.enabled", havingValue = "true", matchIfMissing = true)
 public class RocketMqAutoConfiguration {
 

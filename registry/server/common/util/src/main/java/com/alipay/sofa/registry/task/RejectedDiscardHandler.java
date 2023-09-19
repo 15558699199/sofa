@@ -21,13 +21,13 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.atomic.LongAdder;
 
 public final class RejectedDiscardHandler implements RejectedExecutionHandler {
-  private final LongAdder count = new LongAdder();
+    private final LongAdder count = new LongAdder();
 
-  public void rejectedExecution(Runnable r, ThreadPoolExecutor e) {
-    count.increment();
-  }
+    public void rejectedExecution(Runnable r, ThreadPoolExecutor e) {
+        count.increment();
+    }
 
-  public long getDiscardCountThenReset() {
-    return count.sumThenReset();
-  }
+    public long getDiscardCountThenReset() {
+        return count.sumThenReset();
+    }
 }

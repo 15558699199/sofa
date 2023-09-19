@@ -21,80 +21,80 @@ import com.alipay.sofa.registry.log.Logger;
 import com.alipay.sofa.registry.log.LoggerFactory;
 import com.alipay.sofa.registry.net.NetUtil;
 import com.alipay.sofa.registry.util.ParaCheckUtil;
-import java.io.InputStream;
-import java.util.*;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+
+import java.io.InputStream;
+import java.util.*;
 
 /**
  * @author yuzhi.lyz
  * @version v 0.1 2020-11-28 15:25 yuzhi.lyz Exp $
  */
 public final class ServerEnv {
-  private static final Logger LOGGER = LoggerFactory.getLogger(ServerEnv.class);
-
-  private ServerEnv() {}
-
-  public static final String GIT_PROPS_FILE = "sofaregistry.git.properties";
-  public static final String IP = NetUtil.getLocalAddress().getHostAddress();
-  public static final int PID = getPID();
-  public static final ProcessId PROCESS_ID = createProcessId();
-
-  private static ProcessId createProcessId() {
-    Random random = new Random();
-    return new ProcessId(IP, System.currentTimeMillis(), PID, random.nextInt(1024 * 8));
-  }
-
-  static int getPID() {
-    String processName = java.lang.management.ManagementFactory.getRuntimeMXBean().getName();
-    if (StringUtils.isBlank(processName)) {
-      throw new RuntimeException("failed to get processName");
+    public static final String GIT_PROPS_FILE = "sofaregistry.git.properties";
+    public static final String IP = NetUtil.getLocalAddress().getHostAddress();
+    public static final int PID = getPID();
+    public static final ProcessId PROCESS_ID = createProcessId();
+    private static final Logger LOGGER = LoggerFactory.getLogger(ServerEnv.class);
+    private ServerEnv() {
     }
 
-    String[] processSplitName = processName.split("@");
-    if (processSplitName.length == 0) {
-      throw new RuntimeException("failed to get processName");
+    private static ProcessId createProcessId() {
+        Random random = new Random();
+        return new ProcessId(IP, System.currentTimeMillis(), PID, random.nextInt(1024 * 8));
     }
-    String pid = processSplitName[0];
-    return Integer.parseInt(pid);
-  }
 
-  public static boolean isLocalServer(String ip) {
-    return IP.equals(ip);
-  }
+    static int getPID() {
+        String processName = java.lang.management.ManagementFactory.getRuntimeMXBean().getName();
+        if (StringUtils.isBlank(processName)) {
+            throw new RuntimeException("failed to get processName");
+        }
 
-  public static Collection<String> getMetaAddresses(
-      Map<String, Collection<String>> metaMap, String localDataCenter) {
-    ParaCheckUtil.checkNotNull(metaMap, "metaNodes");
-    ParaCheckUtil.checkNotNull(localDataCenter, "localDataCenter");
-
-    Collection<String> addresses = metaMap.get(localDataCenter);
-    if (addresses == null || addresses.isEmpty()) {
-      throw new RuntimeException(
-          String.format("LocalDataCenter(%s) is not in metaNode", localDataCenter));
+        String[] processSplitName = processName.split("@");
+        if (processSplitName.length == 0) {
+            throw new RuntimeException("failed to get processName");
+        }
+        String pid = processSplitName[0];
+        return Integer.parseInt(pid);
     }
-    return addresses;
-  }
 
-  public static Map<String, Object> getReleaseProps() {
-    return getReleaseProps(GIT_PROPS_FILE);
-  }
-
-  public static Map<String, Object> getReleaseProps(String resource) {
-    InputStream inputStream = ServerEnv.class.getClassLoader().getResourceAsStream(resource);
-    Properties properties = new Properties();
-    if (inputStream != null) {
-      try {
-        properties.load(inputStream);
-      } catch (Throwable e) {
-        LOGGER.warn("failed to start release props file {}", resource);
-      } finally {
-        IOUtils.closeQuietly(inputStream);
-      }
-    } else {
-      LOGGER.warn(
-          "release props file not found:{}", ServerEnv.class.getClassLoader().getResource("/"));
+    public static boolean isLocalServer(String ip) {
+        return IP.equals(ip);
     }
-    return new TreeMap<String, Object>((Map) properties);
-  }
+
+    public static Collection<String> getMetaAddresses(
+            Map<String, Collection<String>> metaMap, String localDataCenter) {
+        ParaCheckUtil.checkNotNull(metaMap, "metaNodes");
+        ParaCheckUtil.checkNotNull(localDataCenter, "localDataCenter");
+
+        Collection<String> addresses = metaMap.get(localDataCenter);
+        if (addresses == null || addresses.isEmpty()) {
+            throw new RuntimeException(
+                    String.format("LocalDataCenter(%s) is not in metaNode", localDataCenter));
+        }
+        return addresses;
+    }
+
+    public static Map<String, Object> getReleaseProps() {
+        return getReleaseProps(GIT_PROPS_FILE);
+    }
+
+    public static Map<String, Object> getReleaseProps(String resource) {
+        InputStream inputStream = ServerEnv.class.getClassLoader().getResourceAsStream(resource);
+        Properties properties = new Properties();
+        if (inputStream != null) {
+            try {
+                properties.load(inputStream);
+            } catch (Throwable e) {
+                LOGGER.warn("failed to start release props file {}", resource);
+            } finally {
+                IOUtils.closeQuietly(inputStream);
+            }
+        } else {
+            LOGGER.warn(
+                    "release props file not found:{}", ServerEnv.class.getClassLoader().getResource("/"));
+        }
+        return new TreeMap<String, Object>((Map) properties);
+    }
 }

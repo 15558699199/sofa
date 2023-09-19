@@ -36,25 +36,25 @@ public class SofaRegistryServer {
         /**
          * 运行时项目引入依赖
          <dependency>
-             <groupId>com.alipay.sofa</groupId>
-             <artifactId>registry-client-all</artifactId>
-             <version>5.2.0</version>
+         <groupId>com.alipay.sofa</groupId>
+         <artifactId>registry-client-all</artifactId>
+         <version>5.2.0</version>
          </dependency>
          */
         RegistryConfig registryConfig = new RegistryConfig()
-            .setProtocol(RpcConstants.REGISTRY_PROTOCOL_SOFA)
-            .setAddress("127.0.0.1:9603");
+                .setProtocol(RpcConstants.REGISTRY_PROTOCOL_SOFA)
+                .setAddress("127.0.0.1:9603");
 
         ServerConfig serverConfig = new ServerConfig()
-            .setProtocol("bolt")
-            .setPort(12200)
-            .setDaemon(false);
+                .setProtocol("bolt")
+                .setPort(12200)
+                .setDaemon(false);
 
         ProviderConfig<HelloService> providerConfig = new ProviderConfig<HelloService>()
-            .setRegistry(registryConfig)
-            .setInterfaceId(HelloService.class.getName())
-            .setRef(new HelloServiceImpl())
-            .setServer(serverConfig);
+                .setRegistry(registryConfig)
+                .setInterfaceId(HelloService.class.getName())
+                .setRef(new HelloServiceImpl())
+                .setServer(serverConfig);
 
         providerConfig.export();
         LOGGER.warn("started at pid {}", RpcRuntimeContext.PID);

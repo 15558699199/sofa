@@ -23,6 +23,7 @@ import com.codahale.metrics.Slf4jReporter;
 import io.prometheus.client.CollectorRegistry;
 import io.prometheus.client.dropwizard.DropwizardExports;
 import io.prometheus.client.hotspot.DefaultExports;
+
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -31,45 +32,45 @@ import java.util.concurrent.TimeUnit;
  */
 public class ReporterUtils {
 
-  private static final Logger METRIC_LOGGER = LoggerFactory.getLogger("REGISTRY-METRICS");
+    private static final Logger METRIC_LOGGER = LoggerFactory.getLogger("REGISTRY-METRICS");
 
-  /**
-   * start slf4j reporter
-   *
-   * @param period period
-   * @param registry registry
-   * @param loggerMetrics loggerMetrics
-   */
-  public static void startSlf4jReporter(
-      long period, MetricRegistry registry, Logger loggerMetrics) {
-    Slf4jReporter reporter =
-        Slf4jReporter.forRegistry(registry)
-            .outputTo((org.slf4j.Logger) loggerMetrics.getLogger())
-            .convertRatesTo(TimeUnit.SECONDS)
-            .convertDurationsTo(TimeUnit.MILLISECONDS)
-            .build();
-    if (period > 0) {
-      reporter.start(period, TimeUnit.SECONDS);
-    } else {
-      reporter.start(30, TimeUnit.SECONDS);
+    /**
+     * start slf4j reporter
+     *
+     * @param period        period
+     * @param registry      registry
+     * @param loggerMetrics loggerMetrics
+     */
+    public static void startSlf4jReporter(
+            long period, MetricRegistry registry, Logger loggerMetrics) {
+        Slf4jReporter reporter =
+                Slf4jReporter.forRegistry(registry)
+                        .outputTo((org.slf4j.Logger) loggerMetrics.getLogger())
+                        .convertRatesTo(TimeUnit.SECONDS)
+                        .convertDurationsTo(TimeUnit.MILLISECONDS)
+                        .build();
+        if (period > 0) {
+            reporter.start(period, TimeUnit.SECONDS);
+        } else {
+            reporter.start(30, TimeUnit.SECONDS);
+        }
     }
-  }
 
-  /**
-   * start slf4j reporter
-   *
-   * @param period period
-   * @param registry registry
-   */
-  public static void startSlf4jReporter(long period, MetricRegistry registry) {
-    startSlf4jReporter(period, registry, METRIC_LOGGER);
-  }
+    /**
+     * start slf4j reporter
+     *
+     * @param period   period
+     * @param registry registry
+     */
+    public static void startSlf4jReporter(long period, MetricRegistry registry) {
+        startSlf4jReporter(period, registry, METRIC_LOGGER);
+    }
 
-  public static void enablePrometheusDefaultExports() {
-    DefaultExports.initialize();
-  }
+    public static void enablePrometheusDefaultExports() {
+        DefaultExports.initialize();
+    }
 
-  public static void registerPrometheusMetrics(MetricRegistry metrics) {
-    CollectorRegistry.defaultRegistry.register(new DropwizardExports(metrics));
-  }
+    public static void registerPrometheusMetrics(MetricRegistry metrics) {
+        CollectorRegistry.defaultRegistry.register(new DropwizardExports(metrics));
+    }
 }

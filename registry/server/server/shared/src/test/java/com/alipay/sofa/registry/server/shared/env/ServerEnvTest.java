@@ -19,29 +19,30 @@ package com.alipay.sofa.registry.server.shared.env;
 import com.alipay.sofa.registry.server.shared.TestUtils;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import org.junit.Assert;
+import org.junit.Test;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
-import org.junit.Assert;
-import org.junit.Test;
 
 public class ServerEnvTest {
-  @Test
-  public void testMetas() {
-    Map<String, Collection<String>> m = Maps.newHashMap();
-    m.put("localDc", Collections.EMPTY_LIST);
-    TestUtils.assertRunException(
-        RuntimeException.class, () -> ServerEnv.getMetaAddresses(m, "localDc"));
-    Set<String> meta = Sets.newHashSet("test");
-    m.put("localDc", meta);
-    Collection<String> ret = ServerEnv.getMetaAddresses(m, "localDc");
-    Assert.assertEquals(ret, meta);
-  }
+    @Test
+    public void testMetas() {
+        Map<String, Collection<String>> m = Maps.newHashMap();
+        m.put("localDc", Collections.EMPTY_LIST);
+        TestUtils.assertRunException(
+                RuntimeException.class, () -> ServerEnv.getMetaAddresses(m, "localDc"));
+        Set<String> meta = Sets.newHashSet("test");
+        m.put("localDc", meta);
+        Collection<String> ret = ServerEnv.getMetaAddresses(m, "localDc");
+        Assert.assertEquals(ret, meta);
+    }
 
-  @Test
-  public void testRelease() {
-    Map<String, Object> m = ServerEnv.getReleaseProps();
-    System.out.println("release:" + m);
-  }
+    @Test
+    public void testRelease() {
+        Map<String, Object> m = ServerEnv.getReleaseProps();
+        System.out.println("release:" + m);
+    }
 }

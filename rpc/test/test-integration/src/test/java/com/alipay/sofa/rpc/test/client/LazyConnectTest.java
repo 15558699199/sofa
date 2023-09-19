@@ -33,8 +33,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- *
- *
  * @author <a href="mailto:zhanggeng.zg@antfin.com">GengZhang</a>
  */
 public class LazyConnectTest extends ActivelyDestroyTest {
@@ -47,17 +45,17 @@ public class LazyConnectTest extends ActivelyDestroyTest {
         RpcRunningState.setUnitTestMode(true);
         // 只有2个线程 执行
         serverConfig = new ServerConfig()
-            .setStopTimeout(0)
-            .setPort(22222)
-            .setProtocol(RpcConstants.PROTOCOL_TYPE_BOLT)
-            .setQueues(100).setCoreThreads(5).setMaxThreads(5);
+                .setStopTimeout(0)
+                .setPort(22222)
+                .setProtocol(RpcConstants.PROTOCOL_TYPE_BOLT)
+                .setQueues(100).setCoreThreads(5).setMaxThreads(5);
 
         // 发布一个服务，每个请求要执行1秒
         ProviderConfig<HelloService> providerConfig = new ProviderConfig<HelloService>()
-            .setInterfaceId(HelloService.class.getName())
-            .setRef(new HelloServiceImpl())
-            .setServer(serverConfig)
-            .setRegister(false);
+                .setInterfaceId(HelloService.class.getName())
+                .setRef(new HelloServiceImpl())
+                .setServer(serverConfig)
+                .setRegister(false);
         providerConfig.export();
     }
 
@@ -65,12 +63,12 @@ public class LazyConnectTest extends ActivelyDestroyTest {
     public void testLazyNone() {
 
         ConsumerConfig<HelloService> consumerConfig = new ConsumerConfig<HelloService>()
-            .setInterfaceId(HelloService.class.getName())
-            .setDirectUrl("")
-            .setTimeout(1000)
-            .setLazy(true)
-            .setRepeatedReferLimit(-1)
-            .setRegister(false);
+                .setInterfaceId(HelloService.class.getName())
+                .setDirectUrl("")
+                .setTimeout(1000)
+                .setLazy(true)
+                .setRepeatedReferLimit(-1)
+                .setRegister(false);
         final HelloService helloService = consumerConfig.refer();
 
         int count1 = 0;
@@ -88,12 +86,12 @@ public class LazyConnectTest extends ActivelyDestroyTest {
     public void testLazy() {
 
         ConsumerConfig<HelloService> consumerConfig = new ConsumerConfig<HelloService>()
-            .setInterfaceId(HelloService.class.getName())
-            .setDirectUrl("bolt://127.0.0.1:22222")
-            .setTimeout(1000)
-            .setLazy(true)
-            .setRepeatedReferLimit(-1)
-            .setRegister(false);
+                .setInterfaceId(HelloService.class.getName())
+                .setDirectUrl("bolt://127.0.0.1:22222")
+                .setTimeout(1000)
+                .setLazy(true)
+                .setRepeatedReferLimit(-1)
+                .setRegister(false);
         final HelloService helloService = consumerConfig.refer();
 
         int count1 = 0;
@@ -111,12 +109,12 @@ public class LazyConnectTest extends ActivelyDestroyTest {
     public void testLazyFail() {
 
         ConsumerConfig<HelloService> consumerConfig = new ConsumerConfig<HelloService>()
-            .setInterfaceId(HelloService.class.getName())
-            .setDirectUrl("bolt://127.0.0.1:22223")
-            .setTimeout(1000)
-            .setLazy(true)
-            .setRepeatedReferLimit(-1)
-            .setRegister(false);
+                .setInterfaceId(HelloService.class.getName())
+                .setDirectUrl("bolt://127.0.0.1:22223")
+                .setTimeout(1000)
+                .setLazy(true)
+                .setRepeatedReferLimit(-1)
+                .setRegister(false);
         final HelloService helloService = consumerConfig.refer();
 
         int count1 = 0;
@@ -134,12 +132,12 @@ public class LazyConnectTest extends ActivelyDestroyTest {
     public void testLazyWhenMultipleThreads() {
 
         ConsumerConfig<HelloService> consumerConfig = new ConsumerConfig<HelloService>()
-            .setInterfaceId(HelloService.class.getName())
-            .setDirectUrl("bolt://127.0.0.1:22222")
-            .setTimeout(1000)
-            .setLazy(true)
-            .setRepeatedReferLimit(-1)
-            .setRegister(false);
+                .setInterfaceId(HelloService.class.getName())
+                .setDirectUrl("bolt://127.0.0.1:22222")
+                .setTimeout(1000)
+                .setLazy(true)
+                .setRepeatedReferLimit(-1)
+                .setRegister(false);
         final HelloService helloService = consumerConfig.refer();
 
         int threads = 10;
@@ -177,12 +175,12 @@ public class LazyConnectTest extends ActivelyDestroyTest {
     public void testLazyFailWhenMultipleThreads() {
 
         ConsumerConfig<HelloService> consumerConfig = new ConsumerConfig<HelloService>()
-            .setInterfaceId(HelloService.class.getName())
-            .setDirectUrl("bolt://127.0.0.1:22223")
-            .setTimeout(1000)
-            .setLazy(true)
-            .setRepeatedReferLimit(-1)
-            .setRegister(false);
+                .setInterfaceId(HelloService.class.getName())
+                .setDirectUrl("bolt://127.0.0.1:22223")
+                .setTimeout(1000)
+                .setLazy(true)
+                .setRepeatedReferLimit(-1)
+                .setRegister(false);
         final HelloService helloService = consumerConfig.refer();
 
         int threads = 10;

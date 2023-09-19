@@ -19,28 +19,31 @@ package com.alipay.sofa.registry.util;
 import com.alipay.sofa.registry.TestUtils;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.common.collect.Maps;
-import java.util.HashMap;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.HashMap;
+
 public class JsonUtilsTest {
 
-  @Test
-  public void testIllegal() {
-    TestUtils.assertException(RuntimeException.class, () -> JsonUtils.read("", HashMap.class));
-    TestUtils.assertException(
-        RuntimeException.class, () -> JsonUtils.read("", new TypeReference<HashMap>() {}));
-  }
+    @Test
+    public void testIllegal() {
+        TestUtils.assertException(RuntimeException.class, () -> JsonUtils.read("", HashMap.class));
+        TestUtils.assertException(
+                RuntimeException.class, () -> JsonUtils.read("", new TypeReference<HashMap>() {
+                }));
+    }
 
-  @Test
-  public void test() {
-    HashMap<String, String> m = Maps.newHashMap();
-    m.put("x", "y");
-    String v = JsonUtils.writeValueAsString(m);
-    HashMap m1 = JsonUtils.read(v, HashMap.class);
-    HashMap m2 = JsonUtils.read(v, new TypeReference<HashMap>() {});
+    @Test
+    public void test() {
+        HashMap<String, String> m = Maps.newHashMap();
+        m.put("x", "y");
+        String v = JsonUtils.writeValueAsString(m);
+        HashMap m1 = JsonUtils.read(v, HashMap.class);
+        HashMap m2 = JsonUtils.read(v, new TypeReference<HashMap>() {
+        });
 
-    Assert.assertEquals(m, m1);
-    Assert.assertEquals(m, m2);
-  }
+        Assert.assertEquals(m, m1);
+        Assert.assertEquals(m, m2);
+    }
 }

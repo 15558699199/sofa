@@ -45,7 +45,7 @@ public class MeshRouter extends Router {
      *
      * @since 5.5.0
      */
-    public static final String  RPC_MESH_ROUTER = "MESH";
+    public static final String RPC_MESH_ROUTER = "MESH";
 
     /**
      * 服务消费者配置

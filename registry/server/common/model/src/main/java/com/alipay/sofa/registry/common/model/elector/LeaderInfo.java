@@ -25,49 +25,49 @@ import java.util.Objects;
  */
 public class LeaderInfo implements Serializable {
 
-  private static final long serialVersionUID = -1851792034078553148L;
-  private final long epoch;
+    private static final long serialVersionUID = -1851792034078553148L;
+    private final long epoch;
 
-  private final String leader;
+    private final String leader;
 
-  public LeaderInfo(long epoch, String leader) {
-    this.leader = leader;
-    this.epoch = epoch;
-  }
+    public LeaderInfo(long epoch, String leader) {
+        this.leader = leader;
+        this.epoch = epoch;
+    }
 
-  /**
-   * Getter method for property <tt>epoch</tt>.
-   *
-   * @return property value of epoch
-   */
-  public long getEpoch() {
-    return epoch;
-  }
+    /**
+     * Getter method for property <tt>epoch</tt>.
+     *
+     * @return property value of epoch
+     */
+    public long getEpoch() {
+        return epoch;
+    }
 
-  /**
-   * Getter method for property <tt>leader</tt>.
-   *
-   * @return property value of leader
-   */
-  public String getLeader() {
-    return leader;
-  }
+    /**
+     * Getter method for property <tt>leader</tt>.
+     *
+     * @return property value of leader
+     */
+    public String getLeader() {
+        return leader;
+    }
 
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    LeaderInfo that = (LeaderInfo) o;
-    return epoch == that.epoch && Objects.equals(leader, that.leader);
-  }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        LeaderInfo that = (LeaderInfo) o;
+        return epoch == that.epoch && Objects.equals(leader, that.leader);
+    }
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(epoch, leader);
-  }
+    @Override
+    public int hashCode() {
+        return Objects.hash(epoch, leader);
+    }
 
-  @Override
-  public String toString() {
-    return "LeaderInfo{" + "epoch=" + epoch + ", leader='" + leader + '\'' + '}';
-  }
+    @Override
+    public String toString() {
+        return "LeaderInfo{" + "epoch=" + epoch + ", leader='" + leader + '\'' + '}';
+    }
 }

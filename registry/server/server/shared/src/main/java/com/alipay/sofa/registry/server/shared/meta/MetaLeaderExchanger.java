@@ -26,43 +26,43 @@ import com.alipay.sofa.registry.remoting.exchange.message.Response;
  */
 public interface MetaLeaderExchanger {
 
-  /**
-   * send request to remote cluster meta leader
-   *
-   * @param dataCenter
-   * @param requestBody
-   * @return
-   * @throws RequestException
-   */
-  Response sendRequest(String dataCenter, Object requestBody) throws RequestException;
+    /**
+     * send request to remote cluster meta leader
+     *
+     * @param dataCenter
+     * @param requestBody
+     * @return
+     * @throws RequestException
+     */
+    Response sendRequest(String dataCenter, Object requestBody) throws RequestException;
 
-  /**
-   * learn leader from remote resp
-   *
-   * @param dataCenter
-   * @param leaderInfo
-   */
-  boolean learn(String dataCenter, LeaderInfo leaderInfo);
+    /**
+     * learn leader from remote resp
+     *
+     * @param dataCenter
+     * @param leaderInfo
+     */
+    boolean learn(String dataCenter, LeaderInfo leaderInfo);
 
-  /**
-   * reset leader from remoteMetaDomain
-   *
-   * @param dataCenter
-   */
-  LeaderInfo resetLeader(String dataCenter);
+    /**
+     * reset leader from remoteMetaDomain
+     *
+     * @param dataCenter
+     */
+    LeaderInfo resetLeader(String dataCenter);
 
-  /**
-   * get leader info
-   *
-   * @param dataCenter
-   * @return
-   */
-  LeaderInfo getLeader(String dataCenter);
+    /**
+     * get leader info
+     *
+     * @param dataCenter
+     * @return
+     */
+    LeaderInfo getLeader(String dataCenter);
 
-  /**
-   * remove leader
-   *
-   * @param dataCenter
-   */
-  void removeLeader(String dataCenter);
+    /**
+     * remove leader
+     *
+     * @param dataCenter
+     */
+    void removeLeader(String dataCenter);
 }

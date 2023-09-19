@@ -31,33 +31,33 @@ import org.apache.commons.lang.StringUtils;
  */
 public class MetadataRegisterPbHandler extends AbstractClientMetadataRequestHandler<MetaRegister> {
 
-  @Override
-  public Object doHandle(Channel channel, MetaRegister request) {
-    RegisterResponse registerResponse = new RegisterResponse();
-    AppRevision appRevision = AppRevisionConvertor.convert2Java(request);
-    appRevisionHandlerStrategy.handleAppRevisionRegister(
-        appRevision,
-        registerResponse,
-        channel != null ? channel.getRemoteAddress().toString() : StringUtils.EMPTY);
+    @Override
+    public Object doHandle(Channel channel, MetaRegister request) {
+        RegisterResponse registerResponse = new RegisterResponse();
+        AppRevision appRevision = AppRevisionConvertor.convert2Java(request);
+        appRevisionHandlerStrategy.handleAppRevisionRegister(
+                appRevision,
+                registerResponse,
+                channel != null ? channel.getRemoteAddress().toString() : StringUtils.EMPTY);
 
-    return RegisterResponseConvertor.convert2Pb(registerResponse);
-  }
-
-  @Override
-  public Class interest() {
-    return MetaRegister.class;
-  }
-
-  @Override
-  protected void logRequest(Channel channel, MetaRegister request) {
-    if (exchangeLog.isInfoEnabled()) {
-      StringBuilder sb = new StringBuilder(256);
-      sb.append("[").append(this.getClass().getSimpleName()).append("] ");
-      sb.append("Remote:")
-          .append(RemotingHelper.getChannelRemoteAddress(channel))
-          .append(" Revision: ")
-          .append(request.getRevision());
-      exchangeLog.info(sb.toString());
+        return RegisterResponseConvertor.convert2Pb(registerResponse);
     }
-  }
+
+    @Override
+    public Class interest() {
+        return MetaRegister.class;
+    }
+
+    @Override
+    protected void logRequest(Channel channel, MetaRegister request) {
+        if (exchangeLog.isInfoEnabled()) {
+            StringBuilder sb = new StringBuilder(256);
+            sb.append("[").append(this.getClass().getSimpleName()).append("] ");
+            sb.append("Remote:")
+                    .append(RemotingHelper.getChannelRemoteAddress(channel))
+                    .append(" Revision: ")
+                    .append(request.getRevision());
+            exchangeLog.info(sb.toString());
+        }
+    }
 }

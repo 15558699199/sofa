@@ -21,8 +21,8 @@ import com.alipay.sofa.registry.log.LoggerFactory;
 import org.apache.logging.log4j.core.async.Hack;
 
 public final class DataLog {
-  private DataLog() {}
-
-  static final Logger PUT_LOGGER = Hack.hackLoggerDisruptor(LoggerFactory.getLogger("PUT"));
-  static final Logger GET_LOGGER = Hack.hackLoggerDisruptor(LoggerFactory.getLogger("GET"));
+    static final Logger PUT_LOGGER = Hack.hackLoggerDisruptor(LoggerFactory.getLogger("PUT"));
+    static final Logger GET_LOGGER = Hack.hackLoggerDisruptor(LoggerFactory.getLogger("GET"));
+    private DataLog() {
+    }
 }

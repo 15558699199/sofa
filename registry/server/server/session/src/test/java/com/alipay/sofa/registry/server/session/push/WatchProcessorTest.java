@@ -16,9 +16,6 @@
  */
 package com.alipay.sofa.registry.server.session.push;
 
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.*;
-
 import com.alipay.remoting.rpc.exception.InvokeTimeoutException;
 import com.alipay.sofa.registry.common.model.metaserver.ProvideData;
 import com.alipay.sofa.registry.common.model.store.Watcher;
@@ -30,47 +27,50 @@ import com.alipay.sofa.registry.server.session.node.service.ClientNodeService;
 import org.junit.Assert;
 import org.junit.Test;
 
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.*;
+
 public class WatchProcessorTest {
-  @Test
-  public void test() {
-    WatchProcessor processor = new WatchProcessor();
-    SessionServerConfigBean sessionServerConfigBean = TestUtils.newSessionConfig("testDc");
-    processor.sessionServerConfig = sessionServerConfigBean;
-    processor.clientNodeService = mock(ClientNodeService.class);
-    processor.pushDataGenerator = new PushDataGenerator();
-    processor.pushDataGenerator.sessionServerConfig = sessionServerConfigBean;
-    processor.pushSwitchService = mock(PushSwitchService.class);
-    Watcher w = TestUtils.newWatcher("test-watch");
-    ReceivedConfigData data =
-        ReceivedDataConverter.createReceivedConfigData(
-            w, new ProvideData(null, w.getDataInfoId(), 100L));
+    @Test
+    public void test() {
+        WatchProcessor processor = new WatchProcessor();
+        SessionServerConfigBean sessionServerConfigBean = TestUtils.newSessionConfig("testDc");
+        processor.sessionServerConfig = sessionServerConfigBean;
+        processor.clientNodeService = mock(ClientNodeService.class);
+        processor.pushDataGenerator = new PushDataGenerator();
+        processor.pushDataGenerator.sessionServerConfig = sessionServerConfigBean;
+        processor.pushSwitchService = mock(PushSwitchService.class);
+        Watcher w = TestUtils.newWatcher("test-watch");
+        ReceivedConfigData data =
+                ReceivedDataConverter.createReceivedConfigData(
+                        w, new ProvideData(null, w.getDataInfoId(), 100L));
 
-    Assert.assertTrue(w.updatePushedVersion(100));
+        Assert.assertTrue(w.updatePushedVersion(100));
 
-    Assert.assertFalse(processor.doExecuteOnWatch(w, data, System.currentTimeMillis()));
+        Assert.assertFalse(processor.doExecuteOnWatch(w, data, System.currentTimeMillis()));
 
-    when(processor.pushSwitchService.canIpPushLocal(anyString())).thenReturn(true);
-    Assert.assertFalse(processor.doExecuteOnWatch(w, data, System.currentTimeMillis()));
+        when(processor.pushSwitchService.canIpPushLocal(anyString())).thenReturn(true);
+        Assert.assertFalse(processor.doExecuteOnWatch(w, data, System.currentTimeMillis()));
 
-    data =
-        ReceivedDataConverter.createReceivedConfigData(
-            w, new ProvideData(null, w.getDataInfoId(), 101L));
-    Assert.assertTrue(processor.doExecuteOnWatch(w, data, System.currentTimeMillis()));
-    verify(processor.clientNodeService, times(1)).pushWithCallback(anyObject(), any(), any());
+        data =
+                ReceivedDataConverter.createReceivedConfigData(
+                        w, new ProvideData(null, w.getDataInfoId(), 101L));
+        Assert.assertTrue(processor.doExecuteOnWatch(w, data, System.currentTimeMillis()));
+        verify(processor.clientNodeService, times(1)).pushWithCallback(anyObject(), any(), any());
 
-    // test callback
-    long now = System.currentTimeMillis();
-    WatchProcessor.WatchPushCallback callback = processor.new WatchPushCallback(now, w, 200);
-    Assert.assertNotNull(callback.getExecutor());
+        // test callback
+        long now = System.currentTimeMillis();
+        WatchProcessor.WatchPushCallback callback = processor.new WatchPushCallback(now, w, 200);
+        Assert.assertNotNull(callback.getExecutor());
 
-    callback.onCallback(null, null);
-    Assert.assertEquals(200, w.getPushedVersion());
+        callback.onCallback(null, null);
+        Assert.assertEquals(200, w.getPushedVersion());
 
-    callback.onException(null, new InvokeTimeoutException());
-    TestUtils.MockBlotChannel channel = TestUtils.newChannel(9999, "127.0.0.1", 8888);
-    callback.onException(channel, new RuntimeException());
+        callback.onException(null, new InvokeTimeoutException());
+        TestUtils.MockBlotChannel channel = TestUtils.newChannel(9999, "127.0.0.1", 8888);
+        callback.onException(channel, new RuntimeException());
 
-    channel.setActive(false);
-    callback.onException(channel, new RuntimeException());
-  }
+        channel.setActive(false);
+        callback.onException(channel, new RuntimeException());
+    }
 }

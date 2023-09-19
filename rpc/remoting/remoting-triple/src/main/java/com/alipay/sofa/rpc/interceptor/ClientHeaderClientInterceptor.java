@@ -22,15 +22,8 @@ import com.alipay.sofa.rpc.context.RpcRunningState;
 import com.alipay.sofa.rpc.core.request.SofaRequest;
 import com.alipay.sofa.rpc.server.triple.TripleContants;
 import com.alipay.sofa.rpc.tracer.sofatracer.TripleTracerAdapter;
-import io.grpc.CallOptions;
-import io.grpc.Channel;
-import io.grpc.ClientCall;
-import io.grpc.ClientInterceptor;
-import io.grpc.ForwardingClientCall;
+import io.grpc.*;
 import io.grpc.ForwardingClientCallListener.SimpleForwardingClientCallListener;
-import io.grpc.Metadata;
-import io.grpc.MethodDescriptor;
-import io.grpc.Status;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,7 +35,7 @@ import org.slf4j.LoggerFactory;
 public class ClientHeaderClientInterceptor implements ClientInterceptor {
 
     public static final Logger LOGGER = LoggerFactory
-                                          .getLogger(ClientHeaderClientInterceptor.class);
+            .getLogger(ClientHeaderClientInterceptor.class);
 
     public ClientHeaderClientInterceptor() {
     }
@@ -55,7 +48,7 @@ public class ClientHeaderClientInterceptor implements ClientInterceptor {
             LOGGER.info("[1]header send from client:");
         }
         return new ForwardingClientCall.SimpleForwardingClientCall<ReqT, RespT>(next.newCall(
-            method, callOptions)) {
+                method, callOptions)) {
 
             @Override
             public void start(Listener<RespT> responseListener, Metadata requestHeader) {

@@ -28,22 +28,22 @@ import org.slf4j.Logger;
  * @version $Id : ClientConnectionCloseEventProcessor.java, v 0.1 2018-02-26 20:28 zhuoyu.sjw Exp $$
  */
 public class ClientConnectionOpenEventProcessor implements ConnectionEventProcessor {
-  private static final Logger LOGGER =
-      LoggerFactory.getLogger(ClientConnectionOpenEventProcessor.class);
+    private static final Logger LOGGER =
+            LoggerFactory.getLogger(ClientConnectionOpenEventProcessor.class);
 
-  /**
-   * On event.
-   *
-   * @param remoteAddr the remote addr
-   * @param conn the conn
-   */
-  @Override
-  public void onEvent(String remoteAddr, Connection conn) {
-    if (null != conn) {
-      LOGGER.info(
-          "[connection] Client connected, remote address: {}, localAddress: {}",
-          remoteAddr,
-          conn.getLocalAddress());
+    /**
+     * On event.
+     *
+     * @param remoteAddr the remote addr
+     * @param conn       the conn
+     */
+    @Override
+    public void onEvent(String remoteAddr, Connection conn) {
+        if (null != conn) {
+            LOGGER.info(
+                    "[connection] Client connected, remote address: {}, localAddress: {}",
+                    remoteAddr,
+                    conn.getLocalAddress());
+        }
     }
-  }
 }

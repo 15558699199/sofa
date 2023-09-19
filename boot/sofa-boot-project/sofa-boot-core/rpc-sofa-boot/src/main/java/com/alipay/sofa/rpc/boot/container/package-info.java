@@ -16,6 +16,9 @@
  */
 /**
  * Created by liangen on 18/4/14.
+ *
+ * @author LiangEn
+ * @version $Id: PushChannelController.java,v 0.1 18/4/14 LiangEn Exp $
  */
 /**
  * @author LiangEn

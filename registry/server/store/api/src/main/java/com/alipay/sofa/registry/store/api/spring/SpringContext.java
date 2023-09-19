@@ -18,15 +18,15 @@ package com.alipay.sofa.registry.store.api.spring;
 
 /**
  * @author chen.zhu
- *     <p>Mar 15, 2021
+ * <p>Mar 15, 2021
  */
 public final class SpringContext {
 
-  public static final String PERSISTENCE_PROFILE_ACTIVE = "persistence.profile.active";
+    public static final String PERSISTENCE_PROFILE_ACTIVE = "persistence.profile.active";
 
-  public static final String META_STORE_API_JDBC = "jdbc";
+    public static final String META_STORE_API_JDBC = "jdbc";
 
-  public static final String META_STORE_API_RAFT = "raft";
+    public static final String META_STORE_API_RAFT = "raft";
 
-  public static final String META_SERVER_CLOUD_MODEL = "CLOUD";
+    public static final String META_SERVER_CLOUD_MODEL = "CLOUD";
 }

@@ -21,9 +21,10 @@ import com.alipay.sofa.registry.common.model.metaserver.ProvideDataChangeEvent;
 import com.alipay.sofa.registry.remoting.Channel;
 import com.alipay.sofa.registry.server.shared.providedata.SystemPropertyProcessorManager;
 import com.alipay.sofa.registry.server.shared.remoting.AbstractClientHandler;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.util.concurrent.Executor;
 import java.util.concurrent.ThreadPoolExecutor;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * @author shangyu.wh
@@ -31,31 +32,33 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class NotifyProvideDataChangeHandler extends AbstractClientHandler<ProvideDataChangeEvent> {
 
-  @Autowired ThreadPoolExecutor metaNodeExecutor;
+    @Autowired
+    ThreadPoolExecutor metaNodeExecutor;
 
-  @Autowired SystemPropertyProcessorManager systemPropertyProcessorManager;
+    @Autowired
+    SystemPropertyProcessorManager systemPropertyProcessorManager;
 
-  @Override
-  protected NodeType getConnectNodeType() {
-    return NodeType.META;
-  }
+    @Override
+    protected NodeType getConnectNodeType() {
+        return NodeType.META;
+    }
 
-  @Override
-  public Object doHandle(Channel channel, ProvideDataChangeEvent provideDataChangeEvent) {
-    final String notifyDataInfoId = provideDataChangeEvent.getDataInfoId();
+    @Override
+    public Object doHandle(Channel channel, ProvideDataChangeEvent provideDataChangeEvent) {
+        final String notifyDataInfoId = provideDataChangeEvent.getDataInfoId();
 
-    // system data do fetch
-    systemPropertyProcessorManager.doFetch(notifyDataInfoId);
-    return null;
-  }
+        // system data do fetch
+        systemPropertyProcessorManager.doFetch(notifyDataInfoId);
+        return null;
+    }
 
-  @Override
-  public Class interest() {
-    return ProvideDataChangeEvent.class;
-  }
+    @Override
+    public Class interest() {
+        return ProvideDataChangeEvent.class;
+    }
 
-  @Override
-  public Executor getExecutor() {
-    return metaNodeExecutor;
-  }
+    @Override
+    public Executor getExecutor() {
+        return metaNodeExecutor;
+    }
 }

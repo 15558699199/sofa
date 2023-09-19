@@ -44,11 +44,7 @@ import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -62,10 +58,10 @@ import static com.alipay.sofa.runtime.async.AsyncInitMethodManager.ASYNC_INIT_ME
  */
 @SingletonSofaPostProcessor
 public class AsyncInitBeanFactoryPostProcessor implements BeanFactoryPostProcessor,
-                                              EnvironmentAware {
+        EnvironmentAware {
 
-    private static final Logger              LOGGER = SofaBootLoggerFactory
-                                                        .getLogger(AsyncInitBeanFactoryPostProcessor.class);
+    private static final Logger LOGGER = SofaBootLoggerFactory
+            .getLogger(AsyncInitBeanFactoryPostProcessor.class);
 
     private AnnotationWrapper<SofaAsyncInit> annotationWrapper;
 
@@ -116,7 +112,7 @@ public class AsyncInitBeanFactoryPostProcessor implements BeanFactoryPostProcess
             for (Method m : declaringClass.getDeclaredMethods()) {
                 // check methodName and return type
                 if (!m.getName().equals(methodMetadata.getMethodName())
-                    || !m.getReturnType().getTypeName().equals(methodMetadata.getReturnTypeName())) {
+                        || !m.getReturnType().getTypeName().equals(methodMetadata.getReturnTypeName())) {
                     continue;
                 }
 
@@ -144,7 +140,7 @@ public class AsyncInitBeanFactoryPostProcessor implements BeanFactoryPostProcess
 
         if (candidateMethods.size() == 1) {
             SofaAsyncInit sofaAsyncInitAnnotation = candidateMethods.get(0).getAnnotation(
-                SofaAsyncInit.class);
+                    SofaAsyncInit.class);
             if (sofaAsyncInitAnnotation == null) {
                 sofaAsyncInitAnnotation = returnType.getAnnotation(SofaAsyncInit.class);
             }
@@ -152,9 +148,9 @@ public class AsyncInitBeanFactoryPostProcessor implements BeanFactoryPostProcess
         } else if (candidateMethods.size() > 1) {
             for (Method m : candidateMethods) {
                 if (AnnotatedElementUtils.hasAnnotation(m, SofaAsyncInit.class)
-                    || AnnotatedElementUtils.hasAnnotation(returnType, SofaAsyncInit.class)) {
+                        || AnnotatedElementUtils.hasAnnotation(returnType, SofaAsyncInit.class)) {
                     throw new FatalBeanException(ErrorCode.convert("01-02002",
-                        declaringClass.getCanonicalName()));
+                            declaringClass.getCanonicalName()));
                 }
             }
         }
@@ -164,7 +160,7 @@ public class AsyncInitBeanFactoryPostProcessor implements BeanFactoryPostProcess
                                                     BeanDefinition beanDefinition) {
         // See issue: https://github.com/sofastack/sofa-boot/issues/835
         SofaAsyncInit sofaAsyncInitAnnotation = AnnotationUtils.findAnnotation(beanClass,
-            SofaAsyncInit.class);
+                SofaAsyncInit.class);
         registerAsyncInitBean(sofaAsyncInitAnnotation, beanDefinition);
     }
 
@@ -186,6 +182,6 @@ public class AsyncInitBeanFactoryPostProcessor implements BeanFactoryPostProcess
     @Override
     public void setEnvironment(Environment environment) {
         this.annotationWrapper = AnnotationWrapper.create(SofaAsyncInit.class)
-            .withEnvironment(environment).withBinder(DefaultPlaceHolderBinder.INSTANCE);
+                .withEnvironment(environment).withBinder(DefaultPlaceHolderBinder.INSTANCE);
     }
 }

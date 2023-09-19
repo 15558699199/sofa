@@ -6,6 +6,6 @@ option go_package = "pb";
 import "DataBoxPb.proto";
 
 message DataBoxesPb {
-    repeated DataBoxPb data = 1;
+  repeated DataBoxPb data = 1;
 }
 

@@ -26,25 +26,20 @@ import org.apache.logging.log4j.core.async.Hack;
  */
 public class Loggers {
 
-  private Loggers() {}
+    public static final Logger SYNC_SRV_LOGGER = LoggerFactory.getLogger("SYNC-SRV");
+    public static final Logger MULTI_CLUSTER_SRV_LOGGER =
+            LoggerFactory.getLogger("MULTI-CLUSTER-SRV");
+    public static final Logger MULTI_CLUSTER_SYNC_DELTA_LOGGER =
+            LoggerFactory.getLogger("MULTI-CLUSTER-SYNC", "[SyncDelta]");
+    public static final Logger MULTI_CLUSTER_SYNC_ALL_LOGGER =
+            LoggerFactory.getLogger("MULTI-CLUSTER-SYNC", "[SyncAll]");
+    public static final Logger MULTI_CLUSTER_SYNC_DIGEST_LOGGER =
+            LoggerFactory.getLogger("MULTI-CLUSTER-SYNC-DIGEST");
+    public static final Logger MULTI_CLUSTER_SLOT_TABLE =
+            LoggerFactory.getLogger("MULTI-CLUSTER-SLOT-TABLE");
+    public static final Logger MULTI_PUT_LOGGER =
+            Hack.hackLoggerDisruptor(LoggerFactory.getLogger("MULTI-PUT"));
 
-  public static final Logger SYNC_SRV_LOGGER = LoggerFactory.getLogger("SYNC-SRV");
-
-  public static final Logger MULTI_CLUSTER_SRV_LOGGER =
-      LoggerFactory.getLogger("MULTI-CLUSTER-SRV");
-
-  public static final Logger MULTI_CLUSTER_SYNC_DELTA_LOGGER =
-      LoggerFactory.getLogger("MULTI-CLUSTER-SYNC", "[SyncDelta]");
-
-  public static final Logger MULTI_CLUSTER_SYNC_ALL_LOGGER =
-      LoggerFactory.getLogger("MULTI-CLUSTER-SYNC", "[SyncAll]");
-
-  public static final Logger MULTI_CLUSTER_SYNC_DIGEST_LOGGER =
-      LoggerFactory.getLogger("MULTI-CLUSTER-SYNC-DIGEST");
-
-  public static final Logger MULTI_CLUSTER_SLOT_TABLE =
-      LoggerFactory.getLogger("MULTI-CLUSTER-SLOT-TABLE");
-
-  public static final Logger MULTI_PUT_LOGGER =
-      Hack.hackLoggerDisruptor(LoggerFactory.getLogger("MULTI-PUT"));
+    private Loggers() {
+    }
 }

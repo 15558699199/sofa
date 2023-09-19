@@ -25,7 +25,7 @@ import org.springframework.util.Assert;
  */
 public class TestCompatibilityVerifier implements CompatibilityVerifier {
 
-    public static boolean     invoked = false;
+    public static boolean invoked = false;
 
     private final Environment environment;
 

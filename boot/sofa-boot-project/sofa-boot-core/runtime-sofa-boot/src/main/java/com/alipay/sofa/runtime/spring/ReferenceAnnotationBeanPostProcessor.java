@@ -54,18 +54,18 @@ import java.lang.reflect.Modifier;
  */
 @SingletonSofaPostProcessor
 public class ReferenceAnnotationBeanPostProcessor implements BeanPostProcessor,
-                                                 ApplicationContextAware, PriorityOrdered {
+        ApplicationContextAware, PriorityOrdered {
 
-    private static final Logger              LOGGER = SofaBootLoggerFactory
-                                                        .getLogger(ReferenceAnnotationBeanPostProcessor.class);
+    private static final Logger LOGGER = SofaBootLoggerFactory
+            .getLogger(ReferenceAnnotationBeanPostProcessor.class);
 
-    private final SofaRuntimeContext         sofaRuntimeContext;
+    private final SofaRuntimeContext sofaRuntimeContext;
 
-    private final BindingAdapterFactory      bindingAdapterFactory;
+    private final BindingAdapterFactory bindingAdapterFactory;
 
-    private final BindingConverterFactory    bindingConverterFactory;
+    private final BindingConverterFactory bindingConverterFactory;
 
-    private ApplicationContext               applicationContext;
+    private ApplicationContext applicationContext;
 
     private AnnotationWrapper<SofaReference> annotationWrapper;
 
@@ -83,7 +83,7 @@ public class ReferenceAnnotationBeanPostProcessor implements BeanPostProcessor,
 
     @Override
     public Object postProcessBeforeInitialization(Object bean, String beanName)
-                                                                               throws BeansException {
+            throws BeansException {
         processSofaReference(bean, beanName);
         return bean;
     }
@@ -114,7 +114,7 @@ public class ReferenceAnnotationBeanPostProcessor implements BeanPostProcessor,
             }
             if (Modifier.isStatic(field.getModifiers())) {
                 LOGGER.warn(
-                    "SofaReference annotation is not supported on static fields: {}", field);
+                        "SofaReference annotation is not supported on static fields: {}", field);
                 return false;
             }
             return true;
@@ -123,7 +123,7 @@ public class ReferenceAnnotationBeanPostProcessor implements BeanPostProcessor,
         ReflectionUtils.doWithMethods(beanClass, method -> {
             Class<?>[] parameterTypes = method.getParameterTypes();
             Assert.isTrue(parameterTypes.length == 1,
-                "method should have one and only one parameter.");
+                    "method should have one and only one parameter.");
 
             SofaReference sofaReferenceAnnotation = method.getAnnotation(SofaReference.class);
             if (sofaReferenceAnnotation == null) {
@@ -147,13 +147,13 @@ public class ReferenceAnnotationBeanPostProcessor implements BeanPostProcessor,
                                         Class<?> interfaceType, Class beanClass, String fieldName,
                                         String beanName) {
         Reference reference = new ReferenceImpl(sofaReferenceAnnotation.uniqueId(), interfaceType,
-            InterfaceMode.annotation, sofaReferenceAnnotation.jvmFirst());
+                InterfaceMode.annotation, sofaReferenceAnnotation.jvmFirst());
         reference.setRequired(sofaReferenceAnnotation.required());
         BindingConverter bindingConverter = bindingConverterFactory
-            .getBindingConverter(new BindingType(sofaReferenceAnnotation.binding().bindingType()));
+                .getBindingConverter(new BindingType(sofaReferenceAnnotation.binding().bindingType()));
         if (bindingConverter == null) {
             throw new ServiceRuntimeException(ErrorCode.convert("01-00200", sofaReferenceAnnotation
-                .binding().bindingType()));
+                    .binding().bindingType()));
         }
 
         BindingConverterContext bindingConverterContext = new BindingConverterContext();
@@ -162,16 +162,16 @@ public class ReferenceAnnotationBeanPostProcessor implements BeanPostProcessor,
         bindingConverterContext.setAppName(sofaRuntimeContext.getAppName());
         bindingConverterContext.setAppClassLoader(sofaRuntimeContext.getAppClassLoader());
         Binding binding = bindingConverter.convert(sofaReferenceAnnotation,
-            sofaReferenceAnnotation.binding(), bindingConverterContext);
+                sofaReferenceAnnotation.binding(), bindingConverterContext);
         reference.addBinding(binding);
         ComponentDefinitionInfo definitionInfo = new ComponentDefinitionInfo();
         definitionInfo.setInterfaceMode(InterfaceMode.annotation);
         definitionInfo.putInfo(ComponentDefinitionInfo.LOCATION, fieldName);
         definitionInfo.putInfo(ComponentDefinitionInfo.BEAN_ID, beanName);
         definitionInfo.putInfo(ComponentDefinitionInfo.BEAN_CLASS_NAME,
-            beanClass.getCanonicalName());
+                beanClass.getCanonicalName());
         return ReferenceRegisterHelper.registerReference(reference, bindingAdapterFactory,
-            sofaRuntimeContext, applicationContext, definitionInfo);
+                sofaRuntimeContext, applicationContext, definitionInfo);
     }
 
     @Override
@@ -183,7 +183,7 @@ public class ReferenceAnnotationBeanPostProcessor implements BeanPostProcessor,
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
         this.annotationWrapper = AnnotationWrapper.create(SofaReference.class)
-            .withEnvironment(applicationContext.getEnvironment())
-            .withBinder(DefaultPlaceHolderBinder.INSTANCE);
+                .withEnvironment(applicationContext.getEnvironment())
+                .withBinder(DefaultPlaceHolderBinder.INSTANCE);
     }
 }

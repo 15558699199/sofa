@@ -29,90 +29,92 @@ import com.alipay.sofa.registry.util.JsonUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Sets;
-import java.io.IOException;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.io.IOException;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Set;
+
 public class FetchGrayPushSwitchService
-    extends AbstractFetchSystemPropertyService<GrayPushSwitchStorage> {
-  private static final Logger LOGGER = LoggerFactory.getLogger(FetchGrayPushSwitchService.class);
+        extends AbstractFetchSystemPropertyService<GrayPushSwitchStorage> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(FetchGrayPushSwitchService.class);
 
-  @Autowired private SessionServerConfig sessionServerConfig;
+    @Autowired
+    private SessionServerConfig sessionServerConfig;
 
-  public FetchGrayPushSwitchService() {
-    super(
-        ValueConstants.PUSH_SWITCH_GRAY_OPEN_DATA_ID,
-        new GrayPushSwitchStorage(INIT_VERSION, Collections.emptySet()));
-  }
-
-  @Override
-  protected int getSystemPropertyIntervalMillis() {
-    return sessionServerConfig.getSystemPropertyIntervalMillis();
-  }
-
-  @Override
-  protected boolean doProcess(GrayPushSwitchStorage expect, ProvideData provideData) {
-    if (provideData == null) {
-      LOGGER.info("fetch session gray pushSwitch null");
-      return true;
-    }
-    final String data = ProvideData.toString(provideData);
-
-    GrayOpenPushSwitchRequest req = new GrayOpenPushSwitchRequest();
-    if (!StringUtils.isBlank(data)) {
-      ObjectMapper mapper = JsonUtils.getJacksonObjectMapper();
-      try {
-        req = mapper.readValue(data, GrayOpenPushSwitchRequest.class);
-      } catch (IOException e) {
-        throw new RuntimeException(String.format("parse gray open switch failed: %s", data), e);
-      }
-    }
-    GrayPushSwitchStorage update =
-        new GrayPushSwitchStorage(provideData.getVersion(), req.getIps());
-    if (!compareAndSet(expect, update)) {
-      return false;
+    public FetchGrayPushSwitchService() {
+        super(
+                ValueConstants.PUSH_SWITCH_GRAY_OPEN_DATA_ID,
+                new GrayPushSwitchStorage(INIT_VERSION, Collections.emptySet()));
     }
 
-    LOGGER.info("fetch session gray pushSwitch={}, prev={}", req, expect.openIps);
-    return true;
-  }
-
-  protected static class GrayPushSwitchStorage extends SystemDataStorage {
-    final Set<String> openIps;
-
-    public GrayPushSwitchStorage(long version, Collection<String> openIps) {
-      super(version);
-      this.openIps = openIps == null ? Collections.emptySet() : Sets.newHashSet(openIps);
+    @Override
+    protected int getSystemPropertyIntervalMillis() {
+        return sessionServerConfig.getSystemPropertyIntervalMillis();
     }
-  }
 
-  public Collection<String> getOpenIps() {
-    return storage.get().openIps;
-  }
+    @Override
+    protected boolean doProcess(GrayPushSwitchStorage expect, ProvideData provideData) {
+        if (provideData == null) {
+            LOGGER.info("fetch session gray pushSwitch null");
+            return true;
+        }
+        final String data = ProvideData.toString(provideData);
 
-  protected boolean canPush() {
-    return CollectionUtils.isNotEmpty(storage.get().openIps);
-  }
+        GrayOpenPushSwitchRequest req = new GrayOpenPushSwitchRequest();
+        if (!StringUtils.isBlank(data)) {
+            ObjectMapper mapper = JsonUtils.getJacksonObjectMapper();
+            try {
+                req = mapper.readValue(data, GrayOpenPushSwitchRequest.class);
+            } catch (IOException e) {
+                throw new RuntimeException(String.format("parse gray open switch failed: %s", data), e);
+            }
+        }
+        GrayPushSwitchStorage update =
+                new GrayPushSwitchStorage(provideData.getVersion(), req.getIps());
+        if (!compareAndSet(expect, update)) {
+            return false;
+        }
 
-  @VisibleForTesting
-  public void setOpenIps(long version, Collection<String> openIps) {
-    storage.set(new GrayPushSwitchStorage(version, openIps));
-  }
+        LOGGER.info("fetch session gray pushSwitch={}, prev={}", req, expect.openIps);
+        return true;
+    }
 
-  /**
-   * Setter method for property <tt>sessionServerConfig</tt>.
-   *
-   * @param sessionServerConfig value to be assigned to property sessionServerConfig
-   * @return FetchGrayPushSwitchService
-   */
-  @VisibleForTesting
-  protected FetchGrayPushSwitchService setSessionServerConfig(
-      SessionServerConfig sessionServerConfig) {
-    this.sessionServerConfig = sessionServerConfig;
-    return this;
-  }
+    public Collection<String> getOpenIps() {
+        return storage.get().openIps;
+    }
+
+    protected boolean canPush() {
+        return CollectionUtils.isNotEmpty(storage.get().openIps);
+    }
+
+    @VisibleForTesting
+    public void setOpenIps(long version, Collection<String> openIps) {
+        storage.set(new GrayPushSwitchStorage(version, openIps));
+    }
+
+    /**
+     * Setter method for property <tt>sessionServerConfig</tt>.
+     *
+     * @param sessionServerConfig value to be assigned to property sessionServerConfig
+     * @return FetchGrayPushSwitchService
+     */
+    @VisibleForTesting
+    protected FetchGrayPushSwitchService setSessionServerConfig(
+            SessionServerConfig sessionServerConfig) {
+        this.sessionServerConfig = sessionServerConfig;
+        return this;
+    }
+
+    protected static class GrayPushSwitchStorage extends SystemDataStorage {
+        final Set<String> openIps;
+
+        public GrayPushSwitchStorage(long version, Collection<String> openIps) {
+            super(version);
+            this.openIps = openIps == null ? Collections.emptySet() : Sets.newHashSet(openIps);
+        }
+    }
 }

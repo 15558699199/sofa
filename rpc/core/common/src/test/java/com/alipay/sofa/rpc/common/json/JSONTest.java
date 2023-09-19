@@ -23,8 +23,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- *
- *
  * @author <a href="mailto:zhanggeng.zg@antfin.com">GengZhang</a>
  */
 public class JSONTest {
@@ -58,7 +56,7 @@ public class JSONTest {
         bean.setName("xxxx");
         String jsonString = JSON.toJSONString(bean, true);
         Assert.assertEquals(JSON.parseObject(jsonString, TestJsonBean.class).getInnerBean().getClass(),
-            TestJsonBean.InnerBean.class);
+                TestJsonBean.InnerBean.class);
     }
 
 }

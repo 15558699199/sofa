@@ -23,8 +23,8 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @EnableConfigurationProperties
 public class StoreApiConfiguration {
-  @Bean
-  public DefaultCommonConfig defaultCommonConfig() {
-    return new DefaultCommonConfigBean();
-  }
+    @Bean
+    public DefaultCommonConfig defaultCommonConfig() {
+        return new DefaultCommonConfigBean();
+    }
 }

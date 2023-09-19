@@ -32,22 +32,22 @@ public class ScheduledServiceTest {
     @Test
     public void testAll() throws InterruptedException {
         ScheduledService scheduledService = new ScheduledService("ttt", 12345,
-            new Runnable() {
-                @Override
-                public void run() {
-                    count.incrementAndGet();
-                }
-            }, 0, 100, TimeUnit.MILLISECONDS);
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        count.incrementAndGet();
+                    }
+                }, 0, 100, TimeUnit.MILLISECONDS);
         scheduledService.start();
         Assert.assertFalse(scheduledService.isStarted());
 
         scheduledService = new ScheduledService("ttt", ScheduledService.MODE_FIXEDRATE,
-            new Runnable() {
-                @Override
-                public void run() {
-                    count.incrementAndGet();
-                }
-            }, 0, 100, TimeUnit.MILLISECONDS);
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        count.incrementAndGet();
+                    }
+                }, 0, 100, TimeUnit.MILLISECONDS);
         scheduledService.start();
         Assert.assertTrue(scheduledService.isStarted());
         scheduledService.start();

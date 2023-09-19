@@ -16,8 +16,6 @@
  */
 package com.alipay.sofa.registry.server.session.remoting.handler;
 
-import static org.mockito.Mockito.*;
-
 import com.alipay.sofa.registry.common.model.Node;
 import com.alipay.sofa.registry.common.model.client.pb.GetRevisionsRequest;
 import com.alipay.sofa.registry.remoting.ChannelHandler;
@@ -27,36 +25,38 @@ import com.alipay.sofa.registry.server.session.strategy.AppRevisionHandlerStrate
 import org.junit.Assert;
 import org.junit.Test;
 
+import static org.mockito.Mockito.*;
+
 public class GetRevisionPbHandlerTest {
-  @Test
-  public void testCheckParam() {
-    GetRevisionPbHandler handler = newHandler();
-    handler.checkParam(request());
-  }
+    private static GetRevisionsRequest request() {
+        GetRevisionsRequest.Builder builder = GetRevisionsRequest.newBuilder();
+        builder.addRevisions("testRevision");
+        return builder.build();
+    }
 
-  private GetRevisionPbHandler newHandler() {
-    GetRevisionPbHandler handler = new GetRevisionPbHandler();
-    handler.executorManager = new ExecutorManager(TestUtils.newSessionConfig("testDc"));
-    Assert.assertNotNull(handler.getExecutor());
-    Assert.assertEquals(handler.interest(), GetRevisionsRequest.class);
-    Assert.assertEquals(handler.getConnectNodeType(), Node.NodeType.CLIENT);
-    Assert.assertEquals(handler.getType(), ChannelHandler.HandlerType.PROCESSER);
-    Assert.assertEquals(handler.getInvokeType(), ChannelHandler.InvokeType.SYNC);
-    handler.appRevisionHandlerStrategy = mock(AppRevisionHandlerStrategy.class);
-    return handler;
-  }
+    @Test
+    public void testCheckParam() {
+        GetRevisionPbHandler handler = newHandler();
+        handler.checkParam(request());
+    }
 
-  @Test
-  public void testHandle() {
-    GetRevisionPbHandler handler = newHandler();
+    private GetRevisionPbHandler newHandler() {
+        GetRevisionPbHandler handler = new GetRevisionPbHandler();
+        handler.executorManager = new ExecutorManager(TestUtils.newSessionConfig("testDc"));
+        Assert.assertNotNull(handler.getExecutor());
+        Assert.assertEquals(handler.interest(), GetRevisionsRequest.class);
+        Assert.assertEquals(handler.getConnectNodeType(), Node.NodeType.CLIENT);
+        Assert.assertEquals(handler.getType(), ChannelHandler.HandlerType.PROCESSER);
+        Assert.assertEquals(handler.getInvokeType(), ChannelHandler.InvokeType.SYNC);
+        handler.appRevisionHandlerStrategy = mock(AppRevisionHandlerStrategy.class);
+        return handler;
+    }
 
-    handler.doHandle(null, request());
-    verify(handler.appRevisionHandlerStrategy, times(1)).queryRevision(anyList());
-  }
+    @Test
+    public void testHandle() {
+        GetRevisionPbHandler handler = newHandler();
 
-  private static GetRevisionsRequest request() {
-    GetRevisionsRequest.Builder builder = GetRevisionsRequest.newBuilder();
-    builder.addRevisions("testRevision");
-    return builder.build();
-  }
+        handler.doHandle(null, request());
+        verify(handler.appRevisionHandlerStrategy, times(1)).queryRevision(anyList());
+    }
 }

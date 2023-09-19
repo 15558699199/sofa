@@ -26,29 +26,29 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class SubscriberConverterTest {
-  @Test
-  public void testSubscriber() {
-    SubscriberRegister register = new SubscriberRegister();
-    TestUtils.setField(register);
-    register.setScope(ScopeEnum.dataCenter.name());
-    long now1 = System.currentTimeMillis();
-    register.setAcceptEncoding("zstd,gzip");
-    Subscriber subscriber = SubscriberConverter.convert(register);
-    long now2 = System.currentTimeMillis();
-    TestUtils.assertBetween(subscriber.getRegisterTimestamp(), now1, now2);
-    TestUtils.assertEquals(register, subscriber);
-    Assert.assertEquals(2, subscriber.getAcceptEncodes().length);
-    Assert.assertEquals(ScopeEnum.dataCenter, subscriber.getScope());
-  }
+    @Test
+    public void testSubscriber() {
+        SubscriberRegister register = new SubscriberRegister();
+        TestUtils.setField(register);
+        register.setScope(ScopeEnum.dataCenter.name());
+        long now1 = System.currentTimeMillis();
+        register.setAcceptEncoding("zstd,gzip");
+        Subscriber subscriber = SubscriberConverter.convert(register);
+        long now2 = System.currentTimeMillis();
+        TestUtils.assertBetween(subscriber.getRegisterTimestamp(), now1, now2);
+        TestUtils.assertEquals(register, subscriber);
+        Assert.assertEquals(2, subscriber.getAcceptEncodes().length);
+        Assert.assertEquals(ScopeEnum.dataCenter, subscriber.getScope());
+    }
 
-  @Test
-  public void testWatcher() {
-    ConfiguratorRegister register = new ConfiguratorRegister();
-    TestUtils.setField(register);
-    long now1 = System.currentTimeMillis();
-    Watcher watcher = SubscriberConverter.convert(register);
-    long now2 = System.currentTimeMillis();
-    TestUtils.assertBetween(watcher.getRegisterTimestamp(), now1, now2);
-    TestUtils.assertEquals(register, watcher);
-  }
+    @Test
+    public void testWatcher() {
+        ConfiguratorRegister register = new ConfiguratorRegister();
+        TestUtils.setField(register);
+        long now1 = System.currentTimeMillis();
+        Watcher watcher = SubscriberConverter.convert(register);
+        long now2 = System.currentTimeMillis();
+        TestUtils.assertBetween(watcher.getRegisterTimestamp(), now1, now2);
+        TestUtils.assertEquals(register, watcher);
+    }
 }

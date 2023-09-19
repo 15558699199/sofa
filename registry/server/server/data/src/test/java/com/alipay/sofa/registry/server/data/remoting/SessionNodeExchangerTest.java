@@ -22,15 +22,15 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class SessionNodeExchangerTest {
-  @Test
-  public void test() {
-    SessionNodeExchanger sessionNodeExchanger = new SessionNodeExchanger();
-    DataServerConfig cfg = TestBaseUtils.newDataConfig("testDc");
-    sessionNodeExchanger.setDataServerConfig(cfg);
+    @Test
+    public void test() {
+        SessionNodeExchanger sessionNodeExchanger = new SessionNodeExchanger();
+        DataServerConfig cfg = TestBaseUtils.newDataConfig("testDc");
+        sessionNodeExchanger.setDataServerConfig(cfg);
 
-    Assert.assertEquals(cfg.getSyncSessionConnNum(), sessionNodeExchanger.getConnNum());
-    Assert.assertEquals(cfg.getSyncSessionPort(), sessionNodeExchanger.getServerPort());
-    Assert.assertEquals(cfg.getRpcTimeoutMillis(), sessionNodeExchanger.getRpcTimeoutMillis());
-    Assert.assertEquals(0, sessionNodeExchanger.getClientHandlers().size());
-  }
+        Assert.assertEquals(cfg.getSyncSessionConnNum(), sessionNodeExchanger.getConnNum());
+        Assert.assertEquals(cfg.getSyncSessionPort(), sessionNodeExchanger.getServerPort());
+        Assert.assertEquals(cfg.getRpcTimeoutMillis(), sessionNodeExchanger.getRpcTimeoutMillis());
+        Assert.assertEquals(0, sessionNodeExchanger.getClientHandlers().size());
+    }
 }

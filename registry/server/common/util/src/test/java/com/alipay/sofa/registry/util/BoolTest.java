@@ -20,17 +20,17 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class BoolTest {
-  @Test
-  public void test() {
-    Bool b = Bool.newFalse();
-    Assert.assertFalse(b.isTrue());
+    @Test
+    public void test() {
+        Bool b = Bool.newFalse();
+        Assert.assertFalse(b.isTrue());
 
-    b = Bool.newTrue();
-    Assert.assertTrue(b.isTrue());
+        b = Bool.newTrue();
+        Assert.assertTrue(b.isTrue());
 
-    b.setBool(false);
-    Assert.assertFalse(b.isTrue());
-    b.setBool(true);
-    Assert.assertTrue(b.isTrue());
-  }
+        b.setBool(false);
+        Assert.assertFalse(b.isTrue());
+        b.setBool(true);
+        Assert.assertTrue(b.isTrue());
+    }
 }

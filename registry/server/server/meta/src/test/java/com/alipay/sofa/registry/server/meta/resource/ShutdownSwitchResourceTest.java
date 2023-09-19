@@ -16,10 +16,6 @@
  */
 package com.alipay.sofa.registry.server.meta.resource;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.when;
-
 import com.alipay.sofa.registry.common.model.console.PersistenceData;
 import com.alipay.sofa.registry.common.model.constants.ValueConstants;
 import com.alipay.sofa.registry.common.model.metaserver.ShutdownSwitch;
@@ -32,10 +28,13 @@ import com.alipay.sofa.registry.server.meta.provide.data.FetchStopPushService;
 import com.alipay.sofa.registry.server.meta.provide.data.ProvideDataService;
 import com.alipay.sofa.registry.store.api.DBResponse;
 import com.alipay.sofa.registry.util.JsonUtils;
-import java.util.Map;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.Map;
+
+import static org.mockito.Mockito.*;
 
 /**
  * @author xiaojian.xj
@@ -43,54 +42,54 @@ import org.junit.Test;
  */
 public class ShutdownSwitchResourceTest {
 
-  private ShutdownSwitchResource shutdownSwitchResource;
+    private ShutdownSwitchResource shutdownSwitchResource;
 
-  private DefaultProvideDataNotifier dataNotifier;
+    private DefaultProvideDataNotifier dataNotifier;
 
-  private ProvideDataService provideDataService =
-      spy(new AbstractMetaServerTestBase.InMemoryProvideDataRepo());
+    private ProvideDataService provideDataService =
+            spy(new AbstractMetaServerTestBase.InMemoryProvideDataRepo());
 
-  private FetchStopPushService fetchStopPushService = new FetchStopPushService();
+    private FetchStopPushService fetchStopPushService = new FetchStopPushService();
 
-  @Before
-  public void beforeStopPushDataResourceTest() {
-    dataNotifier = mock(DefaultProvideDataNotifier.class);
-    fetchStopPushService.setProvideDataService(provideDataService);
-    shutdownSwitchResource =
-        new ShutdownSwitchResource()
-            .setProvideDataNotifier(dataNotifier)
-            .setProvideDataService(provideDataService)
-            .setFetchStopPushService(fetchStopPushService);
-  }
+    @Before
+    public void beforeStopPushDataResourceTest() {
+        dataNotifier = mock(DefaultProvideDataNotifier.class);
+        fetchStopPushService.setProvideDataService(provideDataService);
+        shutdownSwitchResource =
+                new ShutdownSwitchResource()
+                        .setProvideDataNotifier(dataNotifier)
+                        .setProvideDataService(provideDataService)
+                        .setFetchStopPushService(fetchStopPushService);
+    }
 
-  @Test
-  public void testShutdown() {
+    @Test
+    public void testShutdown() {
 
-    String token = "6c62lk8dmQoE5B8X";
-    ShutdownSwitch shutdownSwitch = new ShutdownSwitch(true, CauseEnum.FORCE.getCause());
+        String token = "6c62lk8dmQoE5B8X";
+        ShutdownSwitch shutdownSwitch = new ShutdownSwitch(true, CauseEnum.FORCE.getCause());
 
-    DataInfo dataInfo = DataInfo.valueOf(ValueConstants.STOP_PUSH_DATA_SWITCH_DATA_ID);
-    PersistenceData persistenceData = new PersistenceData();
-    persistenceData.setDataId(dataInfo.getDataId());
-    persistenceData.setGroup(dataInfo.getGroup());
-    persistenceData.setInstanceId(dataInfo.getInstanceId());
-    persistenceData.setData("true");
-    persistenceData.setVersion(1);
-    when(provideDataService.queryProvideData(ValueConstants.STOP_PUSH_DATA_SWITCH_DATA_ID))
-        .thenReturn(DBResponse.ok(persistenceData).build());
-    Result ret = shutdownSwitchResource.shutdown("true", token);
-    Assert.assertTrue(ret.isSuccess());
+        DataInfo dataInfo = DataInfo.valueOf(ValueConstants.STOP_PUSH_DATA_SWITCH_DATA_ID);
+        PersistenceData persistenceData = new PersistenceData();
+        persistenceData.setDataId(dataInfo.getDataId());
+        persistenceData.setGroup(dataInfo.getGroup());
+        persistenceData.setInstanceId(dataInfo.getInstanceId());
+        persistenceData.setData("true");
+        persistenceData.setVersion(1);
+        when(provideDataService.queryProvideData(ValueConstants.STOP_PUSH_DATA_SWITCH_DATA_ID))
+                .thenReturn(DBResponse.ok(persistenceData).build());
+        Result ret = shutdownSwitchResource.shutdown("true", token);
+        Assert.assertTrue(ret.isSuccess());
 
-    Map<String, String> query = shutdownSwitchResource.query();
+        Map<String, String> query = shutdownSwitchResource.query();
 
-    Assert.assertEquals(query.get("switch"), JsonUtils.writeValueAsString(shutdownSwitch));
+        Assert.assertEquals(query.get("switch"), JsonUtils.writeValueAsString(shutdownSwitch));
 
-    ret = shutdownSwitchResource.shutdown("false", token);
-    Assert.assertTrue(ret.isSuccess());
+        ret = shutdownSwitchResource.shutdown("false", token);
+        Assert.assertTrue(ret.isSuccess());
 
-    shutdownSwitch = new ShutdownSwitch(false);
-    query = shutdownSwitchResource.query();
+        shutdownSwitch = new ShutdownSwitch(false);
+        query = shutdownSwitchResource.query();
 
-    Assert.assertEquals(query.get("switch"), JsonUtils.writeValueAsString(shutdownSwitch));
-  }
+        Assert.assertEquals(query.get("switch"), JsonUtils.writeValueAsString(shutdownSwitch));
+    }
 }

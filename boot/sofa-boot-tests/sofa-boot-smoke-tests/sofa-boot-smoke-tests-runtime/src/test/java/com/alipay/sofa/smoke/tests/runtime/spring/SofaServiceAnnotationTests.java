@@ -46,7 +46,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @SpringBootTest(classes = RuntimeSofaBootApplication.class)
 @Import(SofaServiceAnnotationTests.ServiceBeanAnnotationConfiguration.class)
-@TestPropertySource(properties = { "methodUniqueId=a", "bindingType=jvm" })
+@TestPropertySource(properties = {"methodUniqueId=a", "bindingType=jvm"})
 public class SofaServiceAnnotationTests {
 
     @Autowired
@@ -58,12 +58,12 @@ public class SofaServiceAnnotationTests {
     @Test
     public void checkFactoryBean() {
         String beanName = SofaBeanNameGenerator.generateSofaServiceBeanName(SampleService.class,
-            "a", "methodSampleService");
+                "a", "methodSampleService");
         assertThat(applicationContext.containsBean(beanName)).isTrue();
         assertThat(applicationContext.getBean(beanName)).isInstanceOf(ServiceImpl.class);
 
         beanName = SofaBeanNameGenerator.generateSofaServiceBeanName(SampleService.class, null,
-            "classSampleService");
+                "classSampleService");
         assertThat(applicationContext.containsBean(beanName)).isTrue();
         assertThat(applicationContext.getBean(beanName)).isInstanceOf(ServiceImpl.class);
     }
@@ -71,14 +71,14 @@ public class SofaServiceAnnotationTests {
     @Test
     public void checkServiceComponent() {
         ComponentName componentName = ComponentNameFactory.createComponentName(
-            ServiceComponent.SERVICE_COMPONENT_TYPE, SampleService.class, "a");
+                ServiceComponent.SERVICE_COMPONENT_TYPE, SampleService.class, "a");
         assertThat(sofaRuntimeManager.getComponentManager().getComponentInfo(componentName))
-            .isNotNull();
+                .isNotNull();
 
         componentName = ComponentNameFactory.createComponentName(
-            ServiceComponent.SERVICE_COMPONENT_TYPE, SampleService.class, null);
+                ServiceComponent.SERVICE_COMPONENT_TYPE, SampleService.class, null);
         assertThat(sofaRuntimeManager.getComponentManager().getComponentInfo(componentName))
-            .isNotNull();
+                .isNotNull();
     }
 
     @Configuration

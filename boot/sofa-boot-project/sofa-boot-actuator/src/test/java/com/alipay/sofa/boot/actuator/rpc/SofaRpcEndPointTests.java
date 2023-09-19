@@ -46,27 +46,27 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class SofaRpcEndPointTests {
 
-    private final SampleServiceImpl target          = new SampleServiceImpl();
+    private final SampleServiceImpl target = new SampleServiceImpl();
 
-    private final SofaRpcEndpoint   sofaRpcEndPoint = new SofaRpcEndpoint();
-
-    @Mock
-    private ProviderBootstrap       providerBootstrap;
+    private final SofaRpcEndpoint sofaRpcEndPoint = new SofaRpcEndpoint();
 
     @Mock
-    private ProviderConfig          providerConfig;
+    private ProviderBootstrap providerBootstrap;
 
     @Mock
-    private ConsumerBootstrap       consumerBootstrap;
+    private ProviderConfig providerConfig;
 
     @Mock
-    private ConsumerConfig          consumerConfig;
+    private ConsumerBootstrap consumerBootstrap;
 
     @Mock
-    private ServerConfig            serverConfig;
+    private ConsumerConfig consumerConfig;
 
     @Mock
-    private RegistryConfig          registryConfig;
+    private ServerConfig serverConfig;
+
+    @Mock
+    private RegistryConfig registryConfig;
 
     @AfterEach
     public void clear() {
@@ -92,7 +92,7 @@ public class SofaRpcEndPointTests {
 
         SofaRpcEndpoint.RpcServicesDescriptor rpcServicesDescriptor = sofaRpcEndPoint.rpcServices();
         List<SofaRpcEndpoint.ProviderDescriptor> providerDescriptors = rpcServicesDescriptor
-            .getProvider();
+                .getProvider();
         assertThat(providerDescriptors.size()).isEqualTo(1);
         SofaRpcEndpoint.ProviderDescriptor descriptor = providerDescriptors.get(0);
 
@@ -125,7 +125,7 @@ public class SofaRpcEndPointTests {
 
         SofaRpcEndpoint.RpcServicesDescriptor rpcServicesDescriptor = sofaRpcEndPoint.rpcServices();
         List<SofaRpcEndpoint.ConsumerDescriptor> consumerDescriptors = rpcServicesDescriptor
-            .getConsumer();
+                .getConsumer();
         assertThat(consumerDescriptors.size()).isEqualTo(1);
         SofaRpcEndpoint.ConsumerDescriptor descriptor = consumerDescriptors.get(0);
 
@@ -152,7 +152,7 @@ public class SofaRpcEndPointTests {
 
         SofaRpcEndpoint.RpcServicesDescriptor rpcServicesDescriptor = sofaRpcEndPoint.rpcServices();
         List<SofaRpcEndpoint.RegistryDescriptor> registryDescriptors = rpcServicesDescriptor
-            .getRegistry();
+                .getRegistry();
         assertThat(registryDescriptors.size()).isEqualTo(1);
         SofaRpcEndpoint.RegistryDescriptor descriptor = registryDescriptors.get(0);
 

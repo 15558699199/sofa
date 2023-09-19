@@ -16,18 +16,17 @@
  */
 package com.alipay.sofa.rpc.bootstrap.bolt;
 
-import static org.junit.Assert.assertEquals;
-import org.junit.Test;
 import com.alipay.sofa.rpc.bootstrap.Bootstraps;
 import com.alipay.sofa.rpc.bootstrap.ConsumerBootstrap;
 import com.alipay.sofa.rpc.common.RemotingConstants;
 import com.alipay.sofa.rpc.common.RpcConstants;
 import com.alipay.sofa.rpc.config.ConsumerConfig;
 import com.alipay.sofa.rpc.core.exception.SofaRpcRuntimeException;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 /**
- *
- *
  * @author <a href="mailto:njucoder@gmail.com">Min Li</a>
  */
 public class BoltClientProxyInvokerTest {

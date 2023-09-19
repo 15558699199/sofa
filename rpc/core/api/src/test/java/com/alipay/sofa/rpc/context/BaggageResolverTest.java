@@ -36,10 +36,10 @@ import static org.junit.Assert.assertNotNull;
  */
 public class BaggageResolverTest {
 
-    public static final String KEY   = "key";
+    public static final String KEY = "key";
     public static final String VALUE = "value";
-    private static boolean     oldEnableBaggage;
-    private static Field       enableBaggageField;
+    private static boolean oldEnableBaggage;
+    private static Field enableBaggageField;
 
     static {
         try {
@@ -105,7 +105,7 @@ public class BaggageResolverTest {
         context.putResponseBaggage(KEY, VALUE);
         BaggageResolver.carryWithResponse(context, sofaResponse);
         String baggage = (String) sofaResponse.getResponseProp(RemotingConstants.RPC_RESPONSE_BAGGAGE
-            + "." + KEY);
+                + "." + KEY);
         assertNotNull(baggage);
         assertEquals(VALUE, baggage);
     }
@@ -122,7 +122,7 @@ public class BaggageResolverTest {
         assertEquals(null, RpcInvokeContext.getContext().getAllResponseBaggage().get("key2"));
         assertEquals(1, RpcInvokeContext.getContext().getAllResponseBaggage().size());
         assertEquals(SafeConcurrentHashMap.class, RpcInvokeContext.getContext()
-            .getAllResponseBaggage().getClass());
+                .getAllResponseBaggage().getClass());
     }
 
 }

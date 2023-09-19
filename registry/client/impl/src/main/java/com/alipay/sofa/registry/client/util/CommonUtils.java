@@ -26,13 +26,13 @@ import java.util.Collection;
  */
 public class CommonUtils {
 
-  /**
-   * Is not empty boolean.
-   *
-   * @param collection the collection
-   * @return the boolean
-   */
-  public static boolean isNotEmpty(Collection collection) {
-    return collection != null && !collection.isEmpty();
-  }
+    /**
+     * Is not empty boolean.
+     *
+     * @param collection the collection
+     * @return the boolean
+     */
+    public static boolean isNotEmpty(Collection collection) {
+        return collection != null && !collection.isEmpty();
+    }
 }

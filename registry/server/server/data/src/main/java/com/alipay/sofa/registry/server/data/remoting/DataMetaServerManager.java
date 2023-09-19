@@ -24,58 +24,60 @@ import com.alipay.sofa.registry.server.data.bootstrap.DataServerConfig;
 import com.alipay.sofa.registry.server.shared.constant.MetaLeaderLearnModeEnum;
 import com.alipay.sofa.registry.server.shared.meta.AbstractMetaLeaderExchanger;
 import com.google.common.annotations.VisibleForTesting;
-import java.util.Collection;
-import javax.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.annotation.Resource;
+import java.util.Collection;
 
 /**
  * @author chen.zhu
- *     <p>Mar 15, 2021
+ * <p>Mar 15, 2021
  */
 public class DataMetaServerManager extends AbstractMetaLeaderExchanger {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(AbstractMetaLeaderExchanger.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractMetaLeaderExchanger.class);
 
-  @Autowired private DataServerConfig dataServerConfig;
+    @Autowired
+    private DataServerConfig dataServerConfig;
 
-  @Resource(name = "metaClientHandlers")
-  private Collection<ChannelHandler> metaClientHandlers;
+    @Resource(name = "metaClientHandlers")
+    private Collection<ChannelHandler> metaClientHandlers;
 
-  public DataMetaServerManager() {
-    super(Exchange.META_SERVER_TYPE, LOGGER);
-  }
-
-  @Override
-  protected MetaLeaderLearnModeEnum getMode() {
-    if (defaultCommonConfig.isJdbc()) {
-      return MetaLeaderLearnModeEnum.JDBC;
-    } else {
-      return MetaLeaderLearnModeEnum.LOADBALANCER;
+    public DataMetaServerManager() {
+        super(Exchange.META_SERVER_TYPE, LOGGER);
     }
-  }
 
-  @Override
-  protected Collection<String> getMetaServerDomains(String dataCenter) {
-    return dataServerConfig.getMetaServerAddresses();
-  }
+    @Override
+    protected MetaLeaderLearnModeEnum getMode() {
+        if (defaultCommonConfig.isJdbc()) {
+            return MetaLeaderLearnModeEnum.JDBC;
+        } else {
+            return MetaLeaderLearnModeEnum.LOADBALANCER;
+        }
+    }
 
-  @Override
-  public int getRpcTimeoutMillis() {
-    return dataServerConfig.getRpcTimeoutMillis();
-  }
+    @Override
+    protected Collection<String> getMetaServerDomains(String dataCenter) {
+        return dataServerConfig.getMetaServerAddresses();
+    }
 
-  @Override
-  public int getServerPort() {
-    return dataServerConfig.getMetaServerPort();
-  }
+    @Override
+    public int getRpcTimeoutMillis() {
+        return dataServerConfig.getRpcTimeoutMillis();
+    }
 
-  @Override
-  protected Collection<ChannelHandler> getClientHandlers() {
-    return metaClientHandlers;
-  }
+    @Override
+    public int getServerPort() {
+        return dataServerConfig.getMetaServerPort();
+    }
 
-  @VisibleForTesting
-  void setDataServerConfig(DataServerConfig dataServerConfig) {
-    this.dataServerConfig = dataServerConfig;
-  }
+    @Override
+    protected Collection<ChannelHandler> getClientHandlers() {
+        return metaClientHandlers;
+    }
+
+    @VisibleForTesting
+    void setDataServerConfig(DataServerConfig dataServerConfig) {
+        this.dataServerConfig = dataServerConfig;
+    }
 }

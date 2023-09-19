@@ -34,33 +34,33 @@ import org.springframework.test.context.junit4.SpringRunner;
  */
 @RunWith(SpringRunner.class)
 public class ClientManagerCheckVersionTest extends BaseIntegrationTest {
-  private final String localAddress = sessionChannel.getLocalAddress().getHostString();
-  private final String CLIENT_OFF_STR = "41.1.1.1;42.2.2.2";
+    private final String localAddress = sessionChannel.getLocalAddress().getHostString();
+    private final String CLIENT_OFF_STR = "41.1.1.1;42.2.2.2";
 
-  @Test
-  public void testQueryClientOff() {
-    /** client off */
-    GenericResponse<Long> response = persistenceClientManagerResource.clientOff(CLIENT_OFF_STR);
-    Assert.assertTrue(response.isSuccess());
-    Assert.assertTrue(response.getData() > 0);
+    @Test
+    public void testQueryClientOff() {
+        /** client off */
+        GenericResponse<Long> response = persistenceClientManagerResource.clientOff(CLIENT_OFF_STR);
+        Assert.assertTrue(response.isSuccess());
+        Assert.assertTrue(response.getData() > 0);
 
-    String expectedVersion = String.valueOf(response.getData().longValue());
-    CommonResponse commonResponse = persistenceClientManagerResource.checkVersion(expectedVersion);
-    Assert.assertTrue(commonResponse.isSuccess());
+        String expectedVersion = String.valueOf(response.getData().longValue());
+        CommonResponse commonResponse = persistenceClientManagerResource.checkVersion(expectedVersion);
+        Assert.assertTrue(commonResponse.isSuccess());
 
-    /** check */
-    GenericResponse result =
-        (GenericResponse)
-            sessionConsoleExchanger
-                .request(
-                    new SimpleRequest(
-                        new CheckClientManagerRequest(response.getData().longValue()),
-                        new URL(localAddress, sessionServerConfig.getConsolePort())))
-                .getResult();
+        /** check */
+        GenericResponse result =
+                (GenericResponse)
+                        sessionConsoleExchanger
+                                .request(
+                                        new SimpleRequest(
+                                                new CheckClientManagerRequest(response.getData().longValue()),
+                                                new URL(localAddress, sessionServerConfig.getConsolePort())))
+                                .getResult();
 
-    Assert.assertTrue(result.isSuccess());
-    CheckClientManagerResponse data = (CheckClientManagerResponse) result.getData();
-    Assert.assertTrue(data.isPaasCheck());
-    Assert.assertEquals(data.getActualVersion(), response.getData().longValue());
-  }
+        Assert.assertTrue(result.isSuccess());
+        CheckClientManagerResponse data = (CheckClientManagerResponse) result.getData();
+        Assert.assertTrue(data.isPaasCheck());
+        Assert.assertEquals(data.getActualVersion(), response.getData().longValue());
+    }
 }

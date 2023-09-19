@@ -25,9 +25,7 @@ import org.junit.Test;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.alipay.sofa.rpc.common.RemotingConstants.RPC_TRACE_NAME;
-import static com.alipay.sofa.rpc.common.RemotingConstants.RPC_ID_KEY;
-import static com.alipay.sofa.rpc.common.RemotingConstants.TRACE_ID_KEY;
+import static com.alipay.sofa.rpc.common.RemotingConstants.*;
 
 /**
  * @author <a href="mailto:zhanggeng.zg@antfin.com">GengZhang</a>
@@ -179,7 +177,7 @@ public class SimpleMapSerializerTest {
         Map<String, String> headerMap = new HashMap<>();
         headerMap.put("X-Tldc-Target-Tenant", "fia");
         SofaResponse sofaResponse = new SofaResponse();
-        sofaRpcSerialization.parseResponseHeader(headerMap,sofaResponse);
+        sofaRpcSerialization.parseResponseHeader(headerMap, sofaResponse);
         Assert.assertEquals("fia", sofaResponse.getResponseProps().get("X-Tldc-Target-Tenant"));
         sofaResponse.getResponseProps().clear();
 

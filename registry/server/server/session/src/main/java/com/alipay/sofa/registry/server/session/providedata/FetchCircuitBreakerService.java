@@ -27,102 +27,102 @@ import com.alipay.sofa.registry.server.shared.providedata.AbstractFetchPersisten
 import com.alipay.sofa.registry.server.shared.providedata.SystemDataStorage;
 import com.alipay.sofa.registry.store.api.meta.ProvideDataRepository;
 import com.alipay.sofa.registry.util.JsonUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.util.Collections;
 import java.util.Set;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * @author xiaojian.xj
  * @version : FetchCircuitBreakerService.java, v 0.1 2022年01月21日 14:30 xiaojian.xj Exp $
  */
 public class FetchCircuitBreakerService
-    extends AbstractFetchPersistenceSystemProperty<CircuitBreakerStorage, CircuitBreakerStorage> {
+        extends AbstractFetchPersistenceSystemProperty<CircuitBreakerStorage, CircuitBreakerStorage> {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(FetchCircuitBreakerService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(FetchCircuitBreakerService.class);
+    private static final CircuitBreakerStorage INIT =
+            new CircuitBreakerStorage(
+                    INIT_VERSION, false, Collections.emptySet(), Collections.emptySet());
+    @Autowired
+    private SessionServerConfig sessionServerConfig;
+    @Autowired
+    private ProvideDataRepository provideDataRepository;
 
-  @Autowired private SessionServerConfig sessionServerConfig;
-
-  @Autowired private ProvideDataRepository provideDataRepository;
-
-  private static final CircuitBreakerStorage INIT =
-      new CircuitBreakerStorage(
-          INIT_VERSION, false, Collections.emptySet(), Collections.emptySet());
-
-  public FetchCircuitBreakerService() {
-    super(ValueConstants.CIRCUIT_BREAKER_DATA_ID, INIT);
-  }
-
-  @Override
-  protected int getSystemPropertyIntervalMillis() {
-    return sessionServerConfig.getSystemPropertyIntervalMillis();
-  }
-
-  @Override
-  protected CircuitBreakerStorage fetchFromPersistence() {
-    PersistenceData persistenceData =
-        provideDataRepository.get(ValueConstants.CIRCUIT_BREAKER_DATA_ID);
-    if (persistenceData == null) {
-      return INIT;
-    }
-    CircuitBreakerData read = JsonUtils.read(persistenceData.getData(), CircuitBreakerData.class);
-    return new CircuitBreakerStorage(
-        persistenceData.getVersion(),
-        read.addressSwitch(INIT.addressSwitch),
-        read.getAddress(),
-        read.getOverflowAddress());
-  }
-
-  @Override
-  protected boolean doProcess(CircuitBreakerStorage expect, CircuitBreakerStorage update) {
-
-    try {
-      if (!compareAndSet(expect, update)) {
-        LOGGER.error("update circuit breaker address:{} fail.", update);
-        return false;
-      }
-      LOGGER.info("Fetch circuit breaker data, prev={}, current={}", expect, update);
-    } catch (Throwable t) {
-      LOGGER.error("update circuit breaker address:{} error.", update, t);
-    }
-    return true;
-  }
-
-  public static class CircuitBreakerStorage extends SystemDataStorage {
-
-    final boolean addressSwitch;
-    final Set<String> address;
-    final Set<String> overflowAddress;
-
-    public CircuitBreakerStorage(
-        long version, boolean addressSwitch, Set<String> address, Set<String> overflowAddress) {
-      super(version);
-      this.addressSwitch = addressSwitch;
-      this.address = address;
-      this.overflowAddress = overflowAddress;
+    public FetchCircuitBreakerService() {
+        super(ValueConstants.CIRCUIT_BREAKER_DATA_ID, INIT);
     }
 
     @Override
-    public String toString() {
-      return "CircuitBreakerStorage{"
-          + "addressSwitch="
-          + addressSwitch
-          + ", address="
-          + address
-          + ", overflowAddress="
-          + overflowAddress
-          + '}';
+    protected int getSystemPropertyIntervalMillis() {
+        return sessionServerConfig.getSystemPropertyIntervalMillis();
     }
-  }
 
-  public Set<String> getStopPushCircuitBreaker() {
-    return this.storage.get().address;
-  }
+    @Override
+    protected CircuitBreakerStorage fetchFromPersistence() {
+        PersistenceData persistenceData =
+                provideDataRepository.get(ValueConstants.CIRCUIT_BREAKER_DATA_ID);
+        if (persistenceData == null) {
+            return INIT;
+        }
+        CircuitBreakerData read = JsonUtils.read(persistenceData.getData(), CircuitBreakerData.class);
+        return new CircuitBreakerStorage(
+                persistenceData.getVersion(),
+                read.addressSwitch(INIT.addressSwitch),
+                read.getAddress(),
+                read.getOverflowAddress());
+    }
 
-  public Set<String> getOverflowAddress() {
-    return this.storage.get().overflowAddress;
-  }
+    @Override
+    protected boolean doProcess(CircuitBreakerStorage expect, CircuitBreakerStorage update) {
 
-  public boolean isSwitchOpen() {
-    return this.storage.get().addressSwitch;
-  }
+        try {
+            if (!compareAndSet(expect, update)) {
+                LOGGER.error("update circuit breaker address:{} fail.", update);
+                return false;
+            }
+            LOGGER.info("Fetch circuit breaker data, prev={}, current={}", expect, update);
+        } catch (Throwable t) {
+            LOGGER.error("update circuit breaker address:{} error.", update, t);
+        }
+        return true;
+    }
+
+    public Set<String> getStopPushCircuitBreaker() {
+        return this.storage.get().address;
+    }
+
+    public Set<String> getOverflowAddress() {
+        return this.storage.get().overflowAddress;
+    }
+
+    public boolean isSwitchOpen() {
+        return this.storage.get().addressSwitch;
+    }
+
+    public static class CircuitBreakerStorage extends SystemDataStorage {
+
+        final boolean addressSwitch;
+        final Set<String> address;
+        final Set<String> overflowAddress;
+
+        public CircuitBreakerStorage(
+                long version, boolean addressSwitch, Set<String> address, Set<String> overflowAddress) {
+            super(version);
+            this.addressSwitch = addressSwitch;
+            this.address = address;
+            this.overflowAddress = overflowAddress;
+        }
+
+        @Override
+        public String toString() {
+            return "CircuitBreakerStorage{"
+                    + "addressSwitch="
+                    + addressSwitch
+                    + ", address="
+                    + address
+                    + ", overflowAddress="
+                    + overflowAddress
+                    + '}';
+        }
+    }
 }

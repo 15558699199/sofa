@@ -20,6 +20,14 @@ import com.alipay.sofa.gen.base.AbstractGenerator;
 import com.salesforce.jprotoc.ProtocPlugin;
 
 public class RxSofaTripleGenerator extends AbstractGenerator {
+    public static void main(String[] args) {
+        if (args.length == 0) {
+            ProtocPlugin.generate(new RxSofaTripleGenerator());
+        } else {
+            ProtocPlugin.debug(new RxSofaTripleGenerator(), args[0]);
+        }
+    }
+
     @Override
     protected String getClassPrefix() {
         return "RxSofa";
@@ -28,13 +36,5 @@ public class RxSofaTripleGenerator extends AbstractGenerator {
     @Override
     protected String getClassSuffix() {
         return "Triple";
-    }
-
-    public static void main(String[] args) {
-        if (args.length == 0) {
-            ProtocPlugin.generate(new RxSofaTripleGenerator());
-        } else {
-            ProtocPlugin.debug(new RxSofaTripleGenerator(), args[0]);
-        }
     }
 }

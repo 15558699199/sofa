@@ -33,7 +33,7 @@ import org.springframework.lang.Nullable;
 @EndpointWebExtension(endpoint = ReadinessEndpoint.class)
 public class ReadinessEndpointWebExtension {
 
-    private final ReadinessEndpoint    delegate;
+    private final ReadinessEndpoint delegate;
 
     private final HttpCodeStatusMapper statusMapper;
 

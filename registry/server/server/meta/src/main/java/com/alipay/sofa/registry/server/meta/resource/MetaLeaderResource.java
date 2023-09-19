@@ -25,13 +25,14 @@ import com.alipay.sofa.registry.server.meta.MetaLeaderService;
 import com.alipay.sofa.registry.server.meta.resource.filter.LeaderAwareRestController;
 import com.alipay.sofa.registry.store.api.elector.LeaderElector;
 import com.google.common.annotations.VisibleForTesting;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * @author xiaojian.xj
@@ -40,58 +41,60 @@ import org.springframework.beans.factory.annotation.Autowired;
 @Path("meta/leader")
 public class MetaLeaderResource {
 
-  private final Logger logger = LoggerFactory.getLogger(getClass());
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
-  @Autowired private MetaLeaderService metaLeaderService;
+    @Autowired
+    private MetaLeaderService metaLeaderService;
 
-  @Autowired private LeaderElector leaderElector;
+    @Autowired
+    private LeaderElector leaderElector;
 
-  @GET
-  @Path("query")
-  @Produces(MediaType.APPLICATION_JSON)
-  @LeaderAwareRestController
-  public GenericResponse<LeaderInfo> queryLeader() {
-    logger.info("[queryLeader] begin");
+    @GET
+    @Path("query")
+    @Produces(MediaType.APPLICATION_JSON)
+    @LeaderAwareRestController
+    public GenericResponse<LeaderInfo> queryLeader() {
+        logger.info("[queryLeader] begin");
 
-    try {
-      String leader = metaLeaderService.getLeader();
-      long epoch = metaLeaderService.getLeaderEpoch();
-      if (StringUtils.isBlank(leader)) {
-        return new GenericResponse<LeaderInfo>().fillFailed("leader is null.");
-      }
+        try {
+            String leader = metaLeaderService.getLeader();
+            long epoch = metaLeaderService.getLeaderEpoch();
+            if (StringUtils.isBlank(leader)) {
+                return new GenericResponse<LeaderInfo>().fillFailed("leader is null.");
+            }
 
-      LeaderInfo leaderInfo = new LeaderInfo(epoch, leader);
-      return new GenericResponse<LeaderInfo>().fillSucceed(leaderInfo);
-    } catch (Throwable throwable) {
-      logger.error("[queryLeader] error.", throwable);
-      return new GenericResponse<LeaderInfo>().fillFailed(throwable.getMessage());
+            LeaderInfo leaderInfo = new LeaderInfo(epoch, leader);
+            return new GenericResponse<LeaderInfo>().fillSucceed(leaderInfo);
+        } catch (Throwable throwable) {
+            logger.error("[queryLeader] error.", throwable);
+            return new GenericResponse<LeaderInfo>().fillFailed(throwable.getMessage());
+        }
     }
-  }
 
-  @PUT
-  @Path("/quit/election")
-  @Produces(MediaType.APPLICATION_JSON)
-  public CommonResponse quitElection() {
-    logger.info("[quitElection] begin");
+    @PUT
+    @Path("/quit/election")
+    @Produces(MediaType.APPLICATION_JSON)
+    public CommonResponse quitElection() {
+        logger.info("[quitElection] begin");
 
-    try {
-      leaderElector.change2Observer();
-      return GenericResponse.buildSuccessResponse();
-    } catch (Throwable throwable) {
-      logger.error("[quitElection] error.", throwable);
-      return GenericResponse.buildFailedResponse(throwable.getMessage());
+        try {
+            leaderElector.change2Observer();
+            return GenericResponse.buildSuccessResponse();
+        } catch (Throwable throwable) {
+            logger.error("[quitElection] error.", throwable);
+            return GenericResponse.buildFailedResponse(throwable.getMessage());
+        }
     }
-  }
 
-  @VisibleForTesting
-  protected MetaLeaderResource setMetaLeaderService(MetaLeaderService metaLeaderService) {
-    this.metaLeaderService = metaLeaderService;
-    return this;
-  }
+    @VisibleForTesting
+    protected MetaLeaderResource setMetaLeaderService(MetaLeaderService metaLeaderService) {
+        this.metaLeaderService = metaLeaderService;
+        return this;
+    }
 
-  @VisibleForTesting
-  protected MetaLeaderResource setLeaderElector(LeaderElector leaderElector) {
-    this.leaderElector = leaderElector;
-    return this;
-  }
+    @VisibleForTesting
+    protected MetaLeaderResource setLeaderElector(LeaderElector leaderElector) {
+        this.leaderElector = leaderElector;
+        return this;
+    }
 }

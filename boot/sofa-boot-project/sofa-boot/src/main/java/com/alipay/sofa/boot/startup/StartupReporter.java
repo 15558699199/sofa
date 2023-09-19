@@ -28,14 +28,7 @@ import org.springframework.core.metrics.ApplicationStartup;
 import org.springframework.core.metrics.StartupStep;
 
 import java.lang.management.ManagementFactory;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 /**
  * The base component to collect and report the startup costs.
@@ -45,40 +38,41 @@ import java.util.Set;
  */
 public class StartupReporter {
 
-    public static final String             SPRING_BEANS_INSTANTIATE                       = "spring.beans.instantiate";
+    public static final String SPRING_BEANS_INSTANTIATE = "spring.beans.instantiate";
 
-    public static final String             SPRING_BEANS_SMART_INSTANTIATE                 = "spring.beans.smart-initialize";
+    public static final String SPRING_BEANS_SMART_INSTANTIATE = "spring.beans.smart-initialize";
 
-    public static final String             SPRING_CONTEXT_BEANDEF_REGISTRY_POST_PROCESSOR = "spring.context.beandef-registry.post-process";
+    public static final String SPRING_CONTEXT_BEANDEF_REGISTRY_POST_PROCESSOR = "spring.context.beandef-registry.post-process";
 
-    public static final String             SPRING_CONTEXT_BEAN_FACTORY_POST_PROCESSOR     = "spring.context.bean-factory.post-process";
+    public static final String SPRING_CONTEXT_BEAN_FACTORY_POST_PROCESSOR = "spring.context.bean-factory.post-process";
 
-    public static final Collection<String> SPRING_BEAN_INSTANTIATE_TYPES                  = Set
-                                                                                              .of(SPRING_BEANS_INSTANTIATE,
-                                                                                                  SPRING_BEANS_SMART_INSTANTIATE);
+    public static final Collection<String> SPRING_BEAN_INSTANTIATE_TYPES = Set
+            .of(SPRING_BEANS_INSTANTIATE,
+                    SPRING_BEANS_SMART_INSTANTIATE);
 
-    public static final Collection<String> SPRING_CONTEXT_POST_PROCESSOR_TYPES            = Set
-                                                                                              .of(SPRING_CONTEXT_BEANDEF_REGISTRY_POST_PROCESSOR,
-                                                                                                  SPRING_CONTEXT_BEAN_FACTORY_POST_PROCESSOR);
+    public static final Collection<String> SPRING_CONTEXT_POST_PROCESSOR_TYPES = Set
+            .of(SPRING_CONTEXT_BEANDEF_REGISTRY_POST_PROCESSOR,
+                    SPRING_CONTEXT_BEAN_FACTORY_POST_PROCESSOR);
 
-    private final StartupStaticsModel      startupStaticsModel;
+    private final StartupStaticsModel startupStaticsModel;
 
     private final List<BeanStatCustomizer> beanStatCustomizers;
 
-    private int                            bufferSize                                     = 4096;
+    private int bufferSize = 4096;
 
-    private int                            costThreshold                                  = 50;
+    private int costThreshold = 50;
 
     public StartupReporter() {
         this.startupStaticsModel = new StartupStaticsModel();
         this.startupStaticsModel.setApplicationBootTime(ManagementFactory.getRuntimeMXBean()
-            .getStartTime());
+                .getStartTime());
         this.beanStatCustomizers = SpringFactoriesLoader.forDefaultResourceLocation(
-            StartupReporter.class.getClassLoader()).load(BeanStatCustomizer.class);
+                StartupReporter.class.getClassLoader()).load(BeanStatCustomizer.class);
     }
 
     /**
      * Bind the environment to the {@link StartupReporter}.
+     *
      * @param environment the environment to bind
      */
     public void bindToStartupReporter(ConfigurableEnvironment environment) {
@@ -98,7 +92,7 @@ public class StartupReporter {
      */
     public void applicationBootFinish() {
         startupStaticsModel.setApplicationBootElapsedTime(ManagementFactory.getRuntimeMXBean()
-            .getUptime());
+                .getUptime());
         startupStaticsModel.getStageStats().sort((o1, o2) -> {
             if (o1.getStartTime() == o2.getStartTime()) {
                 return 0;
@@ -109,6 +103,7 @@ public class StartupReporter {
 
     /**
      * Add common startup stat to report
+     *
      * @param stat the added CommonStartupStat
      */
     public void addCommonStartupStat(BaseStat stat) {
@@ -117,6 +112,7 @@ public class StartupReporter {
 
     /**
      * Find the stage reported in sofaStartupStaticsModel by Name
+     *
      * @param stageName stageName
      * @return the reported stage, return null when can't find the stage
      */
@@ -131,6 +127,7 @@ public class StartupReporter {
      * <p>
      * This will not remove details from the model, see {@link #getStartupStaticsModel()}
      * for its counterpart.
+     *
      * @return a snapshot of currently buffered stages.
      */
     public StartupStaticsModel getStartupStaticsModel() {
@@ -142,15 +139,16 @@ public class StartupReporter {
      * <p>
      * This removes steps from the buffer, see {@link #getStartupStaticsModel()} for its
      * read-only counterpart.
+     *
      * @return buffered stages drained from the buffer.
      */
     public StartupStaticsModel drainStartupStaticsModel() {
         StartupStaticsModel startupStaticsModel = new StartupStaticsModel();
         startupStaticsModel.setAppName(this.startupStaticsModel.getAppName());
         startupStaticsModel.setApplicationBootElapsedTime(this.startupStaticsModel
-            .getApplicationBootElapsedTime());
+                .getApplicationBootElapsedTime());
         startupStaticsModel.setApplicationBootTime(this.startupStaticsModel
-            .getApplicationBootTime());
+                .getApplicationBootTime());
         List<BaseStat> stats = new ArrayList<>();
         Iterator<BaseStat> iterator = this.startupStaticsModel.getStageStats().iterator();
         while (iterator.hasNext()) {
@@ -163,6 +161,7 @@ public class StartupReporter {
 
     /**
      * Convert {@link BufferingApplicationStartup} to {@link BeanStat} list.
+     *
      * @param context the {@link ConfigurableApplicationContext}.
      * @return list of bean stats.
      */
@@ -180,7 +179,7 @@ public class StartupReporter {
 
             // convert startup to bean stats
             timelineEvents.forEach(timelineEvent -> {
-                        BeanStat beanStat = eventToBeanStat(timelineEvent);
+                BeanStat beanStat = eventToBeanStat(timelineEvent);
                 rootBeanStatList.add(beanStat);
                 beanStatIdMap.put(timelineEvent.getStartupStep().getId(), beanStat);
             });
@@ -307,13 +306,13 @@ public class StartupReporter {
 
     public static class StartupStaticsModel {
 
-        private String         appName;
+        private String appName;
 
-        private long           applicationBootElapsedTime = 0;
+        private long applicationBootElapsedTime = 0;
 
-        private long           applicationBootTime;
+        private long applicationBootTime;
 
-        private List<BaseStat> stageStats                 = new ArrayList<>();
+        private List<BaseStat> stageStats = new ArrayList<>();
 
         public String getAppName() {
             return appName;

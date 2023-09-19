@@ -43,27 +43,27 @@ public class H2cDirectUrlTest extends ActivelyDestroyTest {
 
         // 只有1个线程 执行
         ServerConfig serverConfig = new ServerConfig()
-            .setPort(12300)
-            .setProtocol(RpcConstants.PROTOCOL_TYPE_H2C)
-            .setDaemon(true);
+                .setPort(12300)
+                .setProtocol(RpcConstants.PROTOCOL_TYPE_H2C)
+                .setDaemon(true);
 
         // 发布一个服务，每个请求要执行1秒
         ProviderConfig<HttpService> providerConfig = new ProviderConfig<HttpService>()
-            .setInterfaceId(HttpService.class.getName())
-            .setRef(new HttpServiceImpl())
-            .setBootstrap("h2c")
-            .setApplication(new ApplicationConfig().setAppName("serverApp"))
-            .setServer(serverConfig)
-            .setRegister(false);
+                .setInterfaceId(HttpService.class.getName())
+                .setRef(new HttpServiceImpl())
+                .setBootstrap("h2c")
+                .setApplication(new ApplicationConfig().setAppName("serverApp"))
+                .setServer(serverConfig)
+                .setRegister(false);
         providerConfig.export();
 
         final ConsumerConfig<HttpService> consumerConfig = new ConsumerConfig<HttpService>()
-            .setInterfaceId(HttpService.class.getName())
-            .setDirectUrl("h2c://127.0.0.1:12300")
-            .setProtocol(RpcConstants.PROTOCOL_TYPE_H2C)
-            .setBootstrap("h2c")
-            .setApplication(new ApplicationConfig().setAppName("clientApp"))
-            .setReconnectPeriod(1000);
+                .setInterfaceId(HttpService.class.getName())
+                .setDirectUrl("h2c://127.0.0.1:12300")
+                .setProtocol(RpcConstants.PROTOCOL_TYPE_H2C)
+                .setBootstrap("h2c")
+                .setApplication(new ApplicationConfig().setAppName("clientApp"))
+                .setReconnectPeriod(1000);
 
         HttpService httpService = consumerConfig.refer();
 
@@ -88,7 +88,7 @@ public class H2cDirectUrlTest extends ActivelyDestroyTest {
             @Override
             public Boolean call() throws Exception {
                 return CommonUtils.isEmpty(consumerConfig.getConsumerBootstrap()
-                    .getCluster().getConnectionHolder().getAvailableConnections());
+                        .getCluster().getConnectionHolder().getAvailableConnections());
             }
         }, true, 50, 40));
 
@@ -98,7 +98,7 @@ public class H2cDirectUrlTest extends ActivelyDestroyTest {
             @Override
             public Boolean call() throws Exception {
                 return CommonUtils.isNotEmpty(consumerConfig.getConsumerBootstrap()
-                    .getCluster().getConnectionHolder().getAvailableConnections());
+                        .getCluster().getConnectionHolder().getAvailableConnections());
             }
         }, true, 50, 60));
 

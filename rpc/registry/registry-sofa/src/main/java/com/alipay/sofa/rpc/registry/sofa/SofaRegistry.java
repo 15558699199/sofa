@@ -52,12 +52,12 @@ public class SofaRegistry extends Registry {
     /**
      * Logger
      */
-    private static final Logger               LOGGER        = LoggerFactory.getLogger(SofaRegistry.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SofaRegistry.class);
 
     /**
      * 用于缓存所有数据订阅者，避免同一个dataId订阅两次
      */
-    protected final Map<String, Subscriber>   subscribers   = new ConcurrentHashMap<String, Subscriber>();
+    protected final Map<String, Subscriber> subscribers = new ConcurrentHashMap<String, Subscriber>();
 
     /**
      * 用于缓存所有配置订阅者，避免同一个dataId订阅两次
@@ -160,11 +160,11 @@ public class SofaRegistry extends Registry {
                     doUnRegister(appName, serviceName, groupId);
                     if (LOGGER.isInfoEnabled(appName)) {
                         LOGGER.infoWithApp(appName, LogCodes.getLog(LogCodes.INFO_ROUTE_REGISTRY_UNPUB,
-                            serviceName, "1"));
+                                serviceName, "1"));
                     }
                 } catch (Exception e) {
                     LOGGER.errorWithApp(appName, LogCodes.getLog(LogCodes.INFO_ROUTE_REGISTRY_UNPUB,
-                        serviceName, "0"), e);
+                            serviceName, "0"), e);
                 }
             }
         }
@@ -180,7 +180,7 @@ public class SofaRegistry extends Registry {
     protected void doUnRegister(String appName, String serviceName, String group) {
 
         SofaRegistryClient.getRegistryClient(appName, registryConfig).unregister(serviceName, group,
-            RegistryType.PUBLISHER);
+                RegistryType.PUBLISHER);
     }
 
     @Override
@@ -243,7 +243,7 @@ public class SofaRegistry extends Registry {
 
             // 去注册
             listSubscriber = SofaRegistryClient.getRegistryClient(appName, registryConfig).register(
-                subscriberRegistration);
+                    subscriberRegistration);
 
             attrSubscriber = SofaRegistryClient.getRegistryClient(appName, registryConfig).register(configRegistration);
 
@@ -266,14 +266,14 @@ public class SofaRegistry extends Registry {
             if (callback.getListenerNum() == 0) {
                 // 已经没人订阅这个data Key了
                 SofaRegistryClient.getRegistryClient(appName, registryConfig).unregister(serviceName,
-                    subscriber.getGroup(),
-                    RegistryType.SUBSCRIBER);
+                        subscriber.getGroup(),
+                        RegistryType.SUBSCRIBER);
                 subscribers.remove(serviceName);
 
                 // 已经没人订阅这个config Key了
                 SofaRegistryClient.getRegistryClient(appName, registryConfig).unregister(serviceName,
-                    subscriber.getGroup(),
-                    RegistryType.CONFIGURATOR);
+                        subscriber.getGroup(),
+                        RegistryType.CONFIGURATOR);
                 configurators.remove(serviceName);
             }
         }
@@ -296,7 +296,7 @@ public class SofaRegistry extends Registry {
      * 添加额外的属性
      *
      * @param subscriberRegistration 注册或者订阅对象
-     * @param group           分组
+     * @param group                  分组
      */
     private void addAttributes(SubscriberRegistration subscriberRegistration, String group) {
 
@@ -312,7 +312,7 @@ public class SofaRegistry extends Registry {
      * 添加额外的属性
      *
      * @param configuratorRegistration 注册或者订阅对象
-     * @param group           分组
+     * @param group                    分组
      */
     private void addAttributes(ConfiguratorRegistration configuratorRegistration, String group) {
         // if group == null; group = "DEFAULT_GROUP"

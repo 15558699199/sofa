@@ -48,19 +48,18 @@ public class SofaResponseFuture {
      *
      * @param timeout get timeout
      * @param clear   true: framework will clear the ThreadLocal when return
-     * @return The response 
-     * @throws SofaRpcException When throw SofaRpcException
-     * @throws InterruptedException
-     *          if any thread has interrupted the current thread. The
-     *          <i>interrupted status</i> of the current thread is
-     *          cleared when this exception is thrown.
+     * @return The response
+     * @throws SofaRpcException     When throw SofaRpcException
+     * @throws InterruptedException if any thread has interrupted the current thread. The
+     *                              <i>interrupted status</i> of the current thread is
+     *                              cleared when this exception is thrown.
      */
     public static Object getResponse(long timeout, boolean clear) throws SofaRpcException, InterruptedException {
         RpcInvokeContext context = RpcInvokeContext.getContext();
         Future future = context.getFuture();
         if (null == future) {
             throw new SofaRpcException(RpcErrorType.CLIENT_UNDECLARED_ERROR,
-                LogCodes.getLog(LogCodes.ERROR_RESPONSE_FUTURE_NULL, Thread.currentThread()));
+                    LogCodes.getLog(LogCodes.ERROR_RESPONSE_FUTURE_NULL, Thread.currentThread()));
         }
         try {
             if (clear) {
@@ -102,8 +101,8 @@ public class SofaResponseFuture {
         Future future = context.getFuture();
         if (future == null) {
             throw new SofaRpcException(RpcErrorType.CLIENT_UNDECLARED_ERROR,
-                LogCodes.getLog(LogCodes.ERROR_RESPONSE_FUTURE_NULL,
-                    Thread.currentThread()));
+                    LogCodes.getLog(LogCodes.ERROR_RESPONSE_FUTURE_NULL,
+                            Thread.currentThread()));
         }
         if (clear) {
             context.setFuture(null);

@@ -19,12 +19,7 @@ package com.alipay.sofa.rpc.registry.polaris;
 import com.alipay.sofa.rpc.client.ProviderGroup;
 import com.alipay.sofa.rpc.client.ProviderInfo;
 import com.alipay.sofa.rpc.common.utils.CommonUtils;
-import com.alipay.sofa.rpc.config.AbstractInterfaceConfig;
-import com.alipay.sofa.rpc.config.ConfigUniqueNameGenerator;
-import com.alipay.sofa.rpc.config.ConsumerConfig;
-import com.alipay.sofa.rpc.config.ProviderConfig;
-import com.alipay.sofa.rpc.config.RegistryConfig;
-import com.alipay.sofa.rpc.config.ServerConfig;
+import com.alipay.sofa.rpc.config.*;
 import com.alipay.sofa.rpc.context.RpcRunningState;
 import com.alipay.sofa.rpc.core.exception.SofaRpcRuntimeException;
 import com.alipay.sofa.rpc.event.ConsumerSubEvent;
@@ -44,20 +39,10 @@ import com.tencent.polaris.factory.api.DiscoveryAPIFactory;
 import com.tencent.polaris.factory.config.ConfigurationImpl;
 import com.tencent.polaris.factory.config.global.ServerConnectorConfigImpl;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
+import java.util.*;
+import java.util.concurrent.*;
 
-import static com.alipay.sofa.rpc.registry.utils.RegistryUtils.buildUniqueName;
-import static com.alipay.sofa.rpc.registry.utils.RegistryUtils.convertProviderToMap;
-import static com.alipay.sofa.rpc.registry.utils.RegistryUtils.getServerHost;
+import static com.alipay.sofa.rpc.registry.utils.RegistryUtils.*;
 
 /**
  * the main logic of polaris registry, similar to consul
@@ -311,7 +296,7 @@ public class PolarisRegistry extends Registry {
 
         String uniqueName = buildUniqueName(config, config.getProtocol());
         //computeIfAbsent avoid creating multiple informers and some Listeners failure due to multiple subscribe
-        PolarisWatcher polarisWatcher = polarisWatchers.computeIfAbsent(uniqueName,key->{
+        PolarisWatcher polarisWatcher = polarisWatchers.computeIfAbsent(uniqueName, key -> {
             PolarisWatcher watcher = new PolarisWatcher(buildNameSpace(config.getAppName()), buildServiceName(config), config.getProtocol(), consumerAPI, properties);
             watcher.init();
             return watcher;

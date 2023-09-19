@@ -25,7 +25,6 @@ import com.alipay.sofa.rpc.transport.AbstractChannel;
 import java.util.Map;
 
 /**
- *
  * @author <a href=mailto:zhanggeng.zg@antfin.com>GengZhang</a>
  */
 @Extension("help")
@@ -43,7 +42,7 @@ public class HelpTelnetHandler implements TelnetHandler {
             TelnetHandler handler = TelnetHandlerFactory.getHandler(message);
             if (handler != null) {
                 result.append(handler.getCommand()).append(LINE)
-                    .append(handler.getDescription()).append(LINE);
+                        .append(handler.getDescription()).append(LINE);
             } else {
                 result.append("Not found command : " + message);
             }

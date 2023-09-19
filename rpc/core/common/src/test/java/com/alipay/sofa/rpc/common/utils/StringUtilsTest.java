@@ -39,17 +39,17 @@ public class StringUtilsTest {
         src = "1;2;3";
         array = StringUtils.split(src, ";");
         Assert.assertTrue(array.length == 3);
-        Assert.assertArrayEquals(array, new String[] { "1", "2", "3" });
+        Assert.assertArrayEquals(array, new String[]{"1", "2", "3"});
 
         src = ";1;2;3;";
         array = StringUtils.split(src, ";");
         Assert.assertTrue(array.length == 5);
-        Assert.assertArrayEquals(array, new String[] { "", "1", "2", "3", "" });
+        Assert.assertArrayEquals(array, new String[]{"", "1", "2", "3", ""});
 
         src = "; 1;2 ; 3 ;";
         array = StringUtils.split(src, ";");
         Assert.assertTrue(array.length == 5);
-        Assert.assertArrayEquals(array, new String[] { "", " 1", "2 ", " 3 ", "" });
+        Assert.assertArrayEquals(array, new String[]{"", " 1", "2 ", " 3 ", ""});
 
     }
 
@@ -58,22 +58,22 @@ public class StringUtilsTest {
         String src = "1;2;3";
         String[] array = StringUtils.splitWithCommaOrSemicolon(src);
         Assert.assertTrue(array.length == 3);
-        Assert.assertArrayEquals(array, new String[] { "1", "2", "3" });
+        Assert.assertArrayEquals(array, new String[]{"1", "2", "3"});
 
         src = " 1;2 ; 3 ";
         array = StringUtils.splitWithCommaOrSemicolon(src);
         Assert.assertTrue(array.length == 3);
-        Assert.assertArrayEquals(array, new String[] { "1", "2", "3" });
+        Assert.assertArrayEquals(array, new String[]{"1", "2", "3"});
 
         src = ";;;1;;;;2;;;3;;;;";
         array = StringUtils.splitWithCommaOrSemicolon(src);
         Assert.assertTrue(array.length == 3);
-        Assert.assertArrayEquals(array, new String[] { "1", "2", "3" });
+        Assert.assertArrayEquals(array, new String[]{"1", "2", "3"});
 
         src = "  ;1;2;3;   ";
         array = StringUtils.splitWithCommaOrSemicolon(src);
         Assert.assertTrue(array.length == 3);
-        Assert.assertArrayEquals(array, new String[] { "1", "2", "3" });
+        Assert.assertArrayEquals(array, new String[]{"1", "2", "3"});
 
         array = StringUtils.splitWithCommaOrSemicolon("");
         Assert.assertTrue(CommonUtils.isEmpty(array));
@@ -84,14 +84,14 @@ public class StringUtilsTest {
 
     @Test
     public void testJoin() throws Exception {
-        String[] src = new String[] { "1", "2", "3" };
+        String[] src = new String[]{"1", "2", "3"};
         String arrayString = StringUtils.join(src, "");
         Assert.assertEquals(arrayString, "123");
 
         arrayString = StringUtils.join(src, ",");
         Assert.assertEquals(arrayString, "1,2,3");
 
-        arrayString = StringUtils.join(new String[] {}, ",");
+        arrayString = StringUtils.join(new String[]{}, ",");
         Assert.assertEquals(arrayString, "");
 
         arrayString = StringUtils.join(null, "");
@@ -100,11 +100,11 @@ public class StringUtilsTest {
 
     @Test
     public void testJoinWithComma() throws Exception {
-        String[] src = new String[] { "1", "2", "3" };
+        String[] src = new String[]{"1", "2", "3"};
         String arrayString = StringUtils.joinWithComma(src);
         Assert.assertEquals(arrayString, "1,2,3");
 
-        arrayString = StringUtils.joinWithComma(new String[] {});
+        arrayString = StringUtils.joinWithComma(new String[]{});
         Assert.assertEquals(arrayString, "");
 
         arrayString = StringUtils.joinWithComma(null, null);
@@ -163,8 +163,8 @@ public class StringUtilsTest {
 
         Assert.assertEquals(null, StringUtils.objectsToString(null));
         Assert.assertEquals("[]", StringUtils.objectsToString(new Object[0]));
-        Assert.assertEquals("[1,22]", StringUtils.objectsToString(new Object[] { 1, "22" }));
-        Assert.assertEquals("[1,Bean:11]", StringUtils.objectsToString(new Object[] { 1, new Bean("11") }));
+        Assert.assertEquals("[1,22]", StringUtils.objectsToString(new Object[]{1, "22"}));
+        Assert.assertEquals("[1,Bean:11]", StringUtils.objectsToString(new Object[]{1, new Bean("11")}));
     }
 
     @Test

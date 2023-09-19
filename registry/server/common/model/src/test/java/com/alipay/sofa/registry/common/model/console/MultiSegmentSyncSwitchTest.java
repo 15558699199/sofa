@@ -26,21 +26,21 @@ import org.junit.Test;
  */
 public class MultiSegmentSyncSwitchTest {
 
-  @Test
-  public void test() {
-    MultiSegmentSyncSwitch syncSwitch =
-        new MultiSegmentSyncSwitch(
-            true,
-            true,
-            "testRemoteDc",
-            Sets.newHashSet(),
-            Sets.newHashSet(),
-            Sets.newHashSet(),
-            System.currentTimeMillis());
-    Assert.assertTrue(syncSwitch.isMultiSync());
-    Assert.assertTrue(syncSwitch.isMultiPush());
-    Assert.assertEquals(0, syncSwitch.getSyncDataInfoIds().size());
-    Assert.assertEquals(0, syncSwitch.getSynPublisherGroups().size());
-    Assert.assertEquals(0, syncSwitch.getIgnoreDataInfoIds().size());
-  }
+    @Test
+    public void test() {
+        MultiSegmentSyncSwitch syncSwitch =
+                new MultiSegmentSyncSwitch(
+                        true,
+                        true,
+                        "testRemoteDc",
+                        Sets.newHashSet(),
+                        Sets.newHashSet(),
+                        Sets.newHashSet(),
+                        System.currentTimeMillis());
+        Assert.assertTrue(syncSwitch.isMultiSync());
+        Assert.assertTrue(syncSwitch.isMultiPush());
+        Assert.assertEquals(0, syncSwitch.getSyncDataInfoIds().size());
+        Assert.assertEquals(0, syncSwitch.getSynPublisherGroups().size());
+        Assert.assertEquals(0, syncSwitch.getIgnoreDataInfoIds().size());
+    }
 }

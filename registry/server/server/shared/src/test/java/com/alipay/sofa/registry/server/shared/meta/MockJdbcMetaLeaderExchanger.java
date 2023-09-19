@@ -23,14 +23,14 @@ import com.alipay.sofa.registry.server.shared.constant.MetaLeaderLearnModeEnum;
 
 public class MockJdbcMetaLeaderExchanger extends MockBaseMetaLeaderExchanger {
 
-  private static final Logger LOG = LoggerFactory.getLogger(MockJdbcMetaLeaderExchanger.class);
+    private static final Logger LOG = LoggerFactory.getLogger(MockJdbcMetaLeaderExchanger.class);
 
-  public MockJdbcMetaLeaderExchanger() {
-    super("serverType", LOG);
-  }
+    public MockJdbcMetaLeaderExchanger() {
+        super("serverType", LOG);
+    }
 
-  @Override
-  protected MetaLeaderLearnModeEnum getMode() {
-    return MetaLeaderLearnModeEnum.JDBC;
-  }
+    @Override
+    protected MetaLeaderLearnModeEnum getMode() {
+        return MetaLeaderLearnModeEnum.JDBC;
+    }
 }

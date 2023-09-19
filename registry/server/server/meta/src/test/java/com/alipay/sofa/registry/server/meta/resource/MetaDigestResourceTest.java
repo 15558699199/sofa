@@ -16,8 +16,6 @@
  */
 package com.alipay.sofa.registry.server.meta.resource;
 
-import static org.mockito.Mockito.*;
-
 import com.alipay.sofa.registry.common.model.Node;
 import com.alipay.sofa.registry.common.model.console.PersistenceData;
 import com.alipay.sofa.registry.common.model.constants.ValueConstants;
@@ -31,67 +29,69 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.mockito.Mockito.*;
+
 public class MetaDigestResourceTest {
 
-  private MetaDigestResource metaDigestResource;
+    private MetaDigestResource metaDigestResource;
 
-  private StopPushDataResource stopPushDataResource;
+    private StopPushDataResource stopPushDataResource;
 
-  private DefaultMetaServerManager metaServerManager;
+    private DefaultMetaServerManager metaServerManager;
 
-  private DefaultProvideDataNotifier dataNotifier;
+    private DefaultProvideDataNotifier dataNotifier;
 
-  private ProvideDataService provideDataService =
-      spy(new AbstractMetaServerTestBase.InMemoryProvideDataRepo());
+    private ProvideDataService provideDataService =
+            spy(new AbstractMetaServerTestBase.InMemoryProvideDataRepo());
 
-  @Before
-  public void beforeMetaDigestResourceTest() {
-    dataNotifier = mock(DefaultProvideDataNotifier.class);
-    stopPushDataResource =
-        new StopPushDataResource()
-            .setProvideDataNotifier(dataNotifier)
-            .setProvideDataService(provideDataService);
-    metaDigestResource =
-        new MetaDigestResource()
-            .setProvideDataService(provideDataService)
-            .setMetaServerManager(metaServerManager);
-  }
+    @Before
+    public void beforeMetaDigestResourceTest() {
+        dataNotifier = mock(DefaultProvideDataNotifier.class);
+        stopPushDataResource =
+                new StopPushDataResource()
+                        .setProvideDataNotifier(dataNotifier)
+                        .setProvideDataService(provideDataService);
+        metaDigestResource =
+                new MetaDigestResource()
+                        .setProvideDataService(provideDataService)
+                        .setMetaServerManager(metaServerManager);
+    }
 
-  @Test(expected = RuntimeException.class)
-  public void testGetRegisterNodeByType() {
-    metaDigestResource.getRegisterNodeByType(Node.NodeType.META.name());
-    verify(metaServerManager, times(1)).getSummary(Node.NodeType.META);
-    metaDigestResource.getRegisterNodeByType(Node.NodeType.DATA.name());
-    verify(metaServerManager, times(1)).getSummary(Node.NodeType.DATA);
-    metaDigestResource.getRegisterNodeByType(Node.NodeType.SESSION.name());
-    verify(metaServerManager, times(1)).getSummary(Node.NodeType.SESSION);
-    when(metaServerManager.getSummary(any()))
-        .thenThrow(new SofaRegistryRuntimeException("expected exception"));
-    metaDigestResource.getRegisterNodeByType(Node.NodeType.SESSION.name());
-  }
+    @Test(expected = RuntimeException.class)
+    public void testGetRegisterNodeByType() {
+        metaDigestResource.getRegisterNodeByType(Node.NodeType.META.name());
+        verify(metaServerManager, times(1)).getSummary(Node.NodeType.META);
+        metaDigestResource.getRegisterNodeByType(Node.NodeType.DATA.name());
+        verify(metaServerManager, times(1)).getSummary(Node.NodeType.DATA);
+        metaDigestResource.getRegisterNodeByType(Node.NodeType.SESSION.name());
+        verify(metaServerManager, times(1)).getSummary(Node.NodeType.SESSION);
+        when(metaServerManager.getSummary(any()))
+                .thenThrow(new SofaRegistryRuntimeException("expected exception"));
+        metaDigestResource.getRegisterNodeByType(Node.NodeType.SESSION.name());
+    }
 
-  @Test
-  public void testGetPushSwitch() {
-    String key = "stopPush";
-    String val = metaDigestResource.getPushSwitch().get(key);
-    Assert.assertNull(val);
+    @Test
+    public void testGetPushSwitch() {
+        String key = "stopPush";
+        String val = metaDigestResource.getPushSwitch().get(key);
+        Assert.assertNull(val);
 
-    DataInfo dataInfo = DataInfo.valueOf(ValueConstants.STOP_PUSH_DATA_SWITCH_DATA_ID);
-    PersistenceData persistenceData = new PersistenceData();
-    persistenceData.setDataId(dataInfo.getDataId());
-    persistenceData.setGroup(dataInfo.getGroup());
-    persistenceData.setInstanceId(dataInfo.getInstanceId());
-    persistenceData.setVersion(System.currentTimeMillis());
-    provideDataService.saveProvideData(persistenceData);
-    val = metaDigestResource.getPushSwitch().get(key);
-    Assert.assertNull(val);
+        DataInfo dataInfo = DataInfo.valueOf(ValueConstants.STOP_PUSH_DATA_SWITCH_DATA_ID);
+        PersistenceData persistenceData = new PersistenceData();
+        persistenceData.setDataId(dataInfo.getDataId());
+        persistenceData.setGroup(dataInfo.getGroup());
+        persistenceData.setInstanceId(dataInfo.getInstanceId());
+        persistenceData.setVersion(System.currentTimeMillis());
+        provideDataService.saveProvideData(persistenceData);
+        val = metaDigestResource.getPushSwitch().get(key);
+        Assert.assertNull(val);
 
-    stopPushDataResource.closePush();
-    val = metaDigestResource.getPushSwitch().get(key);
-    Assert.assertEquals("true", val);
+        stopPushDataResource.closePush();
+        val = metaDigestResource.getPushSwitch().get(key);
+        Assert.assertEquals("true", val);
 
-    stopPushDataResource.openPush();
-    val = metaDigestResource.getPushSwitch().get(key);
-    Assert.assertEquals("false", val);
-  }
+        stopPushDataResource.openPush();
+        val = metaDigestResource.getPushSwitch().get(key);
+        Assert.assertEquals("false", val);
+    }
 }

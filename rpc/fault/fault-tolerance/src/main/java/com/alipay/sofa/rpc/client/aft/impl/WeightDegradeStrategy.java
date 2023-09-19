@@ -28,13 +28,14 @@ import com.alipay.sofa.rpc.log.Logger;
 import com.alipay.sofa.rpc.log.LoggerFactory;
 
 /**
- *
  * @author <a href="mailto:lw111072@antfin.com">liangen</a>
  */
 @Extension("weight")
 public class WeightDegradeStrategy extends LogPrintDegradeStrategy {
 
-    /** Logger for this class */
+    /**
+     * Logger for this class
+     */
     private static final Logger LOGGER = LoggerFactory.getLogger(WeightDegradeStrategy.class);
 
     @Override
@@ -65,10 +66,10 @@ public class WeightDegradeStrategy extends LogPrintDegradeStrategy {
         boolean success = ProviderInfoWeightManager.degradeWeight(providerInfo, degradeWeight);
         if (success && LOGGER.isInfoEnabled(appName)) {
             LOGGER.infoWithApp(appName, "the weight was degraded. serviceUniqueName:["
-                + statDimension.getService() + "],ip:["
-                + statDimension.getIp() + "],origin weight:["
-                + currentWeight + "],degraded weight:["
-                + degradeWeight + "].");
+                    + statDimension.getService() + "],ip:["
+                    + statDimension.getIp() + "],origin weight:["
+                    + currentWeight + "],degraded weight:["
+                    + degradeWeight + "].");
         }
     }
 }

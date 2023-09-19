@@ -36,23 +36,23 @@ public abstract class AbstractInvokeCallback implements RejectionProcessableInvo
     /**
      * 服务消费者配置
      */
-    protected final ConsumerConfig    consumerConfig;
+    protected final ConsumerConfig consumerConfig;
     /**
      * 服务提供者信息
      */
-    protected final ProviderInfo      providerInfo;
+    protected final ProviderInfo providerInfo;
     /**
      * 请求
      */
-    protected final SofaRequest       request;
+    protected final SofaRequest request;
     /**
      * 请求运行时的ClassLoader
      */
-    protected ClassLoader             classLoader;
+    protected ClassLoader classLoader;
     /**
      * 线程上下文
      */
-    protected RpcInternalContext      context;
+    protected RpcInternalContext context;
     /**
      * 线程繁忙时的拒绝策略
      */
@@ -111,7 +111,7 @@ public abstract class AbstractInvokeCallback implements RejectionProcessableInvo
     }
 
     /**
-     * @see RejectionProcessableInvokeCallback#rejectedExecutionPolicy() 
+     * @see RejectionProcessableInvokeCallback#rejectedExecutionPolicy()
      */
     @Override
     public RejectedExecutionPolicy rejectedExecutionPolicy() {

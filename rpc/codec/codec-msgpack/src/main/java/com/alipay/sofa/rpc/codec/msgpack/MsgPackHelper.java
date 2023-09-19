@@ -32,7 +32,7 @@ public class MsgPackHelper {
     /**
      * 请求参数类型缓存 {service+method:class}
      */
-    private ConcurrentMap<String, Class> requestClassCache  = new ConcurrentHashMap<String, Class>();
+    private ConcurrentMap<String, Class> requestClassCache = new ConcurrentHashMap<String, Class>();
 
     /**
      * 返回结果类型缓存 {service+method:class}
@@ -105,13 +105,13 @@ public class MsgPackHelper {
         }
         if (pbMethod == null) {
             throw new SofaRpcRuntimeException(LogCodes.getLog(LogCodes.ERROR_METHOD_NOT_FOUND, clazz.getName(),
-                methodName));
+                    methodName));
         }
         Class[] parameterTypes = pbMethod.getParameterTypes();
         if (parameterTypes == null
-            || parameterTypes.length != 1) {
+                || parameterTypes.length != 1) {
             throw new SofaRpcRuntimeException(
-                LogCodes.getLog(LogCodes.ERROR_ONLY_ONE_PARAM, "msgpack", clazz.getName()));
+                    LogCodes.getLog(LogCodes.ERROR_ONLY_ONE_PARAM, "msgpack", clazz.getName()));
         }
         Class reqClass = parameterTypes[0];
         requestClassCache.put(key, reqClass);

@@ -39,7 +39,7 @@ import java.util.function.Supplier;
 public abstract class AbstractGenerator extends Generator {
 
     private static final int SERVICE_NUMBER_OF_PATHS = 2;
-    private static final int METHOD_NUMBER_OF_PATHS  = 4;
+    private static final int METHOD_NUMBER_OF_PATHS = 4;
 
     protected abstract String getClassPrefix();
 
@@ -230,7 +230,7 @@ public abstract class AbstractGenerator extends Generator {
         final String mustAcheFile = getClassPrefix() + getClassSuffix() + "Stub.mustache";
         String content = applyTemplate(mustAcheFile, context);
         return PluginProtos.CodeGeneratorResponse.File.newBuilder()
-            .setName(constructAbsoluteFileName(context)).setContent(content).build();
+                .setName(constructAbsoluteFileName(context)).setContent(content).build();
     }
 
     /**
@@ -256,7 +256,7 @@ public abstract class AbstractGenerator extends Generator {
      */
     private String getComments(Location location) {
         return location.getLeadingComments().isEmpty() ? location.getTrailingComments() : location
-            .getLeadingComments();
+                .getLeadingComments();
     }
 
     /**

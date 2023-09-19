@@ -45,12 +45,15 @@ public class ProtocolFactory {
      * 除了托管给扩展加载器的工厂模式（保留alias：实例）外<br>
      * 还需要额外保留编码和实例的映射：{别名：编码}
      */
-    private final static ConcurrentMap<String, Byte>   TYPE_CODE_MAP     = new ConcurrentHashMap<String, Byte>();
-
+    private final static ConcurrentMap<String, Byte> TYPE_CODE_MAP = new ConcurrentHashMap<String, Byte>();
+    /**
+     * 最大偏移量，用于一个端口支持多协议时使用
+     */
+    private static int maxMagicOffset;
     /**
      * 扩展加载器
      */
-    private final static ExtensionLoader<Protocol>     EXTENSION_LOADER  = buildLoader();
+    private final static ExtensionLoader<Protocol> EXTENSION_LOADER = buildLoader();
 
     private static ExtensionLoader<Protocol> buildLoader() {
         ExtensionLoader<Protocol> extensionLoader = ExtensionLoaderFactory.getExtensionLoader(Protocol.class);
@@ -59,7 +62,7 @@ public class ProtocolFactory {
             public void onLoad(ExtensionClass<Protocol> extensionClass) {
                 // 除了保留 alias：Protocol外， 需要保留 code：Protocol
                 Protocol protocol = extensionClass
-                    .getExtInstance();
+                        .getExtInstance();
                 TYPE_PROTOCOL_MAP.put(extensionClass.getCode(), protocol);
                 TYPE_CODE_MAP.put(extensionClass.getAlias(), extensionClass.getCode());
                 if (RpcConfigs.getBooleanValue(RpcOptions.TRANSPORT_SERVER_PROTOCOL_ADAPTIVE)) {
@@ -120,11 +123,6 @@ public class ProtocolFactory {
         }
         return null;
     }
-
-    /**
-     * 最大偏移量，用于一个端口支持多协议时使用
-     */
-    private static int maxMagicOffset;
 
     /**
      * 注册协议到适配协议

@@ -31,17 +31,17 @@ import org.junit.Test;
  */
 public class ZookeeperRegistryDestroyTest extends BaseZkTest {
 
-    private static RegistryConfig    registryConfig;
+    private static RegistryConfig registryConfig;
 
     private static ZookeeperRegistry registry;
 
     @BeforeClass
     public static void setUp() {
         registryConfig = new RegistryConfig()
-            .setProtocol(RpcConstants.REGISTRY_PROTOCOL_ZK)
-            .setSubscribe(true)
-            .setAddress("127.0.0.1:2181")
-            .setRegister(true);
+                .setProtocol(RpcConstants.REGISTRY_PROTOCOL_ZK)
+                .setSubscribe(true)
+                .setAddress("127.0.0.1:2181")
+                .setRegister(true);
 
         registry = (ZookeeperRegistry) RegistryFactory.getRegistry(registryConfig);
         registry.init();
@@ -64,7 +64,7 @@ public class ZookeeperRegistryDestroyTest extends BaseZkTest {
     }
 
     private static class MockDestroyHook implements Destroyable.DestroyHook {
-        private boolean preDestory  = false;
+        private boolean preDestory = false;
 
         private boolean postDestroy = false;
 

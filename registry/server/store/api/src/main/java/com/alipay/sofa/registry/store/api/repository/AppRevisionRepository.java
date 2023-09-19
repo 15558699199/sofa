@@ -18,11 +18,8 @@ package com.alipay.sofa.registry.store.api.repository;
 
 import com.alipay.sofa.registry.common.model.store.AppRevision;
 import com.alipay.sofa.registry.store.api.multi.MultiDataCenterListener;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+
+import java.util.*;
 
 /**
  * @author xiaojian.xj
@@ -30,47 +27,48 @@ import java.util.Set;
  */
 public interface AppRevisionRepository extends MultiDataCenterListener {
 
-  /**
-   * persistence appRevision
-   *
-   * @param appRevision appRevision
-   */
-  void register(AppRevision appRevision) throws Exception;
+    /**
+     * persistence appRevision
+     *
+     * @param appRevision appRevision
+     */
+    void register(AppRevision appRevision) throws Exception;
 
-  /**
-   * check if revisionId exist
-   *
-   * @param revisionId revisionId
-   * @return boolean
-   */
-  boolean exist(String revisionId);
-  /**
-   * get AppRevision
-   *
-   * @param revision revision
-   * @return
-   */
-  AppRevision queryRevision(String revision);
+    /**
+     * check if revisionId exist
+     *
+     * @param revisionId revisionId
+     * @return boolean
+     */
+    boolean exist(String revisionId);
 
-  boolean heartbeat(String revision);
+    /**
+     * get AppRevision
+     *
+     * @param revision revision
+     * @return
+     */
+    AppRevision queryRevision(String revision);
 
-  boolean heartbeatDB(String revision);
+    boolean heartbeat(String revision);
 
-  Collection<String> availableRevisions();
+    boolean heartbeatDB(String revision);
 
-  List<AppRevision> listFromStorage(long start, int limit);
+    Collection<String> availableRevisions();
 
-  void startSynced();
+    List<AppRevision> listFromStorage(long start, int limit);
 
-  void waitSynced();
+    void startSynced();
 
-  List<AppRevision> getExpired(Date beforeTime, int limit);
+    void waitSynced();
 
-  void replace(AppRevision appRevision);
+    List<AppRevision> getExpired(Date beforeTime, int limit);
 
-  int cleanDeleted(Date beforeTime, int limit);
+    void replace(AppRevision appRevision);
 
-  Map<String, Integer> countByApp();
+    int cleanDeleted(Date beforeTime, int limit);
 
-  Set<String> allRevisionIds();
+    Map<String, Integer> countByApp();
+
+    Set<String> allRevisionIds();
 }

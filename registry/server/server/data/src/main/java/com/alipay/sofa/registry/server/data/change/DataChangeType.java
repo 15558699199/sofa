@@ -17,11 +17,11 @@
 package com.alipay.sofa.registry.server.data.change;
 
 public enum DataChangeType {
-  UNKNOWN,
-  PUT,
-  SYNC,
-  MIGRATED,
-  LEASE,
-  SYNC_REMOTE,
-  CLEAR
+    UNKNOWN,
+    PUT,
+    SYNC,
+    MIGRATED,
+    LEASE,
+    SYNC_REMOTE,
+    CLEAR
 }

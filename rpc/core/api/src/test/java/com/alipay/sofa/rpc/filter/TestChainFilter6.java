@@ -41,7 +41,7 @@ public class TestChainFilter6 extends Filter {
 
     @Override
     public void onAsyncResponse(ConsumerConfig config, SofaRequest request, SofaResponse response, Throwable throwable)
-        throws SofaRpcException {
+            throws SofaRpcException {
         response.setAppResponse(response.getAppResponse() + "_a6");
     }
 }

@@ -35,179 +35,179 @@ import com.alipay.sofa.registry.util.ConcurrentUtils;
 import com.alipay.sofa.registry.util.WakeUpLoopRunnable;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Sets;
-import java.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
+
+import java.util.*;
 
 /**
  * @author yuzhi.lyz
  * @version v 0.1 2020-11-29 12:08 yuzhi.lyz Exp $
  */
 public abstract class ClientSideExchanger
-    implements NodeExchanger, ApplicationListener<ContextRefreshedEvent> {
-  private static final Logger LOGGER = LoggerFactory.getLogger(ClientSideExchanger.class);
-  protected final String serverType;
+        implements NodeExchanger, ApplicationListener<ContextRefreshedEvent> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ClientSideExchanger.class);
+    protected final String serverType;
+    private final Connector connector;
+    @Autowired
+    protected Exchange boltExchange;
+    protected volatile Set<String> serverIps = Sets.newHashSet();
 
-  @Autowired protected Exchange boltExchange;
-
-  protected volatile Set<String> serverIps = Sets.newHashSet();
-  private final Connector connector;
-
-  protected ClientSideExchanger(String serverType) {
-    this.serverType = serverType;
-    this.connector = new Connector();
-  }
-
-  @Override
-  public void onApplicationEvent(ContextRefreshedEvent event) {
-    init();
-  }
-
-  public void init() {
-    ConcurrentUtils.createDaemonThread(serverType + "-async-connector", connector).start();
-    LOGGER.info("{} init connector", serverType);
-  }
-
-  @Override
-  public Response request(Request request) throws RequestException {
-    final URL url = request.getRequestUrl();
-    if (url == null) {
-      throw new RequestException("null url", request);
+    protected ClientSideExchanger(String serverType) {
+        this.serverType = serverType;
+        this.connector = new Connector();
     }
-    Client client = boltExchange.getClient(serverType);
-    final int timeout = request.getTimeout() != null ? request.getTimeout() : getRpcTimeoutMillis();
-    try {
-      if (client == null) {
-        connect(url);
-        client = boltExchange.getClient(serverType);
-      }
-      CallbackHandler callback = request.getCallBackHandler();
-      if (callback == null) {
-        final Object result = client.sendSync(url, request.getRequestBody(), timeout);
-        return () -> result;
-      } else {
-        client.sendCallback(url, request.getRequestBody(), callback, timeout);
-        return () -> Response.ResultStatus.SUCCESSFUL;
-      }
-    } catch (Throwable e) {
-      throw new RequestException(
-          serverType + "Exchanger request error! Request url:" + url, request, e);
+
+    @Override
+    public void onApplicationEvent(ContextRefreshedEvent event) {
+        init();
     }
-  }
 
-  public Response requestRaw(String ip, Object raw) throws RequestException {
-    Request req = new SimpleRequest(raw, new URL(ip, getServerPort()));
-    return request(req);
-  }
-
-  @Override
-  public Client connectServer() {
-    Set<String> ips = serverIps;
-    if (!ips.isEmpty()) {
-      int count = tryConnectAllServer(ips);
-      if (count == 0) {
-        throw new RuntimeException("failed to connect any servers, " + ips);
-      }
+    public void init() {
+        ConcurrentUtils.createDaemonThread(serverType + "-async-connector", connector).start();
+        LOGGER.info("{} init connector", serverType);
     }
-    return getClient();
-  }
 
-  public Client getClient() {
-    return boltExchange.getClient(serverType);
-  }
-
-  protected int tryConnectAllServer(Set<String> ips) {
-    int connectCount = 0;
-    for (String node : ips) {
-      URL url = new URL(node, getServerPort());
-      try {
-        connect(url);
-        connectCount++;
-      } catch (Throwable e) {
-        LOGGER.error("Exchanger connect server error!url:" + url, e);
-      }
+    @Override
+    public Response request(Request request) throws RequestException {
+        final URL url = request.getRequestUrl();
+        if (url == null) {
+            throw new RequestException("null url", request);
+        }
+        Client client = boltExchange.getClient(serverType);
+        final int timeout = request.getTimeout() != null ? request.getTimeout() : getRpcTimeoutMillis();
+        try {
+            if (client == null) {
+                connect(url);
+                client = boltExchange.getClient(serverType);
+            }
+            CallbackHandler callback = request.getCallBackHandler();
+            if (callback == null) {
+                final Object result = client.sendSync(url, request.getRequestBody(), timeout);
+                return () -> result;
+            } else {
+                client.sendCallback(url, request.getRequestBody(), callback, timeout);
+                return () -> Response.ResultStatus.SUCCESSFUL;
+            }
+        } catch (Throwable e) {
+            throw new RequestException(
+                    serverType + "Exchanger request error! Request url:" + url, request, e);
+        }
     }
-    return connectCount;
-  }
 
-  public Channel connect(URL url) {
-    Client client = getClient();
-    if (client == null) {
-      synchronized (this) {
-        client = getClient();
+    public Response requestRaw(String ip, Object raw) throws RequestException {
+        Request req = new SimpleRequest(raw, new URL(ip, getServerPort()));
+        return request(req);
+    }
+
+    @Override
+    public Client connectServer() {
+        Set<String> ips = serverIps;
+        if (!ips.isEmpty()) {
+            int count = tryConnectAllServer(ips);
+            if (count == 0) {
+                throw new RuntimeException("failed to connect any servers, " + ips);
+            }
+        }
+        return getClient();
+    }
+
+    public Client getClient() {
+        return boltExchange.getClient(serverType);
+    }
+
+    protected int tryConnectAllServer(Set<String> ips) {
+        int connectCount = 0;
+        for (String node : ips) {
+            URL url = new URL(node, getServerPort());
+            try {
+                connect(url);
+                connectCount++;
+            } catch (Throwable e) {
+                LOGGER.error("Exchanger connect server error!url:" + url, e);
+            }
+        }
+        return connectCount;
+    }
+
+    public Channel connect(URL url) {
+        Client client = getClient();
         if (client == null) {
-          client =
-              boltExchange.connect(
-                  serverType,
-                  getConnNum(),
-                  url,
-                  getClientHandlers().toArray(new ChannelHandler[0]));
+            synchronized (this) {
+                client = getClient();
+                if (client == null) {
+                    client =
+                            boltExchange.connect(
+                                    serverType,
+                                    getConnNum(),
+                                    url,
+                                    getClientHandlers().toArray(new ChannelHandler[0]));
+                }
+            }
         }
-      }
-    }
-    Channel channel = client.getChannel(url);
-    if (channel == null) {
-      synchronized (this) {
-        channel = client.getChannel(url);
+        Channel channel = client.getChannel(url);
         if (channel == null) {
-          channel = client.connect(url);
+            synchronized (this) {
+                channel = client.getChannel(url);
+                if (channel == null) {
+                    channel = client.connect(url);
+                }
+            }
         }
-      }
-    }
-    return channel;
-  }
-
-  public Map<String, List<Connection>> getConnections() {
-    Client client = boltExchange.getClient(serverType);
-    if (client == null) {
-      return Collections.emptyMap();
-    }
-    return ((BoltClient) client).getConnections();
-  }
-
-  public void notifyConnectServerAsync() {
-    connector.wakeup();
-  }
-
-  private final class Connector extends WakeUpLoopRunnable {
-
-    @Override
-    public void runUnthrowable() {
-      Set<String> ips = serverIps;
-      try {
-        tryConnectAllServer(ips);
-      } catch (Throwable e) {
-        LOGGER.error("failded to connect {}", ips, e);
-      }
+        return channel;
     }
 
-    @Override
-    public int getWaitingMillis() {
-      return 3000;
+    public Map<String, List<Connection>> getConnections() {
+        Client client = boltExchange.getClient(serverType);
+        if (client == null) {
+            return Collections.emptyMap();
+        }
+        return ((BoltClient) client).getConnections();
     }
-  }
 
-  public abstract int getRpcTimeoutMillis();
+    public void notifyConnectServerAsync() {
+        connector.wakeup();
+    }
 
-  public abstract int getServerPort();
+    public abstract int getRpcTimeoutMillis();
 
-  public int getConnNum() {
-    return 1;
-  }
+    public abstract int getServerPort();
 
-  protected abstract Collection<ChannelHandler> getClientHandlers();
+    public int getConnNum() {
+        return 1;
+    }
 
-  public Set<String> getServerIps() {
-    return serverIps;
-  }
+    protected abstract Collection<ChannelHandler> getClientHandlers();
 
-  public synchronized void setServerIps(Collection<String> serverIps) {
-    this.serverIps = Collections.unmodifiableSet(Sets.newHashSet(serverIps));
-  }
+    public Set<String> getServerIps() {
+        return serverIps;
+    }
 
-  @VisibleForTesting
-  public void setBoltExchange(Exchange boltExchange) {
-    this.boltExchange = boltExchange;
-  }
+    public synchronized void setServerIps(Collection<String> serverIps) {
+        this.serverIps = Collections.unmodifiableSet(Sets.newHashSet(serverIps));
+    }
+
+    @VisibleForTesting
+    public void setBoltExchange(Exchange boltExchange) {
+        this.boltExchange = boltExchange;
+    }
+
+    private final class Connector extends WakeUpLoopRunnable {
+
+        @Override
+        public void runUnthrowable() {
+            Set<String> ips = serverIps;
+            try {
+                tryConnectAllServer(ips);
+            } catch (Throwable e) {
+                LOGGER.error("failded to connect {}", ips, e);
+            }
+        }
+
+        @Override
+        public int getWaitingMillis() {
+            return 3000;
+        }
+    }
 }

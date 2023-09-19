@@ -22,7 +22,7 @@ package com.alipay.sofa.registry.jdbc.exception;
  */
 public class RevisionNotExistException extends RuntimeException {
 
-  public RevisionNotExistException(String revision) {
-    super(String.format("revision: %s not exist.", revision));
-  }
+    public RevisionNotExistException(String revision) {
+        super(String.format("revision: %s not exist.", revision));
+    }
 }

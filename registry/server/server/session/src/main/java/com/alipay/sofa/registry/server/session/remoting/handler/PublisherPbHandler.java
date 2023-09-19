@@ -25,8 +25,9 @@ import com.alipay.sofa.registry.remoting.RemotingException;
 import com.alipay.sofa.registry.server.session.converter.pb.PublisherRegisterConvertor;
 import com.alipay.sofa.registry.server.session.converter.pb.RegisterResponseConvertor;
 import com.alipay.sofa.registry.server.shared.remoting.RemotingHelper;
-import java.util.concurrent.Executor;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.concurrent.Executor;
 
 /**
  * TODO
@@ -36,46 +37,48 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class PublisherPbHandler extends AbstractClientDataRequestHandler<PublisherRegisterPb> {
 
-  @Autowired PublisherHandler publisherHandler;
+    @Autowired
+    PublisherHandler publisherHandler;
 
-  @Override
-  protected Node.NodeType getConnectNodeType() {
-    return publisherHandler.getConnectNodeType();
-  }
-
-  /**
-   * Reply object.
-   *
-   * @param channel the channel
-   * @param message the message
-   * @return the object
-   * @throws RemotingException the remoting exception
-   */
-  @Override
-  public Object doHandle(Channel channel, PublisherRegisterPb message) {
-    RemotingHelper.markProtobuf(channel);
-    RegisterResponsePb.Builder builder = RegisterResponsePb.newBuilder();
-
-    Object response =
-        publisherHandler.doHandle(channel, PublisherRegisterConvertor.convert2Java(message));
-    if (!(response instanceof RegisterResponse)) {
-      return builder.setSuccess(false).setMessage("Unknown response type").build();
+    @Override
+    protected Node.NodeType getConnectNodeType() {
+        return publisherHandler.getConnectNodeType();
     }
 
-    return RegisterResponseConvertor.convert2Pb((RegisterResponse) response);
-  }
-  /**
-   * Interest class.
-   *
-   * @return the class
-   */
-  @Override
-  public Class interest() {
-    return PublisherRegisterPb.class;
-  }
+    /**
+     * Reply object.
+     *
+     * @param channel the channel
+     * @param message the message
+     * @return the object
+     * @throws RemotingException the remoting exception
+     */
+    @Override
+    public Object doHandle(Channel channel, PublisherRegisterPb message) {
+        RemotingHelper.markProtobuf(channel);
+        RegisterResponsePb.Builder builder = RegisterResponsePb.newBuilder();
 
-  @Override
-  public Executor getExecutor() {
-    return publisherHandler.getExecutor();
-  }
+        Object response =
+                publisherHandler.doHandle(channel, PublisherRegisterConvertor.convert2Java(message));
+        if (!(response instanceof RegisterResponse)) {
+            return builder.setSuccess(false).setMessage("Unknown response type").build();
+        }
+
+        return RegisterResponseConvertor.convert2Pb((RegisterResponse) response);
+    }
+
+    /**
+     * Interest class.
+     *
+     * @return the class
+     */
+    @Override
+    public Class interest() {
+        return PublisherRegisterPb.class;
+    }
+
+    @Override
+    public Executor getExecutor() {
+        return publisherHandler.getExecutor();
+    }
 }

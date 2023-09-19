@@ -19,6 +19,7 @@ package com.alipay.sofa.registry.server.session.registry;
 import com.alipay.sofa.registry.common.model.ConnectId;
 import com.alipay.sofa.registry.common.model.store.StoreData;
 import com.alipay.sofa.registry.remoting.Channel;
+
 import java.util.List;
 
 /**
@@ -27,43 +28,45 @@ import java.util.List;
  */
 public interface Registry {
 
-  /**
-   * register new publisher or subscriber data
-   *
-   * @param data data
-   * @param channel channel
-   */
-  void register(StoreData<String> data, Channel channel);
+    /**
+     * register new publisher or subscriber data
+     *
+     * @param data    data
+     * @param channel channel
+     */
+    void register(StoreData<String> data, Channel channel);
 
-  /**
-   * clean all the connectIds: 1. clean pubs/sub/wat
-   *
-   * @param connectIds connectIds
-   */
-  void clean(List<ConnectId> connectIds);
+    /**
+     * clean all the connectIds: 1. clean pubs/sub/wat
+     *
+     * @param connectIds connectIds
+     */
+    void clean(List<ConnectId> connectIds);
 
-  /**
-   * client off the connectIds: 1. clean pubs, keep sub/wat; 2. check sub
-   *
-   * @param connectIds connectIds
-   */
-  void clientOff(List<ConnectId> connectIds);
+    /**
+     * client off the connectIds: 1. clean pubs, keep sub/wat; 2. check sub
+     *
+     * @param connectIds connectIds
+     */
+    void clientOff(List<ConnectId> connectIds);
 
-  /**
-   * disable the connectIds: 1. clean pub/sub/wat; 2. check sub
-   *
-   * @param connectIds connectIds
-   */
-  void blacklist(List<ConnectId> connectIds);
+    /**
+     * disable the connectIds: 1. clean pub/sub/wat; 2. check sub
+     *
+     * @param connectIds connectIds
+     */
+    void blacklist(List<ConnectId> connectIds);
 
-  /**
-   * message mode com.alipay.sofa.registry.client.provider for client node to unregister single
-   * subscriber or publisher data
-   *
-   * @param data data
-   */
-  void unRegister(StoreData<String> data);
+    /**
+     * message mode com.alipay.sofa.registry.client.provider for client node to unregister single
+     * subscriber or publisher data
+     *
+     * @param data data
+     */
+    void unRegister(StoreData<String> data);
 
-  /** for scheduler clean no connect client */
-  void cleanClientConnect();
+    /**
+     * for scheduler clean no connect client
+     */
+    void cleanClientConnect();
 }

@@ -22,9 +22,10 @@ import com.alipay.sofa.registry.remoting.ChannelHandler;
 import com.alipay.sofa.registry.remoting.exchange.Exchange;
 import com.alipay.sofa.registry.server.data.bootstrap.MultiClusterDataServerConfig;
 import com.alipay.sofa.registry.server.shared.remoting.ClientSideExchanger;
-import java.util.Collection;
-import javax.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.annotation.Resource;
+import java.util.Collection;
 
 /**
  * @author xiaojian.xj
@@ -32,46 +33,47 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class RemoteDataNodeExchanger extends ClientSideExchanger {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(RemoteDataNodeExchanger.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(RemoteDataNodeExchanger.class);
 
-  @Autowired private MultiClusterDataServerConfig multiClusterDataServerConfig;
+    @Autowired
+    private MultiClusterDataServerConfig multiClusterDataServerConfig;
 
-  @Resource(name = "remoteDataClientHandlers")
-  private Collection<ChannelHandler> remoteDataClientHandlers;
+    @Resource(name = "remoteDataClientHandlers")
+    private Collection<ChannelHandler> remoteDataClientHandlers;
 
-  /**
-   * Setter method for property <tt>remoteDataClientHandlers</tt>.
-   *
-   * @param remoteDataClientHandlers value to be assigned to property remoteDataClientHandlers
-   */
-  public void setRemoteDataClientHandlers(Collection<ChannelHandler> remoteDataClientHandlers) {
-    LOGGER.info(
-        "[RemoteDataNodeExchanger]setRemoteDataClientHandlers:{}", remoteDataClientHandlers);
-    this.remoteDataClientHandlers = remoteDataClientHandlers;
-  }
+    public RemoteDataNodeExchanger() {
+        super(Exchange.REMOTE_DATA_SERVER_TYPE);
+    }
 
-  public RemoteDataNodeExchanger() {
-    super(Exchange.REMOTE_DATA_SERVER_TYPE);
-  }
+    /**
+     * Setter method for property <tt>remoteDataClientHandlers</tt>.
+     *
+     * @param remoteDataClientHandlers value to be assigned to property remoteDataClientHandlers
+     */
+    public void setRemoteDataClientHandlers(Collection<ChannelHandler> remoteDataClientHandlers) {
+        LOGGER.info(
+                "[RemoteDataNodeExchanger]setRemoteDataClientHandlers:{}", remoteDataClientHandlers);
+        this.remoteDataClientHandlers = remoteDataClientHandlers;
+    }
 
-  @Override
-  public int getRpcTimeoutMillis() {
-    return multiClusterDataServerConfig.getSyncRemoteSlotLeaderTimeoutMillis();
-  }
+    @Override
+    public int getRpcTimeoutMillis() {
+        return multiClusterDataServerConfig.getSyncRemoteSlotLeaderTimeoutMillis();
+    }
 
-  @Override
-  public int getServerPort() {
-    return multiClusterDataServerConfig.getSyncRemoteSlotLeaderPort();
-  }
+    @Override
+    public int getServerPort() {
+        return multiClusterDataServerConfig.getSyncRemoteSlotLeaderPort();
+    }
 
-  @Override
-  public int getConnNum() {
-    return multiClusterDataServerConfig.getSyncRemoteSlotLeaderConnNum();
-  }
+    @Override
+    public int getConnNum() {
+        return multiClusterDataServerConfig.getSyncRemoteSlotLeaderConnNum();
+    }
 
-  @Override
-  protected Collection<ChannelHandler> getClientHandlers() {
-    LOGGER.info("[RemoteDataNodeExchanger]remoteDataClientHandlers:{}", remoteDataClientHandlers);
-    return remoteDataClientHandlers;
-  }
+    @Override
+    protected Collection<ChannelHandler> getClientHandlers() {
+        LOGGER.info("[RemoteDataNodeExchanger]remoteDataClientHandlers:{}", remoteDataClientHandlers);
+        return remoteDataClientHandlers;
+    }
 }

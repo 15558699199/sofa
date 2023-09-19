@@ -24,34 +24,34 @@ import com.alipay.sofa.registry.common.model.store.DataInfo;
  */
 public class PersistenceDataBuilder {
 
-  public static PersistenceData createPersistenceData(String dataInfoId, String data) {
-    DataInfo dataInfo = DataInfo.valueOf(dataInfoId);
-    PersistenceData persistenceData = new PersistenceData();
-    persistenceData.setDataId(dataInfo.getDataId());
-    persistenceData.setGroup(dataInfo.getGroup());
-    persistenceData.setInstanceId(dataInfo.getInstanceId());
-    persistenceData.setData(data);
-    persistenceData.setVersion(nextVersion());
-    return persistenceData;
-  }
-
-  public static PersistenceData createPersistenceDataForBool(String dataInfoId, boolean data) {
-    return createPersistenceData(dataInfoId, data ? "true" : "false");
-  }
-
-  public static String getDataInfoId(PersistenceData persistenceData) {
-    return DataInfo.toDataInfoId(
-        persistenceData.getDataId(), persistenceData.getInstanceId(), persistenceData.getGroup());
-  }
-
-  public static long nextVersion() {
-    return System.currentTimeMillis();
-  }
-
-  public static String getEntityData(PersistenceData data) {
-    if (data != null) {
-      return data.getData();
+    public static PersistenceData createPersistenceData(String dataInfoId, String data) {
+        DataInfo dataInfo = DataInfo.valueOf(dataInfoId);
+        PersistenceData persistenceData = new PersistenceData();
+        persistenceData.setDataId(dataInfo.getDataId());
+        persistenceData.setGroup(dataInfo.getGroup());
+        persistenceData.setInstanceId(dataInfo.getInstanceId());
+        persistenceData.setData(data);
+        persistenceData.setVersion(nextVersion());
+        return persistenceData;
     }
-    return null;
-  }
+
+    public static PersistenceData createPersistenceDataForBool(String dataInfoId, boolean data) {
+        return createPersistenceData(dataInfoId, data ? "true" : "false");
+    }
+
+    public static String getDataInfoId(PersistenceData persistenceData) {
+        return DataInfo.toDataInfoId(
+                persistenceData.getDataId(), persistenceData.getInstanceId(), persistenceData.getGroup());
+    }
+
+    public static long nextVersion() {
+        return System.currentTimeMillis();
+    }
+
+    public static String getEntityData(PersistenceData data) {
+        if (data != null) {
+            return data.getData();
+        }
+        return null;
+    }
 }

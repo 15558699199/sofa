@@ -35,7 +35,7 @@ import java.util.Collections;
 public class HystrixFilterSyncTest extends ActivelyDestroyTest {
 
     private ProviderConfig<HystrixService> providerConfig;
-    private ServerConfig                   serverConfig;
+    private ServerConfig serverConfig;
     private ConsumerConfig<HystrixService> consumerConfig;
 
     @After
@@ -72,7 +72,7 @@ public class HystrixFilterSyncTest extends ActivelyDestroyTest {
         providerConfig.export();
 
         consumerConfig = defaultClient()
-            .setTimeout(10000);
+                .setTimeout(10000);
 
         HystrixService helloService = consumerConfig.refer();
 
@@ -91,8 +91,8 @@ public class HystrixFilterSyncTest extends ActivelyDestroyTest {
         providerConfig.export();
 
         consumerConfig = defaultClient()
-            .setTimeout(10000)
-            .setFilterRef(Collections.<Filter> singletonList(new HystrixFilter()));
+                .setTimeout(10000)
+                .setFilterRef(Collections.<Filter>singletonList(new HystrixFilter()));
 
         SofaHystrixConfig.registerFallback(consumerConfig, new HystrixServiceFallback());
 
@@ -108,7 +108,7 @@ public class HystrixFilterSyncTest extends ActivelyDestroyTest {
         providerConfig.export();
 
         consumerConfig = defaultClient()
-            .setTimeout(10000);
+                .setTimeout(10000);
 
         SofaHystrixConfig.registerFallbackFactory(consumerConfig, new HystrixServiceFallbackFactory());
 
@@ -116,25 +116,25 @@ public class HystrixFilterSyncTest extends ActivelyDestroyTest {
 
         String result = helloService.sayHello("abc", 24);
         Assert.assertEquals(
-            "fallback abc from server! age: 24, error: com.netflix.hystrix.exception.HystrixTimeoutException",
-            result);
+                "fallback abc from server! age: 24, error: com.netflix.hystrix.exception.HystrixTimeoutException",
+                result);
     }
 
     private ProviderConfig<HystrixService> defaultServer(int sleep) {
         serverConfig = new ServerConfig()
-            .setPort(22222)
-            .setDaemon(false);
+                .setPort(22222)
+                .setDaemon(false);
 
         return new ProviderConfig<HystrixService>()
-            .setInterfaceId(HystrixService.class.getName())
-            .setRef(new InvokeCounterHystrixService(sleep))
-            .setServer(serverConfig);
+                .setInterfaceId(HystrixService.class.getName())
+                .setRef(new InvokeCounterHystrixService(sleep))
+                .setServer(serverConfig);
     }
 
     private ConsumerConfig<HystrixService> defaultClient() {
         return new ConsumerConfig<HystrixService>()
-            .setInterfaceId(HystrixService.class.getName())
-            .setDirectUrl("bolt://127.0.0.1:22222")
-            .setParameter(HystrixConstants.SOFA_HYSTRIX_ENABLED, String.valueOf(true));
+                .setInterfaceId(HystrixService.class.getName())
+                .setDirectUrl("bolt://127.0.0.1:22222")
+                .setParameter(HystrixConstants.SOFA_HYSTRIX_ENABLED, String.valueOf(true));
     }
 }

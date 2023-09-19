@@ -21,6 +21,7 @@ import com.alipay.sofa.registry.common.model.metaserver.FetchSystemPropertyResul
 import com.alipay.sofa.registry.common.model.metaserver.ProvideData;
 import com.alipay.sofa.registry.common.model.metaserver.SlotTableChangeEvent;
 import com.alipay.sofa.registry.common.model.slot.SlotTableStatusResponse;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -30,73 +31,86 @@ import java.util.Set;
  * @version v 0.1 2020-11-28 15:19 yuzhi.lyz Exp $
  */
 public interface MetaServerService {
-  /** Start renewer. */
-  void startRenewer();
+    /**
+     * Start renewer.
+     */
+    void startRenewer();
 
-  /** suspend renewer. */
-  void suspendRenewer();
+    /**
+     * suspend renewer.
+     */
+    void suspendRenewer();
 
-  /** resume renewer. */
-  void resumeRenewer();
+    /**
+     * resume renewer.
+     */
+    void resumeRenewer();
 
-  /** update data server expireTime */
-  boolean renewNode();
+    /**
+     * update data server expireTime
+     */
+    boolean renewNode();
 
-  /**
-   * Handle slot table change boolean.
-   *
-   * @param event the event
-   * @return the boolean
-   */
-  boolean handleSlotTableChange(SlotTableChangeEvent event);
+    /**
+     * Handle slot table change boolean.
+     *
+     * @param event the event
+     * @return the boolean
+     */
+    boolean handleSlotTableChange(SlotTableChangeEvent event);
 
-  /**
-   * get provider data
-   *
-   * @param dataInfoId
-   * @return
-   */
-  ProvideData fetchData(String dataInfoId);
+    /**
+     * get provider data
+     *
+     * @param dataInfoId
+     * @return
+     */
+    ProvideData fetchData(String dataInfoId);
 
-  Map<String, ProvideData> fetchData(Map<String, Long> dataInfoIdsWithVersion);
+    Map<String, ProvideData> fetchData(Map<String, Long> dataInfoIdsWithVersion);
 
-  /** Add self to meta blacklist. */
-  void addSelfToMetaBlacklist();
+    /**
+     * Add self to meta blacklist.
+     */
+    void addSelfToMetaBlacklist();
 
-  /** Remove self from meta blacklist. */
-  void removeSelfFromMetaBlacklist();
+    /**
+     * Remove self from meta blacklist.
+     */
+    void removeSelfFromMetaBlacklist();
 
-  /**
-   * @param zonename zone is null, get all session
-   * @return
-   */
-  List<String> getSessionServerList(String zonename);
+    /**
+     * @param zonename zone is null, get all session
+     * @return
+     */
+    List<String> getSessionServerList(String zonename);
 
-  Set<ProcessId> getSessionProcessIds();
-  /**
-   * Gets get data server list.
-   *
-   * @return the get data server list
-   */
-  Set<String> getDataServerList();
+    Set<ProcessId> getSessionProcessIds();
 
-  String getMetaServerLeader();
+    /**
+     * Gets get data server list.
+     *
+     * @return the get data server list
+     */
+    Set<String> getDataServerList();
 
-  /**
-   * Gets get session server epoch.
-   *
-   * @return the get session server epoch
-   */
-  long getSessionServerEpoch();
+    String getMetaServerLeader();
 
-  /**
-   * get all datacenters
-   *
-   * @return
-   */
-  Set<String> getDataCenters();
+    /**
+     * Gets get session server epoch.
+     *
+     * @return the get session server epoch
+     */
+    long getSessionServerEpoch();
 
-  FetchSystemPropertyResult fetchSystemProperty(String dataInfoId, long currentVersion);
+    /**
+     * get all datacenters
+     *
+     * @return
+     */
+    Set<String> getDataCenters();
 
-  SlotTableStatusResponse getSlotTableStatus();
+    FetchSystemPropertyResult fetchSystemProperty(String dataInfoId, long currentVersion);
+
+    SlotTableStatusResponse getSlotTableStatus();
 }

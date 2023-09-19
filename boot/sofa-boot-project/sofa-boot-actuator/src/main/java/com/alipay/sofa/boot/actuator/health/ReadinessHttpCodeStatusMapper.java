@@ -42,13 +42,13 @@ public class ReadinessHttpCodeStatusMapper implements HttpCodeStatusMapper {
         Map<String, Integer> defaultMappings = new HashMap<>(8);
         defaultMappings.put(Status.DOWN.getCode(), WebEndpointResponse.STATUS_SERVICE_UNAVAILABLE);
         defaultMappings.put(Status.OUT_OF_SERVICE.getCode(),
-            WebEndpointResponse.STATUS_INTERNAL_SERVER_ERROR);
+                WebEndpointResponse.STATUS_INTERNAL_SERVER_ERROR);
         defaultMappings.put(Status.UNKNOWN.getCode(),
-            WebEndpointResponse.STATUS_INTERNAL_SERVER_ERROR);
+                WebEndpointResponse.STATUS_INTERNAL_SERVER_ERROR);
         DEFAULT_MAPPINGS = getUniformMappings(defaultMappings);
     }
 
-    private final SimpleHttpCodeStatusMapper  statusMapper;
+    private final SimpleHttpCodeStatusMapper statusMapper;
 
     public ReadinessHttpCodeStatusMapper() {
         this(null);
@@ -63,11 +63,6 @@ public class ReadinessHttpCodeStatusMapper implements HttpCodeStatusMapper {
             mapping.putAll(getUniformMappings(mappings));
         }
         statusMapper = new SimpleHttpCodeStatusMapper(mapping);
-    }
-
-    @Override
-    public int getStatusCode(Status status) {
-        return statusMapper.getStatusCode(status);
     }
 
     private static Map<String, Integer> getUniformMappings(Map<String, Integer> mappings) {
@@ -93,5 +88,10 @@ public class ReadinessHttpCodeStatusMapper implements HttpCodeStatusMapper {
             }
         }
         return builder.toString();
+    }
+
+    @Override
+    public int getStatusCode(Status status) {
+        return statusMapper.getStatusCode(status);
     }
 }

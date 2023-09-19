@@ -23,8 +23,6 @@ import com.alipay.sofa.rpc.log.Logger;
 import com.alipay.sofa.rpc.log.LoggerFactory;
 
 /**
- *
- *
  * @author <a href="mailto:zhanggeng.zg@antfin.com">GengZhang</a>
  */
 public class ClientA {
@@ -34,11 +32,11 @@ public class ClientA {
     public static void main(String[] args) {
         // A 服务
         ConsumerConfig<ServiceB> consumerConfig = new ConsumerConfig<ServiceB>()
-            .setApplication(new ApplicationConfig().setAppName("AAA"))
-            .setInterfaceId(ServiceB.class.getName())
-            .setDirectUrl("bolt://127.0.0.1:12298?appName=BBB")
-            .setRegister(false)
-            .setTimeout(3000);
+                .setApplication(new ApplicationConfig().setAppName("AAA"))
+                .setInterfaceId(ServiceB.class.getName())
+                .setDirectUrl("bolt://127.0.0.1:12298?appName=BBB")
+                .setRegister(false)
+                .setTimeout(3000);
 
         ServiceB serviceB = consumerConfig.refer();
 

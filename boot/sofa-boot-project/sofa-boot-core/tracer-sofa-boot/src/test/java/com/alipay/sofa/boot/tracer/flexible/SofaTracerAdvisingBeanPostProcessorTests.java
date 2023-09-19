@@ -46,21 +46,21 @@ public class SofaTracerAdvisingBeanPostProcessorTests {
             }
         };
         SofaTracerAdvisingBeanPostProcessor sofaTracerAdvisingBeanPostProcessor = new SofaTracerAdvisingBeanPostProcessor(
-            methodInterceptor);
+                methodInterceptor);
         assertThat(sofaTracerAdvisingBeanPostProcessor.isExposeProxy()).isTrue();
         Field advisorField = ReflectionUtils.findField(SofaTracerAdvisingBeanPostProcessor.class,
-            "advisor");
+                "advisor");
         ReflectionUtils.makeAccessible(advisorField);
         Advisor advisor = (Advisor) ReflectionUtils.getField(advisorField,
-            sofaTracerAdvisingBeanPostProcessor);
+                sofaTracerAdvisingBeanPostProcessor);
         assertThat(advisor).isInstanceOf(TracerAnnotationClassAdvisor.class);
         assertThat(((TracerAnnotationClassAdvisor) advisor).getAdvice()).isEqualTo(
-            methodInterceptor);
+                methodInterceptor);
         Field beforeExistingAdvisors = ReflectionUtils.findField(
-            SofaTracerAdvisingBeanPostProcessor.class, "beforeExistingAdvisors");
+                SofaTracerAdvisingBeanPostProcessor.class, "beforeExistingAdvisors");
         ReflectionUtils.makeAccessible(beforeExistingAdvisors);
         assertThat(
-            (boolean) ReflectionUtils.getField(beforeExistingAdvisors,
-                sofaTracerAdvisingBeanPostProcessor)).isTrue();
+                (boolean) ReflectionUtils.getField(beforeExistingAdvisors,
+                        sofaTracerAdvisingBeanPostProcessor)).isTrue();
     }
 }

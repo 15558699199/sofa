@@ -33,120 +33,121 @@ import com.alipay.sofa.registry.server.session.slot.SlotTableCacheImpl;
 import com.alipay.sofa.registry.server.shared.env.ServerEnv;
 import com.alipay.sofa.registry.server.shared.resource.SlotGenericResource;
 import com.google.common.collect.Sets;
-import java.util.Collections;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import java.util.Collections;
+
 public class MetaServerServiceImplTest {
-  private static final Logger LOGGER = LoggerFactory.getLogger(MetaServerServiceImplTest.class);
-  // the table epoch is 10
-  private MetaServerServiceImpl impl;
-  private SessionServerConfigBean sessionServerConfigBean;
-  private SlotTableCacheImpl slotTableCache;
+    private static final Logger LOGGER = LoggerFactory.getLogger(MetaServerServiceImplTest.class);
+    // the table epoch is 10
+    private MetaServerServiceImpl impl;
+    private SessionServerConfigBean sessionServerConfigBean;
+    private SlotTableCacheImpl slotTableCache;
 
-  @Test
-  public void testChangeEvent() {
-    init();
-    SlotTableChangeEvent event = new SlotTableChangeEvent(impl.getCurrentSlotTableEpoch());
-    Assert.assertTrue(
-        event.toString(),
-        event.toString().contains(String.valueOf(impl.getCurrentSlotTableEpoch())));
-    Assert.assertEquals(event.getSlotTableEpoch(), impl.getCurrentSlotTableEpoch());
-    Assert.assertFalse(impl.handleSlotTableChange(event));
-    Assert.assertTrue(
-        impl.handleSlotTableChange(new SlotTableChangeEvent(impl.getCurrentSlotTableEpoch() + 1)));
-  }
+    @Test
+    public void testChangeEvent() {
+        init();
+        SlotTableChangeEvent event = new SlotTableChangeEvent(impl.getCurrentSlotTableEpoch());
+        Assert.assertTrue(
+                event.toString(),
+                event.toString().contains(String.valueOf(impl.getCurrentSlotTableEpoch())));
+        Assert.assertEquals(event.getSlotTableEpoch(), impl.getCurrentSlotTableEpoch());
+        Assert.assertFalse(impl.handleSlotTableChange(event));
+        Assert.assertTrue(
+                impl.handleSlotTableChange(new SlotTableChangeEvent(impl.getCurrentSlotTableEpoch() + 1)));
+    }
 
-  @Test
-  public void testCreateRequest() {
-    init();
+    @Test
+    public void testCreateRequest() {
+        init();
 
-    Assert.assertEquals(
-        impl.getCurrentSlotTableEpoch(),
-        slotTableCache.getEpoch(sessionServerConfigBean.getSessionServerDataCenter()));
-    final long now = System.currentTimeMillis();
-    HeartbeatRequest heartbeatRequest = impl.createRequest();
-    LOGGER.info("hb={}", heartbeatRequest);
+        Assert.assertEquals(
+                impl.getCurrentSlotTableEpoch(),
+                slotTableCache.getEpoch(sessionServerConfigBean.getSessionServerDataCenter()));
+        final long now = System.currentTimeMillis();
+        HeartbeatRequest heartbeatRequest = impl.createRequest();
+        LOGGER.info("hb={}", heartbeatRequest);
 
-    Assert.assertEquals(
-        heartbeatRequest.getDataCenter(), sessionServerConfigBean.getSessionServerDataCenter());
-    Assert.assertEquals(heartbeatRequest.getDuration(), 0);
-    SessionNode node = (SessionNode) heartbeatRequest.getNode();
-    Assert.assertEquals(node.getProcessId(), ServerEnv.PROCESS_ID);
-    Assert.assertEquals(node.getNodeUrl().getIpAddress(), ServerEnv.IP);
+        Assert.assertEquals(
+                heartbeatRequest.getDataCenter(), sessionServerConfigBean.getSessionServerDataCenter());
+        Assert.assertEquals(heartbeatRequest.getDuration(), 0);
+        SessionNode node = (SessionNode) heartbeatRequest.getNode();
+        Assert.assertEquals(node.getProcessId(), ServerEnv.PROCESS_ID);
+        Assert.assertEquals(node.getNodeUrl().getIpAddress(), ServerEnv.IP);
 
-    Assert.assertTrue(heartbeatRequest.getTimestamp() >= now);
-    Assert.assertTrue(heartbeatRequest.getTimestamp() <= System.currentTimeMillis());
+        Assert.assertTrue(heartbeatRequest.getTimestamp() >= now);
+        Assert.assertTrue(heartbeatRequest.getTimestamp() <= System.currentTimeMillis());
 
-    Assert.assertEquals(heartbeatRequest.getSlotTableEpoch(), impl.getCurrentSlotTableEpoch());
-    Assert.assertEquals(heartbeatRequest.getSlotBasicInfo().getSlotNum(), SlotConfig.SLOT_NUM);
-    Assert.assertEquals(
-        heartbeatRequest.getSlotBasicInfo().getSlotReplicas(), SlotConfig.SLOT_REPLICAS);
+        Assert.assertEquals(heartbeatRequest.getSlotTableEpoch(), impl.getCurrentSlotTableEpoch());
+        Assert.assertEquals(heartbeatRequest.getSlotBasicInfo().getSlotNum(), SlotConfig.SLOT_NUM);
+        Assert.assertEquals(
+                heartbeatRequest.getSlotBasicInfo().getSlotReplicas(), SlotConfig.SLOT_REPLICAS);
 
-    Assert.assertNotNull(heartbeatRequest.getSlotTable());
-  }
+        Assert.assertNotNull(heartbeatRequest.getSlotTable());
+    }
 
-  @Test
-  public void testHandle() {
-    init();
-    impl = Mockito.spy(impl);
-    DataNodeExchanger dataNodeExchanger = new DataNodeExchanger();
-    DataNodeNotifyExchanger dataNodeNotifyExchanger = new DataNodeNotifyExchanger();
-    impl.setDataNodeExchanger(dataNodeExchanger);
-    impl.setDataNodeNotifyExchanger(dataNodeNotifyExchanger);
+    @Test
+    public void testHandle() {
+        init();
+        impl = Mockito.spy(impl);
+        DataNodeExchanger dataNodeExchanger = new DataNodeExchanger();
+        DataNodeNotifyExchanger dataNodeNotifyExchanger = new DataNodeNotifyExchanger();
+        impl.setDataNodeExchanger(dataNodeExchanger);
+        impl.setDataNodeNotifyExchanger(dataNodeNotifyExchanger);
 
-    Mockito.when(impl.getDataServerList()).thenReturn(Sets.newHashSet("d1", "d2"));
+        Mockito.when(impl.getDataServerList()).thenReturn(Sets.newHashSet("d1", "d2"));
 
-    BaseHeartBeatResponse resp =
-        new BaseHeartBeatResponse(
-            true,
-            new VersionedList(10, Collections.emptyList()),
-            null,
-            new VersionedList(10, Collections.emptyList()),
-            "xxx",
-            100,
-            Collections.emptyMap());
+        BaseHeartBeatResponse resp =
+                new BaseHeartBeatResponse(
+                        true,
+                        new VersionedList(10, Collections.emptyList()),
+                        null,
+                        new VersionedList(10, Collections.emptyList()),
+                        "xxx",
+                        100,
+                        Collections.emptyMap());
 
-    SlotTable slotTable = slotTableCache.getLocalSlotTable();
-    // resp table is null, not modify the cache.table
-    impl.handleRenewResult(resp);
+        SlotTable slotTable = slotTableCache.getLocalSlotTable();
+        // resp table is null, not modify the cache.table
+        impl.handleRenewResult(resp);
 
-    Assert.assertEquals(dataNodeNotifyExchanger.getServerIps(), impl.getDataServerList());
-    Assert.assertEquals(dataNodeExchanger.getServerIps(), impl.getDataServerList());
-    Assert.assertEquals(dataNodeExchanger.getServerIps(), impl.getDataServerList());
-    Assert.assertEquals(slotTable, slotTableCache.getLocalSlotTable());
+        Assert.assertEquals(dataNodeNotifyExchanger.getServerIps(), impl.getDataServerList());
+        Assert.assertEquals(dataNodeExchanger.getServerIps(), impl.getDataServerList());
+        Assert.assertEquals(dataNodeExchanger.getServerIps(), impl.getDataServerList());
+        Assert.assertEquals(slotTable, slotTableCache.getLocalSlotTable());
 
-    slotTable = new SlotTable(20, Collections.emptyList());
-    resp =
-        new BaseHeartBeatResponse(
-            true,
-            new VersionedList(10, Collections.emptyList()),
-            slotTable,
-            new VersionedList(10, Collections.emptyList()),
-            "xxx",
-            100,
-            Collections.emptyMap());
+        slotTable = new SlotTable(20, Collections.emptyList());
+        resp =
+                new BaseHeartBeatResponse(
+                        true,
+                        new VersionedList(10, Collections.emptyList()),
+                        slotTable,
+                        new VersionedList(10, Collections.emptyList()),
+                        "xxx",
+                        100,
+                        Collections.emptyMap());
 
-    impl.handleRenewResult(resp);
-    Assert.assertEquals(slotTable, slotTableCache.getLocalSlotTable());
-  }
+        impl.handleRenewResult(resp);
+        Assert.assertEquals(slotTable, slotTableCache.getLocalSlotTable());
+    }
 
-  private void init() {
-    impl = new MetaServerServiceImpl();
-    sessionServerConfigBean = TestUtils.newSessionConfig("testDc");
+    private void init() {
+        impl = new MetaServerServiceImpl();
+        sessionServerConfigBean = TestUtils.newSessionConfig("testDc");
 
-    impl.setSessionServerConfig(sessionServerConfigBean);
-    Assert.assertEquals(
-        impl.getRenewIntervalSecs(), sessionServerConfigBean.getSchedulerHeartbeatIntervalSecs());
-    slotTableCache = new SlotTableCacheImpl();
+        impl.setSessionServerConfig(sessionServerConfigBean);
+        Assert.assertEquals(
+                impl.getRenewIntervalSecs(), sessionServerConfigBean.getSchedulerHeartbeatIntervalSecs());
+        slotTableCache = new SlotTableCacheImpl();
 
-    slotTableCache.setSessionServerConfig(sessionServerConfigBean);
-    SlotTable slotTable = new SlotTable(10, Collections.emptyList());
-    SlotGenericResource slotGenericResource = new SlotGenericResource();
-    slotGenericResource.record(slotTable);
-    slotTableCache.updateLocalSlotTable(slotTable);
-    impl.setSlotTableCache(slotTableCache);
-    impl.setDataCenterMetadataCache(TestUtils.newDataCenterMetaCache(sessionServerConfigBean));
-  }
+        slotTableCache.setSessionServerConfig(sessionServerConfigBean);
+        SlotTable slotTable = new SlotTable(10, Collections.emptyList());
+        SlotGenericResource slotGenericResource = new SlotGenericResource();
+        slotGenericResource.record(slotTable);
+        slotTableCache.updateLocalSlotTable(slotTable);
+        impl.setSlotTableCache(slotTableCache);
+        impl.setDataCenterMetadataCache(TestUtils.newDataCenterMetaCache(sessionServerConfigBean));
+    }
 }

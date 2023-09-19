@@ -41,7 +41,7 @@ public class RocketMqConsumerPostProcessor implements BeanPostProcessor, Priorit
 
     @Override
     public Object postProcessAfterInitialization(Object bean, String beanName)
-                                                                              throws BeansException {
+            throws BeansException {
         if (bean instanceof DefaultRocketMQListenerContainer container) {
             Assert.isTrue(StringUtils.hasText(appName), TRACER_APPNAME_KEY + " must be configured!");
             SofaTracerConsumeMessageHook hook = new SofaTracerConsumeMessageHook(appName);

@@ -25,9 +25,9 @@ public class RpcClientLookoutModel extends RpcAbstractLookoutModel {
 
     protected String targetApp;
 
-    protected Long   requestSize;
+    protected Long requestSize;
 
-    protected Long   responseSize;
+    protected Long responseSize;
 
     /**
      * Getter method for property <tt>targetApp</tt>.
@@ -41,7 +41,7 @@ public class RpcClientLookoutModel extends RpcAbstractLookoutModel {
     /**
      * Setter method for property <tt>targetApp</tt>.
      *
-     * @param targetApp  value to be assigned to property targetApp
+     * @param targetApp value to be assigned to property targetApp
      */
     public void setTargetApp(String targetApp) {
         this.targetApp = targetApp;
@@ -59,7 +59,7 @@ public class RpcClientLookoutModel extends RpcAbstractLookoutModel {
     /**
      * Setter method for property <tt>requestSize</tt>.
      *
-     * @param requestSize  value to be assigned to property requestSize
+     * @param requestSize value to be assigned to property requestSize
      */
     public void setRequestSize(Long requestSize) {
         this.requestSize = requestSize;
@@ -77,7 +77,7 @@ public class RpcClientLookoutModel extends RpcAbstractLookoutModel {
     /**
      * Setter method for property <tt>responseSize</tt>.
      *
-     * @param responseSize  value to be assigned to property responseSize
+     * @param responseSize value to be assigned to property responseSize
      */
     public void setResponseSize(Long responseSize) {
         this.responseSize = responseSize;
@@ -86,16 +86,16 @@ public class RpcClientLookoutModel extends RpcAbstractLookoutModel {
     @Override
     public String toString() {
         return "RpcClientLookoutModel{" +
-            "targetApp='" + targetApp + '\'' +
-            ", requestSize=" + requestSize +
-            ", responseSize=" + responseSize +
-            ", app='" + app + '\'' +
-            ", service='" + service + '\'' +
-            ", method='" + method + '\'' +
-            ", protocol='" + protocol + '\'' +
-            ", invokeType='" + invokeType + '\'' +
-            ", elapsedTime=" + elapsedTime +
-            ", success=" + success +
-            '}';
+                "targetApp='" + targetApp + '\'' +
+                ", requestSize=" + requestSize +
+                ", responseSize=" + responseSize +
+                ", app='" + app + '\'' +
+                ", service='" + service + '\'' +
+                ", method='" + method + '\'' +
+                ", protocol='" + protocol + '\'' +
+                ", invokeType='" + invokeType + '\'' +
+                ", elapsedTime=" + elapsedTime +
+                ", success=" + success +
+                '}';
     }
 }

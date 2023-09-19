@@ -16,134 +16,134 @@
  */
 package com.alipay.sofa.registry.server.meta.metaserver.impl;
 
-import static org.mockito.Mockito.*;
-
 import com.alipay.sofa.registry.server.meta.AbstractMetaServerTestBase;
 import com.alipay.sofa.registry.server.meta.MetaLeaderService;
 import com.alipay.sofa.registry.server.meta.bootstrap.config.MetaServerConfig;
 import com.alipay.sofa.registry.server.shared.env.ServerEnv;
 import com.alipay.sofa.registry.store.api.elector.AbstractLeaderElector.LeaderInfo;
 import com.alipay.sofa.registry.store.api.elector.LeaderElector;
-import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
+import static org.mockito.Mockito.*;
+
 public class DefaultMetaLeaderElectorTest extends AbstractMetaServerTestBase {
 
-  private DefaultMetaLeaderElector metaLeaderElector;
+    protected LeaderInfo leaderInfo =
+            new LeaderInfo(
+                    System.currentTimeMillis(), ServerEnv.IP, System.currentTimeMillis() + 20 * 1000);
+    private DefaultMetaLeaderElector metaLeaderElector;
+    @Mock
+    private LeaderElector leaderElector;
+    @Mock
+    private MetaServerConfig metaServerConfig;
 
-  @Mock private LeaderElector leaderElector;
-
-  @Mock private MetaServerConfig metaServerConfig;
-
-  protected LeaderInfo leaderInfo =
-      new LeaderInfo(
-          System.currentTimeMillis(), ServerEnv.IP, System.currentTimeMillis() + 20 * 1000);
-
-  @Before
-  public void beforeDefaultMetaLeaderElectorTest() {
-    MockitoAnnotations.initMocks(this);
-    metaLeaderElector = new DefaultMetaLeaderElector(leaderElector, metaServerConfig);
-    when(metaServerConfig.getMetaLeaderWarmupMillis()).thenReturn(200L);
-  }
-
-  @Test
-  public void testIsWarmup() throws InterruptedException {
-    when(metaServerConfig.getMetaLeaderWarmupMillis()).thenReturn(2000L);
-    when(leaderElector.amILeader()).thenReturn(true);
-    metaLeaderElector.leaderNotify();
-    Assert.assertFalse(metaLeaderElector.isWarmuped());
-    when(metaServerConfig.getMetaLeaderWarmupMillis()).thenReturn(1L);
-    Thread.sleep(30);
-    Assert.assertTrue(metaLeaderElector.isWarmuped());
-  }
-
-  @Test
-  public void testAmILeader() {
-    when(leaderElector.amILeader()).thenReturn(true);
-    Assert.assertTrue(metaLeaderElector.amILeader());
-    when(leaderElector.amILeader()).thenReturn(false);
-    Assert.assertFalse(metaLeaderElector.amILeader());
-  }
-
-  @Test
-  public void testGetLeader() {
-    when(leaderElector.getLeaderInfo()).thenReturn(leaderInfo);
-    Assert.assertEquals(ServerEnv.IP, metaLeaderElector.getLeader());
-  }
-
-  @Test
-  public void testGetLeaderEpoch() {
-    when(leaderElector.getLeaderInfo()).thenReturn(leaderInfo);
-    Assert.assertEquals(leaderInfo.getEpoch(), metaLeaderElector.getLeaderEpoch());
-  }
-
-  @Test
-  public void testLeaderNotify() {
-    AtomicInteger leaderCounter = new AtomicInteger(0);
-    AtomicInteger followerCounter = new AtomicInteger(0);
-    metaLeaderElector = new DefaultMetaLeaderElector(leaderElector, metaServerConfig);
-    metaLeaderElector.registerListener(
-        new MetaLeaderService.MetaLeaderElectorListener() {
-          @Override
-          public void becomeLeader() {
-            leaderCounter.incrementAndGet();
-          }
-
-          @Override
-          public void loseLeader() {
-            followerCounter.incrementAndGet();
-          }
-        });
-    metaLeaderElector.leaderNotify();
-    Assert.assertEquals(1, leaderCounter.get());
-    Assert.assertEquals(0, followerCounter.get());
-    for (int i = 0; i < 100; i++) {
-      metaLeaderElector.leaderNotify();
+    @Before
+    public void beforeDefaultMetaLeaderElectorTest() {
+        MockitoAnnotations.initMocks(this);
+        metaLeaderElector = new DefaultMetaLeaderElector(leaderElector, metaServerConfig);
+        when(metaServerConfig.getMetaLeaderWarmupMillis()).thenReturn(200L);
     }
-    Assert.assertEquals(1, leaderCounter.get());
-    Assert.assertEquals(0, followerCounter.get());
-  }
 
-  @Test
-  public void testFollowNotify() {
-    AtomicInteger leaderCounter = new AtomicInteger(0);
-    AtomicInteger followerCounter = new AtomicInteger(0);
-    metaLeaderElector = new DefaultMetaLeaderElector(leaderElector, metaServerConfig);
-    metaLeaderElector.registerListener(
-        new MetaLeaderService.MetaLeaderElectorListener() {
-          @Override
-          public void becomeLeader() {
-            leaderCounter.incrementAndGet();
-          }
-
-          @Override
-          public void loseLeader() {
-            followerCounter.incrementAndGet();
-          }
-        });
-    metaLeaderElector.leaderNotify();
-    Assert.assertEquals(1, leaderCounter.get());
-    Assert.assertEquals(0, followerCounter.get());
-    metaLeaderElector.leaderNotify();
-    Assert.assertEquals(1, leaderCounter.get());
-    Assert.assertEquals(0, followerCounter.get());
-    metaLeaderElector.followNotify();
-    Assert.assertEquals(1, leaderCounter.get());
-    Assert.assertEquals(1, followerCounter.get());
-    for (int i = 0; i < 100; i++) {
-      metaLeaderElector.followNotify();
+    @Test
+    public void testIsWarmup() throws InterruptedException {
+        when(metaServerConfig.getMetaLeaderWarmupMillis()).thenReturn(2000L);
+        when(leaderElector.amILeader()).thenReturn(true);
+        metaLeaderElector.leaderNotify();
+        Assert.assertFalse(metaLeaderElector.isWarmuped());
+        when(metaServerConfig.getMetaLeaderWarmupMillis()).thenReturn(1L);
+        Thread.sleep(30);
+        Assert.assertTrue(metaLeaderElector.isWarmuped());
     }
-    Assert.assertEquals(1, leaderCounter.get());
-    Assert.assertEquals(1, followerCounter.get());
-  }
 
-  @Test
-  public void testRegisterListener() throws Exception {
-    metaLeaderElector.postConstruct();
-    verify(leaderElector, atLeast(1)).registerLeaderAware(metaLeaderElector);
-  }
+    @Test
+    public void testAmILeader() {
+        when(leaderElector.amILeader()).thenReturn(true);
+        Assert.assertTrue(metaLeaderElector.amILeader());
+        when(leaderElector.amILeader()).thenReturn(false);
+        Assert.assertFalse(metaLeaderElector.amILeader());
+    }
+
+    @Test
+    public void testGetLeader() {
+        when(leaderElector.getLeaderInfo()).thenReturn(leaderInfo);
+        Assert.assertEquals(ServerEnv.IP, metaLeaderElector.getLeader());
+    }
+
+    @Test
+    public void testGetLeaderEpoch() {
+        when(leaderElector.getLeaderInfo()).thenReturn(leaderInfo);
+        Assert.assertEquals(leaderInfo.getEpoch(), metaLeaderElector.getLeaderEpoch());
+    }
+
+    @Test
+    public void testLeaderNotify() {
+        AtomicInteger leaderCounter = new AtomicInteger(0);
+        AtomicInteger followerCounter = new AtomicInteger(0);
+        metaLeaderElector = new DefaultMetaLeaderElector(leaderElector, metaServerConfig);
+        metaLeaderElector.registerListener(
+                new MetaLeaderService.MetaLeaderElectorListener() {
+                    @Override
+                    public void becomeLeader() {
+                        leaderCounter.incrementAndGet();
+                    }
+
+                    @Override
+                    public void loseLeader() {
+                        followerCounter.incrementAndGet();
+                    }
+                });
+        metaLeaderElector.leaderNotify();
+        Assert.assertEquals(1, leaderCounter.get());
+        Assert.assertEquals(0, followerCounter.get());
+        for (int i = 0; i < 100; i++) {
+            metaLeaderElector.leaderNotify();
+        }
+        Assert.assertEquals(1, leaderCounter.get());
+        Assert.assertEquals(0, followerCounter.get());
+    }
+
+    @Test
+    public void testFollowNotify() {
+        AtomicInteger leaderCounter = new AtomicInteger(0);
+        AtomicInteger followerCounter = new AtomicInteger(0);
+        metaLeaderElector = new DefaultMetaLeaderElector(leaderElector, metaServerConfig);
+        metaLeaderElector.registerListener(
+                new MetaLeaderService.MetaLeaderElectorListener() {
+                    @Override
+                    public void becomeLeader() {
+                        leaderCounter.incrementAndGet();
+                    }
+
+                    @Override
+                    public void loseLeader() {
+                        followerCounter.incrementAndGet();
+                    }
+                });
+        metaLeaderElector.leaderNotify();
+        Assert.assertEquals(1, leaderCounter.get());
+        Assert.assertEquals(0, followerCounter.get());
+        metaLeaderElector.leaderNotify();
+        Assert.assertEquals(1, leaderCounter.get());
+        Assert.assertEquals(0, followerCounter.get());
+        metaLeaderElector.followNotify();
+        Assert.assertEquals(1, leaderCounter.get());
+        Assert.assertEquals(1, followerCounter.get());
+        for (int i = 0; i < 100; i++) {
+            metaLeaderElector.followNotify();
+        }
+        Assert.assertEquals(1, leaderCounter.get());
+        Assert.assertEquals(1, followerCounter.get());
+    }
+
+    @Test
+    public void testRegisterListener() throws Exception {
+        metaLeaderElector.postConstruct();
+        verify(leaderElector, atLeast(1)).registerLeaderAware(metaLeaderElector);
+    }
 }

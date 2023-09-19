@@ -29,10 +29,11 @@ public interface PlaceHolderBinder {
 
     /**
      * Bind value form environment
+     *
      * @param environment Environment
-     * @param string origin value
-     * @since 4.0.0
+     * @param string      origin value
      * @return bind value
+     * @since 4.0.0
      */
     String bind(Environment environment, String string);
 }

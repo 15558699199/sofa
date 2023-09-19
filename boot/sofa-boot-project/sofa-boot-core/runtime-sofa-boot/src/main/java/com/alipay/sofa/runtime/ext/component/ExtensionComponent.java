@@ -20,17 +20,13 @@ import com.alipay.sofa.boot.log.ErrorCode;
 import com.alipay.sofa.boot.log.SofaBootLoggerFactory;
 import com.alipay.sofa.runtime.api.ServiceRuntimeException;
 import com.alipay.sofa.runtime.api.component.ComponentName;
+import com.alipay.sofa.runtime.model.ComponentStatus;
+import com.alipay.sofa.runtime.model.ComponentType;
+import com.alipay.sofa.runtime.spi.component.*;
+import com.alipay.sofa.runtime.spi.health.HealthResult;
 import com.alipay.sofa.service.api.component.Extensible;
 import com.alipay.sofa.service.api.component.Extension;
 import com.alipay.sofa.service.api.component.ExtensionPoint;
-import com.alipay.sofa.runtime.model.ComponentStatus;
-import com.alipay.sofa.runtime.model.ComponentType;
-import com.alipay.sofa.runtime.spi.component.AbstractComponent;
-import com.alipay.sofa.runtime.spi.component.ComponentInfo;
-import com.alipay.sofa.runtime.spi.component.ComponentManager;
-import com.alipay.sofa.runtime.spi.component.ComponentNameFactory;
-import com.alipay.sofa.runtime.spi.component.SofaRuntimeContext;
-import com.alipay.sofa.runtime.spi.health.HealthResult;
 import org.slf4j.Logger;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.ReflectionUtils;
@@ -46,22 +42,19 @@ import java.lang.reflect.Method;
  */
 public class ExtensionComponent extends AbstractComponent {
 
-    private static final Logger       LOGGER                   = SofaBootLoggerFactory
-                                                                   .getLogger(ExtensionComponent.class);
-
-    public static final String        LINK_SYMBOL              = "$";
-
+    public static final String LINK_SYMBOL = "$";
     public static final ComponentType EXTENSION_COMPONENT_TYPE = new ComponentType("extension");
-
-    private final Extension           extension;
+    private static final Logger LOGGER = SofaBootLoggerFactory
+            .getLogger(ExtensionComponent.class);
+    private final Extension extension;
 
     public ExtensionComponent(Extension extension, SofaRuntimeContext sofaRuntimeContext) {
         this.extension = extension;
         this.sofaRuntimeContext = sofaRuntimeContext;
         this.componentName = ComponentNameFactory.createComponentName(
-            EXTENSION_COMPONENT_TYPE,
-            extension.getTargetComponentName().getName() + LINK_SYMBOL
-                    + ObjectUtils.getIdentityHexString(extension));
+                EXTENSION_COMPONENT_TYPE,
+                extension.getTargetComponentName().getName() + LINK_SYMBOL
+                        + ObjectUtils.getIdentityHexString(extension));
     }
 
     @Override
@@ -79,7 +72,7 @@ public class ExtensionComponent extends AbstractComponent {
         ComponentName extensionPointComponentName = extension.getTargetComponentName();
 
         ComponentInfo extensionPointComponentInfo = componentManager
-            .getComponentInfo(extensionPointComponentName);
+                .getComponentInfo(extensionPointComponentName);
 
         if (extensionPointComponentInfo != null && extensionPointComponentInfo.isActivated()) {
             componentStatus = ComponentStatus.RESOLVED;
@@ -98,14 +91,14 @@ public class ExtensionComponent extends AbstractComponent {
         ComponentManager componentManager = sofaRuntimeContext.getComponentManager();
         ComponentName extensionPointComponentName = extension.getTargetComponentName();
         ComponentInfo extensionPointComponentInfo = componentManager
-            .getComponentInfo(extensionPointComponentName);
+                .getComponentInfo(extensionPointComponentName);
 
         if (extensionPointComponentInfo == null || !extensionPointComponentInfo.isActivated()) {
             return;
         }
 
         loadContributions(
-            ((ExtensionPointComponent) extensionPointComponentInfo).getExtensionPoint(), extension);
+                ((ExtensionPointComponent) extensionPointComponentInfo).getExtensionPoint(), extension);
 
         Object target = extensionPointComponentInfo.getImplementation().getTarget();
         try {
@@ -113,16 +106,16 @@ public class ExtensionComponent extends AbstractComponent {
                 ((Extensible) target).registerExtension(extension);
             } else {
                 Method method = ReflectionUtils.findMethod(target.getClass(), "registerExtension",
-                    Extension.class);
+                        Extension.class);
                 if (method == null) {
                     throw new RuntimeException(ErrorCode.convert("01-01001", target.getClass()
-                        .getCanonicalName()));
+                            .getCanonicalName()));
                 }
                 ReflectionUtils.invokeMethod(method, target, extension);
             }
         } catch (Throwable t) {
             throw new ServiceRuntimeException(ErrorCode.convert("01-01000",
-                extensionPointComponentInfo.getName()), t);
+                    extensionPointComponentInfo.getName()), t);
         }
 
         componentStatus = ComponentStatus.ACTIVATED;
@@ -152,7 +145,7 @@ public class ExtensionComponent extends AbstractComponent {
         if (!isResolved()) {
             healthResult.setHealthy(false);
             healthResult.setHealthReport("Can not find corresponding ExtensionPoint: "
-                                         + extension.getTargetComponentName().getName());
+                    + extension.getTargetComponentName().getName());
             return healthResult;
         } else {
             // 表示 registerExtension 异常的 Extension
@@ -170,15 +163,15 @@ public class ExtensionComponent extends AbstractComponent {
         if (extensionPoint != null && extensionPoint.hasContribution()) {
             try {
                 Object[] contribs = ((ExtensionPointInternal) extensionPoint)
-                    .loadContributions((ExtensionInternal) extension);
+                        .loadContributions((ExtensionInternal) extension);
                 ((ExtensionInternal) extension).setContributions(contribs);
             } catch (Exception e) {
                 if (sofaRuntimeContext.getProperties().isExtensionFailureInsulating()) {
                     this.e = e;
                 }
                 LOGGER.error(
-                    ErrorCode.convert("01-01002", extensionPoint.getName(),
-                        extension.getComponentName()), e);
+                        ErrorCode.convert("01-01002", extensionPoint.getName(),
+                                extension.getComponentName()), e);
             }
         }
     }

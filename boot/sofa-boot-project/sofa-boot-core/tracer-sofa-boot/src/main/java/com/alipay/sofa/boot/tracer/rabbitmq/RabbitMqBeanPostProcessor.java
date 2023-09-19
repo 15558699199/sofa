@@ -33,14 +33,14 @@ import java.lang.reflect.Field;
  *
  * @author chenchen6  2020/8/09 20:44
  * @author huzijie
- * @since  3.9.1
+ * @since 3.9.1
  */
 @SingletonSofaPostProcessor
 public class RabbitMqBeanPostProcessor implements BeanPostProcessor, PriorityOrdered {
 
     @Override
     public Object postProcessBeforeInitialization(Object bean, String beanName)
-                                                                               throws BeansException {
+            throws BeansException {
         if (bean instanceof AbstractRabbitListenerContainerFactory factory) {
             registerTracingInterceptor(factory);
         } else if (bean instanceof AbstractMessageListenerContainer container) {
@@ -58,7 +58,7 @@ public class RabbitMqBeanPostProcessor implements BeanPostProcessor, PriorityOrd
 
     private void registerTracingInterceptor(AbstractMessageListenerContainer container) {
         Field adviceChainField = ReflectionUtils.findField(AbstractMessageListenerContainer.class,
-            "adviceChain");
+                "adviceChain");
         ReflectionUtils.makeAccessible(adviceChainField);
         Advice[] chain = (Advice[]) ReflectionUtils.getField(adviceChainField, container);
         Advice[] adviceChainWithTracing = getAdviceChainOrAddInterceptorToChain(chain);
@@ -67,7 +67,7 @@ public class RabbitMqBeanPostProcessor implements BeanPostProcessor, PriorityOrd
 
     private Advice[] getAdviceChainOrAddInterceptorToChain(Advice... existingAdviceChain) {
         if (existingAdviceChain == null) {
-            return new Advice[] { new SofaTracerConsumeInterceptor() };
+            return new Advice[]{new SofaTracerConsumeInterceptor()};
         }
 
         for (Advice advice : existingAdviceChain) {

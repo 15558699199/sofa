@@ -17,53 +17,54 @@
 package com.alipay.sofa.registry.store.api.meta;
 
 import com.alipay.sofa.registry.common.model.console.PersistenceData;
+
 import java.util.Map;
 
 /**
  * @author chen.zhu
- *     <p>Mar 09, 2021
+ * <p>Mar 09, 2021
  */
 public interface ProvideDataRepository {
 
-  /**
-   * save or update provideData, such as stop_push_switch; directly use new value to override old
-   * value;
-   *
-   * @param persistenceData persistenceData
-   * @return boolean
-   */
-  boolean put(PersistenceData persistenceData);
+    /**
+     * save or update provideData, such as stop_push_switch; directly use new value to override old
+     * value;
+     *
+     * @param persistenceData persistenceData
+     * @return boolean
+     */
+    boolean put(PersistenceData persistenceData);
 
-  /**
-   * save or update with cas, such as node_server_operate_list; it use previous value to produce new
-   * value;
-   *
-   * @param persistenceData persistenceData
-   * @param expectVersion expectVersion
-   * @return boolean
-   */
-  boolean put(PersistenceData persistenceData, long expectVersion);
+    /**
+     * save or update with cas, such as node_server_operate_list; it use previous value to produce new
+     * value;
+     *
+     * @param persistenceData persistenceData
+     * @param expectVersion   expectVersion
+     * @return boolean
+     */
+    boolean put(PersistenceData persistenceData, long expectVersion);
 
-  /**
-   * query provideData by key
-   *
-   * @param key key
-   * @return PersistenceData
-   */
-  PersistenceData get(String key);
+    /**
+     * query provideData by key
+     *
+     * @param key key
+     * @return PersistenceData
+     */
+    PersistenceData get(String key);
 
-  /**
-   * delete provideData
-   *
-   * @param key key
-   * @return boolean
-   */
-  boolean remove(String key, long version);
+    /**
+     * delete provideData
+     *
+     * @param key key
+     * @return boolean
+     */
+    boolean remove(String key, long version);
 
-  /**
-   * query all provide data
-   *
-   * @return Map
-   */
-  Map<String, PersistenceData> getAll();
+    /**
+     * query all provide data
+     *
+     * @return Map
+     */
+    Map<String, PersistenceData> getAll();
 }

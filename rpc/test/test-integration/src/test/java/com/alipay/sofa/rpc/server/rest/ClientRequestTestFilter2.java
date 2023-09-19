@@ -26,7 +26,6 @@ import javax.ws.rs.ext.Provider;
 import java.io.IOException;
 
 /**
- *
  * @author <a href="mailto:lw111072@antfin.com">liangen</a>
  */
 @Provider
@@ -34,15 +33,15 @@ import java.io.IOException;
 public class ClientRequestTestFilter2 implements ClientRequestFilter {
     private final static Logger LOGGER = LoggerFactory.getLogger(ClientRequestTestFilter2.class);
 
-    private static String       name   = "X";
+    private static String name = "X";
+
+    public static String getName() {
+        return name;
+    }
 
     @Override
     public void filter(ClientRequestContext requestContext) throws IOException {
         LOGGER.info("客户端request filter2生效");
         name = "A2";
-    }
-
-    public static String getName() {
-        return name;
     }
 }

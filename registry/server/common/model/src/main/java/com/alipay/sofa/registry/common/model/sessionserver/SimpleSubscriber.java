@@ -17,36 +17,37 @@
 package com.alipay.sofa.registry.common.model.sessionserver;
 
 import com.alipay.sofa.registry.util.StringFormatter;
+
 import java.io.Serializable;
 
 public final class SimpleSubscriber implements Serializable {
-  private static final long serialVersionUID = -1320693859225668853L;
+    private static final long serialVersionUID = -1320693859225668853L;
 
-  private final String clientId;
-  private final String sourceAddress;
-  private final String appName;
+    private final String clientId;
+    private final String sourceAddress;
+    private final String appName;
 
-  public SimpleSubscriber(String clientId, String sourceAddress, String appName) {
-    this.clientId = clientId;
-    this.sourceAddress = sourceAddress;
-    this.appName = appName;
-  }
+    public SimpleSubscriber(String clientId, String sourceAddress, String appName) {
+        this.clientId = clientId;
+        this.sourceAddress = sourceAddress;
+        this.appName = appName;
+    }
 
-  public String getClientId() {
-    return clientId;
-  }
+    public String getClientId() {
+        return clientId;
+    }
 
-  public String getSourceAddress() {
-    return sourceAddress;
-  }
+    public String getSourceAddress() {
+        return sourceAddress;
+    }
 
-  public String getAppName() {
-    return appName;
-  }
+    public String getAppName() {
+        return appName;
+    }
 
-  @Override
-  public String toString() {
-    return StringFormatter.format(
-        "SimpleSubscriber{app={},clientId={},add={}}", appName, clientId, sourceAddress);
-  }
+    @Override
+    public String toString() {
+        return StringFormatter.format(
+                "SimpleSubscriber{app={},clientId={},add={}}", appName, clientId, sourceAddress);
+    }
 }

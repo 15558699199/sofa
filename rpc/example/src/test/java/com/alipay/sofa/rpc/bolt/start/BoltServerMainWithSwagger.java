@@ -40,38 +40,38 @@ public class BoltServerMainWithSwagger {
         ApplicationConfig application = new ApplicationConfig().setAppName("test-server");
 
         ServerConfig serverConfig = new ServerConfig()
-            .setPort(22000)
-            .setDaemon(false);
+                .setPort(22000)
+                .setDaemon(false);
 
         ProviderConfig<HelloService> providerConfig = new ProviderConfig<HelloService>()
-            .setInterfaceId(HelloService.class.getName())
-            .setApplication(application)
-            .setRef(new HelloServiceImpl())
-            .setServer(serverConfig)
-            .setRegister(false);
+                .setInterfaceId(HelloService.class.getName())
+                .setApplication(application)
+                .setRef(new HelloServiceImpl())
+                .setServer(serverConfig)
+                .setRegister(false);
 
         ProviderConfig<EchoService> providerConfig2 = new ProviderConfig<EchoService>()
-            .setInterfaceId(EchoService.class.getName())
-            .setApplication(application)
-            .setRef(new EchoServiceImpl())
-            .setServer(serverConfig)
-            .setRegister(false);
+                .setInterfaceId(EchoService.class.getName())
+                .setApplication(application)
+                .setRef(new EchoServiceImpl())
+                .setServer(serverConfig)
+                .setRegister(false);
 
         providerConfig.export();
         providerConfig2.export();
 
         ServerConfig restServer = new ServerConfig()
-            .setProtocol("rest")
-            .setPort(8888)
-            .setDaemon(false);
+                .setProtocol("rest")
+                .setPort(8888)
+                .setDaemon(false);
 
         ProviderConfig<SwaggerRestService> restProviderConfig = new ProviderConfig<SwaggerRestService>()
-            .setInterfaceId(SwaggerRestService.class.getName())
-            .setApplication(application)
-            .setRef(new SwaggerRestServiceImpl())
-            .setBootstrap("rest")
-            .setServer(restServer)
-            .setRegister(false);
+                .setInterfaceId(SwaggerRestService.class.getName())
+                .setApplication(application)
+                .setRef(new SwaggerRestServiceImpl())
+                .setBootstrap("rest")
+                .setServer(restServer)
+                .setRegister(false);
 
         restProviderConfig.export();
 

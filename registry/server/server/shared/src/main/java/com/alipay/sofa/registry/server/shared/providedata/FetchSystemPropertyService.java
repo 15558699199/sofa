@@ -24,13 +24,15 @@ import com.alipay.sofa.registry.common.model.metaserver.ProvideData;
  */
 public interface FetchSystemPropertyService extends ProvideDataProcessor {
 
-  /** start start data */
-  boolean start();
+    /**
+     * start start data
+     */
+    boolean start();
 
-  boolean doFetch();
+    boolean doFetch();
 
-  @Override
-  default boolean processData(ProvideData data) {
-    return doFetch();
-  }
+    @Override
+    default boolean processData(ProvideData data) {
+        return doFetch();
+    }
 }

@@ -21,17 +21,10 @@ import com.alipay.sofa.rpc.common.utils.DateUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * <p>
- *
  *
  * @author <a href=mailto:zhanggeng@howtimeflies.org>GengZhang</a>
  */
@@ -133,7 +126,7 @@ public class BeanSerializerTest {
         Assert.assertEquals(beanmap5.get("Remark"), bean.getRemark());
 
         TestJsonBean bean1 = new TestJsonBean();
-        beanmap5.put("friends", new TestJsonBean[] { bean1 });
+        beanmap5.put("friends", new TestJsonBean[]{bean1});
         bean = BeanSerializer.deserializeByType(beanmap5, TestJsonBean.class);
         Assert.assertEquals(bean1, bean.getFriends().get(0));
         beanmap5.put("friends", null);
@@ -147,7 +140,7 @@ public class BeanSerializerTest {
         } catch (Exception e) {
         }
         beanmap5.put("friends", new ArrayList<TestJsonBean>());
-        beanmap5.put("vips", new TestJsonBean[] { bean1 });
+        beanmap5.put("vips", new TestJsonBean[]{bean1});
         bean = BeanSerializer.deserializeByType(beanmap5, TestJsonBean.class);
         Assert.assertEquals(bean1, new ArrayList<TestJsonBean>(bean.getVips()).get(0));
         beanmap5.put("vips", new HashSet<TestJsonBean>());
@@ -164,10 +157,10 @@ public class BeanSerializerTest {
         list3.add(map4);
         list3.add(beanmap5);
 
-        int[] ss6 = new int[] { 11, 22, 33, 44 };
-        Integer[] ss7 = new Integer[] { 55, 66 };
+        int[] ss6 = new int[]{11, 22, 33, 44};
+        Integer[] ss7 = new Integer[]{55, 66};
 
-        Object[] args = new Object[] { "11", 22, true, list3, map4, beanmap5, ss6, ss7 };
+        Object[] args = new Object[]{"11", 22, true, list3, map4, beanmap5, ss6, ss7};
         Object[] os = BeanSerializer.deserializeByType(args, Object[].class);
         Assert.assertEquals(os[0], "11");
         Assert.assertEquals(os[1], 22);
@@ -221,15 +214,15 @@ public class BeanSerializerTest {
         Assert.assertTrue(0 == BeanSerializer.deserializeByType(null, long.class));
         Assert.assertFalse(BeanSerializer.deserializeByType(null, boolean.class));
 
-        Assert.assertArrayEquals(new int[] { 123 }, BeanSerializer.deserializeByType(Arrays.asList(123), int[].class));
+        Assert.assertArrayEquals(new int[]{123}, BeanSerializer.deserializeByType(Arrays.asList(123), int[].class));
         Assert.assertFalse(BeanSerializer.deserializeByType(Arrays.asList(123), String.class) instanceof String);
         Assert.assertTrue(CommonUtils.listEquals(Arrays.asList(123),
-            BeanSerializer.deserializeByType(new int[] { 123 }, List.class)));
+                BeanSerializer.deserializeByType(new int[]{123}, List.class)));
         Assert.assertTrue(CommonUtils.listEquals(Arrays.asList("xxx"),
-            BeanSerializer.deserializeByType(new String[] { "xxx" }, List.class)));
+                BeanSerializer.deserializeByType(new String[]{"xxx"}, List.class)));
 
         Assert.assertEquals(TestJsonBean.Status.START,
-            BeanSerializer.deserializeByType("START", TestJsonBean.Status.class));
+                BeanSerializer.deserializeByType("START", TestJsonBean.Status.class));
         try {
             BeanSerializer.deserializeByType(new TestJsonBean(), TestJsonBean.Status.class);
             Assert.fail();
@@ -239,7 +232,7 @@ public class BeanSerializerTest {
         Date now = new Date();
         Assert.assertEquals(now, BeanSerializer.deserializeByType(now.getTime(), Date.class));
         Assert.assertEquals(DateUtils.dateToStr(now), DateUtils.dateToStr(
-            BeanSerializer.deserializeByType(DateUtils.dateToStr(now), Date.class)));
+                BeanSerializer.deserializeByType(DateUtils.dateToStr(now), Date.class)));
         try {
             BeanSerializer.deserializeByType("xxxx", Date.class);
             Assert.fail();

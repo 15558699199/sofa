@@ -29,7 +29,7 @@ public class ByteArrayWrapperByteBufTest {
         AbstractByteBuf byteBuf = new ByteArrayWrapperByteBuf(null);
         Assert.assertNull(byteBuf.array());
 
-        byte[] bs = new byte[] { 1, 2, 3 };
+        byte[] bs = new byte[]{1, 2, 3};
         byteBuf = new ByteArrayWrapperByteBuf(bs);
         Assert.assertNotNull(byteBuf.array());
         Assert.assertTrue(byteBuf.array().length == 3);

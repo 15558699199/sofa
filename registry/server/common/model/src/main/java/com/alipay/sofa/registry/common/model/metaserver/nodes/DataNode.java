@@ -17,6 +17,7 @@
 package com.alipay.sofa.registry.common.model.metaserver.nodes;
 
 import com.alipay.sofa.registry.common.model.store.URL;
+
 import java.util.Objects;
 
 /**
@@ -25,61 +26,61 @@ import java.util.Objects;
  */
 public class DataNode extends AbstractNode {
 
-  private long registrationTimestamp;
+    private long registrationTimestamp;
 
-  /**
-   * constructor
-   *
-   * @param nodeUrl nodeUrl
-   * @param dataCenter dataCenter
-   */
-  public DataNode(URL nodeUrl, String dataCenter) {
-    super(dataCenter, nodeUrl, null);
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (!(o instanceof DataNode)) {
-      return false;
+    /**
+     * constructor
+     *
+     * @param nodeUrl    nodeUrl
+     * @param dataCenter dataCenter
+     */
+    public DataNode(URL nodeUrl, String dataCenter) {
+        super(dataCenter, nodeUrl, null);
     }
 
-    DataNode that = (DataNode) o;
-    return equal(that) && registrationTimestamp == that.registrationTimestamp;
-  }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof DataNode)) {
+            return false;
+        }
 
-  /**
-   * Hash code int.
-   *
-   * @return the int
-   */
-  @Override
-  public int hashCode() {
-    return Objects.hash(hash(), registrationTimestamp);
-  }
+        DataNode that = (DataNode) o;
+        return equal(that) && registrationTimestamp == that.registrationTimestamp;
+    }
 
-  @Override
-  public NodeType getNodeType() {
-    return NodeType.DATA;
-  }
+    /**
+     * Hash code int.
+     *
+     * @return the int
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hash(hash(), registrationTimestamp);
+    }
 
-  /**
-   * Getter method for property <tt>registrationTimestamp</tt>.
-   *
-   * @return property value of registrationTimestamp
-   */
-  public long getRegistrationTimestamp() {
-    return registrationTimestamp;
-  }
+    @Override
+    public NodeType getNodeType() {
+        return NodeType.DATA;
+    }
 
-  /**
-   * Setter method for property <tt>registrationTimestamp</tt>.
-   *
-   * @param registrationTimestamp value to be assigned to property registrationTimestamp
-   */
-  public void setRegistrationTimestamp(long registrationTimestamp) {
-    this.registrationTimestamp = registrationTimestamp;
-  }
+    /**
+     * Getter method for property <tt>registrationTimestamp</tt>.
+     *
+     * @return property value of registrationTimestamp
+     */
+    public long getRegistrationTimestamp() {
+        return registrationTimestamp;
+    }
+
+    /**
+     * Setter method for property <tt>registrationTimestamp</tt>.
+     *
+     * @param registrationTimestamp value to be assigned to property registrationTimestamp
+     */
+    public void setRegistrationTimestamp(long registrationTimestamp) {
+        this.registrationTimestamp = registrationTimestamp;
+    }
 }

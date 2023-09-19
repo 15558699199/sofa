@@ -42,11 +42,11 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @version RepeatableSofaServiceTest.java, v 0.1 2023年03月28日 8:35 PM huzijie Exp $
  */
 @SpringBootTest(classes = RuntimeSofaBootApplication.class)
-@Import({ RepeatableSofaServiceTests.RepeatableClassA.class,
-         RepeatableSofaServiceTests.RepeatableClassB.class,
-         RepeatableSofaServiceTests.RepeatableClassD.class,
-         RepeatableSofaServiceTests.RepeatableClassE.class,
-         RepeatableSofaServiceTests.RepeatableConfiguration.class })
+@Import({RepeatableSofaServiceTests.RepeatableClassA.class,
+        RepeatableSofaServiceTests.RepeatableClassB.class,
+        RepeatableSofaServiceTests.RepeatableClassD.class,
+        RepeatableSofaServiceTests.RepeatableClassE.class,
+        RepeatableSofaServiceTests.RepeatableConfiguration.class})
 public class RepeatableSofaServiceTests {
 
     @Autowired
@@ -55,7 +55,7 @@ public class RepeatableSofaServiceTests {
     @Test
     public void checkSofaService() {
         Collection<ComponentInfo> components = sofaRuntimeContext.getComponentManager()
-            .getComponentInfosByType(ServiceComponent.SERVICE_COMPONENT_TYPE);
+                .getComponentInfosByType(ServiceComponent.SERVICE_COMPONENT_TYPE);
         assertThat((findServiceByUniqueId(components, "A"))).isTrue();
         assertThat((findServiceByUniqueId(components, "B"))).isTrue();
         assertThat((findServiceByUniqueId(components, "C"))).isTrue();
@@ -108,8 +108,8 @@ public class RepeatableSofaServiceTests {
         }
     }
 
-    @SofaServices({ @SofaService(interfaceType = SampleService.class, uniqueId = "I"),
-            @SofaService(interfaceType = SampleService.class, uniqueId = "J") })
+    @SofaServices({@SofaService(interfaceType = SampleService.class, uniqueId = "I"),
+            @SofaService(interfaceType = SampleService.class, uniqueId = "J")})
     static class RepeatableClassD implements SampleService {
 
         @Override
@@ -118,8 +118,8 @@ public class RepeatableSofaServiceTests {
         }
     }
 
-    @SofaServices({ @SofaService(interfaceType = SampleService.class, uniqueId = "L"),
-            @SofaService(interfaceType = SampleService.class, uniqueId = "K") })
+    @SofaServices({@SofaService(interfaceType = SampleService.class, uniqueId = "L"),
+            @SofaService(interfaceType = SampleService.class, uniqueId = "K")})
     static class RepeatableClassE extends RepeatableClassC {
 
         @Override

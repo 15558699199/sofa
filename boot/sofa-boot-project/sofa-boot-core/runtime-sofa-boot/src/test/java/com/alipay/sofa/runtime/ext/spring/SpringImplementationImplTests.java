@@ -40,7 +40,7 @@ public class SpringImplementationImplTests {
     @Test
     void getTarget() {
         SpringImplementationImpl implementation = new SpringImplementationImpl("testBean",
-            applicationContext);
+                applicationContext);
         Object target = new Object();
         implementation.setTarget(target);
         assertThat(implementation.getTarget()).isSameAs(applicationContext.getBean("testBean"));
@@ -49,16 +49,16 @@ public class SpringImplementationImplTests {
     @Test
     void getTargetClass() {
         SpringImplementationImpl implementation = new SpringImplementationImpl("testBean",
-            applicationContext);
+                applicationContext);
         when(applicationContext.getBean("testBean")).thenReturn(new Object());
         assertThat(implementation.getTargetClass()).isEqualTo(
-            applicationContext.getBean("testBean").getClass());
+                applicationContext.getBean("testBean").getClass());
     }
 
     @Test
     void getName() {
         SpringImplementationImpl implementation = new SpringImplementationImpl("testBean",
-            applicationContext);
+                applicationContext);
         assertThat(implementation.getName()).isEqualTo("testBean");
     }
 }

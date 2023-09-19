@@ -17,11 +17,11 @@
 package com.alipay.sofa.registry.remoting;
 
 public class ChannelConnectException extends RuntimeException {
-  public ChannelConnectException(String message) {
-    super(message);
-  }
+    public ChannelConnectException(String message) {
+        super(message);
+    }
 
-  public ChannelConnectException(String message, Throwable cause) {
-    super(message, cause);
-  }
+    public ChannelConnectException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

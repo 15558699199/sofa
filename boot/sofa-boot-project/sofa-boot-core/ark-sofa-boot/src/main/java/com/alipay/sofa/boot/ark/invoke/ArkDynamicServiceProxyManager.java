@@ -37,6 +37,6 @@ public class ArkDynamicServiceProxyManager implements DynamicServiceProxyManager
     @Override
     public ServiceComponent getDynamicServiceComponent(Contract contract, ClassLoader classLoader) {
         return DynamicJvmServiceProxyFinder.getInstance().findServiceComponent(classLoader,
-            contract);
+                contract);
     }
 }

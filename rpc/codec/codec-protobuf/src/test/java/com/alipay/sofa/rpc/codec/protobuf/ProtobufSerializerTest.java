@@ -122,7 +122,7 @@ public class ProtobufSerializerTest {
         Assert.assertEquals(newRequest.getTargetServiceUniqueName(), request.getTargetServiceUniqueName());
         Assert.assertEquals(newRequest.getTargetAppName(), request.getTargetAppName());
         Assert.assertEquals(newRequest.getRequestProp(RemotingConstants.RPC_TRACE_NAME),
-            request.getRequestProp(RemotingConstants.RPC_TRACE_NAME));
+                request.getRequestProp(RemotingConstants.RPC_TRACE_NAME));
 
         // null request
         head = new HashMap<String, String>();
@@ -214,8 +214,8 @@ public class ProtobufSerializerTest {
         request.setInterfaceName(ProtoService.class.getName());
         request.setMethodName("echoStr");
         request.setMethod(ProtoService.class.getMethod("echoStr", EchoStrReq.class));
-        request.setMethodArgs(new Object[] { EchoStrReq.newBuilder().setS("xxxx").build() });
-        request.setMethodArgSigs(new String[] { EchoStrReq.class.getCanonicalName() });
+        request.setMethodArgs(new Object[]{EchoStrReq.newBuilder().setS("xxxx").build()});
+        request.setMethodArgSigs(new String[]{EchoStrReq.class.getCanonicalName()});
         request.setTargetServiceUniqueName(ProtoService.class.getName() + ":1.0");
         request.setTargetAppName("targetApp");
         request.setSerializeType((byte) 11);

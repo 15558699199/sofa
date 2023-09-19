@@ -22,15 +22,15 @@ package com.alipay.sofa.rpc.registry.mesh.model;
  */
 public class PublishServiceRequest {
 
-    private String           serviceName;
+    private String serviceName;
 
     //这个值是类似DEFAULT/XFIRE这种，也有可能是tr
-    private String           protocolType;
+    private String protocolType;
 
     //timeout/appName/serialize/p
     private ProviderMetaInfo providerMetaInfo;
 
-    private boolean          onlyPublishInCloud;
+    private boolean onlyPublishInCloud;
 
     public String getServiceName() {
         return serviceName;

@@ -33,6 +33,7 @@ import java.util.concurrent.ConcurrentMap;
 
 /**
  * The type Nacos registry provider observer.
+ *
  * @author <a href=mailto:jervyshi@gmail.com>JervyShi</a>
  */
 public class NacosRegistryProviderObserver {
@@ -40,8 +41,8 @@ public class NacosRegistryProviderObserver {
     /**
      * slf4j Logger for this class
      */
-    private final static Logger                                       LOGGER              = LoggerFactory
-                                                                                              .getLogger(NacosRegistryProviderObserver.class);
+    private final static Logger LOGGER = LoggerFactory
+            .getLogger(NacosRegistryProviderObserver.class);
 
     /**
      * The Provider add listener map.
@@ -51,8 +52,8 @@ public class NacosRegistryProviderObserver {
     /**
      * Add provider listener.
      *
-     * @param consumerConfig the consumer config  
-     * @param listener the listener
+     * @param consumerConfig the consumer config
+     * @param listener       the listener
      */
     void addProviderListener(ConsumerConfig consumerConfig, ProviderInfoListener listener) {
         if (listener != null) {
@@ -72,15 +73,15 @@ public class NacosRegistryProviderObserver {
     /**
      * Update providers.
      *
-     * @param config the config 
+     * @param config    the config
      * @param instances the instances
      */
     void updateProviders(ConsumerConfig config, List<Instance> instances) {
         if (LOGGER.isInfoEnabled(config.getAppName())) {
             LOGGER.infoWithApp(config.getAppName(),
-                "Receive update provider: serviceName={}, size={}, data={}",
-                NacosRegistryHelper.buildServiceName(config, config.getProtocol()), instances.size(),
-                instances);
+                    "Receive update provider: serviceName={}, size={}, data={}",
+                    NacosRegistryHelper.buildServiceName(config, config.getProtocol()), instances.size(),
+                    instances);
         }
         List<ProviderInfoListener> providerInfoListeners = providerListenerMap.get(config);
         if (CommonUtils.isNotEmpty(providerInfoListeners)) {
@@ -89,7 +90,7 @@ public class NacosRegistryProviderObserver {
 
             for (ProviderInfoListener providerInfoListener : providerInfoListeners) {
                 providerInfoListener
-                    .updateAllProviders(Collections.singletonList(new ProviderGroup().addAll(matchProviders)));
+                        .updateAllProviders(Collections.singletonList(new ProviderGroup().addAll(matchProviders)));
             }
         }
     }

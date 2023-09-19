@@ -24,11 +24,16 @@ import java.util.List;
  */
 public class ComplexPojo {
 
-    private int          int0;
-    private Integer      integer0;
-    private byte         byte0;
-    private byte[]       bytes0;
+    private int int0;
+    private Integer integer0;
+    private byte byte0;
+    private byte[] bytes0;
     private List<String> stringList;
+    private List<ComplexPojo> complexPojoList;
+    private List<ComplexPojo2> complexPojo2List;
+    private String[] strings;
+    private ComplexPojo2[] complexPojos;
+    private Date date;
 
     public List<ComplexPojo> getComplexPojoList() {
         return complexPojoList;
@@ -45,12 +50,6 @@ public class ComplexPojo {
     public void setComplexPojo2List(List<ComplexPojo2> complexPojo2List) {
         this.complexPojo2List = complexPojo2List;
     }
-
-    private List<ComplexPojo>  complexPojoList;
-    private List<ComplexPojo2> complexPojo2List;
-    private String[]           strings;
-    private ComplexPojo2[]     complexPojos;
-    private Date               date;
 
     public Integer getInteger0() {
         return integer0;

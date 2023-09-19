@@ -22,66 +22,67 @@ import com.alipay.sofa.registry.common.model.store.SubDatum;
 import com.alipay.sofa.registry.common.model.store.Subscriber;
 import com.alipay.sofa.registry.net.NetUtil;
 import com.alipay.sofa.registry.server.session.TestUtils;
-import java.net.InetSocketAddress;
-import java.util.Collections;
-import java.util.Map;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.net.InetSocketAddress;
+import java.util.Collections;
+import java.util.Map;
+
 public class PushTaskBufferTest {
-  @Test
-  public void test() throws InterruptedException {
-    PushTaskBuffer buffer = new PushTaskBuffer(2);
-    Assert.assertEquals(2, buffer.workers.length);
+    @Test
+    public void test() throws InterruptedException {
+        PushTaskBuffer buffer = new PushTaskBuffer(2);
+        Assert.assertEquals(2, buffer.workers.length);
 
-    String dataId = "testDataId";
-    Subscriber subscriber = TestUtils.newZoneSubscriber(dataId, "region");
-    SubDatum datum = TestUtils.newSubDatum(subscriber.getDataId(), 100, Collections.emptyList());
+        String dataId = "testDataId";
+        Subscriber subscriber = TestUtils.newZoneSubscriber(dataId, "region");
+        SubDatum datum = TestUtils.newSubDatum(subscriber.getDataId(), 100, Collections.emptyList());
 
-    MockTask task =
-        new MockTask(
-            new PushCause(
-                null,
-                PushType.Sub,
-                Collections.singletonMap(datum.getDataCenter(), System.currentTimeMillis())),
-            NetUtil.getLocalSocketAddress(),
-            Collections.singletonMap(subscriber.getRegisterId(), subscriber),
-            datum);
-    task.expireTimestamp = 1;
-    Assert.assertTrue(buffer.buffer(task));
+        MockTask task =
+                new MockTask(
+                        new PushCause(
+                                null,
+                                PushType.Sub,
+                                Collections.singletonMap(datum.getDataCenter(), System.currentTimeMillis())),
+                        NetUtil.getLocalSocketAddress(),
+                        Collections.singletonMap(subscriber.getRegisterId(), subscriber),
+                        datum);
+        task.expireTimestamp = 1;
+        Assert.assertTrue(buffer.buffer(task));
 
-    datum = TestUtils.newSubDatum(subscriber.getDataId(), 101, Collections.emptyList());
-    MockTask task1 =
-        new MockTask(
-            new PushCause(
-                null,
-                PushType.Sub,
-                Collections.singletonMap(datum.getDataCenter(), System.currentTimeMillis() + 1)),
-            NetUtil.getLocalSocketAddress(),
-            Collections.singletonMap(subscriber.getRegisterId(), subscriber),
-            datum);
-    task1.expireTimestamp = 2;
-    Assert.assertTrue(buffer.buffer(task1));
-  }
-
-  private static final class MockTask extends PushTask {
-
-    MockTask(
-        PushCause pushCause,
-        InetSocketAddress addr,
-        Map<String, Subscriber> subscriberMap,
-        SubDatum datum) {
-      super(pushCause, addr, subscriberMap, MultiSubDatum.of(datum));
+        datum = TestUtils.newSubDatum(subscriber.getDataId(), 101, Collections.emptyList());
+        MockTask task1 =
+                new MockTask(
+                        new PushCause(
+                                null,
+                                PushType.Sub,
+                                Collections.singletonMap(datum.getDataCenter(), System.currentTimeMillis() + 1)),
+                        NetUtil.getLocalSocketAddress(),
+                        Collections.singletonMap(subscriber.getRegisterId(), subscriber),
+                        datum);
+        task1.expireTimestamp = 2;
+        Assert.assertTrue(buffer.buffer(task1));
     }
 
-    @Override
-    protected boolean commit() {
-      return false;
-    }
+    private static final class MockTask extends PushTask {
 
-    @Override
-    protected PushData createPushData() {
-      return null;
+        MockTask(
+                PushCause pushCause,
+                InetSocketAddress addr,
+                Map<String, Subscriber> subscriberMap,
+                SubDatum datum) {
+            super(pushCause, addr, subscriberMap, MultiSubDatum.of(datum));
+        }
+
+        @Override
+        protected boolean commit() {
+            return false;
+        }
+
+        @Override
+        protected PushData createPushData() {
+            return null;
+        }
     }
-  }
 }

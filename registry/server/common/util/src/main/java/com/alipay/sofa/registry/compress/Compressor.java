@@ -17,72 +17,74 @@
 package com.alipay.sofa.registry.compress;
 
 import com.alipay.sofa.registry.concurrent.ThreadLocalByteArrayOutputStream;
-import com.github.luben.zstd.*;
+import com.github.luben.zstd.Zstd;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.util.zip.*;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 public abstract class Compressor {
-  public abstract String getEncoding();
+    private static final ThreadLocal<byte[]> BUF_REPO =
+            ThreadLocal.withInitial(() -> new byte[1024 * 32]);
 
-  public abstract byte[] compress(byte[] data) throws Exception;
+    public abstract String getEncoding();
 
-  public abstract byte[] decompress(byte[] data, int decompressedSize) throws Exception;
+    public abstract byte[] compress(byte[] data) throws Exception;
 
-  private static final ThreadLocal<byte[]> BUF_REPO =
-      ThreadLocal.withInitial(() -> new byte[1024 * 32]);
+    public abstract byte[] decompress(byte[] data, int decompressedSize) throws Exception;
 
-  public static class GzipCompressor extends Compressor {
+    public static class GzipCompressor extends Compressor {
 
-    @Override
-    public String getEncoding() {
-      return CompressConstants.encodingGzip;
-    }
-
-    @Override
-    public byte[] compress(byte[] data) throws Exception {
-      ByteArrayOutputStream bos = ThreadLocalByteArrayOutputStream.get();
-      try (GZIPOutputStream gzipOs = new GZIPOutputStream(bos)) {
-        gzipOs.write(data);
-        gzipOs.close();
-        return bos.toByteArray();
-      } finally {
-        bos.reset();
-      }
-    }
-
-    @Override
-    public byte[] decompress(byte[] data, int decompressedSize) throws Exception {
-      ByteArrayOutputStream bos = ThreadLocalByteArrayOutputStream.get();
-      try (GZIPInputStream gis = new GZIPInputStream(new ByteArrayInputStream(data))) {
-        final byte[] buffer = BUF_REPO.get();
-        int len;
-        while ((len = gis.read(buffer)) > 0) {
-          bos.write(buffer, 0, len);
+        @Override
+        public String getEncoding() {
+            return CompressConstants.encodingGzip;
         }
-        gis.close();
-        return bos.toByteArray();
-      } finally {
-        bos.reset();
-      }
-    }
-  }
 
-  public static class ZstdCompressor extends Compressor {
+        @Override
+        public byte[] compress(byte[] data) throws Exception {
+            ByteArrayOutputStream bos = ThreadLocalByteArrayOutputStream.get();
+            try (GZIPOutputStream gzipOs = new GZIPOutputStream(bos)) {
+                gzipOs.write(data);
+                gzipOs.close();
+                return bos.toByteArray();
+            } finally {
+                bos.reset();
+            }
+        }
 
-    @Override
-    public String getEncoding() {
-      return CompressConstants.encodingZstd;
+        @Override
+        public byte[] decompress(byte[] data, int decompressedSize) throws Exception {
+            ByteArrayOutputStream bos = ThreadLocalByteArrayOutputStream.get();
+            try (GZIPInputStream gis = new GZIPInputStream(new ByteArrayInputStream(data))) {
+                final byte[] buffer = BUF_REPO.get();
+                int len;
+                while ((len = gis.read(buffer)) > 0) {
+                    bos.write(buffer, 0, len);
+                }
+                gis.close();
+                return bos.toByteArray();
+            } finally {
+                bos.reset();
+            }
+        }
     }
 
-    @Override
-    public byte[] compress(byte[] data) throws Exception {
-      return Zstd.compress(data);
-    }
+    public static class ZstdCompressor extends Compressor {
 
-    @Override
-    public byte[] decompress(byte[] data, int decompressedSize) throws Exception {
-      return Zstd.decompress(data, decompressedSize);
+        @Override
+        public String getEncoding() {
+            return CompressConstants.encodingZstd;
+        }
+
+        @Override
+        public byte[] compress(byte[] data) throws Exception {
+            return Zstd.compress(data);
+        }
+
+        @Override
+        public byte[] decompress(byte[] data, int decompressedSize) throws Exception {
+            return Zstd.decompress(data, decompressedSize);
+        }
     }
-  }
 }

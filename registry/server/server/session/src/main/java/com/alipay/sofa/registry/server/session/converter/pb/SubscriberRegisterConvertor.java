@@ -25,72 +25,73 @@ import com.alipay.sofa.registry.core.model.SubscriberRegister;
  * @version $Id: SubscriberRegisterConvertor.java, v 0.1 2018年03月21日 2:07 PM bystander Exp $
  */
 public final class SubscriberRegisterConvertor {
-  private SubscriberRegisterConvertor() {}
-
-  public static SubscriberRegister convert2Java(SubscriberRegisterPb subscriberRegisterPb) {
-
-    if (subscriberRegisterPb == null) {
-      return null;
+    private SubscriberRegisterConvertor() {
     }
 
-    SubscriberRegister subscriberRegister = new SubscriberRegister();
+    public static SubscriberRegister convert2Java(SubscriberRegisterPb subscriberRegisterPb) {
 
-    subscriberRegister.setAppName(subscriberRegisterPb.getBaseRegister().getAppName());
-    subscriberRegister.setClientId(subscriberRegisterPb.getBaseRegister().getClientId());
-    subscriberRegister.setDataId(subscriberRegisterPb.getBaseRegister().getDataId());
-    subscriberRegister.setDataInfoId(subscriberRegisterPb.getBaseRegister().getDataInfoId());
-    subscriberRegister.setEventType(subscriberRegisterPb.getBaseRegister().getEventType());
-    subscriberRegister.setGroup(subscriberRegisterPb.getBaseRegister().getGroup());
-    subscriberRegister.setZone(subscriberRegisterPb.getBaseRegister().getZone());
-    subscriberRegister.setInstanceId(subscriberRegisterPb.getBaseRegister().getInstanceId());
-    subscriberRegister.setIp(subscriberRegisterPb.getBaseRegister().getIp());
-    subscriberRegister.setPort(subscriberRegisterPb.getBaseRegister().getPort());
-    subscriberRegister.setProcessId(subscriberRegisterPb.getBaseRegister().getProcessId());
-    subscriberRegister.setRegistId(subscriberRegisterPb.getBaseRegister().getRegistId());
-    subscriberRegister.setTimestamp(subscriberRegisterPb.getBaseRegister().getTimestamp());
-    subscriberRegister.setVersion(subscriberRegisterPb.getBaseRegister().getVersion());
+        if (subscriberRegisterPb == null) {
+            return null;
+        }
 
-    subscriberRegister.setAttributes(subscriberRegisterPb.getBaseRegister().getAttributesMap());
-    subscriberRegister.setAcceptEncoding(subscriberRegisterPb.getAcceptEncoding());
-    subscriberRegister.setScope(subscriberRegisterPb.getScope());
-    subscriberRegister.setAcceptMulti(subscriberRegisterPb.getAcceptMulti());
-    return subscriberRegister;
-  }
+        SubscriberRegister subscriberRegister = new SubscriberRegister();
 
-  public static SubscriberRegisterPb convert2Pb(SubscriberRegister subscriberRegisterJava) {
+        subscriberRegister.setAppName(subscriberRegisterPb.getBaseRegister().getAppName());
+        subscriberRegister.setClientId(subscriberRegisterPb.getBaseRegister().getClientId());
+        subscriberRegister.setDataId(subscriberRegisterPb.getBaseRegister().getDataId());
+        subscriberRegister.setDataInfoId(subscriberRegisterPb.getBaseRegister().getDataInfoId());
+        subscriberRegister.setEventType(subscriberRegisterPb.getBaseRegister().getEventType());
+        subscriberRegister.setGroup(subscriberRegisterPb.getBaseRegister().getGroup());
+        subscriberRegister.setZone(subscriberRegisterPb.getBaseRegister().getZone());
+        subscriberRegister.setInstanceId(subscriberRegisterPb.getBaseRegister().getInstanceId());
+        subscriberRegister.setIp(subscriberRegisterPb.getBaseRegister().getIp());
+        subscriberRegister.setPort(subscriberRegisterPb.getBaseRegister().getPort());
+        subscriberRegister.setProcessId(subscriberRegisterPb.getBaseRegister().getProcessId());
+        subscriberRegister.setRegistId(subscriberRegisterPb.getBaseRegister().getRegistId());
+        subscriberRegister.setTimestamp(subscriberRegisterPb.getBaseRegister().getTimestamp());
+        subscriberRegister.setVersion(subscriberRegisterPb.getBaseRegister().getVersion());
 
-    if (subscriberRegisterJava == null) {
-      return null;
+        subscriberRegister.setAttributes(subscriberRegisterPb.getBaseRegister().getAttributesMap());
+        subscriberRegister.setAcceptEncoding(subscriberRegisterPb.getAcceptEncoding());
+        subscriberRegister.setScope(subscriberRegisterPb.getScope());
+        subscriberRegister.setAcceptMulti(subscriberRegisterPb.getAcceptMulti());
+        return subscriberRegister;
     }
 
-    SubscriberRegisterPb.Builder builder = SubscriberRegisterPb.newBuilder();
+    public static SubscriberRegisterPb convert2Pb(SubscriberRegister subscriberRegisterJava) {
 
-    BaseRegisterPb.Builder baseRegisterBuilder = BaseRegisterPb.newBuilder();
+        if (subscriberRegisterJava == null) {
+            return null;
+        }
 
-    baseRegisterBuilder
-        .setAppName(subscriberRegisterJava.getAppName())
-        .setClientId(subscriberRegisterJava.getClientId())
-        .setDataId(subscriberRegisterJava.getDataId())
-        .setDataInfoId(subscriberRegisterJava.getDataInfoId())
-        .setEventType(subscriberRegisterJava.getEventType())
-        .setGroup(subscriberRegisterJava.getGroup())
-        .setZone(subscriberRegisterJava.getZone())
-        .setInstanceId(subscriberRegisterJava.getInstanceId())
-        .setIp(subscriberRegisterJava.getIp())
-        .setPort(subscriberRegisterJava.getPort())
-        .setProcessId(subscriberRegisterJava.getProcessId())
-        .setRegistId(subscriberRegisterJava.getRegistId())
-        .setVersion(subscriberRegisterJava.getVersion())
-        .setTimestamp(subscriberRegisterJava.getTimestamp())
-        .putAllAttributes(subscriberRegisterJava.getAttributes());
+        SubscriberRegisterPb.Builder builder = SubscriberRegisterPb.newBuilder();
 
-    builder
-        .setScope(subscriberRegisterJava.getScope())
-        .setBaseRegister(baseRegisterBuilder.build())
-        .setAcceptEncoding(
-            subscriberRegisterJava.getAcceptEncoding() == null
-                ? ""
-                : subscriberRegisterJava.getAcceptEncoding());
-    return builder.build();
-  }
+        BaseRegisterPb.Builder baseRegisterBuilder = BaseRegisterPb.newBuilder();
+
+        baseRegisterBuilder
+                .setAppName(subscriberRegisterJava.getAppName())
+                .setClientId(subscriberRegisterJava.getClientId())
+                .setDataId(subscriberRegisterJava.getDataId())
+                .setDataInfoId(subscriberRegisterJava.getDataInfoId())
+                .setEventType(subscriberRegisterJava.getEventType())
+                .setGroup(subscriberRegisterJava.getGroup())
+                .setZone(subscriberRegisterJava.getZone())
+                .setInstanceId(subscriberRegisterJava.getInstanceId())
+                .setIp(subscriberRegisterJava.getIp())
+                .setPort(subscriberRegisterJava.getPort())
+                .setProcessId(subscriberRegisterJava.getProcessId())
+                .setRegistId(subscriberRegisterJava.getRegistId())
+                .setVersion(subscriberRegisterJava.getVersion())
+                .setTimestamp(subscriberRegisterJava.getTimestamp())
+                .putAllAttributes(subscriberRegisterJava.getAttributes());
+
+        builder
+                .setScope(subscriberRegisterJava.getScope())
+                .setBaseRegister(baseRegisterBuilder.build())
+                .setAcceptEncoding(
+                        subscriberRegisterJava.getAcceptEncoding() == null
+                                ? ""
+                                : subscriberRegisterJava.getAcceptEncoding());
+        return builder.build();
+    }
 }

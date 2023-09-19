@@ -25,49 +25,49 @@ import com.alipay.sofa.registry.common.model.store.URL;
  */
 public class SessionNode extends AbstractNode {
 
-  private final ProcessId processId;
+    private final ProcessId processId;
 
-  /**
-   * constructor
-   *
-   * @param nodeUrl nodeUrl
-   * @param regionId regionId
-   * @param processId processId
-   */
-  public SessionNode(URL nodeUrl, String regionId, ProcessId processId) {
-    super(null, nodeUrl, regionId);
-    this.processId = processId;
-  }
-
-  @Override
-  public NodeType getNodeType() {
-    return NodeType.SESSION;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (!(o instanceof SessionNode)) {
-      return false;
+    /**
+     * constructor
+     *
+     * @param nodeUrl   nodeUrl
+     * @param regionId  regionId
+     * @param processId processId
+     */
+    public SessionNode(URL nodeUrl, String regionId, ProcessId processId) {
+        super(null, nodeUrl, regionId);
+        this.processId = processId;
     }
 
-    SessionNode that = (SessionNode) o;
-    return equal(that);
-  }
+    @Override
+    public NodeType getNodeType() {
+        return NodeType.SESSION;
+    }
 
-  public ProcessId getProcessId() {
-    return processId;
-  }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof SessionNode)) {
+            return false;
+        }
 
-  /**
-   * Hash code int.
-   *
-   * @return the int
-   */
-  @Override
-  public int hashCode() {
-    return super.hash();
-  }
+        SessionNode that = (SessionNode) o;
+        return equal(that);
+    }
+
+    public ProcessId getProcessId() {
+        return processId;
+    }
+
+    /**
+     * Hash code int.
+     *
+     * @return the int
+     */
+    @Override
+    public int hashCode() {
+        return super.hash();
+    }
 }

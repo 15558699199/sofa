@@ -43,9 +43,9 @@ import org.springframework.util.StringUtils;
  * @author huzijie
  **/
 @AutoConfiguration
-@ConditionalOnClass({ Tracer.class,
-                     com.alipay.sofa.tracer.plugin.flexible.annotations.Tracer.class,
-                     SofaTracerIntroductionInterceptor.class })
+@ConditionalOnClass({Tracer.class,
+        com.alipay.sofa.tracer.plugin.flexible.annotations.Tracer.class,
+        SofaTracerIntroductionInterceptor.class})
 @ConditionalOnBean(SofaTracerProperties.class)
 @ConditionalOnProperty(name = "sofa.boot.tracer.flexible.enabled", havingValue = "true", matchIfMissing = true)
 public class FlexibleAutoConfiguration {
@@ -53,16 +53,16 @@ public class FlexibleAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public Tracer sofaTracer(ObjectProvider<SofaTracerProperties> sofaTracerPropertiesObjectProvider)
-                                                                                                     throws Exception {
+            throws Exception {
         SofaTracerProperties sofaTracerProperties = sofaTracerPropertiesObjectProvider
-            .getIfUnique();
+                .getIfUnique();
         String reporterName = null;
         if (sofaTracerProperties != null) {
             reporterName = sofaTracerProperties.getReporterName();
         }
         if (StringUtils.hasText(reporterName)) {
             Reporter reporter = (Reporter) Class.forName(reporterName).getDeclaredConstructor()
-                .newInstance();
+                    .newInstance();
             Sampler sampler = SamplerFactory.getSampler();
             return new FlexibleTracer(sampler, reporter);
         }

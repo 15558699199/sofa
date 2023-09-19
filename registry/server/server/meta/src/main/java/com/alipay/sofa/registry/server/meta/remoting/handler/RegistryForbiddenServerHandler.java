@@ -29,56 +29,58 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * @author chen.zhu
- *     <p>Mar 18, 2021
+ * <p>Mar 18, 2021
  */
 public class RegistryForbiddenServerHandler
-    extends BaseMetaServerHandler<RegistryForbiddenServerRequest> {
+        extends BaseMetaServerHandler<RegistryForbiddenServerRequest> {
 
-  private static final Logger LOGGER =
-      LoggerFactory.getLogger(RegistryForbiddenServerHandler.class);
+    private static final Logger LOGGER =
+            LoggerFactory.getLogger(RegistryForbiddenServerHandler.class);
 
-  @Autowired private RegistryForbiddenServerManager registryForbiddenServerManager;
+    @Autowired
+    private RegistryForbiddenServerManager registryForbiddenServerManager;
 
-  @Autowired private MetaLeaderService metaLeaderService;
+    @Autowired
+    private MetaLeaderService metaLeaderService;
 
-  @Override
-  public void checkParam(RegistryForbiddenServerRequest request) {
-    ParaCheckUtil.checkNotBlank(request.getCell(), "cell");
-    ParaCheckUtil.checkNotBlank(request.getIp(), "ip");
-  }
-
-  @Override
-  public Object doHandle(Channel channel, RegistryForbiddenServerRequest request) {
-    LOGGER.info(
-        "[doHandle] from {}, request: {}", channel.getRemoteAddress().getHostName(), request);
-    if (!metaLeaderService.amILeader()) {
-      buildFailedResponse("not leader");
-    }
-    DataOperation operation = request.getOperation();
-    String ip = request.getIp();
-
-    boolean success = false;
-    switch (operation) {
-      case ADD:
-        success = registryForbiddenServerManager.addToBlacklist(request);
-        break;
-      case REMOVE:
-        success = registryForbiddenServerManager.removeFromBlacklist(request);
-        break;
-      default:
-        break;
+    @Override
+    public void checkParam(RegistryForbiddenServerRequest request) {
+        ParaCheckUtil.checkNotBlank(request.getCell(), "cell");
+        ParaCheckUtil.checkNotBlank(request.getIp(), "ip");
     }
 
-    if (success) {
-      return GenericResponse.buildSuccessResponse();
+    @Override
+    public Object doHandle(Channel channel, RegistryForbiddenServerRequest request) {
+        LOGGER.info(
+                "[doHandle] from {}, request: {}", channel.getRemoteAddress().getHostName(), request);
+        if (!metaLeaderService.amILeader()) {
+            buildFailedResponse("not leader");
+        }
+        DataOperation operation = request.getOperation();
+        String ip = request.getIp();
+
+        boolean success = false;
+        switch (operation) {
+            case ADD:
+                success = registryForbiddenServerManager.addToBlacklist(request);
+                break;
+            case REMOVE:
+                success = registryForbiddenServerManager.removeFromBlacklist(request);
+                break;
+            default:
+                break;
+        }
+
+        if (success) {
+            return GenericResponse.buildSuccessResponse();
+        }
+
+        LOGGER.error("forbidden server: {} operation:{} fail.", ip, operation);
+        return GenericResponse.buildFailedResponse("handle forbidden server fail.");
     }
 
-    LOGGER.error("forbidden server: {} operation:{} fail.", ip, operation);
-    return GenericResponse.buildFailedResponse("handle forbidden server fail.");
-  }
-
-  @Override
-  public Class interest() {
-    return RegistryForbiddenServerRequest.class;
-  }
+    @Override
+    public Class interest() {
+        return RegistryForbiddenServerRequest.class;
+    }
 }

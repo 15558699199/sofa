@@ -20,13 +20,13 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class DBResponseTest {
-  @Test
-  public void test() {
-    Object obj1 = new Object();
-    DBResponse.DBResponseBuilder builder = DBResponse.ok(obj1);
-    Object obj2 = new Object();
-    builder.entity(obj2);
-    DBResponse response = builder.build();
-    Assert.assertEquals(response.getEntity(), obj2);
-  }
+    @Test
+    public void test() {
+        Object obj1 = new Object();
+        DBResponse.DBResponseBuilder builder = DBResponse.ok(obj1);
+        Object obj2 = new Object();
+        builder.entity(obj2);
+        DBResponse response = builder.build();
+        Assert.assertEquals(response.getEntity(), obj2);
+    }
 }

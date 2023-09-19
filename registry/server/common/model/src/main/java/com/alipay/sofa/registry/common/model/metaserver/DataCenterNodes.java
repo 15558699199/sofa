@@ -18,6 +18,7 @@ package com.alipay.sofa.registry.common.model.metaserver;
 
 import com.alipay.sofa.registry.common.model.Node;
 import com.alipay.sofa.registry.common.model.Node.NodeType;
+
 import java.io.Serializable;
 import java.util.Map;
 
@@ -27,71 +28,71 @@ import java.util.Map;
  */
 public class DataCenterNodes<T extends Node> implements Serializable {
 
-  private final NodeType nodeType;
+    private final NodeType nodeType;
 
-  private final long version;
+    private final long version;
 
-  private final String dataCenterId;
+    private final String dataCenterId;
 
-  private Map<String /*ipAddress*/, T> nodes;
+    private Map<String /*ipAddress*/, T> nodes;
 
-  /**
-   * constructor
-   *
-   * @param nodeType nodeType
-   * @param version version
-   * @param dataCenterId dataCenterId
-   */
-  public DataCenterNodes(NodeType nodeType, long version, String dataCenterId) {
-    this.nodeType = nodeType;
-    this.version = version;
-    this.dataCenterId = dataCenterId;
-  }
+    /**
+     * constructor
+     *
+     * @param nodeType     nodeType
+     * @param version      version
+     * @param dataCenterId dataCenterId
+     */
+    public DataCenterNodes(NodeType nodeType, long version, String dataCenterId) {
+        this.nodeType = nodeType;
+        this.version = version;
+        this.dataCenterId = dataCenterId;
+    }
 
-  /**
-   * Getter method for property <tt>version</tt>.
-   *
-   * @return property value of version
-   */
-  public long getVersion() {
-    return version;
-  }
+    /**
+     * Getter method for property <tt>version</tt>.
+     *
+     * @return property value of version
+     */
+    public long getVersion() {
+        return version;
+    }
 
-  /**
-   * Getter method for property <tt>dataCenterId</tt>.
-   *
-   * @return property value of dataCenterId
-   */
-  public String getDataCenterId() {
-    return dataCenterId;
-  }
+    /**
+     * Getter method for property <tt>dataCenterId</tt>.
+     *
+     * @return property value of dataCenterId
+     */
+    public String getDataCenterId() {
+        return dataCenterId;
+    }
 
-  /**
-   * Getter method for property <tt>nodes</tt>.
-   *
-   * @return property value of nodes
-   */
-  public Map<String, T> getNodes() {
-    return nodes;
-  }
+    /**
+     * Getter method for property <tt>nodes</tt>.
+     *
+     * @return property value of nodes
+     */
+    public Map<String, T> getNodes() {
+        return nodes;
+    }
 
-  /**
-   * Setter method for property <tt>nodes</tt>.
-   *
-   * @param nodes value to be assigned to property nodes
-   */
-  public void setNodes(Map<String, T> nodes) {
-    this.nodes = nodes;
-  }
+    /**
+     * Setter method for property <tt>nodes</tt>.
+     *
+     * @param nodes value to be assigned to property nodes
+     */
+    public void setNodes(Map<String, T> nodes) {
+        this.nodes = nodes;
+    }
 
-  @Override
-  public String toString() {
-    final StringBuilder sb = new StringBuilder("DataCenterNodes{");
-    sb.append("nodeType=").append(nodeType);
-    sb.append(", version=").append(version);
-    sb.append(", dataCenterId='").append(dataCenterId).append('\'');
-    sb.append(", nodes=").append(nodes);
-    sb.append('}');
-    return sb.toString();
-  }
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("DataCenterNodes{");
+        sb.append("nodeType=").append(nodeType);
+        sb.append(", version=").append(version);
+        sb.append(", dataCenterId='").append(dataCenterId).append('\'');
+        sb.append(", nodes=").append(nodes);
+        sb.append('}');
+        return sb.toString();
+    }
 }

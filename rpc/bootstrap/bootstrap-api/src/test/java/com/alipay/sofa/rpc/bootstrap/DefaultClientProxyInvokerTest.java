@@ -39,8 +39,8 @@ import static org.mockito.Mockito.doCallRealMethod;
 @RunWith(MockitoJUnitRunner.class)
 public class DefaultClientProxyInvokerTest {
 
-    private String                    originCallerApp = "originCallerApp";
-    private String                    customCallerApp = "customCallerApp";
+    private String originCallerApp = "originCallerApp";
+    private String customCallerApp = "customCallerApp";
     @Mock
     private DefaultClientProxyInvoker invoker;
 

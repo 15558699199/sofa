@@ -33,8 +33,8 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @version DefaultSofaModuleProfileCheckerIntegrationTests.java, v 0.1 2023年02月21日 8:25 PM huzijie Exp $
  */
 @SpringBootTest(classes = IsleSofaBootApplication.class)
-@AddCustomJar({ "dev-module", "test-module", "sample-module", "nospring-module",
-               "nospringchild-module" })
+@AddCustomJar({"dev-module", "test-module", "sample-module", "nospring-module",
+        "nospringchild-module"})
 @TestPropertySource(properties = "sofa.boot.isle.activeProfiles=dev")
 public class DefaultSofaModuleProfileCheckerIntegrationTests {
 

@@ -49,7 +49,7 @@ public class IntegrationServerFactoryTest extends ActivelyDestroyTest {
             error = false;
             try {
                 ServerConfig serverConfig2 = new ServerConfig().setProtocol("bolt").setPort(11234)
-                    .setAdaptivePort(true);
+                        .setAdaptivePort(true);
                 ServerFactory.getServer(serverConfig2).start();
                 Assert.assertEquals(11235, serverConfig2.getPort());
             } catch (Exception e) {

@@ -20,9 +20,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class InvokeCounterHystrixService implements HystrixService {
 
-    private int           sleep;
+    private int sleep;
 
-    private String        result;
+    private String result;
 
     private AtomicInteger executeCount = new AtomicInteger(0);
 

@@ -17,74 +17,75 @@
 package com.alipay.sofa.registry.task;
 
 import com.alipay.sofa.registry.TestUtils;
-import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 public class KeyedTaskTest {
 
-  @Test
-  public void testRun() {
-    KeyedTask task =
-        new KeyedTask(
-            "test",
-            () -> {
-              throw new RuntimeException();
-            });
-    task.run();
-    Assert.assertTrue(task.isFinished());
-    Assert.assertFalse(task.isSuccess());
-    Assert.assertTrue(task.isFailed());
+    @Test
+    public void testRun() {
+        KeyedTask task =
+                new KeyedTask(
+                        "test",
+                        () -> {
+                            throw new RuntimeException();
+                        });
+        task.run();
+        Assert.assertTrue(task.isFinished());
+        Assert.assertFalse(task.isSuccess());
+        Assert.assertTrue(task.isFailed());
 
-    task =
-        new KeyedTask(
-            "test",
-            () -> {
-              throw new TaskErrorSilenceException();
-            });
-    task.run();
-    Assert.assertTrue(task.isFinished());
-    Assert.assertFalse(task.isSuccess());
-    Assert.assertTrue(task.isFailed());
+        task =
+                new KeyedTask(
+                        "test",
+                        () -> {
+                            throw new TaskErrorSilenceException();
+                        });
+        task.run();
+        Assert.assertTrue(task.isFinished());
+        Assert.assertFalse(task.isSuccess());
+        Assert.assertTrue(task.isFailed());
 
-    Assert.assertFalse(task.isOverAfter(1000000));
-    Assert.assertTrue(task.isOverAfter(0));
-  }
+        Assert.assertFalse(task.isOverAfter(1000000));
+        Assert.assertTrue(task.isOverAfter(0));
+    }
 
-  @Test
-  public void testCancel() {
-    final AtomicInteger count = new AtomicInteger();
-    long now = System.currentTimeMillis();
-    KeyedTask task =
-        new KeyedTask(
-            "test",
-            () -> {
-              count.incrementAndGet();
-            });
-    TestUtils.assertBetween(task.getCreateTime(), now, System.currentTimeMillis());
-    Assert.assertEquals(task.getEndTime(), 0);
-    Assert.assertEquals(task.getStartTime(), 0);
-    Assert.assertEquals(task.key(), "test");
-    Assert.assertNotNull(task.getRunnable());
-    task.cancel();
+    @Test
+    public void testCancel() {
+        final AtomicInteger count = new AtomicInteger();
+        long now = System.currentTimeMillis();
+        KeyedTask task =
+                new KeyedTask(
+                        "test",
+                        () -> {
+                            count.incrementAndGet();
+                        });
+        TestUtils.assertBetween(task.getCreateTime(), now, System.currentTimeMillis());
+        Assert.assertEquals(task.getEndTime(), 0);
+        Assert.assertEquals(task.getStartTime(), 0);
+        Assert.assertEquals(task.key(), "test");
+        Assert.assertNotNull(task.getRunnable());
+        task.cancel();
 
-    // has not run, not finish
-    Assert.assertFalse(task.isFinished());
-    Assert.assertFalse(task.isSuccess());
-    Assert.assertFalse(task.isFailed());
+        // has not run, not finish
+        Assert.assertFalse(task.isFinished());
+        Assert.assertFalse(task.isSuccess());
+        Assert.assertFalse(task.isFailed());
 
-    Assert.assertTrue(task.canceled);
-    // not finish
-    Assert.assertFalse(task.isOverAfter(1));
-    task.run();
-    // cancel always return true
-    Assert.assertTrue(task.isOverAfter(1000000));
-    // has cancel, not exec
-    Assert.assertEquals(count.get(), 0);
-    Assert.assertTrue(task.isFinished());
-    Assert.assertTrue(task.isSuccess());
-    Assert.assertFalse(task.isFailed());
+        Assert.assertTrue(task.canceled);
+        // not finish
+        Assert.assertFalse(task.isOverAfter(1));
+        task.run();
+        // cancel always return true
+        Assert.assertTrue(task.isOverAfter(1000000));
+        // has cancel, not exec
+        Assert.assertEquals(count.get(), 0);
+        Assert.assertTrue(task.isFinished());
+        Assert.assertTrue(task.isSuccess());
+        Assert.assertFalse(task.isFailed());
 
-    Assert.assertNotNull(task.toString());
-  }
+        Assert.assertNotNull(task.toString());
+    }
 }

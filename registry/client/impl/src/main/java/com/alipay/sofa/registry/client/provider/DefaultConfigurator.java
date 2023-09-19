@@ -27,6 +27,7 @@ import com.alipay.sofa.registry.client.task.Worker;
 import com.alipay.sofa.registry.core.constants.EventTypeConstants;
 import com.alipay.sofa.registry.core.model.ConfiguratorRegister;
 import com.alipay.sofa.registry.core.model.DataBox;
+
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -37,171 +38,173 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @version $Id : DefaultConfigurator.java, v 0.1 2018-04-18 14:41 zhuoyu.sjw Exp $$
  */
 public class DefaultConfigurator extends AbstractInternalRegister implements Configurator {
-  private final String REGIST_ID;
+    private final String REGIST_ID;
 
-  private ConfiguratorRegistration registration;
+    private ConfiguratorRegistration registration;
 
-  private ConfigDataObserver configDataObserver;
+    private ConfigDataObserver configDataObserver;
 
-  private RegistryClientConfig config;
+    private RegistryClientConfig config;
 
-  private ConfiguratorData configuratorData;
+    private ConfiguratorData configuratorData;
 
-  private Worker worker;
+    private Worker worker;
 
-  private AtomicBoolean init = new AtomicBoolean(false);
+    private AtomicBoolean init = new AtomicBoolean(false);
 
-  /**
-   * Instantiates a new Default configurator.
-   *
-   * @param config the config
-   * @param worker the worker
-   */
-  public DefaultConfigurator(
-      ConfiguratorRegistration registration, RegistryClientConfig config, Worker worker) {
-    if (null != registration) {
-      this.configDataObserver = registration.getConfigDataObserver();
+    /**
+     * Instantiates a new Default configurator.
+     *
+     * @param config the config
+     * @param worker the worker
+     */
+    public DefaultConfigurator(
+            ConfiguratorRegistration registration, RegistryClientConfig config, Worker worker) {
+        if (null != registration) {
+            this.configDataObserver = registration.getConfigDataObserver();
+        }
+        this.registration = registration;
+        this.config = config;
+        this.worker = worker;
+        this.REGIST_ID = UUID.randomUUID().toString();
     }
-    this.registration = registration;
-    this.config = config;
-    this.worker = worker;
-    this.REGIST_ID = UUID.randomUUID().toString();
-  }
 
-  /**
-   * Gets data observer.
-   *
-   * @return the data observer
-   */
-  @Override
-  public ConfigDataObserver getDataObserver() {
-    return configDataObserver;
-  }
-
-  /**
-   * Setter method for property <tt>configDataObserver</tt>.
-   *
-   * @param configDataObserver value to be assigned to property configDataObserver
-   */
-  @Override
-  public void setDataObserver(ConfigDataObserver configDataObserver) {
-    this.configDataObserver = configDataObserver;
-  }
-
-  /**
-   * Peek data config data.
-   *
-   * @return the config data
-   */
-  @Override
-  public ConfigData peekData() {
-    if (!init.get()) {
-      throw new IllegalStateException("Config data is not ready yet.");
+    /**
+     * Gets data observer.
+     *
+     * @return the data observer
+     */
+    @Override
+    public ConfigDataObserver getDataObserver() {
+        return configDataObserver;
     }
-    if (null != configuratorData) {
-      DataBox dataBox = configuratorData.getDataBox();
-      if (null != dataBox) {
-        return new DefaultConfigData(dataBox.getData());
-      }
+
+    /**
+     * Setter method for property <tt>configDataObserver</tt>.
+     *
+     * @param configDataObserver value to be assigned to property configDataObserver
+     */
+    @Override
+    public void setDataObserver(ConfigDataObserver configDataObserver) {
+        this.configDataObserver = configDataObserver;
     }
-    return new DefaultConfigData(null);
-  }
 
-  /**
-   * Assembly object.
-   *
-   * @return the object
-   */
-  @Override
-  public Object assembly() {
-    readLock.lock();
-    ConfiguratorRegister register = new ConfiguratorRegister();
-    try {
-      register.setRegistId(REGIST_ID);
-      setAttributes(register, registration, config);
-      // auth signature
-      setAuthSignature(register);
-
-      if (isEnabled()) {
-        register.setEventType(EventTypeConstants.REGISTER);
-      } else {
-        register.setEventType(EventTypeConstants.UNREGISTER);
-      }
-    } finally {
-      readLock.unlock();
+    /**
+     * Peek data config data.
+     *
+     * @return the config data
+     */
+    @Override
+    public ConfigData peekData() {
+        if (!init.get()) {
+            throw new IllegalStateException("Config data is not ready yet.");
+        }
+        if (null != configuratorData) {
+            DataBox dataBox = configuratorData.getDataBox();
+            if (null != dataBox) {
+                return new DefaultConfigData(dataBox.getData());
+            }
+        }
+        return new DefaultConfigData(null);
     }
-    return register;
-  }
 
-  /**
-   * Put configurator data.
-   *
-   * @param receivedConfigData the received config data
-   */
-  public void putConfiguratorData(ConfiguratorData receivedConfigData) {
-    writeLock.lock();
-    try {
-      if (null == receivedConfigData) {
-        return;
-      }
+    /**
+     * Assembly object.
+     *
+     * @return the object
+     */
+    @Override
+    public Object assembly() {
+        readLock.lock();
+        ConfiguratorRegister register = new ConfiguratorRegister();
+        try {
+            register.setRegistId(REGIST_ID);
+            setAttributes(register, registration, config);
+            // auth signature
+            setAuthSignature(register);
 
-      // default version set to zero
-      if (null == receivedConfigData.getVersion()) {
-        receivedConfigData.setVersion(0L);
-      }
-
-      if (null == configuratorData
-          || receivedConfigData.getVersion() > configuratorData.getVersion()) {
-        configuratorData = receivedConfigData;
-        init.compareAndSet(false, true);
-      }
-
-    } finally {
-      writeLock.unlock();
+            if (isEnabled()) {
+                register.setEventType(EventTypeConstants.REGISTER);
+            } else {
+                register.setEventType(EventTypeConstants.UNREGISTER);
+            }
+        } finally {
+            readLock.unlock();
+        }
+        return register;
     }
-  }
 
-  /**
-   * Gets data id.
-   *
-   * @return the data id
-   */
-  @Override
-  public String getDataId() {
-    return registration.getDataId();
-  }
+    /**
+     * Put configurator data.
+     *
+     * @param receivedConfigData the received config data
+     */
+    public void putConfiguratorData(ConfiguratorData receivedConfigData) {
+        writeLock.lock();
+        try {
+            if (null == receivedConfigData) {
+                return;
+            }
 
-  /**
-   * Gets group.
-   *
-   * @return the group
-   */
-  @Override
-  public String getGroup() {
-    return registration.getGroup();
-  }
+            // default version set to zero
+            if (null == receivedConfigData.getVersion()) {
+                receivedConfigData.setVersion(0L);
+            }
 
-  /**
-   * Gets regist id.
-   *
-   * @return the regist id
-   */
-  @Override
-  public String getRegistId() {
-    return REGIST_ID;
-  }
+            if (null == configuratorData
+                    || receivedConfigData.getVersion() > configuratorData.getVersion()) {
+                configuratorData = receivedConfigData;
+                init.compareAndSet(false, true);
+            }
 
-  /** Unregister. */
-  @Override
-  public void unregister() {
-    if (isEnabled()) {
-      super.unregister();
-      this.worker.schedule(new TaskEvent(this));
+        } finally {
+            writeLock.unlock();
+        }
     }
-  }
 
-  @Override
-  public String toString() {
-    return "DefaultConfigurator{" + "registration=" + registration + '}';
-  }
+    /**
+     * Gets data id.
+     *
+     * @return the data id
+     */
+    @Override
+    public String getDataId() {
+        return registration.getDataId();
+    }
+
+    /**
+     * Gets group.
+     *
+     * @return the group
+     */
+    @Override
+    public String getGroup() {
+        return registration.getGroup();
+    }
+
+    /**
+     * Gets regist id.
+     *
+     * @return the regist id
+     */
+    @Override
+    public String getRegistId() {
+        return REGIST_ID;
+    }
+
+    /**
+     * Unregister.
+     */
+    @Override
+    public void unregister() {
+        if (isEnabled()) {
+            super.unregister();
+            this.worker.schedule(new TaskEvent(this));
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "DefaultConfigurator{" + "registration=" + registration + '}';
+    }
 }

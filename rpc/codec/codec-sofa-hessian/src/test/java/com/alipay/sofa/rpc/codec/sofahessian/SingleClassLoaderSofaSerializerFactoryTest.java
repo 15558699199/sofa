@@ -29,8 +29,6 @@ import java.util.Map;
 import static org.junit.Assert.assertEquals;
 
 /**
- *
- *
  * @author <a href="mailto:zhanggeng.zg@antfin.com">GengZhang</a>
  */
 public class SingleClassLoaderSofaSerializerFactoryTest {
@@ -44,7 +42,7 @@ public class SingleClassLoaderSofaSerializerFactoryTest {
         h2out.setSerializerFactory(factory);
 
         Map map = new HashMap();
-        map.put("1", new long[] { 1L, 2L });
+        map.put("1", new long[]{1L, 2L});
 
         h2out.writeObject(map);
 

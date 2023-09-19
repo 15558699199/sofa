@@ -18,6 +18,7 @@ package com.alipay.sofa.registry.server.session.store;
 
 import com.alipay.sofa.registry.common.model.ConnectId;
 import com.alipay.sofa.registry.common.model.Tuple;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -36,73 +37,73 @@ import java.util.function.BiConsumer;
  */
 public interface DataManager<DATA, ID, DATAINFOID> {
 
-  /**
-   * new publisher and subscriber data add
-   *
-   * @param data data
-   * @return boolean
-   */
-  boolean add(DATA data);
+    /**
+     * new publisher and subscriber data add
+     *
+     * @param data data
+     * @return boolean
+     */
+    boolean add(DATA data);
 
-  /**
-   * query data by client node connectId
-   *
-   * @param connectId connectId
-   * @return Map
-   */
-  Map<ID, DATA> queryByConnectId(ConnectId connectId);
+    /**
+     * query data by client node connectId
+     *
+     * @param connectId connectId
+     * @return Map
+     */
+    Map<ID, DATA> queryByConnectId(ConnectId connectId);
 
-  /**
-   * query data by client node connectId
-   *
-   * @param connectIds connectIds
-   * @return Map
-   */
-  Map<ConnectId, Map<ID, DATA>> queryByConnectIds(Set<ConnectId> connectIds);
+    /**
+     * query data by client node connectId
+     *
+     * @param connectIds connectIds
+     * @return Map
+     */
+    Map<ConnectId, Map<ID, DATA>> queryByConnectIds(Set<ConnectId> connectIds);
 
-  /**
-   * remove data by client node connectId
-   *
-   * @param connectId connectId
-   * @return Map
-   */
-  Map<ID, DATA> deleteByConnectId(ConnectId connectId);
+    /**
+     * remove data by client node connectId
+     *
+     * @param connectId connectId
+     * @return Map
+     */
+    Map<ID, DATA> deleteByConnectId(ConnectId connectId);
 
-  /**
-   * remove data by client node connectIds
-   *
-   * @param connectIds connectIds
-   * @return Map
-   */
-  Map<ConnectId, Map<ID, DATA>> deleteByConnectIds(Set<ConnectId> connectIds);
+    /**
+     * remove data by client node connectIds
+     *
+     * @param connectIds connectIds
+     * @return Map
+     */
+    Map<ConnectId, Map<ID, DATA>> deleteByConnectIds(Set<ConnectId> connectIds);
 
-  DATA queryById(ID registerId, DATAINFOID dataInfoId);
+    DATA queryById(ID registerId, DATAINFOID dataInfoId);
 
-  /**
-   * remove single data by register id
-   *
-   * @param registerId registerId
-   * @param dataInfoId dataInfoId
-   * @return Data
-   */
-  DATA deleteById(ID registerId, DATAINFOID dataInfoId);
+    /**
+     * remove single data by register id
+     *
+     * @param registerId registerId
+     * @param dataInfoId dataInfoId
+     * @return Data
+     */
+    DATA deleteById(ID registerId, DATAINFOID dataInfoId);
 
-  /**
-   * dataInfoId.size and data.size
-   *
-   * @return Tuple
-   */
-  Tuple<Long, Long> count();
+    /**
+     * dataInfoId.size and data.size
+     *
+     * @return Tuple
+     */
+    Tuple<Long, Long> count();
 
-  Set<ConnectId> getConnectIds();
+    Set<ConnectId> getConnectIds();
 
-  Collection<DATA> getDatas(DATAINFOID dataInfoId);
+    Collection<DATA> getDatas(DATAINFOID dataInfoId);
 
-  List<DATA> getDataList();
+    List<DATA> getDataList();
 
-  Map<DATAINFOID, Map<ID, DATA>> getDatas();
+    Map<DATAINFOID, Map<ID, DATA>> getDatas();
 
-  Collection<DATAINFOID> getDataInfoIds();
+    Collection<DATAINFOID> getDataInfoIds();
 
-  void forEach(BiConsumer<DATAINFOID, Map<ID, DATA>> consumer);
+    void forEach(BiConsumer<DATAINFOID, Map<ID, DATA>> consumer);
 }

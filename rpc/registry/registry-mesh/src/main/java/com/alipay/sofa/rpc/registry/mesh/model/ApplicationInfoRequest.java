@@ -28,9 +28,9 @@ public class ApplicationInfoRequest {
 
     private static final String APP_NAME_KEY = "appName";
 
-    private String              appName;
+    private String appName;
 
-    private Map<String, Object> parameters   = new HashMap<String, Object>();
+    private Map<String, Object> parameters = new HashMap<String, Object>();
 
     public String getAppName() {
         return appName;

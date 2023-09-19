@@ -31,6 +31,7 @@ import com.alipay.sofa.registry.net.NetUtil;
 import com.alipay.sofa.registry.remoting.*;
 import com.alipay.sofa.registry.remoting.ChannelHandler.HandlerType;
 import com.alipay.sofa.registry.remoting.ChannelHandler.InvokeType;
+
 import java.net.InetSocketAddress;
 import java.util.List;
 import java.util.Map;
@@ -45,176 +46,176 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class BoltClient implements Client {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(BoltClient.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(BoltClient.class);
 
-  private final RpcClient rpcClient;
+    private final RpcClient rpcClient;
 
-  private final AtomicBoolean closed = new AtomicBoolean(false);
+    private final AtomicBoolean closed = new AtomicBoolean(false);
+    private final int connNum;
+    private int connectTimeout = 2000;
 
-  private int connectTimeout = 2000;
+    /**
+     * Instantiates a new Bolt client.
+     */
+    public BoltClient(int connNum) {
+        rpcClient = new RpcClient();
+        configIO();
+        rpcClient.init();
 
-  private final int connNum;
+        this.connNum = connNum;
+    }
 
-  /** Instantiates a new Bolt client. */
-  public BoltClient(int connNum) {
-    rpcClient = new RpcClient();
-    configIO();
-    rpcClient.init();
+    private void configIO() {
+        final int low = Integer.getInteger(Configs.NETTY_BUFFER_LOW_WATERMARK, 1024 * 256);
+        final int high = Integer.getInteger(Configs.NETTY_BUFFER_HIGH_WATERMARK, 1024 * 288);
+        rpcClient.initWriteBufferWaterMark(low, high);
+        LOGGER.info("config watermark, low={}, high={}", low, high);
+    }
 
-    this.connNum = connNum;
-  }
+    public Map<String, List<Connection>> getConnections() {
+        return rpcClient.getAllManagedConnections();
+    }
 
-  private void configIO() {
-    final int low = Integer.getInteger(Configs.NETTY_BUFFER_LOW_WATERMARK, 1024 * 256);
-    final int high = Integer.getInteger(Configs.NETTY_BUFFER_HIGH_WATERMARK, 1024 * 288);
-    rpcClient.initWriteBufferWaterMark(low, high);
-    LOGGER.info("config watermark, low={}, high={}", low, high);
-  }
+    /**
+     * Setter method for property <tt>channelHandlers</tt>.
+     *
+     * @param channelHandlers value to be assigned to property channelHandlers
+     */
+    public void initHandlers(List<ChannelHandler> channelHandlers) {
+        final ChannelHandler connectionEventHandler = BoltUtil.getListenerHandlers(channelHandlers);
 
-  public Map<String, List<Connection>> getConnections() {
-    return rpcClient.getAllManagedConnections();
-  }
+        rpcClient.addConnectionEventProcessor(
+                ConnectionEventType.CONNECT,
+                newConnectionEventAdapter(connectionEventHandler, ConnectionEventType.CONNECT));
+        rpcClient.addConnectionEventProcessor(
+                ConnectionEventType.CLOSE,
+                newConnectionEventAdapter(connectionEventHandler, ConnectionEventType.CLOSE));
+        rpcClient.addConnectionEventProcessor(
+                ConnectionEventType.EXCEPTION,
+                newConnectionEventAdapter(connectionEventHandler, ConnectionEventType.EXCEPTION));
 
-  /**
-   * Setter method for property <tt>channelHandlers</tt>.
-   *
-   * @param channelHandlers value to be assigned to property channelHandlers
-   */
-  public void initHandlers(List<ChannelHandler> channelHandlers) {
-    final ChannelHandler connectionEventHandler = BoltUtil.getListenerHandlers(channelHandlers);
-
-    rpcClient.addConnectionEventProcessor(
-        ConnectionEventType.CONNECT,
-        newConnectionEventAdapter(connectionEventHandler, ConnectionEventType.CONNECT));
-    rpcClient.addConnectionEventProcessor(
-        ConnectionEventType.CLOSE,
-        newConnectionEventAdapter(connectionEventHandler, ConnectionEventType.CLOSE));
-    rpcClient.addConnectionEventProcessor(
-        ConnectionEventType.EXCEPTION,
-        newConnectionEventAdapter(connectionEventHandler, ConnectionEventType.EXCEPTION));
-
-    for (ChannelHandler channelHandler : channelHandlers) {
-      if (HandlerType.PROCESSER.equals(channelHandler.getType())) {
-        if (InvokeType.SYNC.equals(channelHandler.getInvokeType())) {
-          rpcClient.registerUserProcessor(newSyncProcessor(channelHandler));
-        } else {
-          rpcClient.registerUserProcessor(newAsyncProcessor(channelHandler));
+        for (ChannelHandler channelHandler : channelHandlers) {
+            if (HandlerType.PROCESSER.equals(channelHandler.getType())) {
+                if (InvokeType.SYNC.equals(channelHandler.getInvokeType())) {
+                    rpcClient.registerUserProcessor(newSyncProcessor(channelHandler));
+                } else {
+                    rpcClient.registerUserProcessor(newAsyncProcessor(channelHandler));
+                }
+            }
         }
-      }
     }
-  }
 
-  protected ConnectionEventProcessor newConnectionEventAdapter(
-      ChannelHandler connectionEventHandler, ConnectionEventType connectEventType) {
-    return new ConnectionEventAdapter(connectEventType, connectionEventHandler);
-  }
-
-  protected AsyncUserProcessorAdapter newAsyncProcessor(ChannelHandler channelHandler) {
-    return new AsyncUserProcessorAdapter(channelHandler);
-  }
-
-  protected SyncUserProcessorAdapter newSyncProcessor(ChannelHandler channelHandler) {
-    return new SyncUserProcessorAdapter(channelHandler);
-  }
-
-  @Override
-  public Channel connect(URL url) {
-    if (url == null) {
-      throw new IllegalArgumentException("Create connection url can not be null!");
+    protected ConnectionEventProcessor newConnectionEventAdapter(
+            ChannelHandler connectionEventHandler, ConnectionEventType connectEventType) {
+        return new ConnectionEventAdapter(connectEventType, connectionEventHandler);
     }
-    try {
-      Connection connection = getBoltConnection(rpcClient, url);
-      return new BoltChannel(connection);
-    } catch (RemotingException e) {
-      throw BoltUtil.handleException("BoltClient", url, e, "connect");
-    }
-  }
 
-  protected Connection getBoltConnection(RpcClient rpcClient, URL url) throws RemotingException {
-    Url boltUrl = createBoltUrl(url);
-    try {
-      Connection connection = rpcClient.getConnection(boltUrl, connectTimeout);
-      if (connection == null || !connection.isFine()) {
-        if (connection != null) {
-          connection.close();
+    protected AsyncUserProcessorAdapter newAsyncProcessor(ChannelHandler channelHandler) {
+        return new AsyncUserProcessorAdapter(channelHandler);
+    }
+
+    protected SyncUserProcessorAdapter newSyncProcessor(ChannelHandler channelHandler) {
+        return new SyncUserProcessorAdapter(channelHandler);
+    }
+
+    @Override
+    public Channel connect(URL url) {
+        if (url == null) {
+            throw new IllegalArgumentException("Create connection url can not be null!");
         }
-        throw new ChannelConnectException("Get bolt connection failed for boltUrl: " + boltUrl);
-      }
-      return connection;
-    } catch (InterruptedException e) {
-      throw BoltUtil.handleException("BoltClient", boltUrl, e, "getConnection");
+        try {
+            Connection connection = getBoltConnection(rpcClient, url);
+            return new BoltChannel(connection);
+        } catch (RemotingException e) {
+            throw BoltUtil.handleException("BoltClient", url, e, "connect");
+        }
     }
-  }
 
-  protected Url createBoltUrl(URL url) {
-    Url boltUrl = new Url(url.getIpAddress(), url.getPort());
-    boltUrl.setProtocol(RpcProtocol.PROTOCOL_CODE);
-    boltUrl.setConnNum(connNum);
-    boltUrl.setConnWarmup(true);
-    return boltUrl;
-  }
-
-  @Override
-  public Channel getChannel(URL url) {
-    try {
-      Connection connection = getBoltConnection(rpcClient, url);
-      BoltChannel channel = new BoltChannel(connection);
-      return channel;
-    } catch (Throwable e) {
-      throw BoltUtil.handleException("BoltClient", url, e, "getChannel");
+    protected Connection getBoltConnection(RpcClient rpcClient, URL url) throws RemotingException {
+        Url boltUrl = createBoltUrl(url);
+        try {
+            Connection connection = rpcClient.getConnection(boltUrl, connectTimeout);
+            if (connection == null || !connection.isFine()) {
+                if (connection != null) {
+                    connection.close();
+                }
+                throw new ChannelConnectException("Get bolt connection failed for boltUrl: " + boltUrl);
+            }
+            return connection;
+        } catch (InterruptedException e) {
+            throw BoltUtil.handleException("BoltClient", boltUrl, e, "getConnection");
+        }
     }
-  }
 
-  @Override
-  public InetSocketAddress getLocalAddress() {
-    return NetUtil.getLocalSocketAddress();
-  }
-
-  @Override
-  public void close() {
-    if (closed.compareAndSet(false, true)) {
-      rpcClient.shutdown();
+    protected Url createBoltUrl(URL url) {
+        Url boltUrl = new Url(url.getIpAddress(), url.getPort());
+        boltUrl.setProtocol(RpcProtocol.PROTOCOL_CODE);
+        boltUrl.setConnNum(connNum);
+        boltUrl.setConnWarmup(true);
+        return boltUrl;
     }
-  }
 
-  @Override
-  public boolean isClosed() {
-    return closed.get();
-  }
-
-  @Override
-  public Object sendSync(URL url, Object message, int timeoutMillis) {
-    try {
-      Url boltUrl = createBoltUrl(url);
-      return rpcClient.invokeSync(boltUrl, message, timeoutMillis);
-    } catch (Throwable e) {
-      throw BoltUtil.handleException("BoltClient", url, e, "sendSync");
+    @Override
+    public Channel getChannel(URL url) {
+        try {
+            Connection connection = getBoltConnection(rpcClient, url);
+            BoltChannel channel = new BoltChannel(connection);
+            return channel;
+        } catch (Throwable e) {
+            throw BoltUtil.handleException("BoltClient", url, e, "getChannel");
+        }
     }
-  }
 
-  @Override
-  public Object sendSync(Channel channel, Object message, int timeoutMillis) {
-    BoltUtil.checkChannelConnected(channel);
-    try {
-      return rpcClient.invokeSync(((BoltChannel) channel).getConnection(), message, timeoutMillis);
-    } catch (Throwable e) {
-      throw BoltUtil.handleException("BoltClient", channel, e, "sendSync");
+    @Override
+    public InetSocketAddress getLocalAddress() {
+        return NetUtil.getLocalSocketAddress();
     }
-  }
 
-  @Override
-  public void sendCallback(
-      URL url, Object message, CallbackHandler callbackHandler, int timeoutMillis) {
-    try {
-      Connection connection = getBoltConnection(rpcClient, url);
-      rpcClient.invokeWithCallback(
-          connection,
-          message,
-          new InvokeCallbackHandler(new BoltChannel(connection), callbackHandler),
-          timeoutMillis);
-      return;
-    } catch (RemotingException e) {
-      throw BoltUtil.handleException("BoltClient", url, e, "sendCallback");
+    @Override
+    public void close() {
+        if (closed.compareAndSet(false, true)) {
+            rpcClient.shutdown();
+        }
     }
-  }
+
+    @Override
+    public boolean isClosed() {
+        return closed.get();
+    }
+
+    @Override
+    public Object sendSync(URL url, Object message, int timeoutMillis) {
+        try {
+            Url boltUrl = createBoltUrl(url);
+            return rpcClient.invokeSync(boltUrl, message, timeoutMillis);
+        } catch (Throwable e) {
+            throw BoltUtil.handleException("BoltClient", url, e, "sendSync");
+        }
+    }
+
+    @Override
+    public Object sendSync(Channel channel, Object message, int timeoutMillis) {
+        BoltUtil.checkChannelConnected(channel);
+        try {
+            return rpcClient.invokeSync(((BoltChannel) channel).getConnection(), message, timeoutMillis);
+        } catch (Throwable e) {
+            throw BoltUtil.handleException("BoltClient", channel, e, "sendSync");
+        }
+    }
+
+    @Override
+    public void sendCallback(
+            URL url, Object message, CallbackHandler callbackHandler, int timeoutMillis) {
+        try {
+            Connection connection = getBoltConnection(rpcClient, url);
+            rpcClient.invokeWithCallback(
+                    connection,
+                    message,
+                    new InvokeCallbackHandler(new BoltChannel(connection), callbackHandler),
+                    timeoutMillis);
+            return;
+        } catch (RemotingException e) {
+            throw BoltUtil.handleException("BoltClient", url, e, "sendCallback");
+        }
+    }
 }

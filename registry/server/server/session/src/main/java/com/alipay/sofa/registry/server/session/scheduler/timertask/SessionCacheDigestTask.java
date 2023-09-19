@@ -27,14 +27,15 @@ import com.alipay.sofa.registry.server.session.store.DataStore;
 import com.alipay.sofa.registry.server.session.store.Interests;
 import com.alipay.sofa.registry.util.ConcurrentUtils;
 import com.alipay.sofa.registry.util.NamedThreadFactory;
+import org.apache.commons.lang.time.DateUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.annotation.PostConstruct;
 import java.util.*;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-import javax.annotation.PostConstruct;
-import org.apache.commons.lang.time.DateUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * @author xiaojian.xj
@@ -42,75 +43,74 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class SessionCacheDigestTask {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger("CACHE-DIGEST");
+    private static final Logger LOGGER = LoggerFactory.getLogger("CACHE-DIGEST");
+    private final ScheduledExecutorService executorService =
+            new ScheduledThreadPoolExecutor(1, new NamedThreadFactory("CacheDigestTask"));
+    @Autowired
+    DataStore sessionDataStore;
+    @Autowired
+    Interests sessionInterests;
+    @Autowired
+    SessionServerConfig sessionServerConfig;
 
-  @Autowired DataStore sessionDataStore;
+    @PostConstruct
+    public boolean init() {
+        final int intervalMinutes = sessionServerConfig.getCacheDigestIntervalMinutes();
+        if (intervalMinutes <= 0) {
+            LOGGER.info("cache digest off with intervalMinutes={}", intervalMinutes);
+            return false;
+        }
+        Date firstDate = new Date();
+        firstDate = DateUtils.round(firstDate, Calendar.MINUTE);
+        firstDate.setMinutes(
+                firstDate.getMinutes() / intervalMinutes * intervalMinutes + intervalMinutes);
+        long firstDelay = firstDate.getTime() - System.currentTimeMillis();
+        executorService.scheduleAtFixedRate(
+                this::dump, firstDelay, (long) intervalMinutes * 60 * 1000, TimeUnit.MILLISECONDS);
 
-  @Autowired Interests sessionInterests;
-
-  @Autowired SessionServerConfig sessionServerConfig;
-
-  private final ScheduledExecutorService executorService =
-      new ScheduledThreadPoolExecutor(1, new NamedThreadFactory("CacheDigestTask"));
-
-  @PostConstruct
-  public boolean init() {
-    final int intervalMinutes = sessionServerConfig.getCacheDigestIntervalMinutes();
-    if (intervalMinutes <= 0) {
-      LOGGER.info("cache digest off with intervalMinutes={}", intervalMinutes);
-      return false;
+        return true;
     }
-    Date firstDate = new Date();
-    firstDate = DateUtils.round(firstDate, Calendar.MINUTE);
-    firstDate.setMinutes(
-        firstDate.getMinutes() / intervalMinutes * intervalMinutes + intervalMinutes);
-    long firstDelay = firstDate.getTime() - System.currentTimeMillis();
-    executorService.scheduleAtFixedRate(
-        this::dump, firstDelay, (long) intervalMinutes * 60 * 1000, TimeUnit.MILLISECONDS);
 
-    return true;
-  }
+    boolean dump() {
+        try {
+            Collection<String> storeDataInfoIds = sessionDataStore.getDataInfoIds();
+            Collection<String> interestDataInfoIds = sessionInterests.getDataInfoIds();
+            Set<String> dataInfoIds = new HashSet<>(storeDataInfoIds.size() + interestDataInfoIds.size());
 
-  boolean dump() {
-    try {
-      Collection<String> storeDataInfoIds = sessionDataStore.getDataInfoIds();
-      Collection<String> interestDataInfoIds = sessionInterests.getDataInfoIds();
-      Set<String> dataInfoIds = new HashSet<>(storeDataInfoIds.size() + interestDataInfoIds.size());
+            dataInfoIds.addAll(storeDataInfoIds);
+            dataInfoIds.addAll(interestDataInfoIds);
 
-      dataInfoIds.addAll(storeDataInfoIds);
-      dataInfoIds.addAll(interestDataInfoIds);
+            for (String dataInfoId : dataInfoIds) {
+                Collection<Publisher> publishers = sessionDataStore.getDatas(dataInfoId);
+                Collection<Subscriber> subscribers = sessionInterests.getDatas(dataInfoId);
 
-      for (String dataInfoId : dataInfoIds) {
-        Collection<Publisher> publishers = sessionDataStore.getDatas(dataInfoId);
-        Collection<Subscriber> subscribers = sessionInterests.getDatas(dataInfoId);
-
-        LOGGER.info(
-            "[dataInfo] {}; {}; {}; {}; [{}]; [{}]",
-            sessionServerConfig.getSessionServerDataCenter(),
-            dataInfoId,
-            publishers.size(),
-            subscribers.size(),
-            logPubOrSub(publishers),
-            logPubOrSub(subscribers));
-        // avoid io is too busy
-        ConcurrentUtils.sleepUninterruptibly(1, TimeUnit.MILLISECONDS);
-      }
-      return true;
-    } catch (Throwable t) {
-      LOGGER.safeError("[CacheDigestTask] cache digest error", (Throwable) t);
-      return false;
+                LOGGER.info(
+                        "[dataInfo] {}; {}; {}; {}; [{}]; [{}]",
+                        sessionServerConfig.getSessionServerDataCenter(),
+                        dataInfoId,
+                        publishers.size(),
+                        subscribers.size(),
+                        logPubOrSub(publishers),
+                        logPubOrSub(subscribers));
+                // avoid io is too busy
+                ConcurrentUtils.sleepUninterruptibly(1, TimeUnit.MILLISECONDS);
+            }
+            return true;
+        } catch (Throwable t) {
+            LOGGER.safeError("[CacheDigestTask] cache digest error", (Throwable) t);
+            return false;
+        }
     }
-  }
 
-  private String logPubOrSub(Collection<? extends BaseInfo> infos) {
+    private String logPubOrSub(Collection<? extends BaseInfo> infos) {
 
-    return Optional.ofNullable(infos).orElse(new ArrayList<>()).stream()
-        .filter(info -> info != null)
-        .map(info -> logUrl(info.getSourceAddress()))
-        .collect(Collectors.joining(","));
-  }
+        return Optional.ofNullable(infos).orElse(new ArrayList<>()).stream()
+                .filter(info -> info != null)
+                .map(info -> logUrl(info.getSourceAddress()))
+                .collect(Collectors.joining(","));
+    }
 
-  private String logUrl(URL url) {
-    return url == null ? "null" : url.buildAddressString();
-  }
+    private String logUrl(URL url) {
+        return url == null ? "null" : url.buildAddressString();
+    }
 }

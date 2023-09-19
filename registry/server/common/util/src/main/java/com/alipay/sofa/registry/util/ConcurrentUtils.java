@@ -19,6 +19,7 @@ package com.alipay.sofa.registry.util;
 import com.alipay.sofa.registry.log.Logger;
 import com.alipay.sofa.registry.log.LoggerFactory;
 import com.google.common.collect.Lists;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -29,94 +30,95 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * @author chen.zhu
- *     <p>Nov 23, 2020
+ * <p>Nov 23, 2020
  */
 public final class ConcurrentUtils {
-  private static final Logger LOGGER = LoggerFactory.getLogger(ConcurrentUtils.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ConcurrentUtils.class);
 
-  private ConcurrentUtils() {}
-
-  public abstract static class SafeParaLoop<T> {
-
-    private static final Logger logger = LoggerFactory.getLogger(SafeParaLoop.class);
-
-    private final List<T> list;
-
-    private final Executor executors;
-
-    public SafeParaLoop(Executor executors, Collection<T> src) {
-      this.executors = executors;
-      this.list = src == null ? Collections.emptyList() : Lists.newLinkedList(src);
+    private ConcurrentUtils() {
     }
 
-    public void run() {
-      for (T t : list) {
-        executors.execute(
-            () -> {
-              try {
-                doRun0(t);
-              } catch (Throwable e) {
-                logger.safeError("[SafeParaLoop][{}]", t, e);
-              }
-            });
-      }
+    public static Thread createDaemonThread(String name, Runnable r) {
+        Thread t = new Thread(r, name);
+        t.setDaemon(true);
+        return t;
     }
 
-    public boolean runAndWait(long timeoutMillis) {
-      CountDownLatch latch = new CountDownLatch(list.size());
-      for (T t : list) {
-        executors.execute(
-            () -> {
-              try {
-                doRun0(t);
-              } catch (Throwable e) {
-                logger.safeError("[SafeParaLoop][{}]", t, e);
-              } finally {
-                latch.countDown();
-              }
-            });
-      }
-      try {
-        return latch.await(timeoutMillis, TimeUnit.MILLISECONDS);
-      } catch (InterruptedException e) {
-        return false;
-      }
+    public static void objectWaitUninterruptibly(Object o, int timeoutMs) {
+        try {
+            o.wait(timeoutMs);
+        } catch (InterruptedException ignored) {
+            // no need to remark Thread.currentThread().interrupt();
+            LOGGER.warn("Interrupted waiting", ignored);
+        }
     }
 
-    protected abstract void doRun0(T t) throws Exception;
-  }
-
-  public static Thread createDaemonThread(String name, Runnable r) {
-    Thread t = new Thread(r, name);
-    t.setDaemon(true);
-    return t;
-  }
-
-  public static void objectWaitUninterruptibly(Object o, int timeoutMs) {
-    try {
-      o.wait(timeoutMs);
-    } catch (InterruptedException ignored) {
-      // no need to remark Thread.currentThread().interrupt();
-      LOGGER.warn("Interrupted waiting", ignored);
+    public static void sleepUninterruptibly(long sleepFor, TimeUnit unit) {
+        try {
+            unit.sleep(sleepFor);
+        } catch (InterruptedException ignored) {
+            // no need to remark Thread.currentThread().interrupt();
+            LOGGER.warn("Interrupted sleeping", ignored);
+        }
     }
-  }
 
-  public static void sleepUninterruptibly(long sleepFor, TimeUnit unit) {
-    try {
-      unit.sleep(sleepFor);
-    } catch (InterruptedException ignored) {
-      // no need to remark Thread.currentThread().interrupt();
-      LOGGER.warn("Interrupted sleeping", ignored);
+    public static <T> T pollUninterruptibly(BlockingQueue<T> queue, long wait, TimeUnit unit) {
+        try {
+            return queue.poll(wait, unit);
+        } catch (InterruptedException ignored) {
+            // no need to remark Thread.currentThread().interrupt();
+            LOGGER.warn("Interrupted polling", ignored);
+        }
+        return null;
     }
-  }
 
-  public static <T> T pollUninterruptibly(BlockingQueue<T> queue, long wait, TimeUnit unit) {
-    try {
-      return queue.poll(wait, unit);
-    } catch (InterruptedException ignored) {
-      // no need to remark Thread.currentThread().interrupt();
-      LOGGER.warn("Interrupted polling", ignored);
+    public abstract static class SafeParaLoop<T> {
+
+        private static final Logger logger = LoggerFactory.getLogger(SafeParaLoop.class);
+
+        private final List<T> list;
+
+        private final Executor executors;
+
+        public SafeParaLoop(Executor executors, Collection<T> src) {
+            this.executors = executors;
+            this.list = src == null ? Collections.emptyList() : Lists.newLinkedList(src);
+        }
+
+        public void run() {
+            for (T t : list) {
+                executors.execute(
+                        () -> {
+                            try {
+                                doRun0(t);
+                            } catch (Throwable e) {
+                                logger.safeError("[SafeParaLoop][{}]", t, e);
+                            }
+                        });
+            }
+        }
+
+        public boolean runAndWait(long timeoutMillis) {
+            CountDownLatch latch = new CountDownLatch(list.size());
+            for (T t : list) {
+                executors.execute(
+                        () -> {
+                            try {
+                                doRun0(t);
+                            } catch (Throwable e) {
+                                logger.safeError("[SafeParaLoop][{}]", t, e);
+                            } finally {
+                                latch.countDown();
+                            }
+                        });
+            }
+            try {
+                return latch.await(timeoutMillis, TimeUnit.MILLISECONDS);
+            } catch (InterruptedException e) {
+                return false;
+            }
+        }
+
+        protected abstract void doRun0(T t) throws Exception;
     }
-    return null;
-  }
 }

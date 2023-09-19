@@ -21,5 +21,5 @@ package com.alipay.sofa.registry.server.session.limit;
  * @version 1.0: AccessLimitService.java, v 0.1 2019-08-26 20:35 shangyu.wh Exp $
  */
 public interface AccessLimitService {
-  boolean tryAcquire();
+    boolean tryAcquire();
 }

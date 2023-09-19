@@ -19,11 +19,12 @@ package com.alipay.sofa.registry.server.meta.remoting.connection;
 import com.alipay.sofa.registry.common.model.Node.NodeType;
 import com.alipay.sofa.registry.server.meta.bootstrap.config.NodeConfig;
 import com.google.common.collect.Lists;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.net.InetSocketAddress;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Handle meta node's connect request
@@ -33,33 +34,34 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class MetaConnectionManager extends AbstractNodeConnectManager {
 
-  @Autowired private NodeConfig nodeConfig;
+    @Autowired
+    private NodeConfig nodeConfig;
 
-  @Override
-  public Collection<InetSocketAddress> getConnections(String dataCenter) {
-    // get all address, the dataCenter arg is ignored
-    Collection<InetSocketAddress> addresses = super.getConnections(dataCenter);
-    if (addresses.isEmpty()) {
-      return Collections.emptyList();
+    @Override
+    public Collection<InetSocketAddress> getConnections(String dataCenter) {
+        // get all address, the dataCenter arg is ignored
+        Collection<InetSocketAddress> addresses = super.getConnections(dataCenter);
+        if (addresses.isEmpty()) {
+            return Collections.emptyList();
+        }
+        List<InetSocketAddress> ret = Lists.newArrayList();
+        for (InetSocketAddress address : addresses) {
+            String ipAddress = address.getAddress().getHostAddress();
+            String dc = nodeConfig.getMetaDataCenter(ipAddress);
+            if (dataCenter.equals(dc)) {
+                ret.add(address);
+            }
+        }
+        return ret;
     }
-    List<InetSocketAddress> ret = Lists.newArrayList();
-    for (InetSocketAddress address : addresses) {
-      String ipAddress = address.getAddress().getHostAddress();
-      String dc = nodeConfig.getMetaDataCenter(ipAddress);
-      if (dataCenter.equals(dc)) {
-        ret.add(address);
-      }
+
+    @Override
+    protected int getServerPort() {
+        return metaServerConfig.getMetaServerPort();
     }
-    return ret;
-  }
 
-  @Override
-  protected int getServerPort() {
-    return metaServerConfig.getMetaServerPort();
-  }
-
-  @Override
-  public NodeType getConnectNodeType() {
-    return NodeType.META;
-  }
+    @Override
+    public NodeType getConnectNodeType() {
+        return NodeType.META;
+    }
 }

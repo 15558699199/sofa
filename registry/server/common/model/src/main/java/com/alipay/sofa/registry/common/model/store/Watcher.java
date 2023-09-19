@@ -22,58 +22,58 @@ package com.alipay.sofa.registry.common.model.store;
  */
 public class Watcher extends BaseInfo {
 
-  private volatile long pushedVersion;
+    private volatile long pushedVersion;
 
-  @Override
-  public DataType getDataType() {
-    return DataType.WATCHER;
-  }
+    /**
+     * change watcher word cache
+     *
+     * @param watcher
+     * @return
+     */
+    public static Watcher internWatcher(Watcher watcher) {
+        watcher.setRegisterId(watcher.getRegisterId());
+        watcher.setDataInfoId(watcher.getDataInfoId());
+        watcher.setInstanceId(watcher.getInstanceId());
+        watcher.setGroup(watcher.getGroup());
+        watcher.setDataId(watcher.getDataId());
+        watcher.setClientId(watcher.getClientId());
+        watcher.setCell(watcher.getCell());
+        watcher.setProcessId(watcher.getProcessId());
+        watcher.setAppName(watcher.getAppName());
+        watcher.setSourceAddress(URL.internURL(watcher.getSourceAddress()));
+        watcher.setTargetAddress(URL.internURL(watcher.getTargetAddress()));
+        watcher.setAttributes(watcher.getAttributes());
 
-  public synchronized boolean hasPushed() {
-    return pushedVersion > 0;
-  }
-
-  public synchronized long getPushedVersion() {
-    return pushedVersion;
-  }
-
-  public synchronized boolean updatePushedVersion(long v) {
-    if (pushedVersion < v) {
-      this.pushedVersion = v;
-      return true;
+        return watcher;
     }
-    return false;
-  }
 
-  public String shortDesc() {
-    final StringBuilder sb = new StringBuilder(256);
-    sb.append("dataInfoId=").append(getDataInfoId()).append(", ");
-    sb.append("registerId=").append(getRegisterId()).append(", ");
-    sb.append("pushed=").append(pushedVersion).append(", ");
-    sb.append("sourceAddress=").append(getSourceAddress().buildAddressString());
-    return sb.toString();
-  }
+    @Override
+    public DataType getDataType() {
+        return DataType.WATCHER;
+    }
 
-  /**
-   * change watcher word cache
-   *
-   * @param watcher
-   * @return
-   */
-  public static Watcher internWatcher(Watcher watcher) {
-    watcher.setRegisterId(watcher.getRegisterId());
-    watcher.setDataInfoId(watcher.getDataInfoId());
-    watcher.setInstanceId(watcher.getInstanceId());
-    watcher.setGroup(watcher.getGroup());
-    watcher.setDataId(watcher.getDataId());
-    watcher.setClientId(watcher.getClientId());
-    watcher.setCell(watcher.getCell());
-    watcher.setProcessId(watcher.getProcessId());
-    watcher.setAppName(watcher.getAppName());
-    watcher.setSourceAddress(URL.internURL(watcher.getSourceAddress()));
-    watcher.setTargetAddress(URL.internURL(watcher.getTargetAddress()));
-    watcher.setAttributes(watcher.getAttributes());
+    public synchronized boolean hasPushed() {
+        return pushedVersion > 0;
+    }
 
-    return watcher;
-  }
+    public synchronized long getPushedVersion() {
+        return pushedVersion;
+    }
+
+    public synchronized boolean updatePushedVersion(long v) {
+        if (pushedVersion < v) {
+            this.pushedVersion = v;
+            return true;
+        }
+        return false;
+    }
+
+    public String shortDesc() {
+        final StringBuilder sb = new StringBuilder(256);
+        sb.append("dataInfoId=").append(getDataInfoId()).append(", ");
+        sb.append("registerId=").append(getRegisterId()).append(", ");
+        sb.append("pushed=").append(pushedVersion).append(", ");
+        sb.append("sourceAddress=").append(getSourceAddress().buildAddressString());
+        return sb.toString();
+    }
 }

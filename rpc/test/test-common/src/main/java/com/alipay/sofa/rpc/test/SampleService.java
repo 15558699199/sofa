@@ -23,6 +23,7 @@ package com.alipay.sofa.rpc.test;
 public interface SampleService {
     /**
      * 测试超时的方法
+     *
      * @param mills
      * @return
      */

@@ -25,15 +25,13 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatNoException;
-import static org.assertj.core.api.Assertions.catchException;
+import static org.assertj.core.api.Assertions.*;
 
 /**
  * @author yuanxuan
  * @version : SofaConditionOnSwitchTests.java, v 0.1 2023年02月22日 10:09 yuanxuan Exp $
  */
-@SpringBootTest(classes = { BootSofaBootApplication.class, BeanTestConfiguration.class }, properties = { "sofa.boot.scenes=function" })
+@SpringBootTest(classes = {BootSofaBootApplication.class, BeanTestConfiguration.class}, properties = {"sofa.boot.scenes=function"})
 public class SofaConditionOnSwitchTests {
 
     @Autowired

@@ -22,13 +22,13 @@ package com.alipay.sofa.rpc.registry.mesh.model;
  */
 public class SubscribeServiceRequest {
 
-    private String  serviceName;
+    private String serviceName;
 
     //这个值是类似DEFAULT/XFIRE这种，也有可能是tr
-    private String  protocolType;
+    private String protocolType;
 
     //this should be xxx-pool.alipay.com or  xxx.alipay.com,can be null
-    private String  targetAppAddress;
+    private String targetAppAddress;
 
     private boolean vipEnforce;
 

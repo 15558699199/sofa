@@ -19,11 +19,7 @@ package com.alipay.sofa.common.xmap;
 import com.alipay.sofa.boot.log.SofaBootLoggerFactory;
 import com.alipay.sofa.common.xmap.annotation.XNodeList;
 import org.slf4j.Logger;
-import org.w3c.dom.Attr;
-import org.w3c.dom.CDATASection;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
+import org.w3c.dom.*;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -31,19 +27,18 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- *
  * @author <a href="mailto:bs@nuxeo.com">Bogdan Stefanescu</a>
  * @author xi.hux@alipay.com
  * @since 2.6.0
  */
 public class XAnnotatedList extends XAnnotatedMember {
 
-    protected static final ElementVisitor        elementListVisitor = new ElementVisitor();
-    protected static final ElementValueVisitor   elementVisitor     = new ElementValueVisitor();
-    protected static final AttributeValueVisitor attributeVisitor   = new AttributeValueVisitor();
+    protected static final ElementVisitor elementListVisitor = new ElementVisitor();
+    protected static final ElementValueVisitor elementVisitor = new ElementValueVisitor();
+    protected static final AttributeValueVisitor attributeVisitor = new AttributeValueVisitor();
 
     // indicates the type of the collection components
-    public Class<?>                              componentType;
+    public Class<?> componentType;
 
     protected XAnnotatedList(XMap xmap, XSetter setter, XGetter getter) {
         super(xmap, setter, getter);
@@ -83,7 +78,7 @@ public class XAnnotatedList extends XAnnotatedMember {
                     return PrimitiveArrays.toPrimitiveArray(values, componentType);
                 } else {
                     return values
-                        .toArray((Object[]) Array.newInstance(componentType, values.size()));
+                            .toArray((Object[]) Array.newInstance(componentType, values.size()));
                 }
             } else {
                 Collection col = (Collection) type.newInstance();
@@ -97,7 +92,7 @@ public class XAnnotatedList extends XAnnotatedMember {
 
     @SuppressWarnings("unchecked")
     public void decode(Object instance, Node base, Document document, List<String> filters)
-                                                                                           throws Exception {
+            throws Exception {
         if (!isFilter(filters)) {
             return;
         }
@@ -118,7 +113,7 @@ public class XAnnotatedList extends XAnnotatedMember {
                 }
             } else {
                 throw new Exception("@XNodeList " + base.getNodeName()
-                                    + " 'type' only support Collection ande Array type");
+                        + " 'type' only support Collection ande Array type");
             }
         }
 
@@ -211,13 +206,11 @@ class ElementValueVisitor extends DOMHelper.NodeVisitor {
 }
 
 /**
- *
  * @author xi.hux@alipay.com
  * @since 2.6.0
  */
 class AttributeValueVisitor extends DOMHelper.NodeVisitor {
     /**
-     *
      * @param ctx
      * @param xam
      * @param node

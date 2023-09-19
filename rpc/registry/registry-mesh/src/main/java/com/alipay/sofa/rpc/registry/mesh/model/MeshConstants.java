@@ -21,7 +21,7 @@ package com.alipay.sofa.rpc.registry.mesh.model;
  */
 public class MeshConstants {
 
-    public final static int TCP_PORT  = 12220;
+    public final static int TCP_PORT = 12220;
 
     public final static int HTTP_PORT = 13330;
 }

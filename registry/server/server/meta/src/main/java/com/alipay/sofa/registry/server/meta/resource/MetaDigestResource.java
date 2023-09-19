@@ -30,15 +30,16 @@ import com.alipay.sofa.registry.store.api.OperationStatus;
 import com.codahale.metrics.Gauge;
 import com.codahale.metrics.MetricRegistry;
 import com.google.common.annotations.VisibleForTesting;
-import java.util.HashMap;
-import java.util.Map;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import javax.annotation.PostConstruct;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author shangyu.wh
@@ -48,107 +49,109 @@ import org.springframework.beans.factory.annotation.Autowired;
 @LeaderAwareRestController
 public class MetaDigestResource {
 
-  private static final Logger TASK_LOGGER =
-      LoggerFactory.getLogger(MetaDigestResource.class, "[Resource]");
+    private static final Logger TASK_LOGGER =
+            LoggerFactory.getLogger(MetaDigestResource.class, "[Resource]");
 
-  private static final Logger DB_LOGGER =
-      LoggerFactory.getLogger(MetaDigestResource.class, "[DBService]");
+    private static final Logger DB_LOGGER =
+            LoggerFactory.getLogger(MetaDigestResource.class, "[DBService]");
 
-  @Autowired private DefaultMetaServerManager metaServerManager;
+    @Autowired
+    private DefaultMetaServerManager metaServerManager;
 
-  @Autowired private ProvideDataService provideDataService;
+    @Autowired
+    private ProvideDataService provideDataService;
 
-  @PostConstruct
-  public void init() {
-    MetricRegistry metrics = new MetricRegistry();
-    metrics.register(
-        "metaNodeList", (Gauge<Map>) () -> getRegisterNodeByType(NodeType.META.name()));
-    metrics.register(
-        "dataNodeList", (Gauge<Map>) () -> getRegisterNodeByType(NodeType.DATA.name()));
-    metrics.register(
-        "sessionNodeList", (Gauge<Map>) () -> getRegisterNodeByType(NodeType.SESSION.name()));
-    metrics.register("pushSwitch", (Gauge<Map>) () -> getPushSwitch());
-    ReporterUtils.startSlf4jReporter(60, metrics);
-  }
-
-  @GET
-  @Path("{type}/node/query")
-  @Produces(MediaType.APPLICATION_JSON)
-  public Map getRegisterNodeByType(@PathParam("type") String type) {
-    try {
-      return metaServerManager.getSummary(NodeType.valueOf(type.toUpperCase())).getNodes();
-    } catch (Exception e) {
-      TASK_LOGGER.error("Fail get Register Node By Type:{}", type, e);
-      throw new RuntimeException("Fail get Register Node By Type:" + type, e);
+    private static String getEntityData(DBResponse<PersistenceData> resp) {
+        if (resp != null && resp.getEntity() != null) {
+            return resp.getEntity().getData();
+        }
+        return null;
     }
-  }
 
-  @GET
-  @Path("pushSwitch")
-  @Produces(MediaType.APPLICATION_JSON)
-  public Map<String, String> getPushSwitch() {
-    Map<String, String> resultMap = new HashMap<>(1);
-    resultMap.putAll(globalPushSwitch());
-    resultMap.putAll(grayPushSwitch());
-    return resultMap;
-  }
-
-  public Map<String, String> globalPushSwitch() {
-    DBResponse<PersistenceData> ret =
-        provideDataService.queryProvideData(ValueConstants.STOP_PUSH_DATA_SWITCH_DATA_ID);
-
-    Map<String, String> resultMap = new HashMap<>(1);
-    if (ret.getOperationStatus() == OperationStatus.SUCCESS) {
-      String result = getEntityData(ret);
-      if (result != null && !result.isEmpty()) {
-        resultMap.put("stopPush", result);
-      } else {
-        resultMap.put("stopPush", result);
-        resultMap.put("msg", "data is empty");
-      }
-    } else if (ret.getOperationStatus() == OperationStatus.NOTFOUND) {
-      resultMap.put("msg", "(global push switch)OperationStatus is NOTFOUND");
+    @PostConstruct
+    public void init() {
+        MetricRegistry metrics = new MetricRegistry();
+        metrics.register(
+                "metaNodeList", (Gauge<Map>) () -> getRegisterNodeByType(NodeType.META.name()));
+        metrics.register(
+                "dataNodeList", (Gauge<Map>) () -> getRegisterNodeByType(NodeType.DATA.name()));
+        metrics.register(
+                "sessionNodeList", (Gauge<Map>) () -> getRegisterNodeByType(NodeType.SESSION.name()));
+        metrics.register("pushSwitch", (Gauge<Map>) () -> getPushSwitch());
+        ReporterUtils.startSlf4jReporter(60, metrics);
     }
-    DB_LOGGER.info("[getPushSwitch] {}", resultMap);
-    return resultMap;
-  }
 
-  public Map<String, String> grayPushSwitch() {
-    DBResponse<PersistenceData> ret =
-        provideDataService.queryProvideData(ValueConstants.PUSH_SWITCH_GRAY_OPEN_DATA_ID);
-
-    Map<String, String> resultMap = new HashMap<>(1);
-    if (ret.getOperationStatus() == OperationStatus.SUCCESS) {
-      String result = getEntityData(ret);
-      if (result != null && !result.isEmpty()) {
-        resultMap.put("grayPushSwitch", result);
-      } else {
-        resultMap.put("grayPushSwitch", result);
-        resultMap.put("gray push switch msg", "data is empty");
-      }
-    } else if (ret.getOperationStatus() == OperationStatus.NOTFOUND) {
-      resultMap.put("gray push switch msg", "OperationStatus is NOTFOUND");
+    @GET
+    @Path("{type}/node/query")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Map getRegisterNodeByType(@PathParam("type") String type) {
+        try {
+            return metaServerManager.getSummary(NodeType.valueOf(type.toUpperCase())).getNodes();
+        } catch (Exception e) {
+            TASK_LOGGER.error("Fail get Register Node By Type:{}", type, e);
+            throw new RuntimeException("Fail get Register Node By Type:" + type, e);
+        }
     }
-    DB_LOGGER.info("[getGrayPushSwitch] {}", resultMap);
-    return resultMap;
-  }
 
-  private static String getEntityData(DBResponse<PersistenceData> resp) {
-    if (resp != null && resp.getEntity() != null) {
-      return resp.getEntity().getData();
+    @GET
+    @Path("pushSwitch")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Map<String, String> getPushSwitch() {
+        Map<String, String> resultMap = new HashMap<>(1);
+        resultMap.putAll(globalPushSwitch());
+        resultMap.putAll(grayPushSwitch());
+        return resultMap;
     }
-    return null;
-  }
 
-  @VisibleForTesting
-  protected MetaDigestResource setMetaServerManager(DefaultMetaServerManager metaServerManager) {
-    this.metaServerManager = metaServerManager;
-    return this;
-  }
+    public Map<String, String> globalPushSwitch() {
+        DBResponse<PersistenceData> ret =
+                provideDataService.queryProvideData(ValueConstants.STOP_PUSH_DATA_SWITCH_DATA_ID);
 
-  @VisibleForTesting
-  protected MetaDigestResource setProvideDataService(ProvideDataService provideDataService) {
-    this.provideDataService = provideDataService;
-    return this;
-  }
+        Map<String, String> resultMap = new HashMap<>(1);
+        if (ret.getOperationStatus() == OperationStatus.SUCCESS) {
+            String result = getEntityData(ret);
+            if (result != null && !result.isEmpty()) {
+                resultMap.put("stopPush", result);
+            } else {
+                resultMap.put("stopPush", result);
+                resultMap.put("msg", "data is empty");
+            }
+        } else if (ret.getOperationStatus() == OperationStatus.NOTFOUND) {
+            resultMap.put("msg", "(global push switch)OperationStatus is NOTFOUND");
+        }
+        DB_LOGGER.info("[getPushSwitch] {}", resultMap);
+        return resultMap;
+    }
+
+    public Map<String, String> grayPushSwitch() {
+        DBResponse<PersistenceData> ret =
+                provideDataService.queryProvideData(ValueConstants.PUSH_SWITCH_GRAY_OPEN_DATA_ID);
+
+        Map<String, String> resultMap = new HashMap<>(1);
+        if (ret.getOperationStatus() == OperationStatus.SUCCESS) {
+            String result = getEntityData(ret);
+            if (result != null && !result.isEmpty()) {
+                resultMap.put("grayPushSwitch", result);
+            } else {
+                resultMap.put("grayPushSwitch", result);
+                resultMap.put("gray push switch msg", "data is empty");
+            }
+        } else if (ret.getOperationStatus() == OperationStatus.NOTFOUND) {
+            resultMap.put("gray push switch msg", "OperationStatus is NOTFOUND");
+        }
+        DB_LOGGER.info("[getGrayPushSwitch] {}", resultMap);
+        return resultMap;
+    }
+
+    @VisibleForTesting
+    protected MetaDigestResource setMetaServerManager(DefaultMetaServerManager metaServerManager) {
+        this.metaServerManager = metaServerManager;
+        return this;
+    }
+
+    @VisibleForTesting
+    protected MetaDigestResource setProvideDataService(ProvideDataService provideDataService) {
+        this.provideDataService = provideDataService;
+        return this;
+    }
 }

@@ -25,11 +25,7 @@ import com.alipay.sofa.rpc.common.RpcConstants;
 import com.alipay.sofa.rpc.common.utils.CommonUtils;
 import com.alipay.sofa.rpc.common.utils.StringUtils;
 import com.alipay.sofa.rpc.config.ConsumerConfig;
-import com.alipay.sofa.rpc.context.AsyncRuntime;
-import com.alipay.sofa.rpc.context.BaggageResolver;
-import com.alipay.sofa.rpc.context.RpcInternalContext;
-import com.alipay.sofa.rpc.context.RpcInvokeContext;
-import com.alipay.sofa.rpc.context.RpcRuntimeContext;
+import com.alipay.sofa.rpc.context.*;
 import com.alipay.sofa.rpc.core.exception.RpcErrorType;
 import com.alipay.sofa.rpc.core.exception.SofaRpcException;
 import com.alipay.sofa.rpc.core.request.SofaRequest;
@@ -61,19 +57,19 @@ public abstract class AbstractHttpClientHandler implements ClientHandler {
     /**
      * 服务提供者信息
      */
-    protected final ProviderInfo   providerInfo;
+    protected final ProviderInfo providerInfo;
     /**
      * 请求
      */
-    protected final SofaRequest    request;
+    protected final SofaRequest request;
     /**
      * 请求运行时的ClassLoader
      */
-    protected ClassLoader          classLoader;
+    protected ClassLoader classLoader;
     /**
      * 线程上下文
      */
-    protected RpcInternalContext   context;
+    protected RpcInternalContext context;
 
     protected AbstractHttpClientHandler(ConsumerConfig consumerConfig, ProviderInfo providerInfo, SofaRequest request,
                                         RpcInternalContext context, ClassLoader classLoader) {

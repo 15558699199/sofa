@@ -24,31 +24,31 @@ import java.io.Serializable;
  */
 public class FetchProvideDataRequest implements Serializable {
 
-  private final String dataInfoId;
+    private final String dataInfoId;
 
-  /**
-   * construtor
-   *
-   * @param dataInfoId dataInfoId
-   */
-  public FetchProvideDataRequest(String dataInfoId) {
-    this.dataInfoId = dataInfoId;
-  }
+    /**
+     * construtor
+     *
+     * @param dataInfoId dataInfoId
+     */
+    public FetchProvideDataRequest(String dataInfoId) {
+        this.dataInfoId = dataInfoId;
+    }
 
-  /**
-   * Getter method for property <tt>dataInfoId</tt>.
-   *
-   * @return property value of dataInfoId
-   */
-  public String getDataInfoId() {
-    return dataInfoId;
-  }
+    /**
+     * Getter method for property <tt>dataInfoId</tt>.
+     *
+     * @return property value of dataInfoId
+     */
+    public String getDataInfoId() {
+        return dataInfoId;
+    }
 
-  @Override
-  public String toString() {
-    final StringBuilder sb = new StringBuilder("FetchProvideDataRequest{");
-    sb.append("dataInfoId='").append(dataInfoId).append('\'');
-    sb.append('}');
-    return sb.toString();
-  }
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("FetchProvideDataRequest{");
+        sb.append("dataInfoId='").append(dataInfoId).append('\'');
+        sb.append('}');
+        return sb.toString();
+    }
 }

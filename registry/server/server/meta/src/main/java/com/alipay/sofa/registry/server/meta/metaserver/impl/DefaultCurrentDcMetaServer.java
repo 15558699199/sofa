@@ -32,97 +32,100 @@ import com.alipay.sofa.registry.server.meta.slot.SlotManager;
 import com.alipay.sofa.registry.util.DatumVersionUtil;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
-import java.util.Collection;
-import java.util.List;
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import java.util.Collection;
+import java.util.List;
+
 /**
  * @author chen.zhu
- *     <p>Nov 23, 2020
+ * <p>Nov 23, 2020
  */
 @Component
 public class DefaultCurrentDcMetaServer extends LocalMetaServer implements CurrentDcMetaServer {
 
-  @Autowired private NodeConfig nodeConfig;
+    @Autowired
+    private NodeConfig nodeConfig;
 
-  public DefaultCurrentDcMetaServer() {}
-
-  public DefaultCurrentDcMetaServer(
-      SlotManager slotManager,
-      DataServerManager dataServerManager,
-      SessionServerManager sessionServerManager) {
-    super(slotManager, dataServerManager, sessionServerManager);
-  }
-
-  @PostConstruct
-  public void postConstruct() throws Exception {
-    LifecycleHelper.initializeIfPossible(this);
-    LifecycleHelper.startIfPossible(this);
-  }
-
-  @PreDestroy
-  public void preDestory() throws Exception {
-    LifecycleHelper.stopIfPossible(this);
-    LifecycleHelper.disposeIfPossible(this);
-  }
-
-  @Override
-  protected void doInitialize() throws InitializeException {
-    super.doInitialize();
-    initMetaServers();
-  }
-
-  private void initMetaServers() {
-    Collection<String> metaIpAddresses =
-        nodeConfig.getMetaNodeIP().get(nodeConfig.getLocalDataCenter());
-    List<MetaNode> metaNodes = Lists.newArrayList();
-    for (String ip : metaIpAddresses) {
-      metaNodes.add(new MetaNode(new URL(ip), nodeConfig.getLocalDataCenter()));
+    public DefaultCurrentDcMetaServer() {
     }
-    updateClusterMembers(new VersionedList<>(DatumVersionUtil.nextId(), metaNodes));
-  }
 
-  @Override
-  protected void doDispose() throws DisposeException {
-    super.doDispose();
-  }
+    public DefaultCurrentDcMetaServer(
+            SlotManager slotManager,
+            DataServerManager dataServerManager,
+            SessionServerManager sessionServerManager) {
+        super(slotManager, dataServerManager, sessionServerManager);
+    }
 
-  @Override
-  public void renew(MetaNode metaNode) {
-    super.renew(metaNode);
-    notifyObservers(new NodeAdded<>(metaNode));
-  }
+    @PostConstruct
+    public void postConstruct() throws Exception {
+        LifecycleHelper.initializeIfPossible(this);
+        LifecycleHelper.startIfPossible(this);
+    }
 
-  @Override
-  public void cancel(MetaNode metaNode) {
-    super.cancel(metaNode);
-    notifyObservers(new NodeRemoved<MetaNode>(metaNode));
-  }
+    @PreDestroy
+    public void preDestory() throws Exception {
+        LifecycleHelper.stopIfPossible(this);
+        LifecycleHelper.disposeIfPossible(this);
+    }
 
-  @VisibleForTesting
-  DefaultCurrentDcMetaServer setSessionManager(SessionServerManager sessionServerManager) {
-    this.sessionServerManager = sessionServerManager;
-    return this;
-  }
+    @Override
+    protected void doInitialize() throws InitializeException {
+        super.doInitialize();
+        initMetaServers();
+    }
 
-  @VisibleForTesting
-  DefaultCurrentDcMetaServer setDataServerManager(DataServerManager dataServerManager) {
-    this.dataServerManager = dataServerManager;
-    return this;
-  }
+    private void initMetaServers() {
+        Collection<String> metaIpAddresses =
+                nodeConfig.getMetaNodeIP().get(nodeConfig.getLocalDataCenter());
+        List<MetaNode> metaNodes = Lists.newArrayList();
+        for (String ip : metaIpAddresses) {
+            metaNodes.add(new MetaNode(new URL(ip), nodeConfig.getLocalDataCenter()));
+        }
+        updateClusterMembers(new VersionedList<>(DatumVersionUtil.nextId(), metaNodes));
+    }
 
-  @VisibleForTesting
-  DefaultCurrentDcMetaServer setNodeConfig(NodeConfig nodeConfig) {
-    this.nodeConfig = nodeConfig;
-    return this;
-  }
+    @Override
+    protected void doDispose() throws DisposeException {
+        super.doDispose();
+    }
 
-  @VisibleForTesting
-  DefaultCurrentDcMetaServer setSlotManager(SlotManager slotManager) {
-    this.slotManager = slotManager;
-    return this;
-  }
+    @Override
+    public void renew(MetaNode metaNode) {
+        super.renew(metaNode);
+        notifyObservers(new NodeAdded<>(metaNode));
+    }
+
+    @Override
+    public void cancel(MetaNode metaNode) {
+        super.cancel(metaNode);
+        notifyObservers(new NodeRemoved<MetaNode>(metaNode));
+    }
+
+    @VisibleForTesting
+    DefaultCurrentDcMetaServer setSessionManager(SessionServerManager sessionServerManager) {
+        this.sessionServerManager = sessionServerManager;
+        return this;
+    }
+
+    @VisibleForTesting
+    DefaultCurrentDcMetaServer setDataServerManager(DataServerManager dataServerManager) {
+        this.dataServerManager = dataServerManager;
+        return this;
+    }
+
+    @VisibleForTesting
+    DefaultCurrentDcMetaServer setNodeConfig(NodeConfig nodeConfig) {
+        this.nodeConfig = nodeConfig;
+        return this;
+    }
+
+    @VisibleForTesting
+    DefaultCurrentDcMetaServer setSlotManager(SlotManager slotManager) {
+        this.slotManager = slotManager;
+        return this;
+    }
 }

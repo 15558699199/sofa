@@ -37,15 +37,15 @@ public class ConsumerGenericFilter extends Filter {
     /**
      * 方法名 $invoke
      */
-    private static final String METHOD_INVOKE         = "$invoke";
+    private static final String METHOD_INVOKE = "$invoke";
     /**
      * 方法名 $genericInvoke
      */
     private static final String METHOD_GENERIC_INVOKE = "$genericInvoke";
 
-    private final static String REVISE_KEY            = "generic.revise";
+    private final static String REVISE_KEY = "generic.revise";
 
-    private final static String REVISE_VALUE          = "true";
+    private final static String REVISE_VALUE = "true";
 
     /**
      * 是否自动加载
@@ -73,7 +73,7 @@ public class ConsumerGenericFilter extends Filter {
 
             // 修正超时时间
             Long clientTimeout = getClientTimeoutFromGenericContext(request.getMethodName(),
-                request.getMethodArgs());
+                    request.getMethodArgs());
             if (clientTimeout != null && clientTimeout != 0) {
                 request.setTimeout(clientTimeout.intValue());
             }

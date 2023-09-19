@@ -46,7 +46,7 @@ public class IsleBeansEndpoint extends BeansEndpoint {
      * Creates a new {@code BeansEndpoint} that will describe the beans in the given
      * {@code context} and all of its ancestors.
      *
-     * @param context the application context
+     * @param context                 the application context
      * @param applicationRuntimeModel the application runtime model
      * @see ConfigurableApplicationContext#getParent()
      */
@@ -84,7 +84,7 @@ public class IsleBeansEndpoint extends BeansEndpoint {
     private BeansEndpoint.ContextBeansDescriptor describing(ConfigurableApplicationContext context,
                                                             String parentModuleName) {
         Map<String, BeanDescriptor> beanDescriptorMap = callContextBeansDescribeBeans(context
-            .getBeanFactory());
+                .getBeanFactory());
         return createContextBeans(beanDescriptorMap, parentModuleName);
     }
 
@@ -93,7 +93,7 @@ public class IsleBeansEndpoint extends BeansEndpoint {
         try {
             Class<?> clazz = BeansEndpoint.ContextBeansDescriptor.class;
             Method method = clazz.getDeclaredMethod("describeBeans",
-                ConfigurableListableBeanFactory.class);
+                    ConfigurableListableBeanFactory.class);
             method.setAccessible(true);
             Object result = method.invoke(null, beanFactory);
             return (Map<String, BeanDescriptor>) result;

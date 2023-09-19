@@ -43,7 +43,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /**
  * Tests for {@link ServerConfigContainer}.
- * 
+ *
  * @author <a href="mailto:lw111072@antfin.com">LiWei</a>
  */
 public class ServerConfigContainerTests {
@@ -137,7 +137,7 @@ public class ServerConfigContainerTests {
         assertThat(serverConfig.isTelnet()).isTrue();
         assertThat(serverConfig.isDaemon()).isTrue();
         assertThat("a.com").isEqualTo(
-            serverConfig.getParameters().get(RpcConstants.ALLOWED_ORIGINS));
+                serverConfig.getParameters().get(RpcConstants.ALLOWED_ORIGINS));
 
     }
 
@@ -174,7 +174,7 @@ public class ServerConfigContainerTests {
         assertThat(serverConfig.getPort()).isEqualTo(serverConfig2.getPort());
 
         boolean twiceResult = serverConfigContainer.registerCustomServerConfig(protocol,
-            serverConfig);
+                serverConfig);
 
         assertThat(twiceResult).isFalse();
 
@@ -189,7 +189,7 @@ public class ServerConfigContainerTests {
         serverConfigContainer.setHttpThreadPoolQueueSizeStr("8");
 
         ServerConfig serverConfig = serverConfigContainer
-            .getServerConfig(SofaBootRpcConfigConstants.RPC_PROTOCOL_HTTP);
+                .getServerConfig(SofaBootRpcConfigConstants.RPC_PROTOCOL_HTTP);
 
         assertThat(8080).isEqualTo(serverConfig.getPort());
         assertThat(5).isEqualTo(serverConfig.getCoreThreads());
@@ -200,20 +200,20 @@ public class ServerConfigContainerTests {
 
     @Test
     public void startCustomThreadPoolMonitor() throws NoSuchMethodException,
-                                              IllegalAccessException, InvocationTargetException,
-                                              NoSuchFieldException {
+            IllegalAccessException, InvocationTargetException,
+            NoSuchFieldException {
         UserThreadPoolManager.registerUserThread("service1", new UserThreadPool());
         UserThreadPoolManager.registerUserThread("service2", new UserThreadPool());
         UserThreadPoolManager.registerUserThread("service3", new UserThreadPool("same-name"));
         UserThreadPoolManager.registerUserThread("service4", new UserThreadPool("same-name"));
 
         Method privateStartMethod = serverConfigContainer.getClass().getDeclaredMethod(
-            "startCustomThreadPoolMonitor");
+                "startCustomThreadPoolMonitor");
         privateStartMethod.setAccessible(true);
         privateStartMethod.invoke(serverConfigContainer);
 
         Field privateField = serverConfigContainer.getClass().getDeclaredField(
-            "customThreadPoolMonitorList");
+                "customThreadPoolMonitorList");
         privateField.setAccessible(true);
         Object value = privateField.get(serverConfigContainer);
         List<RpcThreadPoolMonitor> customThreadPoolMonitorList = (List<RpcThreadPoolMonitor>) value;
@@ -228,7 +228,7 @@ public class ServerConfigContainerTests {
         assertThat(hasHashCode).isTrue();
 
         Method privateStopMethod = serverConfigContainer.getClass().getDeclaredMethod(
-            "stopCustomThreadPoolMonitor");
+                "stopCustomThreadPoolMonitor");
         privateStopMethod.setAccessible(true);
         privateStopMethod.invoke(serverConfigContainer);
 

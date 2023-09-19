@@ -17,14 +17,13 @@
 package com.alipay.sofa.rpc.proxy;
 
 /**
- *
- *
  * @author <a href="mailto:zhanggeng.zg@antfin.com">GengZhang</a>
  */
 public interface TestProxyInterface {
 
     /**
-     * test 
+     * test
+     *
      * @param test req
      * @return res
      */

@@ -26,7 +26,7 @@ public class HystrixServiceFallbackFactory implements FallbackFactory<HystrixSer
             @Override
             public String sayHello(String name, int age) {
                 return "fallback " + name + " from server! age: " + age + ", error: " +
-                    context.getException().getClass().getName();
+                        context.getException().getClass().getName();
             }
         };
     }

@@ -32,41 +32,41 @@ public class TimeWaitLoggerTest {
     public void testTimeWait() throws InterruptedException {
         TimeWaitLogger timeWaitLogger = new TimeWaitLogger(100);
         AtomicLong atomicLong = new AtomicLong();
-        new Thread(()->{
-            while (true){
+        new Thread(() -> {
+            while (true) {
                 timeWaitLogger.logWithRunnable(atomicLong::incrementAndGet);
             }
         }).start();
         Thread.sleep(150);
-        Assert.assertEquals(2L,atomicLong.get());
+        Assert.assertEquals(2L, atomicLong.get());
     }
 
     @Test
     public void testDisable() throws InterruptedException {
-        System.setProperty(RpcOptions.DISABLE_LOG_TIME_WAIT_CONF,"true");
-        try{
+        System.setProperty(RpcOptions.DISABLE_LOG_TIME_WAIT_CONF, "true");
+        try {
             TimeWaitLogger timeWaitLogger = new TimeWaitLogger(100);
             AtomicLong atomicLong = new AtomicLong();
-            new Thread(()->{
-                while (true){
+            new Thread(() -> {
+                while (true) {
                     timeWaitLogger.logWithRunnable(atomicLong::incrementAndGet);
                 }
             }).start();
             Thread.sleep(150);
-            Assert.assertTrue(atomicLong.get()>1000);
-        }finally {
-            System.setProperty(RpcOptions.DISABLE_LOG_TIME_WAIT_CONF,"");
+            Assert.assertTrue(atomicLong.get() > 1000);
+        } finally {
+            System.setProperty(RpcOptions.DISABLE_LOG_TIME_WAIT_CONF, "");
         }
 
         TimeWaitLogger timeWaitLogger = new TimeWaitLogger(100);
         AtomicLong atomicLong = new AtomicLong();
-        new Thread(()->{
-            while (true){
+        new Thread(() -> {
+            while (true) {
                 timeWaitLogger.logWithRunnable(atomicLong::incrementAndGet);
             }
         }).start();
         Thread.sleep(150);
-        Assert.assertEquals(2L,atomicLong.get());
+        Assert.assertEquals(2L, atomicLong.get());
 
     }
 }

@@ -16,12 +16,6 @@
  */
 package com.alipay.sofa.registry.server.data.remoting.sessionserver.handler;
 
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 import com.alipay.sofa.registry.common.model.Node;
 import com.alipay.sofa.registry.common.model.dataserver.GetDataRequest;
 import com.alipay.sofa.registry.common.model.slot.SlotAccessGenericResponse;
@@ -38,130 +32,134 @@ import com.alipay.sofa.registry.server.shared.env.ServerEnv;
 import org.junit.Assert;
 import org.junit.Test;
 
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 public class GetDataHandlerTest {
 
-  @Test
-  public void testCheckParam() {
-    GetDataHandler handler = newHandler();
-    TestBaseUtils.assertException(
-        IllegalArgumentException.class,
-        () -> {
-          handler.checkParam(request(null, "xxx"));
-        });
+    private static GetDataRequest request(String dataCenter, String dataInfoId) {
+        return new GetDataRequest(ServerEnv.PROCESS_ID, dataInfoId, dataCenter, 10);
+    }
 
-    TestBaseUtils.assertException(
-        IllegalArgumentException.class,
-        () -> {
-          handler.checkParam(request("xx", null));
-        });
+    @Test
+    public void testCheckParam() {
+        GetDataHandler handler = newHandler();
+        TestBaseUtils.assertException(
+                IllegalArgumentException.class,
+                () -> {
+                    handler.checkParam(request(null, "xxx"));
+                });
 
-    handler.checkParam(request("xx", "xx"));
-  }
+        TestBaseUtils.assertException(
+                IllegalArgumentException.class,
+                () -> {
+                    handler.checkParam(request("xx", null));
+                });
 
-  private GetDataHandler newHandler() {
-    GetDataHandler handler = new GetDataHandler();
-    Assert.assertNull(handler.getExecutor());
-    Assert.assertEquals(handler.interest(), GetDataRequest.class);
-    Assert.assertEquals(handler.getConnectNodeType(), Node.NodeType.SESSION);
-    Assert.assertEquals(handler.getType(), ChannelHandler.HandlerType.PROCESSER);
-    Assert.assertEquals(handler.getInvokeType(), ChannelHandler.InvokeType.SYNC);
-    SlotAccessGenericResponse failed =
-        (SlotAccessGenericResponse) handler.buildFailedResponse("msg");
-    Assert.assertFalse(failed.isSuccess());
-    handler.sessionLeaseManager = new SessionLeaseManager();
-    SlotAccessorDelegate slotManager = mock(SlotAccessorDelegate.class);
-    DatumStorageDelegate datumStorageDelegate = TestBaseUtils.newLocalDatumDelegate("testDc", true);
-    CompressDatumService compressDatumService = new CompressDatumService();
+        handler.checkParam(request("xx", "xx"));
+    }
 
-    handler
-        .setSlotAccessor(slotManager)
-        .setDatumStorageDelegate(datumStorageDelegate)
-        .setDataChangeEventCenter(new DataChangeEventCenter())
-        .setDataServerConfig(TestBaseUtils.newDataConfig("testDc"));
-    handler.setCompressDatumService(compressDatumService);
+    private GetDataHandler newHandler() {
+        GetDataHandler handler = new GetDataHandler();
+        Assert.assertNull(handler.getExecutor());
+        Assert.assertEquals(handler.interest(), GetDataRequest.class);
+        Assert.assertEquals(handler.getConnectNodeType(), Node.NodeType.SESSION);
+        Assert.assertEquals(handler.getType(), ChannelHandler.HandlerType.PROCESSER);
+        Assert.assertEquals(handler.getInvokeType(), ChannelHandler.InvokeType.SYNC);
+        SlotAccessGenericResponse failed =
+                (SlotAccessGenericResponse) handler.buildFailedResponse("msg");
+        Assert.assertFalse(failed.isSuccess());
+        handler.sessionLeaseManager = new SessionLeaseManager();
+        SlotAccessorDelegate slotManager = mock(SlotAccessorDelegate.class);
+        DatumStorageDelegate datumStorageDelegate = TestBaseUtils.newLocalDatumDelegate("testDc", true);
+        CompressDatumService compressDatumService = new CompressDatumService();
 
-    return handler;
-  }
+        handler
+                .setSlotAccessor(slotManager)
+                .setDatumStorageDelegate(datumStorageDelegate)
+                .setDataChangeEventCenter(new DataChangeEventCenter())
+                .setDataServerConfig(TestBaseUtils.newDataConfig("testDc"));
+        handler.setCompressDatumService(compressDatumService);
 
-  @Test
-  public void testHandle() {
-    GetDataHandler handler = newHandler();
-    TestBaseUtils.MockBlotChannel channel = TestBaseUtils.newChannel(9620, "localhost", 8888);
+        return handler;
+    }
 
-    GetDataRequest request = request("testDc", "testDataId");
+    @Test
+    public void testHandle() {
+        GetDataHandler handler = newHandler();
+        TestBaseUtils.MockBlotChannel channel = TestBaseUtils.newChannel(9620, "localhost", 8888);
 
-    // get nil
-    when(handler
-            .getSlotAccessorDelegate()
-            .checkSlotAccess(anyString(), anyInt(), anyLong(), anyLong()))
-        .thenReturn(TestBaseUtils.accept(), TestBaseUtils.accept());
-    SlotAccessGenericResponse resp = handler.doHandle(channel, request);
-    Assert.assertTrue(resp.isSuccess());
-    Assert.assertEquals(resp.getSlotAccess().getStatus(), TestBaseUtils.accept().getStatus());
-    Assert.assertNull(resp.getData());
+        GetDataRequest request = request("testDc", "testDataId");
 
-    // get leader change
-    when(handler
-            .getSlotAccessorDelegate()
-            .checkSlotAccess(anyString(), anyInt(), anyLong(), anyLong()))
-        .thenReturn(TestBaseUtils.accept(), TestBaseUtils.migrating(1, 10, 100));
-    resp = (SlotAccessGenericResponse) handler.doHandle(channel, request);
-    Assert.assertFalse(resp.isSuccess());
-    Assert.assertEquals(resp.getSlotAccess().getStatus(), TestBaseUtils.migrating().getStatus());
-    Assert.assertNull(resp.getData());
+        // get nil
+        when(handler
+                .getSlotAccessorDelegate()
+                .checkSlotAccess(anyString(), anyInt(), anyLong(), anyLong()))
+                .thenReturn(TestBaseUtils.accept(), TestBaseUtils.accept());
+        SlotAccessGenericResponse resp = handler.doHandle(channel, request);
+        Assert.assertTrue(resp.isSuccess());
+        Assert.assertEquals(resp.getSlotAccess().getStatus(), TestBaseUtils.accept().getStatus());
+        Assert.assertNull(resp.getData());
 
-    // get success
-    when(handler
-            .getSlotAccessorDelegate()
-            .checkSlotAccess(anyString(), anyInt(), anyLong(), anyLong()))
-        .thenReturn(TestBaseUtils.accept());
-    Publisher pub = TestBaseUtils.createTestPublishers(1, 1).get(0);
-    request = request("testDc", pub.getDataInfoId());
-    handler.getDatumStorageDelegate().putPublisher("testDc", pub);
-    resp = (SlotAccessGenericResponse) handler.doHandle(channel, request);
-    Assert.assertTrue(resp.isSuccess());
-    Assert.assertEquals(resp.getSlotAccess().getStatus(), TestBaseUtils.accept().getStatus());
-    SubDatum subDatum = (SubDatum) resp.getData();
-    Assert.assertEquals(subDatum.mustGetPublishers().size(), 1);
-    Assert.assertEquals(subDatum.mustGetPublishers().get(0).getRegisterId(), pub.getRegisterId());
-    Assert.assertEquals(
-        subDatum.mustGetPublishers().get(0).getRegisterTimestamp(), pub.getRegisterTimestamp());
-    Assert.assertEquals(subDatum.mustGetPublishers().get(0).getVersion(), pub.getVersion());
-  }
+        // get leader change
+        when(handler
+                .getSlotAccessorDelegate()
+                .checkSlotAccess(anyString(), anyInt(), anyLong(), anyLong()))
+                .thenReturn(TestBaseUtils.accept(), TestBaseUtils.migrating(1, 10, 100));
+        resp = (SlotAccessGenericResponse) handler.doHandle(channel, request);
+        Assert.assertFalse(resp.isSuccess());
+        Assert.assertEquals(resp.getSlotAccess().getStatus(), TestBaseUtils.migrating().getStatus());
+        Assert.assertNull(resp.getData());
 
-  @Test
-  public void testHandleErrorSlotAccess() {
-    GetDataHandler handler = newHandler();
-    TestBaseUtils.MockBlotChannel channel = TestBaseUtils.newChannel(9620, "localhost", 8888);
+        // get success
+        when(handler
+                .getSlotAccessorDelegate()
+                .checkSlotAccess(anyString(), anyInt(), anyLong(), anyLong()))
+                .thenReturn(TestBaseUtils.accept());
+        Publisher pub = TestBaseUtils.createTestPublishers(1, 1).get(0);
+        request = request("testDc", pub.getDataInfoId());
+        handler.getDatumStorageDelegate().putPublisher("testDc", pub);
+        resp = (SlotAccessGenericResponse) handler.doHandle(channel, request);
+        Assert.assertTrue(resp.isSuccess());
+        Assert.assertEquals(resp.getSlotAccess().getStatus(), TestBaseUtils.accept().getStatus());
+        SubDatum subDatum = (SubDatum) resp.getData();
+        Assert.assertEquals(subDatum.mustGetPublishers().size(), 1);
+        Assert.assertEquals(subDatum.mustGetPublishers().get(0).getRegisterId(), pub.getRegisterId());
+        Assert.assertEquals(
+                subDatum.mustGetPublishers().get(0).getRegisterTimestamp(), pub.getRegisterTimestamp());
+        Assert.assertEquals(subDatum.mustGetPublishers().get(0).getVersion(), pub.getVersion());
+    }
 
-    GetDataRequest request = request("testDc", "testDataId");
+    @Test
+    public void testHandleErrorSlotAccess() {
+        GetDataHandler handler = newHandler();
+        TestBaseUtils.MockBlotChannel channel = TestBaseUtils.newChannel(9620, "localhost", 8888);
 
-    when(handler
-            .getSlotAccessorDelegate()
-            .checkSlotAccess(anyString(), anyInt(), anyLong(), anyLong()))
-        .thenReturn(TestBaseUtils.moved());
-    SlotAccessGenericResponse resp = handler.doHandle(channel, request);
-    Assert.assertFalse(resp.isSuccess());
-    Assert.assertEquals(resp.getSlotAccess().getStatus(), TestBaseUtils.moved().getStatus());
+        GetDataRequest request = request("testDc", "testDataId");
 
-    when(handler
-            .getSlotAccessorDelegate()
-            .checkSlotAccess(anyString(), anyInt(), anyLong(), anyLong()))
-        .thenReturn(TestBaseUtils.misMatch());
-    resp = (SlotAccessGenericResponse) handler.doHandle(channel, request);
-    Assert.assertFalse(resp.isSuccess());
-    Assert.assertEquals(resp.getSlotAccess().getStatus(), TestBaseUtils.misMatch().getStatus());
+        when(handler
+                .getSlotAccessorDelegate()
+                .checkSlotAccess(anyString(), anyInt(), anyLong(), anyLong()))
+                .thenReturn(TestBaseUtils.moved());
+        SlotAccessGenericResponse resp = handler.doHandle(channel, request);
+        Assert.assertFalse(resp.isSuccess());
+        Assert.assertEquals(resp.getSlotAccess().getStatus(), TestBaseUtils.moved().getStatus());
 
-    when(handler
-            .getSlotAccessorDelegate()
-            .checkSlotAccess(anyString(), anyInt(), anyLong(), anyLong()))
-        .thenReturn(TestBaseUtils.migrating());
-    resp = (SlotAccessGenericResponse) handler.doHandle(channel, request);
-    Assert.assertFalse(resp.isSuccess());
-    Assert.assertEquals(resp.getSlotAccess().getStatus(), TestBaseUtils.migrating().getStatus());
-  }
+        when(handler
+                .getSlotAccessorDelegate()
+                .checkSlotAccess(anyString(), anyInt(), anyLong(), anyLong()))
+                .thenReturn(TestBaseUtils.misMatch());
+        resp = (SlotAccessGenericResponse) handler.doHandle(channel, request);
+        Assert.assertFalse(resp.isSuccess());
+        Assert.assertEquals(resp.getSlotAccess().getStatus(), TestBaseUtils.misMatch().getStatus());
 
-  private static GetDataRequest request(String dataCenter, String dataInfoId) {
-    return new GetDataRequest(ServerEnv.PROCESS_ID, dataInfoId, dataCenter, 10);
-  }
+        when(handler
+                .getSlotAccessorDelegate()
+                .checkSlotAccess(anyString(), anyInt(), anyLong(), anyLong()))
+                .thenReturn(TestBaseUtils.migrating());
+        resp = (SlotAccessGenericResponse) handler.doHandle(channel, request);
+        Assert.assertFalse(resp.isSuccess());
+        Assert.assertEquals(resp.getSlotAccess().getStatus(), TestBaseUtils.migrating().getStatus());
+    }
 }

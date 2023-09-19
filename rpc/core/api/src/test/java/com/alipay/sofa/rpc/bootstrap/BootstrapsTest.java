@@ -26,8 +26,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- *
- *
  * @author <a href="mailto:zhanggeng.zg@antfin.com">GengZhang</a>
  */
 public class BootstrapsTest {
@@ -65,7 +63,7 @@ public class BootstrapsTest {
     @Test
     public void from1() throws Exception {
         ConsumerConfig consumerConfig = new ConsumerConfig().setProtocol("test")
-            .setBootstrap("test");
+                .setBootstrap("test");
         ConsumerBootstrap bootstrap = Bootstraps.from(consumerConfig);
         Assert.assertEquals(TestConsumerBootstrap.class, bootstrap.getClass());
         Assert.assertEquals(consumerConfig, bootstrap.getConsumerConfig());

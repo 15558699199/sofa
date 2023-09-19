@@ -22,11 +22,11 @@ import com.alipay.sofa.registry.server.meta.lease.LeaseFilter;
 
 /**
  * @author chen.zhu
- *     <p>Mar 18, 2021
+ * <p>Mar 18, 2021
  */
 public interface RegistryForbiddenServerManager extends LeaseFilter<Node> {
 
-  boolean addToBlacklist(RegistryForbiddenServerRequest request);
+    boolean addToBlacklist(RegistryForbiddenServerRequest request);
 
-  boolean removeFromBlacklist(RegistryForbiddenServerRequest request);
+    boolean removeFromBlacklist(RegistryForbiddenServerRequest request);
 }

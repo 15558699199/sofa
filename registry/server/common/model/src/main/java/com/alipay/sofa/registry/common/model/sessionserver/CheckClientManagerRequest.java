@@ -24,23 +24,23 @@ import java.io.Serializable;
  */
 public class CheckClientManagerRequest implements Serializable {
 
-  private final long expectedVersion;
+    private final long expectedVersion;
 
-  public CheckClientManagerRequest(long expectedVersion) {
-    this.expectedVersion = expectedVersion;
-  }
+    public CheckClientManagerRequest(long expectedVersion) {
+        this.expectedVersion = expectedVersion;
+    }
 
-  /**
-   * Getter method for property <tt>expectedVersion</tt>.
-   *
-   * @return property value of expectedVersion
-   */
-  public long getExpectedVersion() {
-    return expectedVersion;
-  }
+    /**
+     * Getter method for property <tt>expectedVersion</tt>.
+     *
+     * @return property value of expectedVersion
+     */
+    public long getExpectedVersion() {
+        return expectedVersion;
+    }
 
-  @Override
-  public String toString() {
-    return "CheckClientManagerRequest{" + "expectedVersion=" + expectedVersion + '}';
-  }
+    @Override
+    public String toString() {
+        return "CheckClientManagerRequest{" + "expectedVersion=" + expectedVersion + '}';
+    }
 }

@@ -32,73 +32,73 @@ import org.junit.Test;
  */
 public class DefaultSlotStatsTest {
 
-  private DefaultSlotStats slotStats;
+    private DefaultSlotStats slotStats;
 
-  private Slot slot;
+    private Slot slot;
 
-  @Before
-  public void beforeDefaultSlotStatsTest() {
-    slot =
-        new Slot(
-            1, "10.0.0.1", System.currentTimeMillis(), Lists.newArrayList("10.0.0.2", "10.0.0.3"));
-    slotStats = new DefaultSlotStats(slot, 1000 * 60 * 3);
-  }
+    @Before
+    public void beforeDefaultSlotStatsTest() {
+        slot =
+                new Slot(
+                        1, "10.0.0.1", System.currentTimeMillis(), Lists.newArrayList("10.0.0.2", "10.0.0.3"));
+        slotStats = new DefaultSlotStats(slot, 1000 * 60 * 3);
+    }
 
-  @Test
-  public void testGetSlot() {
-    Assert.assertEquals(slot, slotStats.getSlot());
-  }
+    @Test
+    public void testGetSlot() {
+        Assert.assertEquals(slot, slotStats.getSlot());
+    }
 
-  @Test
-  public void testIsLeaderStable() {
-    Assert.assertFalse(slotStats.isLeaderStable());
-    slotStats.updateLeaderState(
-        new LeaderSlotStatus(
-            1, System.currentTimeMillis(), "10.0.0.1", BaseSlotStatus.LeaderStatus.HEALTHY));
-    Assert.assertTrue(slotStats.isLeaderStable());
-  }
+    @Test
+    public void testIsLeaderStable() {
+        Assert.assertFalse(slotStats.isLeaderStable());
+        slotStats.updateLeaderState(
+                new LeaderSlotStatus(
+                        1, System.currentTimeMillis(), "10.0.0.1", BaseSlotStatus.LeaderStatus.HEALTHY));
+        Assert.assertTrue(slotStats.isLeaderStable());
+    }
 
-  @Test
-  public void testIsFollowerStable() {
-    Assert.assertFalse(slotStats.isFollowerStable(null));
-    Assert.assertFalse(slotStats.isFollowerStable(""));
-    Assert.assertFalse(slotStats.isFollowerStable("10.0.0.2"));
-    slotStats.updateFollowerState(
-        new FollowerSlotStatus(1, System.currentTimeMillis(), "10.0.0.2", -1, -1));
-    Assert.assertFalse(slotStats.isFollowerStable("10.0.0.2"));
-    slotStats.updateFollowerState(
-        new FollowerSlotStatus(
-            1,
-            System.currentTimeMillis(),
-            "10.0.0.2",
-            System.currentTimeMillis(),
-            System.currentTimeMillis() - 3000));
-    Assert.assertTrue(slotStats.isFollowerStable("10.0.0.2"));
+    @Test
+    public void testIsFollowerStable() {
+        Assert.assertFalse(slotStats.isFollowerStable(null));
+        Assert.assertFalse(slotStats.isFollowerStable(""));
+        Assert.assertFalse(slotStats.isFollowerStable("10.0.0.2"));
+        slotStats.updateFollowerState(
+                new FollowerSlotStatus(1, System.currentTimeMillis(), "10.0.0.2", -1, -1));
+        Assert.assertFalse(slotStats.isFollowerStable("10.0.0.2"));
+        slotStats.updateFollowerState(
+                new FollowerSlotStatus(
+                        1,
+                        System.currentTimeMillis(),
+                        "10.0.0.2",
+                        System.currentTimeMillis(),
+                        System.currentTimeMillis() - 3000));
+        Assert.assertTrue(slotStats.isFollowerStable("10.0.0.2"));
 
-    Assert.assertFalse(slotStats.isFollowersStable());
+        Assert.assertFalse(slotStats.isFollowersStable());
 
-    slotStats.updateFollowerState(
-        new FollowerSlotStatus(
-            1,
-            System.currentTimeMillis(),
-            "10.0.0.3",
-            System.currentTimeMillis(),
-            System.currentTimeMillis() - 3000));
-    Assert.assertTrue(slotStats.isFollowersStable());
-  }
+        slotStats.updateFollowerState(
+                new FollowerSlotStatus(
+                        1,
+                        System.currentTimeMillis(),
+                        "10.0.0.3",
+                        System.currentTimeMillis(),
+                        System.currentTimeMillis() - 3000));
+        Assert.assertTrue(slotStats.isFollowersStable());
+    }
 
-  @Test
-  public void testUpdateFollowerState() {
-    slotStats.updateFollowerState(
-        new FollowerSlotStatus(1, System.currentTimeMillis(), "10.0.0.2", -1, -1));
-    Assert.assertFalse(slotStats.isFollowerStable("10.0.0.2"));
-  }
+    @Test
+    public void testUpdateFollowerState() {
+        slotStats.updateFollowerState(
+                new FollowerSlotStatus(1, System.currentTimeMillis(), "10.0.0.2", -1, -1));
+        Assert.assertFalse(slotStats.isFollowerStable("10.0.0.2"));
+    }
 
-  @Test
-  public void testEuqals() {
-    SlotStats slotStatsCopy = new DefaultSlotStats(slotStats.getSlot(), 3000);
-    slotStats.updateFollowerState(
-        new FollowerSlotStatus(1, System.currentTimeMillis(), "10.0.0.2", -1, -1));
-    Assert.assertNotEquals(slotStatsCopy, slotStats);
-  }
+    @Test
+    public void testEuqals() {
+        SlotStats slotStatsCopy = new DefaultSlotStats(slotStats.getSlot(), 3000);
+        slotStats.updateFollowerState(
+                new FollowerSlotStatus(1, System.currentTimeMillis(), "10.0.0.2", -1, -1));
+        Assert.assertNotEquals(slotStatsCopy, slotStats);
+    }
 }

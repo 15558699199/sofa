@@ -37,7 +37,7 @@ import org.springframework.context.annotation.Bean;
  */
 @AutoConfiguration(after = SofaRuntimeAutoConfiguration.class)
 @ConditionalOnBean(SofaRuntimeManager.class)
-@ConditionalOnClass({ SofaRuntimeContainer.class, SofaRuntimeManager.class })
+@ConditionalOnClass({SofaRuntimeContainer.class, SofaRuntimeManager.class})
 @EnableConfigurationProperties(SofaArkProperties.class)
 public class SofaArkAutoConfiguration {
 

@@ -16,9 +16,6 @@
  */
 package com.alipay.sofa.registry.server.session.remoting.handler;
 
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.*;
-
 import com.alipay.sofa.registry.common.model.Node;
 import com.alipay.sofa.registry.common.model.sessionserver.DataPushRequest;
 import com.alipay.sofa.registry.common.model.store.SubDatum;
@@ -27,74 +24,78 @@ import com.alipay.sofa.registry.server.session.TestUtils;
 import com.alipay.sofa.registry.server.session.bootstrap.ExecutorManager;
 import com.alipay.sofa.registry.server.session.bootstrap.SessionServerConfigBean;
 import com.alipay.sofa.registry.server.session.push.FirePushService;
-import java.util.Collections;
 import org.assertj.core.util.Lists;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.Collections;
+
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.*;
+
 public class DataPushRequestHandlerTest {
 
-  private long init = -1L;
+    private long init = -1L;
 
-  @Test
-  public void testCheckParam() {
-    DataPushRequestHandler handler = newHandler();
-    handler.checkParam(request());
-  }
+    private static DataPushRequest request() {
+        SubDatum subDatum =
+                SubDatum.normalOf(
+                        "dataInfoId",
+                        "dataCenter",
+                        100,
+                        Collections.emptyList(),
+                        "testDataId",
+                        "testInstanceId",
+                        "testGroup",
+                        Lists.newArrayList(System.currentTimeMillis()));
+        DataPushRequest request = new DataPushRequest(subDatum);
+        Assert.assertTrue(request.toString(), request.toString().contains("dataInfoId"));
+        Assert.assertEquals(request.getDatum(), subDatum);
+        return request;
+    }
 
-  private DataPushRequestHandler newHandler() {
-    DataPushRequestHandler handler = new DataPushRequestHandler();
-    Assert.assertEquals(handler.interest(), DataPushRequest.class);
-    Assert.assertEquals(handler.getConnectNodeType(), Node.NodeType.DATA);
-    Assert.assertEquals(handler.getType(), ChannelHandler.HandlerType.PROCESSER);
-    Assert.assertEquals(handler.getInvokeType(), ChannelHandler.InvokeType.SYNC);
-    return handler;
-  }
+    @Test
+    public void testCheckParam() {
+        DataPushRequestHandler handler = newHandler();
+        handler.checkParam(request());
+    }
 
-  @Test
-  public void testHandle() {
-    DataPushRequestHandler handler = newHandler();
-    SessionServerConfigBean serverConfigBean = TestUtils.newSessionConfig("testDc");
-    handler.sessionServerConfig = serverConfigBean;
-    handler.pushSwitchService = TestUtils.newPushSwitchService(serverConfigBean);
-    handler.executorManager = new ExecutorManager(serverConfigBean);
+    private DataPushRequestHandler newHandler() {
+        DataPushRequestHandler handler = new DataPushRequestHandler();
+        Assert.assertEquals(handler.interest(), DataPushRequest.class);
+        Assert.assertEquals(handler.getConnectNodeType(), Node.NodeType.DATA);
+        Assert.assertEquals(handler.getType(), ChannelHandler.HandlerType.PROCESSER);
+        Assert.assertEquals(handler.getInvokeType(), ChannelHandler.InvokeType.SYNC);
+        return handler;
+    }
 
-    Assert.assertNotNull(handler.getExecutor());
+    @Test
+    public void testHandle() {
+        DataPushRequestHandler handler = newHandler();
+        SessionServerConfigBean serverConfigBean = TestUtils.newSessionConfig("testDc");
+        handler.sessionServerConfig = serverConfigBean;
+        handler.pushSwitchService = TestUtils.newPushSwitchService(serverConfigBean);
+        handler.executorManager = new ExecutorManager(serverConfigBean);
 
-    handler
-        .pushSwitchService
-        .getFetchStopPushService()
-        .setStopPushSwitch(System.currentTimeMillis(), true);
-    // no npe, stopPush skip the handle
-    Object obj = handler.doHandle(null, null);
-    Assert.assertNull(obj);
+        Assert.assertNotNull(handler.getExecutor());
 
-    handler
-        .pushSwitchService
-        .getFetchStopPushService()
-        .setStopPushSwitch(System.currentTimeMillis(), false);
-    // npe
-    TestUtils.assertRunException(RuntimeException.class, () -> handler.doHandle(null, request()));
-    handler.firePushService = mock(FirePushService.class);
-    obj = handler.doHandle(null, request());
-    Assert.assertNull(obj);
-    verify(handler.firePushService, times(0)).fireOnChange(anyString(), anyObject());
-  }
+        handler
+                .pushSwitchService
+                .getFetchStopPushService()
+                .setStopPushSwitch(System.currentTimeMillis(), true);
+        // no npe, stopPush skip the handle
+        Object obj = handler.doHandle(null, null);
+        Assert.assertNull(obj);
 
-  private static DataPushRequest request() {
-    SubDatum subDatum =
-        SubDatum.normalOf(
-            "dataInfoId",
-            "dataCenter",
-            100,
-            Collections.emptyList(),
-            "testDataId",
-            "testInstanceId",
-            "testGroup",
-            Lists.newArrayList(System.currentTimeMillis()));
-    DataPushRequest request = new DataPushRequest(subDatum);
-    Assert.assertTrue(request.toString(), request.toString().contains("dataInfoId"));
-    Assert.assertEquals(request.getDatum(), subDatum);
-    return request;
-  }
+        handler
+                .pushSwitchService
+                .getFetchStopPushService()
+                .setStopPushSwitch(System.currentTimeMillis(), false);
+        // npe
+        TestUtils.assertRunException(RuntimeException.class, () -> handler.doHandle(null, request()));
+        handler.firePushService = mock(FirePushService.class);
+        obj = handler.doHandle(null, request());
+        Assert.assertNull(obj);
+        verify(handler.firePushService, times(0)).fireOnChange(anyString(), anyObject());
+    }
 }

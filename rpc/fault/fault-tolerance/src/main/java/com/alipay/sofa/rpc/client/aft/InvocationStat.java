@@ -71,7 +71,7 @@ public interface InvocationStat {
     /**
      * Get rate of exception event. by exception count / invoke count
      *
-     * @return exception rate of all invoke 
+     * @return exception rate of all invoke
      */
     double getExceptionRate();
 

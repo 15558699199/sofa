@@ -49,31 +49,31 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
  * @author huzijie
  * @version HealthIndicatorProcessorTests.java, v 0.1 2023年01月05日 6:03 PM huzijie Exp $
  */
-@ExtendWith({ MockitoExtension.class, OutputCaptureExtension.class })
+@ExtendWith({MockitoExtension.class, OutputCaptureExtension.class})
 public class HealthIndicatorProcessorTests {
 
     static {
         LogOutPutUtils.openOutPutForLoggers(HealthIndicatorProcessor.class);
     }
 
-    private final ExecutorService         executorService          = Executors
-                                                                       .newFixedThreadPool(10);
+    private final ExecutorService executorService = Executors
+            .newFixedThreadPool(10);
 
-    private final HealthIndicator         successHealthIndicator   = new SuccessHealthIndicator();
+    private final HealthIndicator successHealthIndicator = new SuccessHealthIndicator();
 
-    private final HealthIndicator         failHealthIndicator      = new FailHealthIndicator();
+    private final HealthIndicator failHealthIndicator = new FailHealthIndicator();
 
-    private final HealthIndicator         exceptionHealthIndicator = new ExceptionHealthIndicator();
+    private final HealthIndicator exceptionHealthIndicator = new ExceptionHealthIndicator();
 
-    private final HealthIndicator         timeoutHealthIndicator   = new TimeoutHealthIndicator();
+    private final HealthIndicator timeoutHealthIndicator = new TimeoutHealthIndicator();
 
-    private final ReactiveHealthIndicator reactiveHealthIndicator  = new TestReactiveHealthIndicator();
+    private final ReactiveHealthIndicator reactiveHealthIndicator = new TestReactiveHealthIndicator();
 
     @InjectMocks
-    private HealthIndicatorProcessor      healthIndicatorProcessor;
+    private HealthIndicatorProcessor healthIndicatorProcessor;
 
     @Mock
-    private ApplicationContext            applicationContext;
+    private ApplicationContext applicationContext;
 
     @BeforeEach
     public void setUp() {
@@ -103,18 +103,18 @@ public class HealthIndicatorProcessorTests {
 
         healthIndicatorProcessor.init();
         assertThat(capturedOutput.getOut()).contains(
-            "Found 1 HealthIndicator implementation:successHealthIndicator");
+                "Found 1 HealthIndicator implementation:successHealthIndicator");
         HashMap<String, Health> healthMap = new HashMap<>();
         boolean result = healthIndicatorProcessor.readinessHealthCheck(healthMap);
 
         assertThat(capturedOutput.getOut()).contains(
-            "Begin SOFABoot HealthIndicator readiness check");
+                "Begin SOFABoot HealthIndicator readiness check");
         assertThat(capturedOutput.getOut()).contains(
-            "SOFABoot HealthIndicator readiness check 1 item: successHealthIndicator");
+                "SOFABoot HealthIndicator readiness check 1 item: successHealthIndicator");
         assertThat(capturedOutput.getOut()).contains(
-            "HealthIndicator [successHealthIndicator] readiness check start");
+                "HealthIndicator [successHealthIndicator] readiness check start");
         assertThat(capturedOutput.getOut()).contains(
-            "SOFABoot HealthIndicator readiness check result: success");
+                "SOFABoot HealthIndicator readiness check result: success");
         assertThat(result).isTrue();
         assertThat(healthMap.size()).isEqualTo(1);
         Health health = healthMap.get("success");
@@ -134,10 +134,10 @@ public class HealthIndicatorProcessorTests {
         boolean result = healthIndicatorProcessor.readinessHealthCheck(healthMap);
 
         assertThat(capturedOutput.getOut())
-            .contains(
-                "SOFA-BOOT-01-21001: HealthIndicator[failHealthIndicator] readiness check fail; the status is: DOWN; the detail is: {\"reason\":\"error\"}");
+                .contains(
+                        "SOFA-BOOT-01-21001: HealthIndicator[failHealthIndicator] readiness check fail; the status is: DOWN; the detail is: {\"reason\":\"error\"}");
         assertThat(capturedOutput.getOut()).contains(
-            "SOFA-BOOT-01-21000: SOFABoot HealthIndicator readiness check result: failed");
+                "SOFA-BOOT-01-21000: SOFABoot HealthIndicator readiness check result: failed");
         assertThat(result).isFalse();
         assertThat(healthMap.size()).isEqualTo(2);
         Health health = healthMap.get("fail");
@@ -158,10 +158,10 @@ public class HealthIndicatorProcessorTests {
         boolean result = healthIndicatorProcessor.readinessHealthCheck(healthMap);
 
         assertThat(capturedOutput.getOut())
-            .contains(
-                "SOFA-BOOT-01-21002: Error occurred while doing HealthIndicator[class com.alipay.sofa.boot.actuator.health.HealthIndicatorProcessorTests$ExceptionHealthIndicator] readiness check");
+                .contains(
+                        "SOFA-BOOT-01-21002: Error occurred while doing HealthIndicator[class com.alipay.sofa.boot.actuator.health.HealthIndicatorProcessorTests$ExceptionHealthIndicator] readiness check");
         assertThat(capturedOutput.getOut()).contains(
-            "SOFA-BOOT-01-21000: SOFABoot HealthIndicator readiness check result: failed");
+                "SOFA-BOOT-01-21000: SOFABoot HealthIndicator readiness check result: failed");
         assertThat(result).isFalse();
         assertThat(healthMap.size()).isEqualTo(2);
         Health health = healthMap.get("exception");
@@ -182,17 +182,17 @@ public class HealthIndicatorProcessorTests {
         boolean result = healthIndicatorProcessor.readinessHealthCheck(healthMap);
 
         assertThat(capturedOutput.getOut())
-            .contains(
-                "HealthIndicator[timeoutHealthIndicator] readiness check fail; the status is: UNKNOWN; the detail is: timeout, the timeout value is: 100ms");
+                .contains(
+                        "HealthIndicator[timeoutHealthIndicator] readiness check fail; the status is: UNKNOWN; the detail is: timeout, the timeout value is: 100ms");
         assertThat(capturedOutput.getOut()).contains(
-            "SOFA-BOOT-01-21000: SOFABoot HealthIndicator readiness check result: failed");
+                "SOFA-BOOT-01-21000: SOFABoot HealthIndicator readiness check result: failed");
         assertThat(result).isFalse();
         assertThat(healthMap.size()).isEqualTo(2);
         Health health = healthMap.get("timeout");
         assertThat(health).isNotNull();
         assertThat(health.getStatus()).isEqualTo(Status.UNKNOWN);
         assertThat(health.getDetails().toString())
-            .contains("java.util.concurrent.TimeoutException");
+                .contains("java.util.concurrent.TimeoutException");
         assertThat(health.getDetails().toString()).contains("timeout=100");
     }
 
@@ -201,9 +201,9 @@ public class HealthIndicatorProcessorTests {
         Map<String, ReactiveHealthIndicator> beanMap = new HashMap<>();
         beanMap.put("reactiveHealthIndicator", reactiveHealthIndicator);
         Mockito.doReturn(new HashMap<>()).when(applicationContext)
-            .getBeansOfType(HealthIndicator.class);
+                .getBeansOfType(HealthIndicator.class);
         Mockito.doReturn(beanMap).when(applicationContext)
-            .getBeansOfType(ReactiveHealthIndicator.class);
+                .getBeansOfType(ReactiveHealthIndicator.class);
 
         healthIndicatorProcessor.init();
         HashMap<String, Health> healthMap = new HashMap<>();

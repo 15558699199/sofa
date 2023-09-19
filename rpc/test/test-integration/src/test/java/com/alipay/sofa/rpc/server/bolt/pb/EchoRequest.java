@@ -23,9 +23,32 @@ package com.alipay.sofa.rpc.server.bolt.pb;
  * Protobuf type {@code com.alipay.sofa.rpc.server.bolt.pb.EchoRequest}
  */
 public final class EchoRequest extends
-                              com.google.protobuf.GeneratedMessageV3 implements
-                                                                    // @@protoc_insertion_point(message_implements:com.alipay.sofa.rpc.server.bolt.pb.EchoRequest)
-                                                                    EchoRequestOrBuilder {
+        com.google.protobuf.GeneratedMessageV3 implements
+        // @@protoc_insertion_point(message_implements:com.alipay.sofa.rpc.server.bolt.pb.EchoRequest)
+        EchoRequestOrBuilder {
+    public static final int NAME_FIELD_NUMBER = 1;
+    public static final int GROUP_FIELD_NUMBER = 2;
+    private static final long serialVersionUID = 0L;
+    // @@protoc_insertion_point(class_scope:com.alipay.sofa.rpc.server.bolt.pb.EchoRequest)
+    private static final EchoRequest DEFAULT_INSTANCE;
+    private static final com.google.protobuf.Parser<EchoRequest> PARSER = new com.google.protobuf.AbstractParser<EchoRequest>() {
+        public EchoRequest parsePartialFrom(
+                com.google.protobuf.CodedInputStream input,
+                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+                throws com.google.protobuf.InvalidProtocolBufferException {
+            return new EchoRequest(input,
+                    extensionRegistry);
+        }
+    };
+
+    static {
+        DEFAULT_INSTANCE = new EchoRequest();
+    }
+
+    private volatile Object name_;
+    private int group_;
+    private byte memoizedIsInitialized = -1;
+
     // Use EchoRequest.newBuilder() to construct.
     private EchoRequest(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
         super(builder);
@@ -35,17 +58,10 @@ public final class EchoRequest extends
         name_ = "";
         group_ = 0;
     }
-
-    @Override
-    public final com.google.protobuf.UnknownFieldSet
-            getUnknownFields() {
-        return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
-    }
-
     private EchoRequest(
-                        com.google.protobuf.CodedInputStream input,
-                        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                                                                                    throws com.google.protobuf.InvalidProtocolBufferException {
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
         this();
         int mutable_bitField0_ = 0;
         try {
@@ -80,26 +96,113 @@ public final class EchoRequest extends
             throw e.setUnfinishedMessage(this);
         } catch (java.io.IOException e) {
             throw new com.google.protobuf.InvalidProtocolBufferException(
-                e).setUnfinishedMessage(this);
+                    e).setUnfinishedMessage(this);
         } finally {
             makeExtensionsImmutable();
         }
     }
 
     public static final com.google.protobuf.Descriptors.Descriptor
-            getDescriptor() {
+    getDescriptor() {
         return com.alipay.sofa.rpc.server.bolt.pb.ProtoServiceModels.internal_static_com_alipay_sofa_rpc_server_bolt_pb_EchoRequest_descriptor;
     }
 
-    protected FieldAccessorTable
-            internalGetFieldAccessorTable() {
-        return com.alipay.sofa.rpc.server.bolt.pb.ProtoServiceModels.internal_static_com_alipay_sofa_rpc_server_bolt_pb_EchoRequest_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                EchoRequest.class, Builder.class);
+    public static EchoRequest parseFrom(
+            com.google.protobuf.ByteString data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
     }
 
-    public static final int NAME_FIELD_NUMBER = 1;
-    private volatile Object name_;
+    public static EchoRequest parseFrom(
+            com.google.protobuf.ByteString data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+    }
+
+    public static EchoRequest parseFrom(byte[] data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+    }
+
+    public static EchoRequest parseFrom(
+            byte[] data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+    }
+
+    public static EchoRequest parseFrom(java.io.InputStream input)
+            throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+                .parseWithIOException(PARSER, input);
+    }
+
+    public static EchoRequest parseFrom(
+            java.io.InputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+                .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static EchoRequest parseDelimitedFrom(java.io.InputStream input)
+            throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+                .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static EchoRequest parseDelimitedFrom(
+            java.io.InputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+                .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static EchoRequest parseFrom(
+            com.google.protobuf.CodedInputStream input)
+            throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+                .parseWithIOException(PARSER, input);
+    }
+
+    public static EchoRequest parseFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+                .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static Builder newBuilder() {
+        return DEFAULT_INSTANCE.toBuilder();
+    }
+
+    public static Builder newBuilder(EchoRequest prototype) {
+        return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+
+    public static EchoRequest getDefaultInstance() {
+        return DEFAULT_INSTANCE;
+    }
+
+    public static com.google.protobuf.Parser<EchoRequest> parser() {
+        return PARSER;
+    }
+
+    @Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+        return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
+    }
+
+    protected FieldAccessorTable
+    internalGetFieldAccessorTable() {
+        return com.alipay.sofa.rpc.server.bolt.pb.ProtoServiceModels.internal_static_com_alipay_sofa_rpc_server_bolt_pb_EchoRequest_fieldAccessorTable
+                .ensureFieldAccessorsInitialized(
+                        EchoRequest.class, Builder.class);
+    }
 
     /**
      * <code>string name = 1;</code>
@@ -121,21 +224,18 @@ public final class EchoRequest extends
      * <code>string name = 1;</code>
      */
     public com.google.protobuf.ByteString
-            getNameBytes() {
+    getNameBytes() {
         Object ref = name_;
         if (ref instanceof String) {
             com.google.protobuf.ByteString b =
                     com.google.protobuf.ByteString.copyFromUtf8(
-                        (String) ref);
+                            (String) ref);
             name_ = b;
             return b;
         } else {
             return (com.google.protobuf.ByteString) ref;
         }
     }
-
-    public static final int GROUP_FIELD_NUMBER = 2;
-    private int             group_;
 
     /**
      * <code>.com.alipay.sofa.rpc.server.bolt.pb.Group group = 2;</code>
@@ -152,8 +252,6 @@ public final class EchoRequest extends
         return result == null ? Group.UNRECOGNIZED : result;
     }
 
-    private byte memoizedIsInitialized = -1;
-
     public final boolean isInitialized() {
         byte isInitialized = memoizedIsInitialized;
         if (isInitialized == 1)
@@ -166,7 +264,7 @@ public final class EchoRequest extends
     }
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
-        throws java.io.IOException {
+            throws java.io.IOException {
         if (!getNameBytes().isEmpty()) {
             com.google.protobuf.GeneratedMessageV3.writeString(output, 1, name_);
         }
@@ -186,13 +284,11 @@ public final class EchoRequest extends
         }
         if (group_ != Group.A.getNumber()) {
             size += com.google.protobuf.CodedOutputStream
-                .computeEnumSize(2, group_);
+                    .computeEnumSize(2, group_);
         }
         memoizedSize = size;
         return size;
     }
-
-    private static final long serialVersionUID = 0L;
 
     @Override
     public boolean equals(final Object obj) {
@@ -206,7 +302,7 @@ public final class EchoRequest extends
 
         boolean result = true;
         result = result && getName()
-            .equals(other.getName());
+                .equals(other.getName());
         result = result && group_ == other.group_;
         return result;
     }
@@ -227,117 +323,41 @@ public final class EchoRequest extends
         return hash;
     }
 
-    public static EchoRequest parseFrom(
-                                        com.google.protobuf.ByteString data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data);
-    }
-
-    public static EchoRequest parseFrom(
-                                        com.google.protobuf.ByteString data,
-                                        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data, extensionRegistry);
-    }
-
-    public static EchoRequest parseFrom(byte[] data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data);
-    }
-
-    public static EchoRequest parseFrom(
-                                        byte[] data,
-                                        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data, extensionRegistry);
-    }
-
-    public static EchoRequest parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-        return com.google.protobuf.GeneratedMessageV3
-            .parseWithIOException(PARSER, input);
-    }
-
-    public static EchoRequest parseFrom(
-                                        java.io.InputStream input,
-                                        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-        return com.google.protobuf.GeneratedMessageV3
-            .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-
-    public static EchoRequest parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-        return com.google.protobuf.GeneratedMessageV3
-            .parseDelimitedWithIOException(PARSER, input);
-    }
-
-    public static EchoRequest parseDelimitedFrom(
-                                                 java.io.InputStream input,
-                                                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-        return com.google.protobuf.GeneratedMessageV3
-            .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
-    }
-
-    public static EchoRequest parseFrom(
-                                        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-        return com.google.protobuf.GeneratedMessageV3
-            .parseWithIOException(PARSER, input);
-    }
-
-    public static EchoRequest parseFrom(
-                                        com.google.protobuf.CodedInputStream input,
-                                        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-        return com.google.protobuf.GeneratedMessageV3
-            .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-
     public Builder newBuilderForType() {
         return newBuilder();
     }
 
-    public static Builder newBuilder() {
-        return DEFAULT_INSTANCE.toBuilder();
-    }
-
-    public static Builder newBuilder(EchoRequest prototype) {
-        return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-    }
-
     public Builder toBuilder() {
         return this == DEFAULT_INSTANCE
-            ? new Builder() : new Builder().mergeFrom(this);
+                ? new Builder() : new Builder().mergeFrom(this);
     }
 
     @Override
     protected Builder newBuilderForType(
-                                        BuilderParent parent) {
+            BuilderParent parent) {
         Builder builder = new Builder(parent);
         return builder;
+    }
+
+    @Override
+    public com.google.protobuf.Parser<EchoRequest> getParserForType() {
+        return PARSER;
+    }
+
+    public EchoRequest getDefaultInstanceForType() {
+        return DEFAULT_INSTANCE;
     }
 
     /**
      * Protobuf type {@code com.alipay.sofa.rpc.server.bolt.pb.EchoRequest}
      */
     public static final class Builder extends
-                                     com.google.protobuf.GeneratedMessageV3.Builder<Builder>
-                                                                                            implements
-                                                                                            // @@protoc_insertion_point(builder_implements:com.alipay.sofa.rpc.server.bolt.pb.EchoRequest)
-                                                                                            com.alipay.sofa.rpc.server.bolt.pb.EchoRequestOrBuilder {
-        public static final com.google.protobuf.Descriptors.Descriptor
-                getDescriptor() {
-            return com.alipay.sofa.rpc.server.bolt.pb.ProtoServiceModels.internal_static_com_alipay_sofa_rpc_server_bolt_pb_EchoRequest_descriptor;
-        }
-
-        protected FieldAccessorTable
-                internalGetFieldAccessorTable() {
-            return com.alipay.sofa.rpc.server.bolt.pb.ProtoServiceModels.internal_static_com_alipay_sofa_rpc_server_bolt_pb_EchoRequest_fieldAccessorTable
-                .ensureFieldAccessorsInitialized(
-                    EchoRequest.class, Builder.class);
-        }
+            com.google.protobuf.GeneratedMessageV3.Builder<Builder>
+            implements
+            // @@protoc_insertion_point(builder_implements:com.alipay.sofa.rpc.server.bolt.pb.EchoRequest)
+            com.alipay.sofa.rpc.server.bolt.pb.EchoRequestOrBuilder {
+        private Object name_ = "";
+        private int group_ = 0;
 
         // Construct using com.alipay.sofa.rpc.server.bolt.pb.EchoRequest.newBuilder()
         private Builder() {
@@ -345,9 +365,21 @@ public final class EchoRequest extends
         }
 
         private Builder(
-                        BuilderParent parent) {
+                BuilderParent parent) {
             super(parent);
             maybeForceBuilderInitialization();
+        }
+
+        public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+            return com.alipay.sofa.rpc.server.bolt.pb.ProtoServiceModels.internal_static_com_alipay_sofa_rpc_server_bolt_pb_EchoRequest_descriptor;
+        }
+
+        protected FieldAccessorTable
+        internalGetFieldAccessorTable() {
+            return com.alipay.sofa.rpc.server.bolt.pb.ProtoServiceModels.internal_static_com_alipay_sofa_rpc_server_bolt_pb_EchoRequest_fieldAccessorTable
+                    .ensureFieldAccessorsInitialized(
+                            EchoRequest.class, Builder.class);
         }
 
         private void maybeForceBuilderInitialization() {
@@ -365,7 +397,7 @@ public final class EchoRequest extends
         }
 
         public com.google.protobuf.Descriptors.Descriptor
-                getDescriptorForType() {
+        getDescriptorForType() {
             return com.alipay.sofa.rpc.server.bolt.pb.ProtoServiceModels.internal_static_com_alipay_sofa_rpc_server_bolt_pb_EchoRequest_descriptor;
         }
 
@@ -394,30 +426,30 @@ public final class EchoRequest extends
         }
 
         public Builder setField(
-                                com.google.protobuf.Descriptors.FieldDescriptor field,
-                                Object value) {
+                com.google.protobuf.Descriptors.FieldDescriptor field,
+                Object value) {
             return (Builder) super.setField(field, value);
         }
 
         public Builder clearField(
-                                  com.google.protobuf.Descriptors.FieldDescriptor field) {
+                com.google.protobuf.Descriptors.FieldDescriptor field) {
             return (Builder) super.clearField(field);
         }
 
         public Builder clearOneof(
-                                  com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+                com.google.protobuf.Descriptors.OneofDescriptor oneof) {
             return (Builder) super.clearOneof(oneof);
         }
 
         public Builder setRepeatedField(
-                                        com.google.protobuf.Descriptors.FieldDescriptor field,
-                                        int index, Object value) {
+                com.google.protobuf.Descriptors.FieldDescriptor field,
+                int index, Object value) {
             return (Builder) super.setRepeatedField(field, index, value);
         }
 
         public Builder addRepeatedField(
-                                        com.google.protobuf.Descriptors.FieldDescriptor field,
-                                        Object value) {
+                com.google.protobuf.Descriptors.FieldDescriptor field,
+                Object value) {
             return (Builder) super.addRepeatedField(field, value);
         }
 
@@ -449,9 +481,9 @@ public final class EchoRequest extends
         }
 
         public Builder mergeFrom(
-                                 com.google.protobuf.CodedInputStream input,
-                                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws java.io.IOException {
+                com.google.protobuf.CodedInputStream input,
+                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+                throws java.io.IOException {
             EchoRequest parsedMessage = null;
             try {
                 parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
@@ -465,8 +497,6 @@ public final class EchoRequest extends
             }
             return this;
         }
-
-        private Object name_ = "";
 
         /**
          * <code>string name = 1;</code>
@@ -487,13 +517,27 @@ public final class EchoRequest extends
         /**
          * <code>string name = 1;</code>
          */
+        public Builder setName(
+                String value) {
+            if (value == null) {
+                throw new NullPointerException();
+            }
+
+            name_ = value;
+            onChanged();
+            return this;
+        }
+
+        /**
+         * <code>string name = 1;</code>
+         */
         public com.google.protobuf.ByteString
-                getNameBytes() {
+        getNameBytes() {
             Object ref = name_;
             if (ref instanceof String) {
                 com.google.protobuf.ByteString b =
                         com.google.protobuf.ByteString.copyFromUtf8(
-                            (String) ref);
+                                (String) ref);
                 name_ = b;
                 return b;
             } else {
@@ -504,11 +548,12 @@ public final class EchoRequest extends
         /**
          * <code>string name = 1;</code>
          */
-        public Builder setName(
-                               String value) {
+        public Builder setNameBytes(
+                com.google.protobuf.ByteString value) {
             if (value == null) {
                 throw new NullPointerException();
             }
+            checkByteStringIsUtf8(value);
 
             name_ = value;
             onChanged();
@@ -524,23 +569,6 @@ public final class EchoRequest extends
             onChanged();
             return this;
         }
-
-        /**
-         * <code>string name = 1;</code>
-         */
-        public Builder setNameBytes(
-                                    com.google.protobuf.ByteString value) {
-            if (value == null) {
-                throw new NullPointerException();
-            }
-            checkByteStringIsUtf8(value);
-
-            name_ = value;
-            onChanged();
-            return this;
-        }
-
-        private int group_ = 0;
 
         /**
          * <code>.com.alipay.sofa.rpc.server.bolt.pb.Group group = 2;</code>
@@ -590,49 +618,16 @@ public final class EchoRequest extends
         }
 
         public final Builder setUnknownFields(
-                                              final com.google.protobuf.UnknownFieldSet unknownFields) {
+                final com.google.protobuf.UnknownFieldSet unknownFields) {
             return this;
         }
 
         public final Builder mergeUnknownFields(
-                                                final com.google.protobuf.UnknownFieldSet unknownFields) {
+                final com.google.protobuf.UnknownFieldSet unknownFields) {
             return this;
         }
 
         // @@protoc_insertion_point(builder_scope:com.alipay.sofa.rpc.server.bolt.pb.EchoRequest)
-    }
-
-    // @@protoc_insertion_point(class_scope:com.alipay.sofa.rpc.server.bolt.pb.EchoRequest)
-    private static final EchoRequest DEFAULT_INSTANCE;
-    static {
-        DEFAULT_INSTANCE = new EchoRequest();
-    }
-
-    public static EchoRequest getDefaultInstance() {
-        return DEFAULT_INSTANCE;
-    }
-
-    private static final com.google.protobuf.Parser<EchoRequest> PARSER = new com.google.protobuf.AbstractParser<EchoRequest>() {
-                                                                            public EchoRequest parsePartialFrom(
-                                                                                                                com.google.protobuf.CodedInputStream input,
-                                                                                                                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                                                                                throws com.google.protobuf.InvalidProtocolBufferException {
-                                                                                return new EchoRequest(input,
-                                                                                    extensionRegistry);
-                                                                            }
-                                                                        };
-
-    public static com.google.protobuf.Parser<EchoRequest> parser() {
-        return PARSER;
-    }
-
-    @Override
-    public com.google.protobuf.Parser<EchoRequest> getParserForType() {
-        return PARSER;
-    }
-
-    public EchoRequest getDefaultInstanceForType() {
-        return DEFAULT_INSTANCE;
     }
 
 }

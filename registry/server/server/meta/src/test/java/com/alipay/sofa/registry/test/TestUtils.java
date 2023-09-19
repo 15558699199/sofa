@@ -29,216 +29,221 @@ import com.alipay.sofa.registry.util.MathUtils;
 import com.alipay.sofa.registry.util.StringFormatter;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
 import org.assertj.core.util.Sets;
 import org.junit.Assert;
 import org.springframework.beans.BeanUtils;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
+
 public final class TestUtils {
-  private static final AtomicInteger IP_INT = new AtomicInteger();
+    private static final AtomicInteger IP_INT = new AtomicInteger();
 
-  private TestUtils() {}
-
-  public static List<DataNode> createDataNodes(int num) {
-    List<DataNode> list = Lists.newArrayList();
-    for (int i = 0; i < num; i++) {
-      String ip = int2Ip(IP_INT.incrementAndGet());
-      list.add(new DataNode(new URL(ip, 9600), getDc()));
-    }
-    return list;
-  }
-
-  public static void assertBalance(
-      SlotTable slotTable,
-      List<String> dataNodes,
-      int slotNum,
-      int replicas,
-      boolean checkLowLeader,
-      String tag) {
-    Assert.assertTrue(SlotTableUtils.isValidSlotTable(slotTable));
-    Map<String, Integer> leaderCount = SlotTableUtils.getSlotTableLeaderCount(slotTable);
-    Map<String, Integer> followerCount = SlotTableUtils.getSlotTableFollowerCount(slotTable);
-    Assert.assertEquals(dataNodes.size(), leaderCount.size());
-    Assert.assertTrue(leaderCount.keySet().containsAll(dataNodes));
-    if (dataNodes.size() > 1) {
-      Assert.assertEquals(dataNodes.size(), followerCount.size());
-      Assert.assertTrue(followerCount.keySet().containsAll(dataNodes));
+    private TestUtils() {
     }
 
-    int leaderHighAvg = MathUtils.divideCeil(slotNum, dataNodes.size());
-    leaderHighAvg = new NaiveBalancePolicy().getHighWaterMarkSlotLeaderNums(leaderHighAvg);
-    int leaderLowAvg = Math.floorDiv(slotNum, dataNodes.size());
-    leaderLowAvg = new NaiveBalancePolicy().getLowWaterMarkSlotLeaderNums(leaderLowAvg);
-    for (Map.Entry<String, Integer> e : leaderCount.entrySet()) {
-      String k = e.getKey();
-      int v = e.getValue();
-      Assert.assertTrue(
-          StringFormatter.format(
-              "{}, slots={}, data={}, ip={}, L={}, High={}, {}",
-              tag,
-              slotNum,
-              dataNodes.size(),
-              k,
-              v,
-              leaderHighAvg,
-              slotTable.transfer(null, true)),
-          v <= leaderHighAvg);
-      if (checkLowLeader) {
-        Assert.assertTrue(
-            StringFormatter.format(
-                "{}, slots={}, data={}, ip={}, L={}, Low={}, {}",
-                tag,
-                slotNum,
-                dataNodes.size(),
-                k,
-                v,
-                leaderLowAvg,
-                slotTable.transfer(null, true)),
-            v >= leaderLowAvg / 2);
-      }
+    public static List<DataNode> createDataNodes(int num) {
+        List<DataNode> list = Lists.newArrayList();
+        for (int i = 0; i < num; i++) {
+            String ip = int2Ip(IP_INT.incrementAndGet());
+            list.add(new DataNode(new URL(ip, 9600), getDc()));
+        }
+        return list;
     }
 
-    if (dataNodes.size() <= 3) {
-      return;
-    }
-    int followers = slotNum * (replicas - 1);
-    int followerHighAvg = MathUtils.divideCeil(followers, dataNodes.size());
-    int followerLowAvg = Math.floorDiv(followers, dataNodes.size());
-    for (Map.Entry<String, Integer> e : followerCount.entrySet()) {
-      String k = e.getKey();
-      int v = e.getValue();
-      Assert.assertTrue(
-          StringFormatter.format(
-              "{}, slots={}, data={}, ip={}, F={}, High={}",
-              tag,
-              slotNum,
-              dataNodes.size(),
-              k,
-              v,
-              followerHighAvg),
-          v <= followerHighAvg * 1.5);
+    public static void assertBalance(
+            SlotTable slotTable,
+            List<String> dataNodes,
+            int slotNum,
+            int replicas,
+            boolean checkLowLeader,
+            String tag) {
+        Assert.assertTrue(SlotTableUtils.isValidSlotTable(slotTable));
+        Map<String, Integer> leaderCount = SlotTableUtils.getSlotTableLeaderCount(slotTable);
+        Map<String, Integer> followerCount = SlotTableUtils.getSlotTableFollowerCount(slotTable);
+        Assert.assertEquals(dataNodes.size(), leaderCount.size());
+        Assert.assertTrue(leaderCount.keySet().containsAll(dataNodes));
+        if (dataNodes.size() > 1) {
+            Assert.assertEquals(dataNodes.size(), followerCount.size());
+            Assert.assertTrue(followerCount.keySet().containsAll(dataNodes));
+        }
 
-      Assert.assertTrue(
-          StringFormatter.format(
-              "{}, slots={}, data={}, ip={}, F={}, Low={}",
-              tag,
-              slotNum,
-              dataNodes.size(),
-              k,
-              v,
-              followerLowAvg),
-          v >= followerLowAvg / 2);
-    }
-  }
+        int leaderHighAvg = MathUtils.divideCeil(slotNum, dataNodes.size());
+        leaderHighAvg = new NaiveBalancePolicy().getHighWaterMarkSlotLeaderNums(leaderHighAvg);
+        int leaderLowAvg = Math.floorDiv(slotNum, dataNodes.size());
+        leaderLowAvg = new NaiveBalancePolicy().getLowWaterMarkSlotLeaderNums(leaderLowAvg);
+        for (Map.Entry<String, Integer> e : leaderCount.entrySet()) {
+            String k = e.getKey();
+            int v = e.getValue();
+            Assert.assertTrue(
+                    StringFormatter.format(
+                            "{}, slots={}, data={}, ip={}, L={}, High={}, {}",
+                            tag,
+                            slotNum,
+                            dataNodes.size(),
+                            k,
+                            v,
+                            leaderHighAvg,
+                            slotTable.transfer(null, true)),
+                    v <= leaderHighAvg);
+            if (checkLowLeader) {
+                Assert.assertTrue(
+                        StringFormatter.format(
+                                "{}, slots={}, data={}, ip={}, L={}, Low={}, {}",
+                                tag,
+                                slotNum,
+                                dataNodes.size(),
+                                k,
+                                v,
+                                leaderLowAvg,
+                                slotTable.transfer(null, true)),
+                        v >= leaderLowAvg / 2);
+            }
+        }
 
-  public static String getDc() {
-    return "testDc";
-  }
+        if (dataNodes.size() <= 3) {
+            return;
+        }
+        int followers = slotNum * (replicas - 1);
+        int followerHighAvg = MathUtils.divideCeil(followers, dataNodes.size());
+        int followerLowAvg = Math.floorDiv(followers, dataNodes.size());
+        for (Map.Entry<String, Integer> e : followerCount.entrySet()) {
+            String k = e.getKey();
+            int v = e.getValue();
+            Assert.assertTrue(
+                    StringFormatter.format(
+                            "{}, slots={}, data={}, ip={}, F={}, High={}",
+                            tag,
+                            slotNum,
+                            dataNodes.size(),
+                            k,
+                            v,
+                            followerHighAvg),
+                    v <= followerHighAvg * 1.5);
 
-  public static String int2Ip(int ip) {
-    StringBuilder builder = new StringBuilder(String.valueOf(ip >>> 24));
-    builder.append(".");
-    builder.append(String.valueOf((ip & 0X00FFFFFF) >>> 16));
-    builder.append(".");
-    builder.append(String.valueOf((ip & 0X0000FFFF) >>> 8));
-    builder.append(".");
-    builder.append(String.valueOf(ip & 0X000000FF));
-    return builder.toString();
-  }
-
-  public static void assertException(Class<? extends Throwable> eclazz, Runnable runnable) {
-    try {
-      runnable.run();
-      Assert.assertTrue(false);
-    } catch (Throwable exception) {
-      Assert.assertEquals(exception.getClass(), eclazz);
-    }
-  }
-
-  public static SlotTable newTable_0_1(long tableEpoch, long leaderEpoch) {
-    Slot slot0 = createSelfLeader(0, leaderEpoch);
-    Slot slot1 = createSelfLeader(1, leaderEpoch);
-    return new SlotTable(tableEpoch, Lists.newArrayList(slot0, slot1));
-  }
-
-  public static Slot createLeader(int slotId, long leaderEpoch, String address) {
-    return new Slot(slotId, address, leaderEpoch, Lists.newArrayList("xxx"));
-  }
-
-  public static Slot createSelfLeader(int slotId, long leaderEpoch) {
-    return createLeader(slotId, leaderEpoch, ServerEnv.IP);
-  }
-
-  public static class MockMultiClusterSyncRepository implements MultiClusterSyncRepository {
-
-    private final Map<String, MultiClusterSyncInfo> map = Maps.newHashMap();
-    /**
-     * insert
-     *
-     * @param syncInfo
-     * @return
-     */
-    @Override
-    public synchronized boolean insert(MultiClusterSyncInfo syncInfo) {
-      return map.putIfAbsent(syncInfo.getRemoteDataCenter(), syncInfo) == null;
+            Assert.assertTrue(
+                    StringFormatter.format(
+                            "{}, slots={}, data={}, ip={}, F={}, Low={}",
+                            tag,
+                            slotNum,
+                            dataNodes.size(),
+                            k,
+                            v,
+                            followerLowAvg),
+                    v >= followerLowAvg / 2);
+        }
     }
 
-    /**
-     * update with cas
-     *
-     * @param syncInfo
-     * @param expectVersion
-     * @return
-     */
-    @Override
-    public synchronized boolean update(MultiClusterSyncInfo syncInfo, long expectVersion) {
-      MultiClusterSyncInfo multiClusterSyncInfo = map.get(syncInfo.getRemoteDataCenter());
-
-      if (multiClusterSyncInfo != null && multiClusterSyncInfo.getDataVersion() == expectVersion) {
-        map.put(syncInfo.getRemoteDataCenter(), syncInfo);
-        return true;
-      }
-      return false;
+    public static String getDc() {
+        return "testDc";
     }
 
-    /** query MultiClusterSyncInfo */
-    @Override
-    public synchronized Set<MultiClusterSyncInfo> queryLocalSyncInfos() {
-      return Sets.newHashSet(map.values());
+    public static String int2Ip(int ip) {
+        StringBuilder builder = new StringBuilder(String.valueOf(ip >>> 24));
+        builder.append(".");
+        builder.append(String.valueOf((ip & 0X00FFFFFF) >>> 16));
+        builder.append(".");
+        builder.append(String.valueOf((ip & 0X0000FFFF) >>> 8));
+        builder.append(".");
+        builder.append(String.valueOf(ip & 0X000000FF));
+        return builder.toString();
     }
 
-    /**
-     * remove provideData
-     *
-     * @param remoteDataCenter
-     * @param dataVersion
-     */
-    @Override
-    public synchronized int remove(String remoteDataCenter, long dataVersion) {
-      MultiClusterSyncInfo multiClusterSyncInfo = map.get(remoteDataCenter);
-      if (multiClusterSyncInfo == null || multiClusterSyncInfo.getDataVersion() != dataVersion) {
-        return 0;
-      }
-      map.remove(remoteDataCenter);
-      return 1;
+    public static void assertException(Class<? extends Throwable> eclazz, Runnable runnable) {
+        try {
+            runnable.run();
+            Assert.assertTrue(false);
+        } catch (Throwable exception) {
+            Assert.assertEquals(exception.getClass(), eclazz);
+        }
     }
 
-    @Override
-    public synchronized MultiClusterSyncInfo query(String remoteDataCenter) {
-      MultiClusterSyncInfo multiClusterSyncInfo = map.get(remoteDataCenter);
-      return of(multiClusterSyncInfo);
+    public static SlotTable newTable_0_1(long tableEpoch, long leaderEpoch) {
+        Slot slot0 = createSelfLeader(0, leaderEpoch);
+        Slot slot1 = createSelfLeader(1, leaderEpoch);
+        return new SlotTable(tableEpoch, Lists.newArrayList(slot0, slot1));
     }
 
-    private MultiClusterSyncInfo of(MultiClusterSyncInfo multiClusterSyncInfo) {
-      if (multiClusterSyncInfo == null) {
-        return null;
-      }
-      MultiClusterSyncInfo ret = new MultiClusterSyncInfo();
-      BeanUtils.copyProperties(multiClusterSyncInfo, ret);
-      return ret;
+    public static Slot createLeader(int slotId, long leaderEpoch, String address) {
+        return new Slot(slotId, address, leaderEpoch, Lists.newArrayList("xxx"));
     }
-  }
+
+    public static Slot createSelfLeader(int slotId, long leaderEpoch) {
+        return createLeader(slotId, leaderEpoch, ServerEnv.IP);
+    }
+
+    public static class MockMultiClusterSyncRepository implements MultiClusterSyncRepository {
+
+        private final Map<String, MultiClusterSyncInfo> map = Maps.newHashMap();
+
+        /**
+         * insert
+         *
+         * @param syncInfo
+         * @return
+         */
+        @Override
+        public synchronized boolean insert(MultiClusterSyncInfo syncInfo) {
+            return map.putIfAbsent(syncInfo.getRemoteDataCenter(), syncInfo) == null;
+        }
+
+        /**
+         * update with cas
+         *
+         * @param syncInfo
+         * @param expectVersion
+         * @return
+         */
+        @Override
+        public synchronized boolean update(MultiClusterSyncInfo syncInfo, long expectVersion) {
+            MultiClusterSyncInfo multiClusterSyncInfo = map.get(syncInfo.getRemoteDataCenter());
+
+            if (multiClusterSyncInfo != null && multiClusterSyncInfo.getDataVersion() == expectVersion) {
+                map.put(syncInfo.getRemoteDataCenter(), syncInfo);
+                return true;
+            }
+            return false;
+        }
+
+        /**
+         * query MultiClusterSyncInfo
+         */
+        @Override
+        public synchronized Set<MultiClusterSyncInfo> queryLocalSyncInfos() {
+            return Sets.newHashSet(map.values());
+        }
+
+        /**
+         * remove provideData
+         *
+         * @param remoteDataCenter
+         * @param dataVersion
+         */
+        @Override
+        public synchronized int remove(String remoteDataCenter, long dataVersion) {
+            MultiClusterSyncInfo multiClusterSyncInfo = map.get(remoteDataCenter);
+            if (multiClusterSyncInfo == null || multiClusterSyncInfo.getDataVersion() != dataVersion) {
+                return 0;
+            }
+            map.remove(remoteDataCenter);
+            return 1;
+        }
+
+        @Override
+        public synchronized MultiClusterSyncInfo query(String remoteDataCenter) {
+            MultiClusterSyncInfo multiClusterSyncInfo = map.get(remoteDataCenter);
+            return of(multiClusterSyncInfo);
+        }
+
+        private MultiClusterSyncInfo of(MultiClusterSyncInfo multiClusterSyncInfo) {
+            if (multiClusterSyncInfo == null) {
+                return null;
+            }
+            MultiClusterSyncInfo ret = new MultiClusterSyncInfo();
+            BeanUtils.copyProperties(multiClusterSyncInfo, ret);
+            return ret;
+        }
+    }
 }

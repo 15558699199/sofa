@@ -17,8 +17,9 @@
 package com.alipay.sofa.registry.common.model.metaserver;
 
 import com.google.common.base.Objects;
-import java.util.Set;
 import org.glassfish.jersey.internal.guava.Sets;
+
+import java.util.Set;
 
 /**
  * @author xiaojian.xj
@@ -26,268 +27,287 @@ import org.glassfish.jersey.internal.guava.Sets;
  */
 public class MultiClusterSyncInfo {
 
-  /** local data center */
-  private String dataCenter;
+    /**
+     * local data center
+     */
+    private String dataCenter;
 
-  /** sync remote data center */
-  private String remoteDataCenter;
+    /**
+     * sync remote data center
+     */
+    private String remoteDataCenter;
 
-  /** remote meta address, use to get meta leader */
-  private String remoteMetaAddress;
+    /**
+     * remote meta address, use to get meta leader
+     */
+    private String remoteMetaAddress;
 
-  /** multi sync switch */
-  private boolean enableSyncDatum;
+    /**
+     * multi sync switch
+     */
+    private boolean enableSyncDatum;
 
-  /** push switch */
-  private boolean enablePush;
+    /**
+     * push switch
+     */
+    private boolean enablePush;
 
-  /** allow sync multi group */
-  private Set<String> synPublisherGroups = Sets.newHashSet();
+    /**
+     * allow sync multi group
+     */
+    private Set<String> synPublisherGroups = Sets.newHashSet();
 
-  /** allow sync multi dataInfoId */
-  private Set<String> syncDataInfoIds = Sets.newHashSet();
+    /**
+     * allow sync multi dataInfoId
+     */
+    private Set<String> syncDataInfoIds = Sets.newHashSet();
 
-  /** dataInfoId will not multi sync, this priority is higher than syncGroups and syncDataInfoIds */
-  private Set<String> ignoreDataInfoIds = Sets.newHashSet();
+    /**
+     * dataInfoId will not multi sync, this priority is higher than syncGroups and syncDataInfoIds
+     */
+    private Set<String> ignoreDataInfoIds = Sets.newHashSet();
 
-  /** data version */
-  private long dataVersion;
+    /**
+     * data version
+     */
+    private long dataVersion;
 
-  public MultiClusterSyncInfo() {}
-
-  public MultiClusterSyncInfo(String remoteDataCenter, String remoteMetaAddress, long dataVersion) {
-    this.remoteDataCenter = remoteDataCenter;
-    this.remoteMetaAddress = remoteMetaAddress;
-    this.dataVersion = dataVersion;
-  }
-
-  public MultiClusterSyncInfo(
-      String dataCenter, String remoteDataCenter, String remoteMetaAddress, long dataVersion) {
-    this.dataCenter = dataCenter;
-    this.remoteDataCenter = remoteDataCenter;
-    this.remoteMetaAddress = remoteMetaAddress;
-    this.dataVersion = dataVersion;
-  }
-
-  public MultiClusterSyncInfo(
-      String dataCenter,
-      String remoteDataCenter,
-      String remoteMetaAddress,
-      boolean enableSyncDatum,
-      boolean enablePush,
-      Set<String> syncDataInfoIds,
-      Set<String> synPublisherGroups,
-      Set<String> ignoreDataInfoIds,
-      long dataVersion) {
-    this.dataCenter = dataCenter;
-    this.remoteDataCenter = remoteDataCenter;
-    this.remoteMetaAddress = remoteMetaAddress;
-    this.enableSyncDatum = enableSyncDatum;
-    this.enablePush = enablePush;
-    this.syncDataInfoIds = syncDataInfoIds;
-    this.synPublisherGroups = synPublisherGroups;
-    this.ignoreDataInfoIds = ignoreDataInfoIds;
-    this.dataVersion = dataVersion;
-  }
-
-  /**
-   * Getter method for property <tt>dataCenter</tt>.
-   *
-   * @return property value of dataCenter
-   */
-  public String getDataCenter() {
-    return dataCenter;
-  }
-
-  /**
-   * Setter method for property <tt>dataCenter</tt>.
-   *
-   * @param dataCenter value to be assigned to property dataCenter
-   */
-  public void setDataCenter(String dataCenter) {
-    this.dataCenter = dataCenter;
-  }
-
-  /**
-   * Getter method for property <tt>remoteDataCenter</tt>.
-   *
-   * @return property value of remoteDataCenter
-   */
-  public String getRemoteDataCenter() {
-    return remoteDataCenter;
-  }
-
-  /**
-   * Setter method for property <tt>remoteDataCenter</tt>.
-   *
-   * @param remoteDataCenter value to be assigned to property remoteDataCenter
-   */
-  public void setRemoteDataCenter(String remoteDataCenter) {
-    this.remoteDataCenter = remoteDataCenter;
-  }
-
-  /**
-   * Getter method for property <tt>remoteMetaAddress</tt>.
-   *
-   * @return property value of remoteMetaAddress
-   */
-  public String getRemoteMetaAddress() {
-    return remoteMetaAddress;
-  }
-
-  /**
-   * Setter method for property <tt>remoteMetaAddress</tt>.
-   *
-   * @param remoteMetaAddress value to be assigned to property remoteMetaAddress
-   */
-  public void setRemoteMetaAddress(String remoteMetaAddress) {
-    this.remoteMetaAddress = remoteMetaAddress;
-  }
-
-  /**
-   * Getter method for property <tt>dataVersion</tt>.
-   *
-   * @return property value of dataVersion
-   */
-  public long getDataVersion() {
-    return dataVersion;
-  }
-
-  /**
-   * Setter method for property <tt>dataVersion</tt>.
-   *
-   * @param dataVersion value to be assigned to property dataVersion
-   */
-  public void setDataVersion(long dataVersion) {
-    this.dataVersion = dataVersion;
-  }
-
-  public boolean isEnableSyncDatum() {
-    return this.enableSyncDatum;
-  }
-
-  /**
-   * Setter method for property <tt>enableSyncDatum</tt>.
-   *
-   * @param enableSyncDatum value to be assigned to property enableSyncDatum
-   */
-  public void setEnableSyncDatum(boolean enableSyncDatum) {
-    this.enableSyncDatum = enableSyncDatum;
-  }
-
-  public boolean isEnablePush() {
-    return this.enablePush;
-  }
-
-  /**
-   * Setter method for property <tt>enablePush</tt>.
-   *
-   * @param enablePush value to be assigned to property enablePush
-   */
-  public void setEnablePush(boolean enablePush) {
-    this.enablePush = enablePush;
-  }
-
-  /**
-   * Getter method for property <tt>synPublisherGroups</tt>.
-   *
-   * @return property value of synPublisherGroups
-   */
-  public Set<String> getSynPublisherGroups() {
-    return synPublisherGroups;
-  }
-
-  /**
-   * Setter method for property <tt>synPublisherGroups</tt>.
-   *
-   * @param synPublisherGroups value to be assigned to property synPublisherGroups
-   */
-  public void setSynPublisherGroups(Set<String> synPublisherGroups) {
-    this.synPublisherGroups = synPublisherGroups;
-  }
-
-  /**
-   * Getter method for property <tt>syncDataInfoIds</tt>.
-   *
-   * @return property value of syncDataInfoIds
-   */
-  public Set<String> getSyncDataInfoIds() {
-    return syncDataInfoIds;
-  }
-
-  /**
-   * Setter method for property <tt>syncDataInfoIds</tt>.
-   *
-   * @param syncDataInfoIds value to be assigned to property syncDataInfoIds
-   */
-  public void setSyncDataInfoIds(Set<String> syncDataInfoIds) {
-    this.syncDataInfoIds = syncDataInfoIds;
-  }
-
-  /**
-   * Getter method for property <tt>ignoreDataInfoIds</tt>.
-   *
-   * @return property value of ignoreDataInfoIds
-   */
-  public Set<String> getIgnoreDataInfoIds() {
-    return ignoreDataInfoIds;
-  }
-
-  /**
-   * Setter method for property <tt>ignoreDataInfoIds</tt>.
-   *
-   * @param ignoreDataInfoIds value to be assigned to property ignoreDataInfoIds
-   */
-  public void setIgnoreDataInfoIds(Set<String> ignoreDataInfoIds) {
-    this.ignoreDataInfoIds = ignoreDataInfoIds;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
+    public MultiClusterSyncInfo() {
     }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
+
+    public MultiClusterSyncInfo(String remoteDataCenter, String remoteMetaAddress, long dataVersion) {
+        this.remoteDataCenter = remoteDataCenter;
+        this.remoteMetaAddress = remoteMetaAddress;
+        this.dataVersion = dataVersion;
     }
-    MultiClusterSyncInfo that = (MultiClusterSyncInfo) o;
-    return Objects.equal(dataCenter, that.dataCenter)
-        && Objects.equal(remoteDataCenter, that.remoteDataCenter);
-  }
 
-  @Override
-  public int hashCode() {
-    return Objects.hashCode(dataCenter, remoteDataCenter);
-  }
+    public MultiClusterSyncInfo(
+            String dataCenter, String remoteDataCenter, String remoteMetaAddress, long dataVersion) {
+        this.dataCenter = dataCenter;
+        this.remoteDataCenter = remoteDataCenter;
+        this.remoteMetaAddress = remoteMetaAddress;
+        this.dataVersion = dataVersion;
+    }
 
-  @Override
-  public String toString() {
-    return "MultiClusterSyncInfo{"
-        + "dataCenter='"
-        + dataCenter
-        + '\''
-        + ", remoteDataCenter='"
-        + remoteDataCenter
-        + '\''
-        + ", remoteMetaAddress='"
-        + remoteMetaAddress
-        + '\''
-        + ", enableSyncDatum="
-        + enableSyncDatum
-        + '\''
-        + ", enablePush="
-        + enablePush
-        + '\''
-        + ", enablePush="
-        + enablePush
-        + ", synPublisherGroups="
-        + synPublisherGroups
-        + ", syncDataInfoIds="
-        + syncDataInfoIds
-        + ", ignoreDataInfoIds="
-        + ignoreDataInfoIds
-        + ", dataVersion="
-        + dataVersion
-        + '}';
-  }
+    public MultiClusterSyncInfo(
+            String dataCenter,
+            String remoteDataCenter,
+            String remoteMetaAddress,
+            boolean enableSyncDatum,
+            boolean enablePush,
+            Set<String> syncDataInfoIds,
+            Set<String> synPublisherGroups,
+            Set<String> ignoreDataInfoIds,
+            long dataVersion) {
+        this.dataCenter = dataCenter;
+        this.remoteDataCenter = remoteDataCenter;
+        this.remoteMetaAddress = remoteMetaAddress;
+        this.enableSyncDatum = enableSyncDatum;
+        this.enablePush = enablePush;
+        this.syncDataInfoIds = syncDataInfoIds;
+        this.synPublisherGroups = synPublisherGroups;
+        this.ignoreDataInfoIds = ignoreDataInfoIds;
+        this.dataVersion = dataVersion;
+    }
+
+    /**
+     * Getter method for property <tt>dataCenter</tt>.
+     *
+     * @return property value of dataCenter
+     */
+    public String getDataCenter() {
+        return dataCenter;
+    }
+
+    /**
+     * Setter method for property <tt>dataCenter</tt>.
+     *
+     * @param dataCenter value to be assigned to property dataCenter
+     */
+    public void setDataCenter(String dataCenter) {
+        this.dataCenter = dataCenter;
+    }
+
+    /**
+     * Getter method for property <tt>remoteDataCenter</tt>.
+     *
+     * @return property value of remoteDataCenter
+     */
+    public String getRemoteDataCenter() {
+        return remoteDataCenter;
+    }
+
+    /**
+     * Setter method for property <tt>remoteDataCenter</tt>.
+     *
+     * @param remoteDataCenter value to be assigned to property remoteDataCenter
+     */
+    public void setRemoteDataCenter(String remoteDataCenter) {
+        this.remoteDataCenter = remoteDataCenter;
+    }
+
+    /**
+     * Getter method for property <tt>remoteMetaAddress</tt>.
+     *
+     * @return property value of remoteMetaAddress
+     */
+    public String getRemoteMetaAddress() {
+        return remoteMetaAddress;
+    }
+
+    /**
+     * Setter method for property <tt>remoteMetaAddress</tt>.
+     *
+     * @param remoteMetaAddress value to be assigned to property remoteMetaAddress
+     */
+    public void setRemoteMetaAddress(String remoteMetaAddress) {
+        this.remoteMetaAddress = remoteMetaAddress;
+    }
+
+    /**
+     * Getter method for property <tt>dataVersion</tt>.
+     *
+     * @return property value of dataVersion
+     */
+    public long getDataVersion() {
+        return dataVersion;
+    }
+
+    /**
+     * Setter method for property <tt>dataVersion</tt>.
+     *
+     * @param dataVersion value to be assigned to property dataVersion
+     */
+    public void setDataVersion(long dataVersion) {
+        this.dataVersion = dataVersion;
+    }
+
+    public boolean isEnableSyncDatum() {
+        return this.enableSyncDatum;
+    }
+
+    /**
+     * Setter method for property <tt>enableSyncDatum</tt>.
+     *
+     * @param enableSyncDatum value to be assigned to property enableSyncDatum
+     */
+    public void setEnableSyncDatum(boolean enableSyncDatum) {
+        this.enableSyncDatum = enableSyncDatum;
+    }
+
+    public boolean isEnablePush() {
+        return this.enablePush;
+    }
+
+    /**
+     * Setter method for property <tt>enablePush</tt>.
+     *
+     * @param enablePush value to be assigned to property enablePush
+     */
+    public void setEnablePush(boolean enablePush) {
+        this.enablePush = enablePush;
+    }
+
+    /**
+     * Getter method for property <tt>synPublisherGroups</tt>.
+     *
+     * @return property value of synPublisherGroups
+     */
+    public Set<String> getSynPublisherGroups() {
+        return synPublisherGroups;
+    }
+
+    /**
+     * Setter method for property <tt>synPublisherGroups</tt>.
+     *
+     * @param synPublisherGroups value to be assigned to property synPublisherGroups
+     */
+    public void setSynPublisherGroups(Set<String> synPublisherGroups) {
+        this.synPublisherGroups = synPublisherGroups;
+    }
+
+    /**
+     * Getter method for property <tt>syncDataInfoIds</tt>.
+     *
+     * @return property value of syncDataInfoIds
+     */
+    public Set<String> getSyncDataInfoIds() {
+        return syncDataInfoIds;
+    }
+
+    /**
+     * Setter method for property <tt>syncDataInfoIds</tt>.
+     *
+     * @param syncDataInfoIds value to be assigned to property syncDataInfoIds
+     */
+    public void setSyncDataInfoIds(Set<String> syncDataInfoIds) {
+        this.syncDataInfoIds = syncDataInfoIds;
+    }
+
+    /**
+     * Getter method for property <tt>ignoreDataInfoIds</tt>.
+     *
+     * @return property value of ignoreDataInfoIds
+     */
+    public Set<String> getIgnoreDataInfoIds() {
+        return ignoreDataInfoIds;
+    }
+
+    /**
+     * Setter method for property <tt>ignoreDataInfoIds</tt>.
+     *
+     * @param ignoreDataInfoIds value to be assigned to property ignoreDataInfoIds
+     */
+    public void setIgnoreDataInfoIds(Set<String> ignoreDataInfoIds) {
+        this.ignoreDataInfoIds = ignoreDataInfoIds;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        MultiClusterSyncInfo that = (MultiClusterSyncInfo) o;
+        return Objects.equal(dataCenter, that.dataCenter)
+                && Objects.equal(remoteDataCenter, that.remoteDataCenter);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(dataCenter, remoteDataCenter);
+    }
+
+    @Override
+    public String toString() {
+        return "MultiClusterSyncInfo{"
+                + "dataCenter='"
+                + dataCenter
+                + '\''
+                + ", remoteDataCenter='"
+                + remoteDataCenter
+                + '\''
+                + ", remoteMetaAddress='"
+                + remoteMetaAddress
+                + '\''
+                + ", enableSyncDatum="
+                + enableSyncDatum
+                + '\''
+                + ", enablePush="
+                + enablePush
+                + '\''
+                + ", enablePush="
+                + enablePush
+                + ", synPublisherGroups="
+                + synPublisherGroups
+                + ", syncDataInfoIds="
+                + syncDataInfoIds
+                + ", ignoreDataInfoIds="
+                + ignoreDataInfoIds
+                + ", dataVersion="
+                + dataVersion
+                + '}';
+    }
 }

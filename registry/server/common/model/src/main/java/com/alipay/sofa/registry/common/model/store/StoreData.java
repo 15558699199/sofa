@@ -22,25 +22,27 @@ package com.alipay.sofa.registry.common.model.store;
  */
 public interface StoreData<ID> {
 
-  /** DataType enum */
-  enum DataType {
-    SUBSCRIBER,
-    PUBLISHER,
-    WATCHER,
-    UN_PUBLISHER
-  }
+    /**
+     * get store dataType
+     *
+     * @return
+     */
+    DataType getDataType();
 
-  /**
-   * get store dataType
-   *
-   * @return
-   */
-  DataType getDataType();
+    /**
+     * get store data ID
+     *
+     * @return
+     */
+    ID getId();
 
-  /**
-   * get store data ID
-   *
-   * @return
-   */
-  ID getId();
+    /**
+     * DataType enum
+     */
+    enum DataType {
+        SUBSCRIBER,
+        PUBLISHER,
+        WATCHER,
+        UN_PUBLISHER
+    }
 }

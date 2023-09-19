@@ -24,10 +24,10 @@ package com.alipay.sofa.registry.client.api.model;
  */
 public interface ConfigData {
 
-  /**
-   * Gets data.
-   *
-   * @return the data
-   */
-  String getData();
+    /**
+     * Gets data.
+     *
+     * @return the data
+     */
+    String getData();
 }

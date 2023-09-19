@@ -43,12 +43,7 @@ import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 import java.security.MessageDigest;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -62,6 +57,7 @@ public class LocalRegistryHelper {
      * 日志
      */
     private static final Logger LOGGER = LoggerFactory.getLogger(LocalRegistryHelper.class);
+    private static String SEPARATORSTR = "\t";
 
     /**
      * Check file's digest.
@@ -85,12 +81,12 @@ public class LocalRegistryHelper {
      */
     public static ProviderInfo convertProviderToProviderInfo(ProviderConfig config, ServerConfig server) {
         ProviderInfo providerInfo = new ProviderInfo()
-            .setPort(server.getPort())
-            .setWeight(config.getWeight())
-            .setSerializationType(config.getSerialization())
-            .setProtocolType(server.getProtocol())
-            .setPath(server.getContextPath())
-            .setStaticAttrs(config.getParameters());
+                .setPort(server.getPort())
+                .setWeight(config.getWeight())
+                .setSerializationType(config.getSerialization())
+                .setProtocolType(server.getProtocol())
+                .setPath(server.getContextPath())
+                .setStaticAttrs(config.getParameters());
         String host = server.getHost();
         if (NetUtils.isLocalHost(host) || NetUtils.isAnyHost(host)) {
             host = SystemInfo.getLocalHost();
@@ -121,7 +117,7 @@ public class LocalRegistryHelper {
                 }
             } catch (IOException e) {
                 throw new SofaRpcRuntimeException(LogCodes.getLog(LogCodes.ERROR_READ_BACKUP_FILE,
-                    regFile.getAbsolutePath()), e);
+                        regFile.getAbsolutePath()), e);
             }
         }
         return memoryCache;
@@ -208,15 +204,13 @@ public class LocalRegistryHelper {
                 if (!deleted) {
                     if (LOGGER.isWarnEnabled()) {
                         LOGGER.warn("Lock file create by this thread, but failed to delete it," +
-                            " may be the elapsed time of this backup is too long");
+                                " may be the elapsed time of this backup is too long");
                     }
                 }
             }
         }
         return true;
     }
-
-    private static String SEPARATORSTR = "\t";
 
     private static String marshalCache(Map<String, ProviderGroup> memoryCache) {
         StringBuilder sb = new StringBuilder();
@@ -270,7 +264,7 @@ public class LocalRegistryHelper {
      */
     static String buildListDataId(AbstractInterfaceConfig config, String protocol) {
         if (RpcConstants.PROTOCOL_TYPE_BOLT.equals(protocol)
-            || RpcConstants.PROTOCOL_TYPE_TR.equals(protocol)) {
+                || RpcConstants.PROTOCOL_TYPE_TR.equals(protocol)) {
             return ConfigUniqueNameGenerator.getUniqueName(config) + "@DEFAULT";
         } else {
             return ConfigUniqueNameGenerator.getUniqueName(config) + "@" + protocol;

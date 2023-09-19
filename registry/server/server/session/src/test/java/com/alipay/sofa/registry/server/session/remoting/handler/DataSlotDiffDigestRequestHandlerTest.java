@@ -16,10 +16,6 @@
  */
 package com.alipay.sofa.registry.server.session.remoting.handler;
 
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 import com.alipay.sofa.registry.common.model.GenericResponse;
 import com.alipay.sofa.registry.common.model.Node;
 import com.alipay.sofa.registry.common.model.dataserver.DatumDigest;
@@ -32,67 +28,72 @@ import com.alipay.sofa.registry.server.session.TestUtils;
 import com.alipay.sofa.registry.server.session.bootstrap.ExecutorManager;
 import com.alipay.sofa.registry.server.session.slot.SlotTableCache;
 import com.alipay.sofa.registry.server.session.store.DataStore;
-import java.util.Collections;
-import java.util.Map;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.Collections;
+import java.util.Map;
+
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 public class DataSlotDiffDigestRequestHandlerTest {
 
-  private static final String DATACENTER = "testDc";
+    private static final String DATACENTER = "testDc";
 
-  private static final SyncSlotAcceptorManager ACCEPT_ALL = new SyncSlotAcceptAllManager();
+    private static final SyncSlotAcceptorManager ACCEPT_ALL = new SyncSlotAcceptAllManager();
 
-  @Test
-  public void testCheckParam() {
-    DataSlotDiffDigestRequestHandler handler = newHandler();
-    handler.checkParam(request(1, null));
-    handler.checkParam(request(1, Collections.emptyMap()));
-  }
+    private static DataSlotDiffDigestRequest request(
+            int slotId, Map<String, DatumDigest> datumDigest) {
+        return new DataSlotDiffDigestRequest(DATACENTER, 1, slotId, 1, datumDigest, ACCEPT_ALL);
+    }
 
-  private DataSlotDiffDigestRequestHandler newHandler() {
-    DataSlotDiffDigestRequestHandler handler = new DataSlotDiffDigestRequestHandler();
-    handler
-        .setExecutorManager(new ExecutorManager(TestUtils.newSessionConfig(DATACENTER)))
-        .setSyncSlotAcceptAllManager(ACCEPT_ALL);
+    @Test
+    public void testCheckParam() {
+        DataSlotDiffDigestRequestHandler handler = newHandler();
+        handler.checkParam(request(1, null));
+        handler.checkParam(request(1, Collections.emptyMap()));
+    }
 
-    Assert.assertNotNull(handler.getExecutor());
-    Assert.assertEquals(handler.interest(), DataSlotDiffDigestRequest.class);
-    Assert.assertEquals(handler.getConnectNodeType(), Node.NodeType.DATA);
-    Assert.assertEquals(handler.getType(), ChannelHandler.HandlerType.PROCESSER);
-    Assert.assertEquals(handler.getInvokeType(), ChannelHandler.InvokeType.SYNC);
-    GenericResponse failed = (GenericResponse) handler.buildFailedResponse("msg");
-    Assert.assertFalse(failed.isSuccess());
+    private DataSlotDiffDigestRequestHandler newHandler() {
+        DataSlotDiffDigestRequestHandler handler = new DataSlotDiffDigestRequestHandler();
+        handler
+                .setExecutorManager(new ExecutorManager(TestUtils.newSessionConfig(DATACENTER)))
+                .setSyncSlotAcceptAllManager(ACCEPT_ALL);
 
-    return handler;
-  }
+        Assert.assertNotNull(handler.getExecutor());
+        Assert.assertEquals(handler.interest(), DataSlotDiffDigestRequest.class);
+        Assert.assertEquals(handler.getConnectNodeType(), Node.NodeType.DATA);
+        Assert.assertEquals(handler.getType(), ChannelHandler.HandlerType.PROCESSER);
+        Assert.assertEquals(handler.getInvokeType(), ChannelHandler.InvokeType.SYNC);
+        GenericResponse failed = (GenericResponse) handler.buildFailedResponse("msg");
+        Assert.assertFalse(failed.isSuccess());
 
-  @Test
-  public void testHandle() {
-    DataSlotDiffDigestRequestHandler handler = newHandler();
-    SlotTableCache slotTableCache = mock(SlotTableCache.class);
-    handler.setSlotTableCache(slotTableCache);
+        return handler;
+    }
 
-    TestUtils.MockBlotChannel channel = TestUtils.newChannel(9620, "localhost", 8888);
+    @Test
+    public void testHandle() {
+        DataSlotDiffDigestRequestHandler handler = newHandler();
+        SlotTableCache slotTableCache = mock(SlotTableCache.class);
+        handler.setSlotTableCache(slotTableCache);
 
-    DataSlotDiffDigestRequest request = request(1, Collections.emptyMap());
-    // npe
-    GenericResponse resp = (GenericResponse) handler.doHandle(channel, request);
-    Assert.assertFalse(resp.isSuccess());
-    Assert.assertNull(resp.getData());
+        TestUtils.MockBlotChannel channel = TestUtils.newChannel(9620, "localhost", 8888);
 
-    DataStore sessionDataStore = mock(DataStore.class);
-    when(sessionDataStore.getDataInfoIdPublishers(anyInt())).thenReturn(Collections.emptyMap());
-    handler.setSessionDataStore(sessionDataStore);
+        DataSlotDiffDigestRequest request = request(1, Collections.emptyMap());
+        // npe
+        GenericResponse resp = (GenericResponse) handler.doHandle(channel, request);
+        Assert.assertFalse(resp.isSuccess());
+        Assert.assertNull(resp.getData());
 
-    resp = (GenericResponse) handler.doHandle(channel, request);
-    Assert.assertTrue(resp.isSuccess());
-    Assert.assertNotNull(resp.getData());
-    Assert.assertTrue(resp.getData() instanceof DataSlotDiffDigestResult);
-  }
+        DataStore sessionDataStore = mock(DataStore.class);
+        when(sessionDataStore.getDataInfoIdPublishers(anyInt())).thenReturn(Collections.emptyMap());
+        handler.setSessionDataStore(sessionDataStore);
 
-  private static DataSlotDiffDigestRequest request(
-      int slotId, Map<String, DatumDigest> datumDigest) {
-    return new DataSlotDiffDigestRequest(DATACENTER, 1, slotId, 1, datumDigest, ACCEPT_ALL);
-  }
+        resp = (GenericResponse) handler.doHandle(channel, request);
+        Assert.assertTrue(resp.isSuccess());
+        Assert.assertNotNull(resp.getData());
+        Assert.assertTrue(resp.getData() instanceof DataSlotDiffDigestResult);
+    }
 }

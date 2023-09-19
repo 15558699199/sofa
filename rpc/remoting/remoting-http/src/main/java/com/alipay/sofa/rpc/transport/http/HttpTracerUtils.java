@@ -27,15 +27,15 @@ import java.util.Map;
  */
 public class HttpTracerUtils {
 
-    private static final String              PREFIX         = RemotingConstants.RPC_TRACE_NAME + ".";
+    private static final String PREFIX = RemotingConstants.RPC_TRACE_NAME + ".";
 
     private static final Map<String, String> TRACER_KEY_MAP = new HashMap<String, String>();
 
     static {
         TRACER_KEY_MAP.put(RemotingConstants.HTTP_HEADER_TRACE_ID_KEY.toLowerCase(),
-            RemotingConstants.HTTP_HEADER_TRACE_ID_KEY);
+                RemotingConstants.HTTP_HEADER_TRACE_ID_KEY);
         TRACER_KEY_MAP.put(RemotingConstants.HTTP_HEADER_RPC_ID_KEY.toLowerCase(),
-            RemotingConstants.HTTP_HEADER_RPC_ID_KEY);
+                RemotingConstants.HTTP_HEADER_RPC_ID_KEY);
         TRACER_KEY_MAP.put(RemotingConstants.TRACE_ID_KEY.toLowerCase(), RemotingConstants.TRACE_ID_KEY);
         TRACER_KEY_MAP.put(RemotingConstants.RPC_ID_KEY.toLowerCase(), RemotingConstants.RPC_ID_KEY);
         TRACER_KEY_MAP.put(RemotingConstants.PEN_ATTRS_KEY.toLowerCase(), RemotingConstants.PEN_ATTRS_KEY);

@@ -21,80 +21,81 @@ import com.alipay.sofa.registry.log.Logger;
 import com.alipay.sofa.registry.log.LoggerFactory;
 import com.alipay.sofa.registry.metrics.CounterFunc;
 import com.alipay.sofa.registry.util.StringFormatter;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.util.Assert;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
 public final class CompressUtils {
-  private CompressUtils() {}
+    private static final Logger LOG = LoggerFactory.getLogger("COMPRESS");
+    private static final Map<String, Compressor> compressorMap =
+            new HashMap<String, Compressor>() {
+                {
+                    final Compressor gzipCompressor = new Compressor.GzipCompressor();
+                    final Compressor zstdCompressor = new Compressor.ZstdCompressor();
 
-  private static final Logger LOG = LoggerFactory.getLogger("COMPRESS");
+                    put(gzipCompressor.getEncoding(), gzipCompressor);
+                    put(zstdCompressor.getEncoding(), zstdCompressor);
+                }
+            };
 
-  private static final Map<String, Compressor> compressorMap =
-      new HashMap<String, Compressor>() {
-        {
-          final Compressor gzipCompressor = new Compressor.GzipCompressor();
-          final Compressor zstdCompressor = new Compressor.ZstdCompressor();
-
-          put(gzipCompressor.getEncoding(), gzipCompressor);
-          put(zstdCompressor.getEncoding(), zstdCompressor);
-        }
-      };
-
-  public static Compressor mustGet(String encode) {
-    Compressor compressor = compressorMap.get(encode);
-    Assert.notNull(compressor, StringFormatter.format("compress {} not found", encode));
-    return compressor;
-  }
-
-  public static Compressor find(String[] acceptEncodes) {
-    return find(acceptEncodes, Collections.emptySet());
-  }
-
-  public static Compressor find(String[] acceptEncodes, Set<String> forbidEncodes) {
-    if (ArrayUtils.isEmpty(acceptEncodes)) {
-      return null;
+    private CompressUtils() {
     }
-    for (String encoding : acceptEncodes) {
-      if (forbidEncodes.contains(encoding)) {
-        continue;
-      }
-      Compressor compressor = compressorMap.get(encoding);
-      if (compressor != null) {
+
+    public static Compressor mustGet(String encode) {
+        Compressor compressor = compressorMap.get(encode);
+        Assert.notNull(compressor, StringFormatter.format("compress {} not found", encode));
         return compressor;
-      }
     }
-    LOG.warn(
-        "accept encoding {} not in available compressors", StringUtils.join(acceptEncodes, ","));
-    return null;
-  }
 
-  public static <V extends Sizer> CompressCachedExecutor<V> newCachedExecutor(
-      String name, long silentMs, long maxWeight) {
-    CompressCachedExecutor<V> cachedExecutor =
-        new CompressCachedExecutor<>(name, silentMs, maxWeight);
-    CounterFunc cacheCounter =
-        CounterFunc.build()
-            .namespace("compress")
-            .subsystem("cache")
-            .name(name)
-            .labelNames("type")
-            .help(StringFormatter.format("compress cache {} hit or missing", name))
-            .create()
-            .register();
-    cacheCounter.labels("hit").func(cachedExecutor::getHitCount);
-    cacheCounter.labels("missing").func(cachedExecutor::getMissingCount);
-    return cachedExecutor;
-  }
-
-  public static String normalizeEncode(String encode) {
-    if (StringUtils.isBlank(encode)) {
-      return "plain";
+    public static Compressor find(String[] acceptEncodes) {
+        return find(acceptEncodes, Collections.emptySet());
     }
-    return encode;
-  }
+
+    public static Compressor find(String[] acceptEncodes, Set<String> forbidEncodes) {
+        if (ArrayUtils.isEmpty(acceptEncodes)) {
+            return null;
+        }
+        for (String encoding : acceptEncodes) {
+            if (forbidEncodes.contains(encoding)) {
+                continue;
+            }
+            Compressor compressor = compressorMap.get(encoding);
+            if (compressor != null) {
+                return compressor;
+            }
+        }
+        LOG.warn(
+                "accept encoding {} not in available compressors", StringUtils.join(acceptEncodes, ","));
+        return null;
+    }
+
+    public static <V extends Sizer> CompressCachedExecutor<V> newCachedExecutor(
+            String name, long silentMs, long maxWeight) {
+        CompressCachedExecutor<V> cachedExecutor =
+                new CompressCachedExecutor<>(name, silentMs, maxWeight);
+        CounterFunc cacheCounter =
+                CounterFunc.build()
+                        .namespace("compress")
+                        .subsystem("cache")
+                        .name(name)
+                        .labelNames("type")
+                        .help(StringFormatter.format("compress cache {} hit or missing", name))
+                        .create()
+                        .register();
+        cacheCounter.labels("hit").func(cachedExecutor::getHitCount);
+        cacheCounter.labels("missing").func(cachedExecutor::getMissingCount);
+        return cachedExecutor;
+    }
+
+    public static String normalizeEncode(String encode) {
+        if (StringUtils.isBlank(encode)) {
+            return "plain";
+        }
+        return encode;
+    }
 }

@@ -26,13 +26,58 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * 给用户配置的自定义业务线程池
  * <p>
- * 
+ *
  * @author <a href=mailto:zhanggeng.zg@antfin.com>GengZhang</a>
  */
 public class UserThreadPool {
-    public static final String         DEFAUT_POOL_NAME  = "SofaUserProcessor";
+    public static final String DEFAUT_POOL_NAME = "SofaUserProcessor";
     private static final AtomicInteger POOL_NAME_COUNTER = new AtomicInteger(0);
-
+    /**
+     * 线程池
+     */
+    transient volatile ThreadPoolExecutor executor;
+    /**
+     * 核心线程池
+     *
+     * @see ThreadPoolExecutor#corePoolSize
+     */
+    private int corePoolSize = 10;
+    /**
+     * 最大线程池
+     *
+     * @see ThreadPoolExecutor#maximumPoolSize
+     */
+    private int maximumPoolSize = 100;
+    /**
+     * 线程回收时间（毫秒）
+     *
+     * @see ThreadPoolExecutor#keepAliveTime
+     */
+    private int keepAliveTime = 300000;
+    /**
+     * 队列大小
+     *
+     * @see ThreadPoolExecutor#getQueue()
+     */
+    private int queueSize = 0;
+    /**
+     * 线程名字
+     *
+     * @see ThreadPoolExecutor#threadFactory#threadPoolName
+     */
+    private String threadPoolName;
+    /**
+     * 是否关闭核心线程池
+     *
+     * @see ThreadPoolExecutor#allowCoreThreadTimeOut
+     */
+    private boolean allowCoreThreadTimeOut;
+    /**
+     * 是否初始化核心线程池
+     *
+     * @see ThreadPoolExecutor#prestartAllCoreThreads
+     */
+    private boolean prestartAllCoreThreads;
     public UserThreadPool() {
         this.threadPoolName = DEFAUT_POOL_NAME + "-" + POOL_NAME_COUNTER.getAndIncrement();
     }
@@ -42,59 +87,11 @@ public class UserThreadPool {
     }
 
     /**
-     * 核心线程池
-     *
-     * @see ThreadPoolExecutor#corePoolSize
-     */
-    private int                           corePoolSize    = 10;
-    /**
-     * 最大线程池
-     *
-     * @see ThreadPoolExecutor#maximumPoolSize
-     */
-    private int                           maximumPoolSize = 100;
-    /**
-     * 线程回收时间（毫秒）
-     *
-     * @see ThreadPoolExecutor#keepAliveTime
-     */
-    private int                           keepAliveTime   = 300000;
-    /**
-     * 队列大小
-     *
-     * @see ThreadPoolExecutor#getQueue()
-     */
-    private int                           queueSize       = 0;
-    /**
-     * 线程名字
-     *
-     * @see ThreadPoolExecutor#threadFactory#threadPoolName
-     */
-    private String                        threadPoolName;
-    /**
-     * 是否关闭核心线程池
-     *
-     * @see ThreadPoolExecutor#allowCoreThreadTimeOut
-     */
-    private boolean                       allowCoreThreadTimeOut;
-    /**
-     * 是否初始化核心线程池
-     *
-     * @see ThreadPoolExecutor#prestartAllCoreThreads
-     */
-    private boolean                       prestartAllCoreThreads;
-
-    /**
-     * 线程池
-     */
-    transient volatile ThreadPoolExecutor executor;
-
-    /**
      * 初始化线程池
      */
     public void init() {
         executor = new ThreadPoolExecutor(corePoolSize, maximumPoolSize, keepAliveTime, TimeUnit.MILLISECONDS,
-            ThreadPoolUtils.buildQueue(queueSize), new NamedThreadFactory(threadPoolName));
+                ThreadPoolUtils.buildQueue(queueSize), new NamedThreadFactory(threadPoolName));
         if (allowCoreThreadTimeOut) {
             executor.allowCoreThreadTimeOut(true);
         }

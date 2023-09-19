@@ -31,7 +31,7 @@ public class ZipkinProperties {
     /**
      * URL of the zipkin query server instance.
      */
-    private String  baseUrl = "http://localhost:9411/";
+    private String baseUrl = "http://localhost:9411/";
 
     /**
      * When enabled, spans are gzipped before sent to the zipkin server.

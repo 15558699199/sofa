@@ -29,6 +29,7 @@ public interface SetterFactory {
 
     /**
      * Create a {@link HystrixObservableCommand.Setter} with the given invoker and request
+     *
      * @param invoker
      * @param request
      * @return

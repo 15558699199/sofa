@@ -16,11 +16,11 @@
  */
 package com.alipay.sofa.registry.server.session.wrapper;
 
-import static com.alipay.sofa.registry.common.model.constants.ValueConstants.CLIENT_OFF;
-
 import com.alipay.sofa.registry.common.model.metaserver.ClientManagerAddress.AddressVersion;
-import com.alipay.sofa.registry.common.model.store.*;
+import com.alipay.sofa.registry.common.model.store.BaseInfo;
 import com.alipay.sofa.registry.common.model.store.StoreData.DataType;
+import com.alipay.sofa.registry.common.model.store.Subscriber;
+import com.alipay.sofa.registry.common.model.store.URL;
 import com.alipay.sofa.registry.common.model.wrapper.WrapperInterceptor;
 import com.alipay.sofa.registry.common.model.wrapper.WrapperInvocation;
 import com.alipay.sofa.registry.log.Logger;
@@ -31,83 +31,86 @@ import com.alipay.sofa.registry.server.session.providedata.FetchClientOffAddress
 import com.alipay.sofa.registry.server.session.push.FirePushService;
 import com.alipay.sofa.registry.server.session.registry.SessionRegistry;
 import com.alipay.sofa.registry.server.shared.remoting.RemotingHelper;
-import javax.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.annotation.Resource;
+
+import static com.alipay.sofa.registry.common.model.constants.ValueConstants.CLIENT_OFF;
 
 /**
  * @author xiaojian.xj
  * @version $Id: ClientOffWrapperInterceptor.java, v 0.1 2021年05月28日 21:18 xiaojian.xj Exp $
  */
 public class ClientOffWrapperInterceptor
-    implements WrapperInterceptor<RegisterInvokeData, Boolean> {
+        implements WrapperInterceptor<RegisterInvokeData, Boolean> {
 
-  private static final Logger LOGGER = Loggers.CLIENT_OFF_LOG;
+    private static final Logger LOGGER = Loggers.CLIENT_OFF_LOG;
 
-  private static final long REGISTER_PUSH_EMPTY_VERSION = 1;
+    private static final long REGISTER_PUSH_EMPTY_VERSION = 1;
+    @Autowired
+    protected SessionRegistry sessionRegistry;
+    @Autowired
+    private FirePushService firePushService;
+    @Resource
+    private FetchClientOffAddressService fetchClientOffAddressService;
 
-  @Autowired private FirePushService firePushService;
+    @Override
+    public Boolean invokeCodeWrapper(WrapperInvocation<RegisterInvokeData, Boolean> invocation)
+            throws Exception {
+        RegisterInvokeData registerInvokeData = invocation.getParameterSupplier().get();
+        BaseInfo storeData = (BaseInfo) registerInvokeData.getStoreData();
 
-  @Resource private FetchClientOffAddressService fetchClientOffAddressService;
+        URL url = storeData.getSourceAddress();
 
-  @Autowired protected SessionRegistry sessionRegistry;
+        AddressVersion address = fetchClientOffAddressService.getAddress(url.getIpAddress());
+        if (address != null) {
+            markChannel(registerInvokeData.getChannel());
+            LOGGER.info(
+                    "dataInfoId:{} ,url:{} match clientOff ips.",
+                    storeData.getDataInfoId(),
+                    url.getIpAddress());
+            if (DataType.PUBLISHER == storeData.getDataType()) {
+                // match client off pub, do unpub to data, make sure the publisher remove
+                try {
+                    sessionRegistry.unRegister(storeData);
+                } catch (Throwable e) {
+                    LOGGER.error(
+                            "failed to unRegister publisher {}, source={}", storeData.getDataInfoId(), url, e);
+                }
+                return true;
+            }
 
-  @Override
-  public Boolean invokeCodeWrapper(WrapperInvocation<RegisterInvokeData, Boolean> invocation)
-      throws Exception {
-    RegisterInvokeData registerInvokeData = invocation.getParameterSupplier().get();
-    BaseInfo storeData = (BaseInfo) registerInvokeData.getStoreData();
-
-    URL url = storeData.getSourceAddress();
-
-    AddressVersion address = fetchClientOffAddressService.getAddress(url.getIpAddress());
-    if (address != null) {
-      markChannel(registerInvokeData.getChannel());
-      LOGGER.info(
-          "dataInfoId:{} ,url:{} match clientOff ips.",
-          storeData.getDataInfoId(),
-          url.getIpAddress());
-      if (DataType.PUBLISHER == storeData.getDataType()) {
-        // match client off pub, do unpub to data, make sure the publisher remove
-        try {
-          sessionRegistry.unRegister(storeData);
-        } catch (Throwable e) {
-          LOGGER.error(
-              "failed to unRegister publisher {}, source={}", storeData.getDataInfoId(), url, e);
+            if (DataType.SUBSCRIBER == storeData.getDataType()) {
+                // in some case, need to push empty to new subscriber, and stop sub
+                // else, filter not stop sub
+                if (sessionRegistry.isPushEmpty((Subscriber) storeData) && address.isSub()) {
+                    firePushService.fireOnPushEmpty(
+                            (Subscriber) storeData,
+                            sessionRegistry.getDataCenterWhenPushEmpty(),
+                            REGISTER_PUSH_EMPTY_VERSION);
+                    LOGGER.info(
+                            "[clientOffSub],{},{}",
+                            storeData.getDataInfoId(),
+                            RemotingHelper.getAddressString(storeData.getSourceAddress()));
+                }
+            }
         }
-        return true;
-      }
+        return invocation.proceed();
+    }
 
-      if (DataType.SUBSCRIBER == storeData.getDataType()) {
-        // in some case, need to push empty to new subscriber, and stop sub
-        // else, filter not stop sub
-        if (sessionRegistry.isPushEmpty((Subscriber) storeData) && address.isSub()) {
-          firePushService.fireOnPushEmpty(
-              (Subscriber) storeData,
-              sessionRegistry.getDataCenterWhenPushEmpty(),
-              REGISTER_PUSH_EMPTY_VERSION);
-          LOGGER.info(
-              "[clientOffSub],{},{}",
-              storeData.getDataInfoId(),
-              RemotingHelper.getAddressString(storeData.getSourceAddress()));
+    private void markChannel(Channel channel) {
+        if (!(channel instanceof BoltChannel)) {
+            return;
         }
-      }
+        BoltChannel boltChannel = (BoltChannel) channel;
+        Object value = boltChannel.getConnAttribute(CLIENT_OFF);
+        if (!Boolean.TRUE.equals(value)) {
+            boltChannel.setConnAttribute(CLIENT_OFF, Boolean.TRUE);
+        }
     }
-    return invocation.proceed();
-  }
 
-  private void markChannel(Channel channel) {
-    if (!(channel instanceof BoltChannel)) {
-      return;
+    @Override
+    public int getOrder() {
+        return 300;
     }
-    BoltChannel boltChannel = (BoltChannel) channel;
-    Object value = boltChannel.getConnAttribute(CLIENT_OFF);
-    if (!Boolean.TRUE.equals(value)) {
-      boltChannel.setConnAttribute(CLIENT_OFF, Boolean.TRUE);
-    }
-  }
-
-  @Override
-  public int getOrder() {
-    return 300;
-  }
 }

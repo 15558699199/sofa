@@ -37,25 +37,25 @@ public class AbstractClusterTest extends ActivelyDestroyTest {
     public void testResolveTimeoutByProvider() {
 
         RegistryConfig registryConfig = new RegistryConfig()
-            .setProtocol("mocktest");
+                .setProtocol("mocktest");
 
         ServerConfig serverConfig = new ServerConfig()
-            .setPort(12122) // 设置一个端口，默认12200
-            .setDaemon(false); // 非守护线程
+                .setPort(12122) // 设置一个端口，默认12200
+                .setDaemon(false); // 非守护线程
 
         ProviderConfig<SampleService> providerConfig = new ProviderConfig<SampleService>()
-            .setInterfaceId(SampleService.class.getName()) // 指定接口
-            .setRef(new SampleServiceImpl()) // 指定实现
-            .setServer(serverConfig) // 指定服务端
-            .setRegistry(registryConfig)
-            .setTimeout(5000);
+                .setInterfaceId(SampleService.class.getName()) // 指定接口
+                .setRef(new SampleServiceImpl()) // 指定实现
+                .setServer(serverConfig) // 指定服务端
+                .setRegistry(registryConfig)
+                .setTimeout(5000);
 
         providerConfig.export(); // 发布服务*/
 
         ConsumerConfig<SampleService> consumerConfig = new ConsumerConfig<SampleService>()
-            .setInterfaceId(SampleService.class.getName()) // 指定接口
-            .setProtocol(RpcConstants.PROTOCOL_TYPE_BOLT) // 指定协议
-            .setRegistry(registryConfig);
+                .setInterfaceId(SampleService.class.getName()) // 指定接口
+                .setProtocol(RpcConstants.PROTOCOL_TYPE_BOLT) // 指定协议
+                .setRegistry(registryConfig);
 
         // 生成代理类
         SampleService sampleService = consumerConfig.refer();

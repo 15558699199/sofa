@@ -32,7 +32,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
  */
 public class CompatibilityVerifierApplicationContextInitializerTests {
 
-    private final MockEnvironment           mockEnvironment    = new MockEnvironment();
+    private final MockEnvironment mockEnvironment = new MockEnvironment();
 
     private final GenericApplicationContext applicationContext = new GenericXmlApplicationContext();
 

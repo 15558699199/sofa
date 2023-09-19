@@ -48,30 +48,67 @@ import static org.junit.Assert.assertEquals;
  * @since 2016/07/28
  */
 public class GenericBenchmarkTest extends ActivelyDestroyTest {
+    public static void setGenericThrowException(boolean enabled) {
+        try {
+            Field field = GenericCustomThrowableDeterminer.class.getDeclaredField("GENERIC_THROW_EXCEPTION");
+            field.setAccessible(true);
+            Field modifiersField = Field.class.getDeclaredField("modifiers");
+            modifiersField.setAccessible(true);
+            modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
+            field.set(null, enabled);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void clearCacheDeserializerMap() {
+        try {
+            Field field = GenericMultipleClassLoaderSofaSerializerFactory.class.getDeclaredField("DESERIALIZER_MAP");
+            field.setAccessible(true);
+            Field modifiersField = Field.class.getDeclaredField("modifiers");
+            modifiersField.setAccessible(true);
+            modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
+            field.set(null, new ConcurrentHashMap<String, Deserializer>());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try {
+            Field field = GenericSingleClassLoaderSofaSerializerFactory.class.getDeclaredField("DESERIALIZER_MAP");
+            field.setAccessible(true);
+            Field modifiersField = Field.class.getDeclaredField("modifiers");
+            modifiersField.setAccessible(true);
+            modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
+            field.set(null, new ConcurrentHashMap<String, Deserializer>());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     @Test
     public void testAll() throws SofaRpcException, InterruptedException {
         try {
             // 发布服务
             ServerConfig serverConfig2 = new ServerConfig()
-                .setPort(21234)
-                .setCoreThreads(500)
-                .setMaxThreads(500)
-                .setDaemon(false);
+                    .setPort(21234)
+                    .setCoreThreads(500)
+                    .setMaxThreads(500)
+                    .setDaemon(false);
 
             // C服务的服务端
             ProviderConfig<TestInterface> CProvider = new ProviderConfig<TestInterface>()
-                .setInterfaceId(TestInterface.class.getName())
-                .setRef(new TestClass())
-                .setServer(serverConfig2);
+                    .setInterfaceId(TestInterface.class.getName())
+                    .setRef(new TestClass())
+                    .setServer(serverConfig2);
             CProvider.export();
 
             // 引用服务
             ConsumerConfig<GenericService> BConsumer = new ConsumerConfig<GenericService>()
-                .setInterfaceId(TestInterface.class.getName())
-                .setGeneric(true)
-                .setDirectUrl("bolt://127.0.0.1:21234")
-                .setTimeout(3000)
-                .setRetries(2);
+                    .setInterfaceId(TestInterface.class.getName())
+                    .setGeneric(true)
+                    .setDirectUrl("bolt://127.0.0.1:21234")
+                    .setTimeout(3000)
+                    .setRetries(2);
             GenericService proxy = BConsumer.refer();
 
             setGenericThrowException(false);
@@ -123,18 +160,18 @@ public class GenericBenchmarkTest extends ActivelyDestroyTest {
 
                         // sync 调用
                         assertEquals(proxy.$invoke("hello",
-                                new String[] {"com.alipay.sofa.rpc.test.generic.bean.People"},
-                                new Object[] {people}), new TestClass().hello(people));
+                                new String[]{"com.alipay.sofa.rpc.test.generic.bean.People"},
+                                new Object[]{people}), new TestClass().hello(people));
 
                         People peopleResult = proxy.$genericInvoke("hello",
-                                new String[] {"com.alipay.sofa.rpc.test.generic.bean.People"},
-                                new Object[] {genericObject}, People.class);
+                                new String[]{"com.alipay.sofa.rpc.test.generic.bean.People"},
+                                new Object[]{genericObject}, People.class);
 
                         assertEquals(peopleResult, new TestClass().hello(people));
 
                         GenericObject result = (GenericObject) proxy.$genericInvoke("hello",
-                                new String[] {"com.alipay.sofa.rpc.test.generic.bean.People"},
-                                new Object[] {genericObject});
+                                new String[]{"com.alipay.sofa.rpc.test.generic.bean.People"},
+                                new Object[]{genericObject});
                         isCorrect(result);
 
                         synchronizedList.add(System.currentTimeMillis() - start);
@@ -148,7 +185,7 @@ public class GenericBenchmarkTest extends ActivelyDestroyTest {
 
         Collections.sort(synchronizedList);
         int size = synchronizedList.size();
-        return new long[] {synchronizedList.size(), synchronizedList.get(size / 2), synchronizedList.get(size * 9 / 10),
+        return new long[]{synchronizedList.size(), synchronizedList.get(size / 2), synchronizedList.get(size * 9 / 10),
                 synchronizedList.get(size * 99 / 100)};
     }
 
@@ -158,43 +195,6 @@ public class GenericBenchmarkTest extends ActivelyDestroyTest {
         GenericObject genericObject = (GenericObject) result.getField("job");
         Assert.assertEquals(genericObject.getType(), "com.alipay.sofa.rpc.test.generic.bean.Job");
         Assert.assertEquals(genericObject.getField("name"), "coder");
-    }
-
-    public static void setGenericThrowException(boolean enabled) {
-        try {
-            Field field = GenericCustomThrowableDeterminer.class.getDeclaredField("GENERIC_THROW_EXCEPTION");
-            field.setAccessible(true);
-            Field modifiersField = Field.class.getDeclaredField("modifiers");
-            modifiersField.setAccessible(true);
-            modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
-            field.set(null, enabled);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void clearCacheDeserializerMap() {
-        try {
-            Field field = GenericMultipleClassLoaderSofaSerializerFactory.class.getDeclaredField("DESERIALIZER_MAP");
-            field.setAccessible(true);
-            Field modifiersField = Field.class.getDeclaredField("modifiers");
-            modifiersField.setAccessible(true);
-            modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
-            field.set(null, new ConcurrentHashMap<String, Deserializer>());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        try {
-            Field field = GenericSingleClassLoaderSofaSerializerFactory.class.getDeclaredField("DESERIALIZER_MAP");
-            field.setAccessible(true);
-            Field modifiersField = Field.class.getDeclaredField("modifiers");
-            modifiersField.setAccessible(true);
-            modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
-            field.set(null, new ConcurrentHashMap<String, Deserializer>());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
 }

@@ -36,15 +36,14 @@ import org.w3c.dom.NamedNodeMap;
  * @since 2.6.0
  */
 public abstract class AbstractExtBeanDefinitionParser extends
-                                                     AbstractSingleExtPointBeanDefinitionParser
-                                                                                               implements
-                                                                                               SofaBootTagNameSupport {
-    public static final String  REF                       = "ref";
+        AbstractSingleExtPointBeanDefinitionParser
+        implements
+        SofaBootTagNameSupport {
+    public static final String REF = "ref";
 
     private static final String BEAN_CLASS_LOADER_WRAPPER = "beanClassLoaderWrapper";
 
     /**
-     *
      * @param element       the XML element being parsed
      * @param parserContext the object encapsulating the current state of the parsing process
      * @param builder       used to define the <code>BeanDefinition</code>
@@ -71,7 +70,7 @@ public abstract class AbstractExtBeanDefinitionParser extends
         // not support setClassLoder since spring framework 5.2.20.RELEASE
 
         builder
-            .addPropertyValue(BEAN_CLASS_LOADER_WRAPPER, new ClassLoaderWrapper(beanClassLoader));
+                .addPropertyValue(BEAN_CLASS_LOADER_WRAPPER, new ClassLoaderWrapper(beanClassLoader));
     }
 
     protected void parseAttribute(Element element, ParserContext parserContext,
@@ -83,7 +82,7 @@ public abstract class AbstractExtBeanDefinitionParser extends
                     // fallback mechanism
                     if (!REF.equals(name)) {
                         builder1.addPropertyValue(Conventions.attributeNameToPropertyName(name),
-                            attribute.getValue());
+                                attribute.getValue());
                     }
 
                 });
@@ -92,9 +91,9 @@ public abstract class AbstractExtBeanDefinitionParser extends
     /**
      * Actually parse sub element.
      *
-     * @param element element
+     * @param element       element
      * @param parserContext parserContext
-     * @param builder builder
+     * @param builder       builder
      */
     protected abstract void parserSubElement(Element element, ParserContext parserContext,
                                              BeanDefinitionBuilder builder);
@@ -107,10 +106,10 @@ public abstract class AbstractExtBeanDefinitionParser extends
     /**
      * Parse custom attributes, as ID, LAZY-INIT, DEPENDS-ON。
      *
-     * @param element element
+     * @param element       element
      * @param parserContext parser context
-     * @param builder builder
-     * @param callback callback
+     * @param builder       builder
+     * @param callback      callback
      */
     protected void parseCustomAttributes(Element element, ParserContext parserContext,
                                          BeanDefinitionBuilder builder, AttributeCallback callback) {
@@ -122,8 +121,8 @@ public abstract class AbstractExtBeanDefinitionParser extends
 
             if (BeanDefinitionParserDelegate.DEPENDS_ON_ATTRIBUTE.equals(name)) {
                 builder.getBeanDefinition().setDependsOn(
-                    (StringUtils.tokenizeToStringArray(attribute.getValue(),
-                        BeanDefinitionParserDelegate.MULTI_VALUE_ATTRIBUTE_DELIMITERS)));
+                        (StringUtils.tokenizeToStringArray(attribute.getValue(),
+                                BeanDefinitionParserDelegate.MULTI_VALUE_ATTRIBUTE_DELIMITERS)));
             } else if (BeanDefinitionParserDelegate.LAZY_INIT_ATTRIBUTE.equals(name)) {
                 builder.setLazyInit(Boolean.parseBoolean(attribute.getValue()));
             } else if (BeanDefinitionParserDelegate.ABSTRACT_ATTRIBUTE.equals(name)) {
@@ -137,7 +136,6 @@ public abstract class AbstractExtBeanDefinitionParser extends
     }
 
     /**
-     *
      * @author xi.hux@alipay.com
      * @since 2.6.0
      */
@@ -146,9 +144,9 @@ public abstract class AbstractExtBeanDefinitionParser extends
         /**
          * Parser attribute
          *
-         * @param parent element parent
-         * @param attribute attribute
-         * @param builder builder
+         * @param parent        element parent
+         * @param attribute     attribute
+         * @param builder       builder
          * @param parserContext parser context
          */
         void process(Element parent, Attr attribute, BeanDefinitionBuilder builder,

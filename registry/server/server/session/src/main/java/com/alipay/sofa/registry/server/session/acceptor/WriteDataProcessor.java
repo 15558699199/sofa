@@ -28,50 +28,50 @@ import com.alipay.sofa.registry.server.session.node.service.DataNodeService;
  */
 public class WriteDataProcessor {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(WriteDataProcessor.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(WriteDataProcessor.class);
 
-  private final ConnectId connectId;
+    private final ConnectId connectId;
 
-  private final DataNodeService dataNodeService;
+    private final DataNodeService dataNodeService;
 
-  public WriteDataProcessor(ConnectId connectId, DataNodeService dataNodeService) {
-    this.connectId = connectId;
-    this.dataNodeService = dataNodeService;
-  }
-
-  public boolean process(WriteDataRequest request) {
-    switch (request.getRequestType()) {
-      case PUBLISHER:
-        doPublishAsync(request);
-        return true;
-      case UN_PUBLISHER:
-        doUnPublishAsync(request);
-        return true;
-      case CLIENT_OFF:
-        doClientOffAsync(request);
-        return true;
-      default:
-        LOGGER.error(
-            "Unknown request type, connectId={}, requestType={}, requestBody={}",
-            connectId,
-            request.getRequestType(),
-            request.getRequestBody());
+    public WriteDataProcessor(ConnectId connectId, DataNodeService dataNodeService) {
+        this.connectId = connectId;
+        this.dataNodeService = dataNodeService;
     }
-    return false;
-  }
 
-  private void doClientOffAsync(WriteDataRequest request) {
-    ClientOffWriteDataRequest req = (ClientOffWriteDataRequest) request;
-    dataNodeService.clientOff(req.getRequestBody());
-  }
+    public boolean process(WriteDataRequest request) {
+        switch (request.getRequestType()) {
+            case PUBLISHER:
+                doPublishAsync(request);
+                return true;
+            case UN_PUBLISHER:
+                doUnPublishAsync(request);
+                return true;
+            case CLIENT_OFF:
+                doClientOffAsync(request);
+                return true;
+            default:
+                LOGGER.error(
+                        "Unknown request type, connectId={}, requestType={}, requestBody={}",
+                        connectId,
+                        request.getRequestType(),
+                        request.getRequestBody());
+        }
+        return false;
+    }
 
-  private void doUnPublishAsync(WriteDataRequest request) {
-    PublisherWriteDataRequest req = (PublisherWriteDataRequest) request;
-    dataNodeService.unregister(req.getRequestBody());
-  }
+    private void doClientOffAsync(WriteDataRequest request) {
+        ClientOffWriteDataRequest req = (ClientOffWriteDataRequest) request;
+        dataNodeService.clientOff(req.getRequestBody());
+    }
 
-  private void doPublishAsync(WriteDataRequest request) {
-    PublisherWriteDataRequest req = (PublisherWriteDataRequest) request;
-    dataNodeService.register(req.getRequestBody());
-  }
+    private void doUnPublishAsync(WriteDataRequest request) {
+        PublisherWriteDataRequest req = (PublisherWriteDataRequest) request;
+        dataNodeService.unregister(req.getRequestBody());
+    }
+
+    private void doPublishAsync(WriteDataRequest request) {
+        PublisherWriteDataRequest req = (PublisherWriteDataRequest) request;
+        dataNodeService.register(req.getRequestBody());
+    }
 }

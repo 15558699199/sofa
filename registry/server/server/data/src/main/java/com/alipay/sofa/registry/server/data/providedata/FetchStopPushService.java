@@ -21,10 +21,11 @@ import com.alipay.sofa.registry.server.shared.providedata.BaseStopPushService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class FetchStopPushService extends BaseStopPushService {
-  @Autowired private DataServerConfig dataServerConfig;
+    @Autowired
+    private DataServerConfig dataServerConfig;
 
-  @Override
-  protected int getSystemPropertyIntervalMillis() {
-    return dataServerConfig.getSystemPropertyIntervalMillis();
-  }
+    @Override
+    protected int getSystemPropertyIntervalMillis() {
+        return dataServerConfig.getSystemPropertyIntervalMillis();
+    }
 }

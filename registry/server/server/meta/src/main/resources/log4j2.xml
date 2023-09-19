@@ -21,8 +21,8 @@
             </Policies>
             <DefaultRolloverStrategy max="30">
                 <Delete basePath="${META_LOG_HOME}" maxDepth="2">
-                    <IfFileName glob="common-error.log.*" />
-                    <IfLastModified age="30d" />
+                    <IfFileName glob="common-error.log.*"/>
+                    <IfLastModified age="30d"/>
                 </Delete>
             </DefaultRolloverStrategy>
         </RollingRandomAccessFile>
@@ -37,8 +37,8 @@
             </Policies>
             <DefaultRolloverStrategy max="30">
                 <Delete basePath="${META_LOG_HOME}" maxDepth="2">
-                    <IfFileName glob="critical-error.log.*" />
-                    <IfLastModified age="30d" />
+                    <IfFileName glob="critical-error.log.*"/>
+                    <IfLastModified age="30d"/>
                 </Delete>
             </DefaultRolloverStrategy>
         </RollingRandomAccessFile>
@@ -54,8 +54,8 @@
             </Policies>
             <DefaultRolloverStrategy max="30">
                 <Delete basePath="${META_LOG_HOME}" maxDepth="2">
-                    <IfFileName glob="common-default.log.*" />
-                    <IfLastModified age="30d" />
+                    <IfFileName glob="common-default.log.*"/>
+                    <IfLastModified age="30d"/>
                 </Delete>
             </DefaultRolloverStrategy>
         </RollingRandomAccessFile>
@@ -70,8 +70,8 @@
             </Policies>
             <DefaultRolloverStrategy max="30">
                 <Delete basePath="${META_LOG_HOME}" maxDepth="2">
-                    <IfFileName glob="registry-raft.log.*" />
-                    <IfLastModified age="30d" />
+                    <IfFileName glob="registry-raft.log.*"/>
+                    <IfLastModified age="30d"/>
                 </Delete>
             </DefaultRolloverStrategy>
         </RollingRandomAccessFile>
@@ -86,8 +86,8 @@
             </Policies>
             <DefaultRolloverStrategy max="30">
                 <Delete basePath="${META_LOG_HOME}" maxDepth="2">
-                    <IfFileName glob="registry-exchange-cli.log.*" />
-                    <IfLastModified age="30d" />
+                    <IfFileName glob="registry-exchange-cli.log.*"/>
+                    <IfLastModified age="30d"/>
                 </Delete>
             </DefaultRolloverStrategy>
         </RollingRandomAccessFile>
@@ -102,8 +102,8 @@
             </Policies>
             <DefaultRolloverStrategy max="30">
                 <Delete basePath="${META_LOG_HOME}" maxDepth="2">
-                    <IfFileName glob="registry-connect-cli.log.*" />
-                    <IfLastModified age="30d" />
+                    <IfFileName glob="registry-connect-cli.log.*"/>
+                    <IfLastModified age="30d"/>
                 </Delete>
             </DefaultRolloverStrategy>
         </RollingRandomAccessFile>
@@ -118,8 +118,8 @@
             </Policies>
             <DefaultRolloverStrategy max="30">
                 <Delete basePath="${META_LOG_HOME}" maxDepth="2">
-                    <IfFileName glob="registry-exchange-srv.log.*" />
-                    <IfLastModified age="30d" />
+                    <IfFileName glob="registry-exchange-srv.log.*"/>
+                    <IfLastModified age="30d"/>
                 </Delete>
             </DefaultRolloverStrategy>
         </RollingRandomAccessFile>
@@ -134,8 +134,8 @@
             </Policies>
             <DefaultRolloverStrategy max="30">
                 <Delete basePath="${META_LOG_HOME}" maxDepth="2">
-                    <IfFileName glob="registry-connect-srv.log.*" />
-                    <IfLastModified age="30d" />
+                    <IfFileName glob="registry-connect-srv.log.*"/>
+                    <IfLastModified age="30d"/>
                 </Delete>
             </DefaultRolloverStrategy>
         </RollingRandomAccessFile>
@@ -150,15 +150,16 @@
             </Policies>
             <DefaultRolloverStrategy max="30">
                 <Delete basePath="${META_LOG_HOME}" maxDepth="2">
-                    <IfFileName glob="registry-meta-shared.log.*" />
-                    <IfLastModified age="30d" />
+                    <IfFileName glob="registry-meta-shared.log.*"/>
+                    <IfLastModified age="30d"/>
                 </Delete>
             </DefaultRolloverStrategy>
         </RollingRandomAccessFile>
 
         <!--    meta appender    -->
 
-        <RollingRandomAccessFile name="SLOT-TABLE-RECORDER-APPENDER" fileName="${META_LOG_HOME}/registry-slot-table-recorder.log"
+        <RollingRandomAccessFile name="SLOT-TABLE-RECORDER-APPENDER"
+                                 fileName="${META_LOG_HOME}/registry-slot-table-recorder.log"
                                  filePattern="${META_LOG_HOME}/registry-slot-table-recorder.log.%d{yyyy-MM-dd}.%i">
             <ThresholdFilter level="ERROR" onMatch="DENY" onMismatch="NEUTRAL"/>
             <PatternLayout pattern="[%d{ISO8601}][%p][%t][%c{0}] - %m%n"/>
@@ -168,8 +169,8 @@
             </Policies>
             <DefaultRolloverStrategy max="30">
                 <Delete basePath="${META_LOG_HOME}" maxDepth="2">
-                    <IfFileName glob="registry-slot-table-recorder.log.*" />
-                    <IfLastModified age="30d" />
+                    <IfFileName glob="registry-slot-table-recorder.log.*"/>
+                    <IfLastModified age="30d"/>
                 </Delete>
             </DefaultRolloverStrategy>
         </RollingRandomAccessFile>
@@ -183,8 +184,8 @@
             </Policies>
             <DefaultRolloverStrategy max="30">
                 <Delete basePath="${META_LOG_HOME}" maxDepth="2">
-                    <IfFileName glob="registry-meta.log.*" />
-                    <IfLastModified age="30d" />
+                    <IfFileName glob="registry-meta.log.*"/>
+                    <IfLastModified age="30d"/>
                 </Delete>
             </DefaultRolloverStrategy>
         </RollingRandomAccessFile>
@@ -198,13 +199,14 @@
             </Policies>
             <DefaultRolloverStrategy max="30">
                 <Delete basePath="${META_LOG_HOME}" maxDepth="2">
-                    <IfFileName glob="registry-startup.log.*" />
-                    <IfLastModified age="30d" />
+                    <IfFileName glob="registry-startup.log.*"/>
+                    <IfLastModified age="30d"/>
                 </Delete>
             </DefaultRolloverStrategy>
         </RollingRandomAccessFile>
 
-        <RollingRandomAccessFile name="META-JRAFT-METRICS-APPENDER" fileName="${META_LOG_HOME}/registry-raft-metrics.log"
+        <RollingRandomAccessFile name="META-JRAFT-METRICS-APPENDER"
+                                 fileName="${META_LOG_HOME}/registry-raft-metrics.log"
                                  filePattern="${META_LOG_HOME}/registry-raft-metrics.log.%d{yyyy-MM-dd}.%i">
             <PatternLayout pattern="[%d{ISO8601}][%p][%t][%c{0}] - %m%n"/>
             <Policies>
@@ -213,8 +215,8 @@
             </Policies>
             <DefaultRolloverStrategy max="30">
                 <Delete basePath="${META_LOG_HOME}" maxDepth="2">
-                    <IfFileName glob="registry-raft-metrics.log.*" />
-                    <IfLastModified age="30d" />
+                    <IfFileName glob="registry-raft-metrics.log.*"/>
+                    <IfLastModified age="30d"/>
                 </Delete>
             </DefaultRolloverStrategy>
         </RollingRandomAccessFile>
@@ -229,8 +231,8 @@
             </Policies>
             <DefaultRolloverStrategy max="30">
                 <Delete basePath="${META_LOG_HOME}" maxDepth="2">
-                    <IfFileName glob="registry-metrics.log.*" />
-                    <IfLastModified age="30d" />
+                    <IfFileName glob="registry-metrics.log.*"/>
+                    <IfLastModified age="30d"/>
                 </Delete>
             </DefaultRolloverStrategy>
         </RollingRandomAccessFile>
@@ -245,8 +247,8 @@
             </Policies>
             <DefaultRolloverStrategy max="30">
                 <Delete basePath="${META_LOG_HOME}" maxDepth="2">
-                    <IfFileName glob="registry-http.log.*" />
-                    <IfLastModified age="30d" />
+                    <IfFileName glob="registry-http.log.*"/>
+                    <IfLastModified age="30d"/>
                 </Delete>
             </DefaultRolloverStrategy>
         </RollingRandomAccessFile>
@@ -261,8 +263,8 @@
             </Policies>
             <DefaultRolloverStrategy max="30">
                 <Delete basePath="${META_LOG_HOME}" maxDepth="2">
-                    <IfFileName glob="registry-slot.log.*" />
-                    <IfLastModified age="30d" />
+                    <IfFileName glob="registry-slot.log.*"/>
+                    <IfLastModified age="30d"/>
                 </Delete>
             </DefaultRolloverStrategy>
         </RollingRandomAccessFile>
@@ -277,8 +279,8 @@
             </Policies>
             <DefaultRolloverStrategy max="30">
                 <Delete basePath="${META_LOG_HOME}" maxDepth="2">
-                    <IfFileName glob="registry-lease.log.*" />
-                    <IfLastModified age="30d" />
+                    <IfFileName glob="registry-lease.log.*"/>
+                    <IfLastModified age="30d"/>
                 </Delete>
             </DefaultRolloverStrategy>
         </RollingRandomAccessFile>
@@ -293,8 +295,8 @@
             </Policies>
             <DefaultRolloverStrategy max="30">
                 <Delete basePath="${META_LOG_HOME}" maxDepth="2">
-                    <IfFileName glob="registry-elector.log.*" />
-                    <IfLastModified age="30d" />
+                    <IfFileName glob="registry-elector.log.*"/>
+                    <IfLastModified age="30d"/>
                 </Delete>
             </DefaultRolloverStrategy>
         </RollingRandomAccessFile>
@@ -309,8 +311,8 @@
             </Policies>
             <DefaultRolloverStrategy max="30">
                 <Delete basePath="${META_LOG_HOME}" maxDepth="2">
-                    <IfFileName glob="registry-bolt.log.*" />
-                    <IfLastModified age="30d" />
+                    <IfFileName glob="registry-bolt.log.*"/>
+                    <IfLastModified age="30d"/>
                 </Delete>
             </DefaultRolloverStrategy>
         </RollingRandomAccessFile>
@@ -325,8 +327,8 @@
             </Policies>
             <DefaultRolloverStrategy max="30">
                 <Delete basePath="${META_LOG_HOME}" maxDepth="2">
-                    <IfFileName glob="registry-jetty.log.*" />
-                    <IfLastModified age="30d" />
+                    <IfFileName glob="registry-jetty.log.*"/>
+                    <IfLastModified age="30d"/>
                 </Delete>
             </DefaultRolloverStrategy>
         </RollingRandomAccessFile>
@@ -341,8 +343,8 @@
             </Policies>
             <DefaultRolloverStrategy max="30">
                 <Delete basePath="${META_LOG_HOME}" maxDepth="2">
-                    <IfFileName glob="registry-evict.log.*" />
-                    <IfLastModified age="30d" />
+                    <IfFileName glob="registry-evict.log.*"/>
+                    <IfLastModified age="30d"/>
                 </Delete>
             </DefaultRolloverStrategy>
         </RollingRandomAccessFile>
@@ -357,13 +359,14 @@
             </Policies>
             <DefaultRolloverStrategy max="30">
                 <Delete basePath="${META_LOG_HOME}" maxDepth="2">
-                    <IfFileName glob="registry-heartbeat.log.*" />
-                    <IfLastModified age="30d" />
+                    <IfFileName glob="registry-heartbeat.log.*"/>
+                    <IfLastModified age="30d"/>
                 </Delete>
             </DefaultRolloverStrategy>
         </RollingRandomAccessFile>
 
-        <RollingRandomAccessFile name="REMOTING-HANDLER-APPENDER" fileName="${META_LOG_HOME}/registry-remoting-handler.log"
+        <RollingRandomAccessFile name="REMOTING-HANDLER-APPENDER"
+                                 fileName="${META_LOG_HOME}/registry-remoting-handler.log"
                                  filePattern="${META_LOG_HOME}/registry-remoting-handler.log.%d{yyyy-MM-dd}">
             <PatternLayout pattern="[%d{ISO8601}][%p][%t][%c{0}] [%X{traceID},%X{address}] - %m%n"/>
             <ThresholdFilter level="ERROR" onMatch="DENY" onMismatch="NEUTRAL"/>
@@ -373,8 +376,8 @@
             </Policies>
             <DefaultRolloverStrategy max="30">
                 <Delete basePath="${META_LOG_HOME}" maxDepth="2">
-                    <IfFileName glob="registry-remoting-handler.log.*" />
-                    <IfLastModified age="30d" />
+                    <IfFileName glob="registry-remoting-handler.log.*"/>
+                    <IfLastModified age="30d"/>
                 </Delete>
             </DefaultRolloverStrategy>
         </RollingRandomAccessFile>
@@ -404,8 +407,8 @@
             </Policies>
             <DefaultRolloverStrategy max="30">
                 <Delete basePath="${META_LOG_HOME}" maxDepth="2">
-                    <IfFileName glob="registry-datum-syncer.log.*" />
-                    <IfLastModified age="30d" />
+                    <IfFileName glob="registry-datum-syncer.log.*"/>
+                    <IfLastModified age="30d"/>
                 </Delete>
             </DefaultRolloverStrategy>
         </RollingRandomAccessFile>
@@ -420,8 +423,8 @@
             </Policies>
             <DefaultRolloverStrategy max="30">
                 <Delete basePath="${META_LOG_HOME}" maxDepth="2">
-                    <IfFileName glob="registry-metadata.log.*" />
-                    <IfLastModified age="30d" />
+                    <IfFileName glob="registry-metadata.log.*"/>
+                    <IfLastModified age="30d"/>
                 </Delete>
             </DefaultRolloverStrategy>
         </RollingRandomAccessFile>
@@ -435,8 +438,8 @@
             </Policies>
             <DefaultRolloverStrategy max="10">
                 <Delete basePath="${META_LOG_HOME}" maxDepth="2">
-                    <IfFileName glob="registry-sql.log.*" />
-                    <IfLastModified age="10d" />
+                    <IfFileName glob="registry-sql.log.*"/>
+                    <IfLastModified age="10d"/>
                 </Delete>
             </DefaultRolloverStrategy>
         </RollingRandomAccessFile>
@@ -451,8 +454,8 @@
             </Policies>
             <DefaultRolloverStrategy max="30">
                 <Delete basePath="${META_LOG_HOME}" maxDepth="2">
-                    <IfFileName glob="registry-renew.log.*" />
-                    <IfLastModified age="30d" />
+                    <IfFileName glob="registry-renew.log.*"/>
+                    <IfLastModified age="30d"/>
                 </Delete>
             </DefaultRolloverStrategy>
         </RollingRandomAccessFile>
@@ -467,8 +470,8 @@
             </Policies>
             <DefaultRolloverStrategy max="30">
                 <Delete basePath="${META_LOG_HOME}" maxDepth="2">
-                    <IfFileName glob="registry-renew-error.log.*" />
-                    <IfLastModified age="30d" />
+                    <IfFileName glob="registry-renew-error.log.*"/>
+                    <IfLastModified age="30d"/>
                 </Delete>
             </DefaultRolloverStrategy>
         </RollingRandomAccessFile>
@@ -483,8 +486,8 @@
             </Policies>
             <DefaultRolloverStrategy max="3">
                 <Delete basePath="${META_LOG_HOME}" maxDepth="2">
-                    <IfFileName glob="registry-client-manager.log.*" />
-                    <IfLastModified age="30d" />
+                    <IfFileName glob="registry-client-manager.log.*"/>
+                    <IfLastModified age="30d"/>
                 </Delete>
             </DefaultRolloverStrategy>
         </RollingRandomAccessFile>
@@ -498,14 +501,15 @@
             </Policies>
             <DefaultRolloverStrategy max="3">
                 <Delete basePath="${META_LOG_HOME}" maxDepth="2">
-                    <IfFileName glob="registry-provide-data.log.*" />
-                    <IfLastModified age="10d" />
+                    <IfFileName glob="registry-provide-data.log.*"/>
+                    <IfLastModified age="10d"/>
                 </Delete>
             </DefaultRolloverStrategy>
         </RollingRandomAccessFile>
 
 
-        <RollingRandomAccessFile name="MULTI-CLUSTER-CONFIG-APPENDER" fileName="${META_LOG_HOME}/registry-multi-config.log"
+        <RollingRandomAccessFile name="MULTI-CLUSTER-CONFIG-APPENDER"
+                                 fileName="${META_LOG_HOME}/registry-multi-config.log"
                                  filePattern="${META_LOG_HOME}/registry-multi-config.log.%d{yyyy-MM-dd}">
             <PatternLayout pattern="[%d{ISO8601}][%p][%t][%c{0}] - %m%n"/>
             <ThresholdFilter level="ERROR" onMatch="DENY" onMismatch="NEUTRAL"/>
@@ -515,13 +519,14 @@
             </Policies>
             <DefaultRolloverStrategy max="3">
                 <Delete basePath="${META_LOG_HOME}" maxDepth="2">
-                    <IfFileName glob="registry-multi-config.log.*" />
-                    <IfLastModified age="10d" />
+                    <IfFileName glob="registry-multi-config.log.*"/>
+                    <IfLastModified age="10d"/>
                 </Delete>
             </DefaultRolloverStrategy>
         </RollingRandomAccessFile>
 
-        <RollingRandomAccessFile name="MULTI-CLUSTER-CLIENT-APPENDER" fileName="${META_LOG_HOME}/registry-multi-client.log"
+        <RollingRandomAccessFile name="MULTI-CLUSTER-CLIENT-APPENDER"
+                                 fileName="${META_LOG_HOME}/registry-multi-client.log"
                                  filePattern="${META_LOG_HOME}/registry-multi-client.log.%d{yyyy-MM-dd}">
             <PatternLayout pattern="[%d{ISO8601}][%p][%t][%c{0}] - %m%n"/>
             <ThresholdFilter level="ERROR" onMatch="DENY" onMismatch="NEUTRAL"/>
@@ -531,8 +536,8 @@
             </Policies>
             <DefaultRolloverStrategy max="3">
                 <Delete basePath="${META_LOG_HOME}" maxDepth="2">
-                    <IfFileName glob="registry-multi-client.log.*" />
-                    <IfLastModified age="10d" />
+                    <IfFileName glob="registry-multi-client.log.*"/>
+                    <IfLastModified age="10d"/>
                 </Delete>
             </DefaultRolloverStrategy>
         </RollingRandomAccessFile>
@@ -547,8 +552,8 @@
             </Policies>
             <DefaultRolloverStrategy max="3">
                 <Delete basePath="${META_LOG_HOME}" maxDepth="2">
-                    <IfFileName glob="registry-multi-srv.log.*" />
-                    <IfLastModified age="10d" />
+                    <IfFileName glob="registry-multi-srv.log.*"/>
+                    <IfLastModified age="10d"/>
                 </Delete>
             </DefaultRolloverStrategy>
         </RollingRandomAccessFile>
@@ -634,13 +639,15 @@
             <appender-ref ref="COMMON-ERROR-APPENDER"/>
         </logger>
 
-        <logger name="com.alipay.sofa.registry.server.meta.EnterpriseMetaApplication" level="${LOG_LEVEL}" additivity="false">
+        <logger name="com.alipay.sofa.registry.server.meta.EnterpriseMetaApplication" level="${LOG_LEVEL}"
+                additivity="false">
             <appender-ref ref="META-STARTUP-APPENDER"/>
             <appender-ref ref="STDOUT-APPENDER"/>
             <appender-ref ref="COMMON-ERROR-APPENDER"/>
         </logger>
 
-        <logger name="com.alipay.sofa.registry.server.shared.slot.DiskSlotTableRecorder" level="${LOG_LEVEL}" additivity="false">
+        <logger name="com.alipay.sofa.registry.server.shared.slot.DiskSlotTableRecorder" level="${LOG_LEVEL}"
+                additivity="false">
             <appender-ref ref="SLOT-TABLE-RECORDER-APPENDER"/>
             <appender-ref ref="COMMON-ERROR-APPENDER"/>
         </logger>

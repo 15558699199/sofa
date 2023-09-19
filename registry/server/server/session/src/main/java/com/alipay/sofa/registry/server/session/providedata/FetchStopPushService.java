@@ -27,25 +27,27 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class FetchStopPushService extends BaseStopPushService {
 
-  @Autowired private SessionServerConfig sessionServerConfig;
+    @Autowired
+    private SessionServerConfig sessionServerConfig;
 
-  @Override
-  protected int getSystemPropertyIntervalMillis() {
-    return sessionServerConfig.getSystemPropertyIntervalMillis();
-  }
+    @Override
+    protected int getSystemPropertyIntervalMillis() {
+        return sessionServerConfig.getSystemPropertyIntervalMillis();
+    }
 
-  @Override
-  protected void afterProcess(StopPushStorage storage) {}
+    @Override
+    protected void afterProcess(StopPushStorage storage) {
+    }
 
-  /**
-   * Setter method for property <tt>sessionServerConfig</tt>.
-   *
-   * @param sessionServerConfig value to be assigned to property sessionServerConfig
-   * @return FetchStopPushService
-   */
-  @VisibleForTesting
-  protected FetchStopPushService setSessionServerConfig(SessionServerConfig sessionServerConfig) {
-    this.sessionServerConfig = sessionServerConfig;
-    return this;
-  }
+    /**
+     * Setter method for property <tt>sessionServerConfig</tt>.
+     *
+     * @param sessionServerConfig value to be assigned to property sessionServerConfig
+     * @return FetchStopPushService
+     */
+    @VisibleForTesting
+    protected FetchStopPushService setSessionServerConfig(SessionServerConfig sessionServerConfig) {
+        this.sessionServerConfig = sessionServerConfig;
+        return this;
+    }
 }

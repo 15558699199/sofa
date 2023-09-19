@@ -16,8 +16,6 @@
  */
 package com.alipay.sofa.registry.server.session.providedata;
 
-import static org.mockito.Mockito.when;
-
 import com.alipay.sofa.registry.common.model.console.CircuitBreakerData;
 import com.alipay.sofa.registry.common.model.console.PersistenceData;
 import com.alipay.sofa.registry.common.model.console.PersistenceDataBuilder;
@@ -27,10 +25,6 @@ import com.alipay.sofa.registry.server.session.bootstrap.SessionServerConfig;
 import com.alipay.sofa.registry.util.ConcurrentUtils;
 import com.alipay.sofa.registry.util.JsonUtils;
 import com.google.common.collect.Sets;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,91 +35,97 @@ import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.util.CollectionUtils;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
+import static org.mockito.Mockito.when;
+
 /**
  * @author xiaojian.xj
  * @version : FetchCircuitBreakerServiceTest.java, v 0.1 2022年01月21日 14:32 xiaojian.xj Exp $
  */
 @RunWith(MockitoJUnitRunner.class)
 public class FetchCircuitBreakerServiceTest extends AbstractSessionServerTestBase {
-  @InjectMocks private FetchCircuitBreakerService fetchCircuitBreakerService;
+    private static final int SYSTEM_PROPERTY_INTERVAL_MILLIS = 100;
+    private static final int MAX_WAIT = SYSTEM_PROPERTY_INTERVAL_MILLIS * 5;
+    @InjectMocks
+    private FetchCircuitBreakerService fetchCircuitBreakerService;
+    @Mock
+    private SessionServerConfig sessionServerConfig;
+    @Spy
+    private InMemoryProvideDataRepository provideDataRepository;
 
-  @Mock private SessionServerConfig sessionServerConfig;
+    @Before
+    public void before() {
+        when(sessionServerConfig.getSystemPropertyIntervalMillis())
+                .thenReturn(SYSTEM_PROPERTY_INTERVAL_MILLIS);
+    }
 
-  @Spy private InMemoryProvideDataRepository provideDataRepository;
+    @Test
+    public void testFetchCircuitBreaker() throws InterruptedException, TimeoutException {
+        // 1.init
+        boolean ret = fetchCircuitBreakerService.start();
+        ConcurrentUtils.sleepUninterruptibly(500, TimeUnit.MILLISECONDS);
+        Assert.assertTrue(ret);
+        waitConditionUntilTimeOut(() -> !fetchCircuitBreakerService.isSwitchOpen(), MAX_WAIT);
+        waitConditionUntilTimeOut(
+                () -> CollectionUtils.isEmpty(fetchCircuitBreakerService.getStopPushCircuitBreaker()),
+                MAX_WAIT);
 
-  private static final int SYSTEM_PROPERTY_INTERVAL_MILLIS = 100;
+        // 2.switch open
+        PersistenceData persistenceData =
+                PersistenceDataBuilder.createPersistenceData(
+                        ValueConstants.CIRCUIT_BREAKER_DATA_ID,
+                        JsonUtils.writeValueAsString(new CircuitBreakerData(true, Collections.EMPTY_SET)));
 
-  private static final int MAX_WAIT = SYSTEM_PROPERTY_INTERVAL_MILLIS * 5;
+        boolean put = provideDataRepository.put(persistenceData);
+        Assert.assertTrue(put);
+        waitConditionUntilTimeOut(() -> fetchCircuitBreakerService.isSwitchOpen(), MAX_WAIT);
+        waitConditionUntilTimeOut(
+                () -> CollectionUtils.isEmpty(fetchCircuitBreakerService.getStopPushCircuitBreaker()),
+                MAX_WAIT);
 
-  @Before
-  public void before() {
-    when(sessionServerConfig.getSystemPropertyIntervalMillis())
-        .thenReturn(SYSTEM_PROPERTY_INTERVAL_MILLIS);
-  }
+        // 3.add
+        HashSet<String> address = Sets.newHashSet("1.1.1.1", "2.2.2.2");
+        persistenceData =
+                PersistenceDataBuilder.createPersistenceData(
+                        ValueConstants.CIRCUIT_BREAKER_DATA_ID,
+                        JsonUtils.writeValueAsString(new CircuitBreakerData(true, address)));
+        put = provideDataRepository.put(persistenceData);
+        Assert.assertTrue(put);
+        waitConditionUntilTimeOut(() -> fetchCircuitBreakerService.isSwitchOpen(), MAX_WAIT);
+        waitConditionUntilTimeOut(
+                () -> fetchCircuitBreakerService.getStopPushCircuitBreaker().size() == 2, MAX_WAIT);
+        waitConditionUntilTimeOut(
+                () -> address.equals(fetchCircuitBreakerService.getStopPushCircuitBreaker()), MAX_WAIT);
 
-  @Test
-  public void testFetchCircuitBreaker() throws InterruptedException, TimeoutException {
-    // 1.init
-    boolean ret = fetchCircuitBreakerService.start();
-    ConcurrentUtils.sleepUninterruptibly(500, TimeUnit.MILLISECONDS);
-    Assert.assertTrue(ret);
-    waitConditionUntilTimeOut(() -> !fetchCircuitBreakerService.isSwitchOpen(), MAX_WAIT);
-    waitConditionUntilTimeOut(
-        () -> CollectionUtils.isEmpty(fetchCircuitBreakerService.getStopPushCircuitBreaker()),
-        MAX_WAIT);
+        // 4.remove
+        address.remove("1.1.1.1");
+        persistenceData =
+                PersistenceDataBuilder.createPersistenceData(
+                        ValueConstants.CIRCUIT_BREAKER_DATA_ID,
+                        JsonUtils.writeValueAsString(new CircuitBreakerData(true, address)));
+        put = provideDataRepository.put(persistenceData);
+        Assert.assertTrue(put);
+        waitConditionUntilTimeOut(() -> fetchCircuitBreakerService.isSwitchOpen(), MAX_WAIT);
+        waitConditionUntilTimeOut(
+                () -> fetchCircuitBreakerService.getStopPushCircuitBreaker().size() == 1, MAX_WAIT);
+        waitConditionUntilTimeOut(
+                () -> address.equals(fetchCircuitBreakerService.getStopPushCircuitBreaker()), MAX_WAIT);
 
-    // 2.switch open
-    PersistenceData persistenceData =
-        PersistenceDataBuilder.createPersistenceData(
-            ValueConstants.CIRCUIT_BREAKER_DATA_ID,
-            JsonUtils.writeValueAsString(new CircuitBreakerData(true, Collections.EMPTY_SET)));
-
-    boolean put = provideDataRepository.put(persistenceData);
-    Assert.assertTrue(put);
-    waitConditionUntilTimeOut(() -> fetchCircuitBreakerService.isSwitchOpen(), MAX_WAIT);
-    waitConditionUntilTimeOut(
-        () -> CollectionUtils.isEmpty(fetchCircuitBreakerService.getStopPushCircuitBreaker()),
-        MAX_WAIT);
-
-    // 3.add
-    HashSet<String> address = Sets.newHashSet("1.1.1.1", "2.2.2.2");
-    persistenceData =
-        PersistenceDataBuilder.createPersistenceData(
-            ValueConstants.CIRCUIT_BREAKER_DATA_ID,
-            JsonUtils.writeValueAsString(new CircuitBreakerData(true, address)));
-    put = provideDataRepository.put(persistenceData);
-    Assert.assertTrue(put);
-    waitConditionUntilTimeOut(() -> fetchCircuitBreakerService.isSwitchOpen(), MAX_WAIT);
-    waitConditionUntilTimeOut(
-        () -> fetchCircuitBreakerService.getStopPushCircuitBreaker().size() == 2, MAX_WAIT);
-    waitConditionUntilTimeOut(
-        () -> address.equals(fetchCircuitBreakerService.getStopPushCircuitBreaker()), MAX_WAIT);
-
-    // 4.remove
-    address.remove("1.1.1.1");
-    persistenceData =
-        PersistenceDataBuilder.createPersistenceData(
-            ValueConstants.CIRCUIT_BREAKER_DATA_ID,
-            JsonUtils.writeValueAsString(new CircuitBreakerData(true, address)));
-    put = provideDataRepository.put(persistenceData);
-    Assert.assertTrue(put);
-    waitConditionUntilTimeOut(() -> fetchCircuitBreakerService.isSwitchOpen(), MAX_WAIT);
-    waitConditionUntilTimeOut(
-        () -> fetchCircuitBreakerService.getStopPushCircuitBreaker().size() == 1, MAX_WAIT);
-    waitConditionUntilTimeOut(
-        () -> address.equals(fetchCircuitBreakerService.getStopPushCircuitBreaker()), MAX_WAIT);
-
-    // 5.switch close
-    persistenceData =
-        PersistenceDataBuilder.createPersistenceData(
-            ValueConstants.CIRCUIT_BREAKER_DATA_ID,
-            JsonUtils.writeValueAsString(new CircuitBreakerData(false, address)));
-    put = provideDataRepository.put(persistenceData);
-    Assert.assertTrue(put);
-    waitConditionUntilTimeOut(() -> !fetchCircuitBreakerService.isSwitchOpen(), MAX_WAIT);
-    waitConditionUntilTimeOut(
-        () -> fetchCircuitBreakerService.getStopPushCircuitBreaker().size() == 1, MAX_WAIT);
-    waitConditionUntilTimeOut(
-        () -> address.equals(fetchCircuitBreakerService.getStopPushCircuitBreaker()), MAX_WAIT);
-  }
+        // 5.switch close
+        persistenceData =
+                PersistenceDataBuilder.createPersistenceData(
+                        ValueConstants.CIRCUIT_BREAKER_DATA_ID,
+                        JsonUtils.writeValueAsString(new CircuitBreakerData(false, address)));
+        put = provideDataRepository.put(persistenceData);
+        Assert.assertTrue(put);
+        waitConditionUntilTimeOut(() -> !fetchCircuitBreakerService.isSwitchOpen(), MAX_WAIT);
+        waitConditionUntilTimeOut(
+                () -> fetchCircuitBreakerService.getStopPushCircuitBreaker().size() == 1, MAX_WAIT);
+        waitConditionUntilTimeOut(
+                () -> address.equals(fetchCircuitBreakerService.getStopPushCircuitBreaker()), MAX_WAIT);
+    }
 }

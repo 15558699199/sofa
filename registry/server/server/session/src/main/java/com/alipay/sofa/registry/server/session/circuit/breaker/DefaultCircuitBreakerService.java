@@ -26,9 +26,10 @@ import com.alipay.sofa.registry.server.session.push.PushLog;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * @author xiaojian.xj
@@ -36,152 +37,151 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class DefaultCircuitBreakerService implements CircuitBreakerService {
 
-  private static final Logger LOGGER = PushLog.LOGGER;
+    private static final Logger LOGGER = PushLog.LOGGER;
+    private final Cache<String, CircuitBreakerStatistic> circuitBreakerAddress =
+            CacheBuilder.newBuilder().maximumSize(2000L).expireAfterAccess(10, TimeUnit.MINUTES).build();
+    @Autowired
+    protected FetchCircuitBreakerService fetchCircuitBreakerService;
+    @Autowired
+    private SessionServerConfig sessionServerConfig;
 
-  @Autowired private SessionServerConfig sessionServerConfig;
-
-  @Autowired protected FetchCircuitBreakerService fetchCircuitBreakerService;
-
-  private final Cache<String, CircuitBreakerStatistic> circuitBreakerAddress =
-      CacheBuilder.newBuilder().maximumSize(2000L).expireAfterAccess(10, TimeUnit.MINUTES).build();
-
-  public DefaultCircuitBreakerService() {
-    CacheCleaner.autoClean(circuitBreakerAddress, 1000 * 60 * 10);
-  }
-
-  /**
-   * check if statistic should be circuit break
-   *
-   * @param statistic statistic
-   * @param hasPushed hasPushed
-   * @return boolean
-   */
-  @Override
-  public boolean pushCircuitBreaker(CircuitBreakerStatistic statistic, boolean hasPushed) {
-    if (statistic == null) {
-      return false;
+    public DefaultCircuitBreakerService() {
+        CacheCleaner.autoClean(circuitBreakerAddress, 1000 * 60 * 10);
     }
 
-    // not circuit break on sub.register
-    if (!hasPushed) {
-      return false;
+    /**
+     * check if statistic should be circuit break
+     *
+     * @param statistic statistic
+     * @param hasPushed hasPushed
+     * @return boolean
+     */
+    @Override
+    public boolean pushCircuitBreaker(CircuitBreakerStatistic statistic, boolean hasPushed) {
+        if (statistic == null) {
+            return false;
+        }
+
+        // not circuit break on sub.register
+        if (!hasPushed) {
+            return false;
+        }
+
+        if (fetchCircuitBreakerService.isSwitchOpen()) {
+            return addressCircuitBreak(statistic);
+        }
+        int silenceMillis = sessionServerConfig.getPushCircuitBreakerSilenceMillis();
+        return statistic.circuitBreak(
+                sessionServerConfig.getPushCircuitBreakerThreshold(), silenceMillis);
     }
 
-    if (fetchCircuitBreakerService.isSwitchOpen()) {
-      return addressCircuitBreak(statistic);
-    }
-    int silenceMillis = sessionServerConfig.getPushCircuitBreakerSilenceMillis();
-    return statistic.circuitBreak(
-        sessionServerConfig.getPushCircuitBreakerThreshold(), silenceMillis);
-  }
+    protected boolean addressCircuitBreak(CircuitBreakerStatistic statistic) {
+        if (fetchCircuitBreakerService.getStopPushCircuitBreaker().contains(statistic.getIp())) {
+            LOGGER.info("[ArtificialCircuitBreaker]push check circuit break, statistic:{}", statistic);
+            return true;
+        }
+        int silenceMillis = sessionServerConfig.getPushCircuitBreakerSilenceMillis();
+        CircuitBreakerStatistic addressStatistic =
+                circuitBreakerAddress.getIfPresent(statistic.getAddress());
+        if (addressStatistic != null) {
+            boolean addressCircuitBreak =
+                    addressStatistic.circuitBreak(
+                            sessionServerConfig.getPushAddressCircuitBreakerThreshold(), silenceMillis);
+            boolean subCircuitBreak =
+                    statistic.circuitBreak(
+                            sessionServerConfig.getPushCircuitBreakerThreshold(), silenceMillis);
+            LOGGER.info(
+                    "[addressCircuitBreak]addressCircuitBreak: {}, addressStatistic:{}, subCircuitBreak:{}, subStatistic:{}",
+                    addressCircuitBreak,
+                    addressStatistic,
+                    subCircuitBreak,
+                    statistic);
+            return addressCircuitBreak || subCircuitBreak;
+        }
 
-  protected boolean addressCircuitBreak(CircuitBreakerStatistic statistic) {
-    if (fetchCircuitBreakerService.getStopPushCircuitBreaker().contains(statistic.getIp())) {
-      LOGGER.info("[ArtificialCircuitBreaker]push check circuit break, statistic:{}", statistic);
-      return true;
-    }
-    int silenceMillis = sessionServerConfig.getPushCircuitBreakerSilenceMillis();
-    CircuitBreakerStatistic addressStatistic =
-        circuitBreakerAddress.getIfPresent(statistic.getAddress());
-    if (addressStatistic != null) {
-      boolean addressCircuitBreak =
-          addressStatistic.circuitBreak(
-              sessionServerConfig.getPushAddressCircuitBreakerThreshold(), silenceMillis);
-      boolean subCircuitBreak =
-          statistic.circuitBreak(
-              sessionServerConfig.getPushCircuitBreakerThreshold(), silenceMillis);
-      LOGGER.info(
-          "[addressCircuitBreak]addressCircuitBreak: {}, addressStatistic:{}, subCircuitBreak:{}, subStatistic:{}",
-          addressCircuitBreak,
-          addressStatistic,
-          subCircuitBreak,
-          statistic);
-      return addressCircuitBreak || subCircuitBreak;
+        return statistic.circuitBreak(
+                sessionServerConfig.getPushCircuitBreakerThreshold(), silenceMillis);
     }
 
-    return statistic.circuitBreak(
-        sessionServerConfig.getPushCircuitBreakerThreshold(), silenceMillis);
-  }
+    /**
+     * statistic when push fail
+     *
+     * @param versions   versions
+     * @param subscriber subscriber
+     * @return boolean
+     */
+    public boolean onPushFail(Map<String, Long> versions, Subscriber subscriber) {
 
-  /**
-   * statistic when push fail
-   *
-   * @param versions versions
-   * @param subscriber subscriber
-   * @return boolean
-   */
-  public boolean onPushFail(Map<String, Long> versions, Subscriber subscriber) {
+        if (!subscriber.hasPushed()) {
+            // push fail on register, not circuit breaker;
+            return true;
+        }
+        String ip = subscriber.getSourceAddress().getIpAddress();
+        String address = subscriber.getSourceAddress().buildAddressString();
+        if (!subscriber.onPushFail(versions)) {
+            LOGGER.info("PushN, failed to do onPushFail, {}, {}", subscriber.getDataInfoId(), address);
+            return false;
+        }
 
-    if (!subscriber.hasPushed()) {
-      // push fail on register, not circuit breaker;
-      return true;
-    }
-    String ip = subscriber.getSourceAddress().getIpAddress();
-    String address = subscriber.getSourceAddress().buildAddressString();
-    if (!subscriber.onPushFail(versions)) {
-      LOGGER.info("PushN, failed to do onPushFail, {}, {}", subscriber.getDataInfoId(), address);
-      return false;
-    }
-
-    try {
-      CircuitBreakerStatistic statistic =
-          circuitBreakerAddress.get(
-              address, () -> new CircuitBreakerStatistic(subscriber.getGroup(), ip, address));
-      statistic.fail();
-      LOGGER.info(
-          "PushN, dataInfoId={}, inc circuit statistic={}", subscriber.getDataInfoId(), statistic);
-      return true;
-    } catch (Throwable e) {
-      LOGGER.error("[onPushFail]get from circuitBreakerAddress error.", e);
-      return false;
-    }
-  }
-
-  /**
-   * statistic when push success
-   *
-   * @param versions dataCenter version
-   * @param pushNums dataCenter pushNum
-   * @param subscriber subscriber
-   * @return boolean
-   */
-  public boolean onPushSuccess(
-      Map<String, Long> versions, Map<String, Integer> pushNums, Subscriber subscriber) {
-    String address = subscriber.getSourceAddress().buildAddressString();
-
-    CircuitBreakerStatistic statistic = circuitBreakerAddress.getIfPresent(address);
-    if (statistic != null) {
-      int threshold = sessionServerConfig.getPushConsecutiveSuccess();
-      statistic.success(threshold);
-      if (statistic.getConsecutiveSuccess() >= threshold) {
-        circuitBreakerAddress.invalidate(address);
-        LOGGER.info("PushY, invalidate circuit statistic: {}", statistic);
-      }
+        try {
+            CircuitBreakerStatistic statistic =
+                    circuitBreakerAddress.get(
+                            address, () -> new CircuitBreakerStatistic(subscriber.getGroup(), ip, address));
+            statistic.fail();
+            LOGGER.info(
+                    "PushN, dataInfoId={}, inc circuit statistic={}", subscriber.getDataInfoId(), statistic);
+            return true;
+        } catch (Throwable e) {
+            LOGGER.error("[onPushFail]get from circuitBreakerAddress error.", e);
+            return false;
+        }
     }
 
-    if (subscriber.checkAndUpdateCtx(versions, pushNums)) {
-      LOGGER.info(
-          "PushY, checkAndUpdateCtx onPushSuccess, {}, {}, versions={}",
-          subscriber.getDataInfoId(),
-          address,
-          versions);
-      return true;
-    } else {
-      LOGGER.info(
-          "PushN, failed to checkAndUpdateCtx onPushSuccess, {}, {}",
-          subscriber.getDataInfoId(),
-          address);
-      return false;
-    }
-  }
+    /**
+     * statistic when push success
+     *
+     * @param versions   dataCenter version
+     * @param pushNums   dataCenter pushNum
+     * @param subscriber subscriber
+     * @return boolean
+     */
+    public boolean onPushSuccess(
+            Map<String, Long> versions, Map<String, Integer> pushNums, Subscriber subscriber) {
+        String address = subscriber.getSourceAddress().buildAddressString();
 
-  /**
-   * Setter method for property <tt>fetchCircuitBreakerService</tt>.
-   *
-   * @param fetchCircuitBreakerService value to be assigned to property fetchCircuitBreakerService
-   */
-  @VisibleForTesting
-  public void setFetchCircuitBreakerService(FetchCircuitBreakerService fetchCircuitBreakerService) {
-    this.fetchCircuitBreakerService = fetchCircuitBreakerService;
-  }
+        CircuitBreakerStatistic statistic = circuitBreakerAddress.getIfPresent(address);
+        if (statistic != null) {
+            int threshold = sessionServerConfig.getPushConsecutiveSuccess();
+            statistic.success(threshold);
+            if (statistic.getConsecutiveSuccess() >= threshold) {
+                circuitBreakerAddress.invalidate(address);
+                LOGGER.info("PushY, invalidate circuit statistic: {}", statistic);
+            }
+        }
+
+        if (subscriber.checkAndUpdateCtx(versions, pushNums)) {
+            LOGGER.info(
+                    "PushY, checkAndUpdateCtx onPushSuccess, {}, {}, versions={}",
+                    subscriber.getDataInfoId(),
+                    address,
+                    versions);
+            return true;
+        } else {
+            LOGGER.info(
+                    "PushN, failed to checkAndUpdateCtx onPushSuccess, {}, {}",
+                    subscriber.getDataInfoId(),
+                    address);
+            return false;
+        }
+    }
+
+    /**
+     * Setter method for property <tt>fetchCircuitBreakerService</tt>.
+     *
+     * @param fetchCircuitBreakerService value to be assigned to property fetchCircuitBreakerService
+     */
+    @VisibleForTesting
+    public void setFetchCircuitBreakerService(FetchCircuitBreakerService fetchCircuitBreakerService) {
+        this.fetchCircuitBreakerService = fetchCircuitBreakerService;
+    }
 }

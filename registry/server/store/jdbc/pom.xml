@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
@@ -44,12 +44,12 @@
         </dependency>
 
         <!--<dependency>-->
-            <!--<groupId>com.alipay.sofa</groupId>-->
-            <!--<artifactId>registry-common-util</artifactId>-->
-            <!--<type>test-jar</type>-->
-            <!--<scope>test</scope>-->
-            <!--<classifier>tests</classifier>-->
-            <!--<version>${project.parent.version}</version>-->
+        <!--<groupId>com.alipay.sofa</groupId>-->
+        <!--<artifactId>registry-common-util</artifactId>-->
+        <!--<type>test-jar</type>-->
+        <!--<scope>test</scope>-->
+        <!--<classifier>tests</classifier>-->
+        <!--<version>${project.parent.version}</version>-->
         <!--</dependency>-->
 
         <!-- db connection manager -->

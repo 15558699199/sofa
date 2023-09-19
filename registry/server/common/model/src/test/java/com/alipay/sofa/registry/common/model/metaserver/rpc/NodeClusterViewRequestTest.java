@@ -21,12 +21,12 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class NodeClusterViewRequestTest {
-  @Test
-  public void test() {
-    final String dc = "testDc";
-    NodeClusterViewRequest request = new NodeClusterViewRequest(Node.NodeType.CLIENT, dc);
-    Assert.assertEquals(request.getNodeType(), Node.NodeType.CLIENT);
-    Assert.assertEquals(request.getDataCenterId(), dc);
-    Assert.assertTrue(request.toString(), request.toString().contains(dc));
-  }
+    @Test
+    public void test() {
+        final String dc = "testDc";
+        NodeClusterViewRequest request = new NodeClusterViewRequest(Node.NodeType.CLIENT, dc);
+        Assert.assertEquals(request.getNodeType(), Node.NodeType.CLIENT);
+        Assert.assertEquals(request.getDataCenterId(), dc);
+        Assert.assertTrue(request.toString(), request.toString().contains(dc));
+    }
 }

@@ -34,12 +34,7 @@ package com.alipay.sofa.rpc.doc.swagger.utils;
 
 import com.alipay.sofa.rpc.log.Logger;
 import com.alipay.sofa.rpc.log.LoggerFactory;
-import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.ClassVisitor;
-import org.objectweb.asm.Label;
-import org.objectweb.asm.MethodVisitor;
-import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.Type;
+import org.objectweb.asm.*;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -66,24 +61,36 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class LocalVariableTableParameterNameDiscoverer {
 
-    private final static Logger                        LOGGER              = LoggerFactory
-                                                                               .getLogger(LocalVariableTableParameterNameDiscoverer.class);
-    /**
-     * The package separator character: '.'
-     */
-    private static final char                          PACKAGE_SEPARATOR   = '.';
     /**
      * The ".class" file suffix
      */
-    public static final String                         CLASS_FILE_SUFFIX   = ".class";
-
+    public static final String CLASS_FILE_SUFFIX = ".class";
+    private final static Logger LOGGER = LoggerFactory
+            .getLogger(LocalVariableTableParameterNameDiscoverer.class);
+    /**
+     * The package separator character: '.'
+     */
+    private static final char PACKAGE_SEPARATOR = '.';
     // marker object for classes that do not have any debug info
-    private static final Map<Member, String[]>         NO_DEBUG_INFO_MAP   = Collections.emptyMap();
+    private static final Map<Member, String[]> NO_DEBUG_INFO_MAP = Collections.emptyMap();
 
     // the cache uses a nested index (value is a map) to keep the top level cache relatively small in size
     private final Map<Class<?>, Map<Member, String[]>> parameterNamesCache =
-                                                                                   new ConcurrentHashMap<Class<?>, Map<Member, String[]>>(
-                                                                                       32);
+            new ConcurrentHashMap<Class<?>, Map<Member, String[]>>(
+                    32);
+
+    /**
+     * Determine the name of the class file, relative to the containing
+     * package: e.g. "String.class"
+     *
+     * @param clazz the class
+     * @return the file name of the ".class" file
+     */
+    public static String getClassFileName(Class<?> clazz) {
+        String className = clazz.getName();
+        int lastDotIndex = className.lastIndexOf(PACKAGE_SEPARATOR);
+        return className.substring(lastDotIndex + 1) + CLASS_FILE_SUFFIX;
+    }
 
     public String[] getParameterNames(Method originalMethod) {
         Class<?> declaringClass = originalMethod.getDeclaringClass();
@@ -122,7 +129,7 @@ public class LocalVariableTableParameterNameDiscoverer {
             // simply means this method of discovering parameter names won't work.
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("Cannot find '.class' file for class [" + clazz +
-                    "] - unable to determine constructor/method parameter names");
+                        "] - unable to determine constructor/method parameter names");
             }
             return NO_DEBUG_INFO_MAP;
         }
@@ -134,13 +141,13 @@ public class LocalVariableTableParameterNameDiscoverer {
         } catch (IOException ex) {
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("Exception thrown while reading '.class' file for class [" + clazz +
-                    "] - unable to determine constructor/method parameter names", ex);
+                        "] - unable to determine constructor/method parameter names", ex);
             }
         } catch (IllegalArgumentException ex) {
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("ASM ClassReader failed to parse class file [" + clazz +
-                    "], probably due to a new Java class file version that isn't supported yet " +
-                    "- unable to determine constructor/method parameter names", ex);
+                        "], probably due to a new Java class file version that isn't supported yet " +
+                        "- unable to determine constructor/method parameter names", ex);
             }
         } finally {
             try {
@@ -158,9 +165,9 @@ public class LocalVariableTableParameterNameDiscoverer {
      */
     private static class ParameterNameDiscoveringVisitor extends ClassVisitor {
 
-        private static final String         STATIC_CLASS_INIT = "<clinit>";
+        private static final String STATIC_CLASS_INIT = "<clinit>";
 
-        private final Class<?>              clazz;
+        private final Class<?> clazz;
 
         private final Map<Member, String[]> memberMap;
 
@@ -168,6 +175,14 @@ public class LocalVariableTableParameterNameDiscoverer {
             super(Opcodes.ASM7);
             this.clazz = clazz;
             this.memberMap = memberMap;
+        }
+
+        private static boolean isSyntheticOrBridged(int access) {
+            return (((access & Opcodes.ACC_SYNTHETIC) | (access & Opcodes.ACC_BRIDGE)) > 0);
+        }
+
+        private static boolean isStatic(int access) {
+            return ((access & Opcodes.ACC_STATIC) > 0);
         }
 
         @Override
@@ -178,39 +193,29 @@ public class LocalVariableTableParameterNameDiscoverer {
             }
             return null;
         }
-
-        private static boolean isSyntheticOrBridged(int access) {
-            return (((access & Opcodes.ACC_SYNTHETIC) | (access & Opcodes.ACC_BRIDGE)) > 0);
-        }
-
-        private static boolean isStatic(int access) {
-            return ((access & Opcodes.ACC_STATIC) > 0);
-        }
     }
 
     private static class LocalVariableTableVisitor extends MethodVisitor {
 
-        private static final String         CONSTRUCTOR = "<init>";
+        private static final String CONSTRUCTOR = "<init>";
 
-        private final Class<?>              clazz;
+        private final Class<?> clazz;
 
         private final Map<Member, String[]> memberMap;
 
-        private final String                name;
+        private final String name;
 
-        private final Type[]                args;
+        private final Type[] args;
 
-        private final String[]              parameterNames;
+        private final String[] parameterNames;
 
-        private final boolean               isStatic;
-
-        private boolean                     hasLvtInfo  = false;
-
+        private final boolean isStatic;
         /*
          * The nth entry contains the slot index of the LVT table entry holding the
          * argument name for the nth parameter.
          */
-        private final int[]                 lvtSlotIndex;
+        private final int[] lvtSlotIndex;
+        private boolean hasLvtInfo = false;
 
         public LocalVariableTableVisitor(Class<?> clazz, Map<Member, String[]> map, String name, String desc,
                                          boolean isStatic) {
@@ -222,6 +227,25 @@ public class LocalVariableTableParameterNameDiscoverer {
             this.parameterNames = new String[this.args.length];
             this.isStatic = isStatic;
             this.lvtSlotIndex = computeLvtSlotIndices(isStatic, this.args);
+        }
+
+        private static int[] computeLvtSlotIndices(boolean isStatic, Type[] paramTypes) {
+            int[] lvtIndex = new int[paramTypes.length];
+            int nextIndex = (isStatic ? 0 : 1);
+            for (int i = 0; i < paramTypes.length; i++) {
+                lvtIndex[i] = nextIndex;
+                if (isWideType(paramTypes[i])) {
+                    nextIndex += 2;
+                } else {
+                    nextIndex++;
+                }
+            }
+            return lvtIndex;
+        }
+
+        private static boolean isWideType(Type aType) {
+            // float is not a wide type
+            return (aType == Type.LONG_TYPE || aType == Type.DOUBLE_TYPE);
         }
 
         @Override
@@ -259,41 +283,9 @@ public class LocalVariableTableParameterNameDiscoverer {
                 return this.clazz.getDeclaredMethod(this.name, argTypes);
             } catch (NoSuchMethodException ex) {
                 throw new IllegalStateException("Method [" + this.name +
-                    "] was discovered in the .class file but cannot be resolved in the class object", ex);
+                        "] was discovered in the .class file but cannot be resolved in the class object", ex);
             }
         }
-
-        private static int[] computeLvtSlotIndices(boolean isStatic, Type[] paramTypes) {
-            int[] lvtIndex = new int[paramTypes.length];
-            int nextIndex = (isStatic ? 0 : 1);
-            for (int i = 0; i < paramTypes.length; i++) {
-                lvtIndex[i] = nextIndex;
-                if (isWideType(paramTypes[i])) {
-                    nextIndex += 2;
-                } else {
-                    nextIndex++;
-                }
-            }
-            return lvtIndex;
-        }
-
-        private static boolean isWideType(Type aType) {
-            // float is not a wide type
-            return (aType == Type.LONG_TYPE || aType == Type.DOUBLE_TYPE);
-        }
-    }
-
-    /**
-     * Determine the name of the class file, relative to the containing
-     * package: e.g. "String.class"
-     *
-     * @param clazz the class
-     * @return the file name of the ".class" file
-     */
-    public static String getClassFileName(Class<?> clazz) {
-        String className = clazz.getName();
-        int lastDotIndex = className.lastIndexOf(PACKAGE_SEPARATOR);
-        return className.substring(lastDotIndex + 1) + CLASS_FILE_SUFFIX;
     }
 
 }

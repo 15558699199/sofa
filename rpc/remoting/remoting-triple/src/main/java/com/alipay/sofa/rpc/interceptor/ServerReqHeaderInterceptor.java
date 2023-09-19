@@ -26,16 +26,7 @@ import com.alipay.sofa.rpc.core.request.SofaRequest;
 import com.alipay.sofa.rpc.core.response.SofaResponse;
 import com.alipay.sofa.rpc.tracer.sofatracer.TracingContextKey;
 import com.alipay.sofa.rpc.tracer.sofatracer.TripleTracerAdapter;
-import io.grpc.Context;
-import io.grpc.Contexts;
-import io.grpc.ForwardingServerCall;
-import io.grpc.ForwardingServerCallListener;
-import io.grpc.Metadata;
-import io.grpc.ServerCall;
-import io.grpc.ServerCallHandler;
-import io.grpc.ServerServiceDefinition;
-import io.grpc.Status;
-import io.grpc.StatusRuntimeException;
+import io.grpc.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,7 +38,7 @@ import org.slf4j.LoggerFactory;
 public class ServerReqHeaderInterceptor extends TripleServerInterceptor {
 
     public static final Logger LOGGER = LoggerFactory
-                                          .getLogger(ServerReqHeaderInterceptor.class);
+            .getLogger(ServerReqHeaderInterceptor.class);
 
     public ServerReqHeaderInterceptor(ServerServiceDefinition serverServiceDefinition) {
         super(serverServiceDefinition);
@@ -60,16 +51,16 @@ public class ServerReqHeaderInterceptor extends TripleServerInterceptor {
         final ServerServiceDefinition serverServiceDefinition = this.getServerServiceDefinition();
 
         SofaResponse sofaResponse = new SofaResponse();
-        final Throwable[] throwable = { null };
+        final Throwable[] throwable = {null};
         SofaRequest sofaRequest = new SofaRequest();
         TripleTracerAdapter.serverReceived(sofaRequest, serverServiceDefinition, call, requestHeaders);
         SofaTraceContext sofaTraceContext = SofaTraceContextHolder.getSofaTraceContext();
         SofaTracerSpan serverSpan = sofaTraceContext.getCurrentSpan();
 
         Context ctxWithSpan = Context.current()
-            .withValue(TracingContextKey.getKey(), serverSpan)
-            .withValue(TracingContextKey.getSpanContextKey(), serverSpan.context())
-            .withValue(TracingContextKey.getKeySofaRequest(), sofaRequest);
+                .withValue(TracingContextKey.getKey(), serverSpan)
+                .withValue(TracingContextKey.getSpanContextKey(), serverSpan.context())
+                .withValue(TracingContextKey.getKeySofaRequest(), sofaRequest);
 
         //这里和下面不在一个线程
         if (RpcRunningState.isDebugMode()) {
@@ -109,7 +100,7 @@ public class ServerReqHeaderInterceptor extends TripleServerInterceptor {
                 Contexts.interceptCall(ctxWithSpan, realCall, requestHeaders, next);
 
         ForwardingServerCallListener.SimpleForwardingServerCallListener<ReqT> result = new ForwardingServerCallListener.SimpleForwardingServerCallListener<ReqT>(
-            listenerWithContext) {
+                listenerWithContext) {
 
             //完成的时候走到这里
             @Override

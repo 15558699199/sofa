@@ -36,18 +36,17 @@ import static io.netty.util.internal.ObjectUtil.checkNotNull;
 
 /**
  * @author <a href="mailto:zhanggeng.zg@antfin.com">GengZhang</a>
- * 
  * @see CleartextHttp2ServerUpgradeHandler
  * @since 5.4.0
  */
 @Unstable
 public class Http2ServerUpgradeHandler extends ChannelHandlerAdapter {
-    private static final ByteBuf           CONNECTION_PREFACE = unreleasableBuffer(connectionPrefaceBuf());
+    private static final ByteBuf CONNECTION_PREFACE = unreleasableBuffer(connectionPrefaceBuf());
 
-    private final EventLoopGroup           bizGroup;
-    private final HttpServerCodec          httpServerCodec;
+    private final EventLoopGroup bizGroup;
+    private final HttpServerCodec httpServerCodec;
     private final HttpServerUpgradeHandler httpServerUpgradeHandler;
-    private final ChannelHandler           http2ServerHandler;
+    private final ChannelHandler http2ServerHandler;
 
     /**
      * Creates the channel handler provide cleartext HTTP/2 upgrade from HTTP
@@ -72,9 +71,19 @@ public class Http2ServerUpgradeHandler extends ChannelHandlerAdapter {
     @Override
     public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
         ctx.pipeline()
-            .addBefore(ctx.name(), null, new Http2ServerUpgradeHandler.PriorKnowledgeHandler())
-            .addBefore(ctx.name(), "HttpServerCodec", httpServerCodec)
-            .replace(this, "HttpServerUpgradeHandler", httpServerUpgradeHandler);
+                .addBefore(ctx.name(), null, new Http2ServerUpgradeHandler.PriorKnowledgeHandler())
+                .addBefore(ctx.name(), "HttpServerCodec", httpServerCodec)
+                .replace(this, "HttpServerUpgradeHandler", httpServerUpgradeHandler);
+    }
+
+    /**
+     * User event that is fired to notify about HTTP/2 protocol is started.
+     */
+    public static final class PriorKnowledgeUpgradeEvent {
+        private static final Http2ServerUpgradeHandler.PriorKnowledgeUpgradeEvent INSTANCE = new Http2ServerUpgradeHandler.PriorKnowledgeUpgradeEvent();
+
+        private PriorKnowledgeUpgradeEvent() {
+        }
     }
 
     /**
@@ -88,30 +97,20 @@ public class Http2ServerUpgradeHandler extends ChannelHandlerAdapter {
             int bytesRead = Math.min(in.readableBytes(), prefaceLength);
 
             if (!ByteBufUtil.equals(CONNECTION_PREFACE, CONNECTION_PREFACE.readerIndex(),
-                in, in.readerIndex(), bytesRead)) {
+                    in, in.readerIndex(), bytesRead)) {
                 ctx.pipeline().remove(this);
             } else if (bytesRead == prefaceLength) {
                 // Full h2 preface match, removed source codec, using http2 codec to handle
                 // following network traffic
                 ctx.pipeline()
-                    .remove(httpServerCodec)
-                    .remove(httpServerUpgradeHandler);
+                        .remove(httpServerCodec)
+                        .remove(httpServerUpgradeHandler);
                 // 用业务线程池
                 ctx.pipeline().addAfter(bizGroup, ctx.name(), null, http2ServerHandler);
                 ctx.pipeline().remove(this);
 
                 ctx.fireUserEventTriggered(Http2ServerUpgradeHandler.PriorKnowledgeUpgradeEvent.INSTANCE);
             }
-        }
-    }
-
-    /**
-     * User event that is fired to notify about HTTP/2 protocol is started.
-     */
-    public static final class PriorKnowledgeUpgradeEvent {
-        private static final Http2ServerUpgradeHandler.PriorKnowledgeUpgradeEvent INSTANCE = new Http2ServerUpgradeHandler.PriorKnowledgeUpgradeEvent();
-
-        private PriorKnowledgeUpgradeEvent() {
         }
     }
 }

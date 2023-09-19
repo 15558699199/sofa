@@ -28,19 +28,17 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 /**
- *
- *
  * @author zhanggeng
  */
 public class BAsyncChainSampleServiceImpl implements SampleService {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(BAsyncChainSampleServiceImpl.class);
 
-    private SampleService       sampleServiceC;
+    private SampleService sampleServiceC;
 
-    private SampleService       sampleServiceD;
+    private SampleService sampleServiceD;
 
-    private String              reqBaggage;
+    private String reqBaggage;
 
     public BAsyncChainSampleServiceImpl(SampleService sampleServiceC, SampleService sampleServiceD) {
         this.sampleServiceC = sampleServiceC;
@@ -116,7 +114,7 @@ public class BAsyncChainSampleServiceImpl implements SampleService {
                     LOGGER.info("----reqBaggageD---:" + reqBaggageD);
                     EchoResponse s2 = sampleServiceD.echoObj(req);
                     sendAppResponse(EchoResponse.newBuilder().setCode(200)
-                        .setMessage(s1.getMessage() + s2.getMessage()).build());
+                            .setMessage(s1.getMessage() + s2.getMessage()).build());
                     LOGGER.info("--b4---:" + RpcInvokeContext.getContext());
                     context.putResponseBaggage("respBaggageB_useless2", "在返A之前写后没用"); // 返回写在这里可能没用
                     latch.countDown();

@@ -22,28 +22,30 @@ import com.alipay.sofa.registry.log.Logger;
 import com.alipay.sofa.registry.log.LoggerFactory;
 import com.alipay.sofa.registry.remoting.Channel;
 import com.alipay.sofa.registry.server.session.connections.ConnectionsService;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.List;
+
 public final class ClientOnRequestHandler extends AbstractConsoleHandler<ClientOnRequest> {
-  private static final Logger LOGGER = LoggerFactory.getLogger(ClientOnRequestHandler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ClientOnRequestHandler.class);
 
-  @Autowired protected ConnectionsService connectionsService;
+    @Autowired
+    protected ConnectionsService connectionsService;
 
-  @Override
-  public Object doHandle(Channel channel, ClientOnRequest request) {
-    List<String> conIds = connectionsService.closeIpConnects(request.getIps());
-    LOGGER.info("clientOn conIds: {}", conIds);
-    return CommonResponse.buildSuccessResponse();
-  }
+    @Override
+    public Object doHandle(Channel channel, ClientOnRequest request) {
+        List<String> conIds = connectionsService.closeIpConnects(request.getIps());
+        LOGGER.info("clientOn conIds: {}", conIds);
+        return CommonResponse.buildSuccessResponse();
+    }
 
-  @Override
-  public Class interest() {
-    return ClientOnRequest.class;
-  }
+    @Override
+    public Class interest() {
+        return ClientOnRequest.class;
+    }
 
-  @Override
-  public Object buildFailedResponse(String msg) {
-    return CommonResponse.buildFailedResponse(msg);
-  }
+    @Override
+    public Object buildFailedResponse(String msg) {
+        return CommonResponse.buildFailedResponse(msg);
+    }
 }

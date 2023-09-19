@@ -16,9 +16,6 @@
  */
 package com.alipay.sofa.registry.server.meta.slot.balance;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 import com.alipay.sofa.registry.common.model.metaserver.nodes.DataNode;
 import com.alipay.sofa.registry.common.model.slot.SlotTable;
 import com.alipay.sofa.registry.common.model.store.URL;
@@ -28,110 +25,114 @@ import com.alipay.sofa.registry.server.meta.slot.manager.SimpleSlotManager;
 import com.alipay.sofa.registry.server.meta.slot.util.builder.SlotTableBuilder;
 import com.alipay.sofa.registry.server.shared.util.NodeUtils;
 import com.alipay.sofa.registry.util.StringFormatter;
-import java.util.List;
 import org.assertj.core.util.Lists;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.List;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 public class LeaderOnlyBalancerTest extends AbstractMetaServerTestBase {
 
-  private SimpleSlotManager slotManager;
+    private SimpleSlotManager slotManager;
 
-  private List<String> currentDataServers;
+    private List<String> currentDataServers;
 
-  private SlotTableBuilder slotTableBuilder;
+    private SlotTableBuilder slotTableBuilder;
 
-  private LeaderOnlyBalancer balancer;
+    private LeaderOnlyBalancer balancer;
 
-  @Before
-  public void beforeLeaderOnlyBalancerTest() {
-    NodeConfig nodeConfig = mock(NodeConfig.class);
-    when(nodeConfig.getLocalDataCenter()).thenReturn(getDc());
+    @Before
+    public void beforeLeaderOnlyBalancerTest() {
+        NodeConfig nodeConfig = mock(NodeConfig.class);
+        when(nodeConfig.getLocalDataCenter()).thenReturn(getDc());
 
-    currentDataServers = Lists.newArrayList("10.0.0.1", "10.0.0.2", "10.0.0.3");
-    slotManager = new SimpleSlotManager();
-    slotManager.setSlotNums(16);
-    slotManager.setSlotReplicas(1);
-    slotTableBuilder = new SlotTableBuilder(slotManager.getSlotTable(), 16, 1);
-    balancer = new LeaderOnlyBalancer(slotTableBuilder, currentDataServers);
-    balancer.setMaxMoveLeaderSlots(2);
-  }
-
-  @Test
-  public void testBalance() {
-    String singleNode = currentDataServers.get(0);
-    for (int slotId = 0; slotId < 16; slotId++) {
-      slotTableBuilder.replaceLeader(slotId, singleNode);
+        currentDataServers = Lists.newArrayList("10.0.0.1", "10.0.0.2", "10.0.0.3");
+        slotManager = new SimpleSlotManager();
+        slotManager.setSlotNums(16);
+        slotManager.setSlotReplicas(1);
+        slotTableBuilder = new SlotTableBuilder(slotManager.getSlotTable(), 16, 1);
+        balancer = new LeaderOnlyBalancer(slotTableBuilder, currentDataServers);
+        balancer.setMaxMoveLeaderSlots(2);
     }
-    slotTableBuilder.init(currentDataServers);
-    SlotTable prev = slotTableBuilder.build();
-    SlotTable slotTable = balancer.balance();
-    System.out.println("@@@" + slotTable);
-    Assert.assertEquals(
-        StringFormatter.format("servers={}, slots={}", currentDataServers, slotTable),
-        1,
-        slotTable.transfer(currentDataServers.get(1), false).get(0).totalSlotNum());
-    Assert.assertEquals(
-        StringFormatter.format("servers={}, slots={}", currentDataServers, slotTable),
-        1,
-        slotTable.transfer(currentDataServers.get(2), false).get(0).totalSlotNum());
 
-    Assert.assertTrue(
-        isMoreBalanced(
-            prev,
-            slotTable,
-            Lists.newArrayList(
-                new DataNode(new URL("10.0.0.1"), getDc()),
-                new DataNode(new URL("10.0.0.2"), getDc()),
-                new DataNode(new URL("10.0.0.3"), getDc()))));
+    @Test
+    public void testBalance() {
+        String singleNode = currentDataServers.get(0);
+        for (int slotId = 0; slotId < 16; slotId++) {
+            slotTableBuilder.replaceLeader(slotId, singleNode);
+        }
+        slotTableBuilder.init(currentDataServers);
+        SlotTable prev = slotTableBuilder.build();
+        SlotTable slotTable = balancer.balance();
+        System.out.println("@@@" + slotTable);
+        Assert.assertEquals(
+                StringFormatter.format("servers={}, slots={}", currentDataServers, slotTable),
+                1,
+                slotTable.transfer(currentDataServers.get(1), false).get(0).totalSlotNum());
+        Assert.assertEquals(
+                StringFormatter.format("servers={}, slots={}", currentDataServers, slotTable),
+                1,
+                slotTable.transfer(currentDataServers.get(2), false).get(0).totalSlotNum());
 
-    slotTable = balancer.balance();
-    Assert.assertEquals(
-        StringFormatter.format("servers={}, slots={}", currentDataServers, slotTable),
-        2,
-        slotTable.transfer(currentDataServers.get(1), false).get(0).totalSlotNum());
-    Assert.assertEquals(
-        StringFormatter.format("servers={}, slots={}", currentDataServers, slotTable),
-        2,
-        slotTable.transfer(currentDataServers.get(2), false).get(0).totalSlotNum());
+        Assert.assertTrue(
+                isMoreBalanced(
+                        prev,
+                        slotTable,
+                        Lists.newArrayList(
+                                new DataNode(new URL("10.0.0.1"), getDc()),
+                                new DataNode(new URL("10.0.0.2"), getDc()),
+                                new DataNode(new URL("10.0.0.3"), getDc()))));
 
-    Assert.assertTrue(
-        isMoreBalanced(
-            prev,
-            slotTable,
-            Lists.newArrayList(
-                new DataNode(new URL("10.0.0.1"), getDc()),
-                new DataNode(new URL("10.0.0.2"), getDc()),
-                new DataNode(new URL("10.0.0.3"), getDc()))));
-  }
+        slotTable = balancer.balance();
+        Assert.assertEquals(
+                StringFormatter.format("servers={}, slots={}", currentDataServers, slotTable),
+                2,
+                slotTable.transfer(currentDataServers.get(1), false).get(0).totalSlotNum());
+        Assert.assertEquals(
+                StringFormatter.format("servers={}, slots={}", currentDataServers, slotTable),
+                2,
+                slotTable.transfer(currentDataServers.get(2), false).get(0).totalSlotNum());
 
-  @Test
-  public void testNoDataNodesNeedBalance() {
-    List<DataNode> dataNodes = randomDataNodes(3);
-    SlotTable slotTable = randomSlotTable(dataNodes);
-    currentDataServers = NodeUtils.transferNodeToIpList(dataNodes);
-    slotTableBuilder.init(currentDataServers);
-    slotManager.refresh(slotTable);
-    balancer = new LeaderOnlyBalancer(slotTableBuilder, currentDataServers);
-    Assert.assertNull(balancer.balance());
-  }
-
-  @Test
-  public void testFindDataServersNeedLeaderSlots() {
-    String singleNode = currentDataServers.get(0);
-    for (int slotId = 0; slotId < 16; slotId++) {
-      slotTableBuilder.replaceLeader(slotId, singleNode);
+        Assert.assertTrue(
+                isMoreBalanced(
+                        prev,
+                        slotTable,
+                        Lists.newArrayList(
+                                new DataNode(new URL("10.0.0.1"), getDc()),
+                                new DataNode(new URL("10.0.0.2"), getDc()),
+                                new DataNode(new URL("10.0.0.3"), getDc()))));
     }
-    slotTableBuilder.init(currentDataServers);
-    // TODO
-    //        Assert.assertFalse(balancer.findDataServersNeedLeaderSlots(
-    //            SlotConfig.SLOT_NUM / currentDataServers.size()).isEmpty());
-    //        Set<String> expected = Sets.newHashSet("10.0.0.2", "10.0.0.3");
-    //        Set<String> actual = balancer.findDataServersNeedLeaderSlots(SlotConfig.SLOT_NUM
-    //                                                                     /
-    // currentDataServers.size());
-    //
-    //        Assert.assertEquals(expected, actual);
-  }
+
+    @Test
+    public void testNoDataNodesNeedBalance() {
+        List<DataNode> dataNodes = randomDataNodes(3);
+        SlotTable slotTable = randomSlotTable(dataNodes);
+        currentDataServers = NodeUtils.transferNodeToIpList(dataNodes);
+        slotTableBuilder.init(currentDataServers);
+        slotManager.refresh(slotTable);
+        balancer = new LeaderOnlyBalancer(slotTableBuilder, currentDataServers);
+        Assert.assertNull(balancer.balance());
+    }
+
+    @Test
+    public void testFindDataServersNeedLeaderSlots() {
+        String singleNode = currentDataServers.get(0);
+        for (int slotId = 0; slotId < 16; slotId++) {
+            slotTableBuilder.replaceLeader(slotId, singleNode);
+        }
+        slotTableBuilder.init(currentDataServers);
+        // TODO
+        //        Assert.assertFalse(balancer.findDataServersNeedLeaderSlots(
+        //            SlotConfig.SLOT_NUM / currentDataServers.size()).isEmpty());
+        //        Set<String> expected = Sets.newHashSet("10.0.0.2", "10.0.0.3");
+        //        Set<String> actual = balancer.findDataServersNeedLeaderSlots(SlotConfig.SLOT_NUM
+        //                                                                     /
+        // currentDataServers.size());
+        //
+        //        Assert.assertEquals(expected, actual);
+    }
 }

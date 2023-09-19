@@ -20,8 +20,9 @@ import com.alipay.sofa.registry.core.model.ConfiguratorRegister;
 import com.alipay.sofa.registry.core.model.RegisterResponse;
 import com.alipay.sofa.registry.remoting.Channel;
 import com.alipay.sofa.registry.server.session.strategy.WatcherHandlerStrategy;
-import java.util.concurrent.Executor;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.concurrent.Executor;
 
 /**
  * @author shangyu.wh
@@ -29,22 +30,23 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class WatcherHandler extends AbstractClientDataRequestHandler<ConfiguratorRegister> {
 
-  @Autowired WatcherHandlerStrategy watcherHandlerStrategy;
+    @Autowired
+    WatcherHandlerStrategy watcherHandlerStrategy;
 
-  @Override
-  public Object doHandle(Channel channel, ConfiguratorRegister message) {
-    RegisterResponse result = new RegisterResponse();
-    watcherHandlerStrategy.handleConfiguratorRegister(channel, message, result);
-    return result;
-  }
+    @Override
+    public Object doHandle(Channel channel, ConfiguratorRegister message) {
+        RegisterResponse result = new RegisterResponse();
+        watcherHandlerStrategy.handleConfiguratorRegister(channel, message, result);
+        return result;
+    }
 
-  @Override
-  public Class interest() {
-    return ConfiguratorRegister.class;
-  }
+    @Override
+    public Class interest() {
+        return ConfiguratorRegister.class;
+    }
 
-  @Override
-  public Executor getExecutor() {
-    return executorManager.getAccessSubExecutor();
-  }
+    @Override
+    public Executor getExecutor() {
+        return executorManager.getAccessSubExecutor();
+    }
 }

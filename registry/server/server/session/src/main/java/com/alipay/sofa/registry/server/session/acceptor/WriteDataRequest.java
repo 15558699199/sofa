@@ -25,21 +25,23 @@ import com.alipay.sofa.registry.common.model.ConnectId;
  */
 public interface WriteDataRequest<T> {
 
-  /** The enum for request type */
-  enum WriteDataRequestType {
-    PUBLISHER,
-    UN_PUBLISHER,
-    CLIENT_OFF
-  }
+    /**
+     * Gets request body.
+     *
+     * @return the request body
+     */
+    T getRequestBody();
 
-  /**
-   * Gets request body.
-   *
-   * @return the request body
-   */
-  T getRequestBody();
+    WriteDataRequestType getRequestType();
 
-  WriteDataRequestType getRequestType();
+    ConnectId getConnectId();
 
-  ConnectId getConnectId();
+    /**
+     * The enum for request type
+     */
+    enum WriteDataRequestType {
+        PUBLISHER,
+        UN_PUBLISHER,
+        CLIENT_OFF
+    }
 }

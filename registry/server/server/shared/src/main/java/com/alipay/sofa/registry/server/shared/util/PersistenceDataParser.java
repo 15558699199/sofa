@@ -27,21 +27,21 @@ import org.apache.commons.lang.StringUtils;
  */
 public class PersistenceDataParser {
 
-  public static boolean parse2BoolIgnoreCase(
-      PersistenceData persistenceData, boolean defaultValue) {
-    if (persistenceData == null || StringUtils.isBlank(persistenceData.getData())) {
-      return defaultValue;
+    public static boolean parse2BoolIgnoreCase(
+            PersistenceData persistenceData, boolean defaultValue) {
+        if (persistenceData == null || StringUtils.isBlank(persistenceData.getData())) {
+            return defaultValue;
+        }
+        return Boolean.parseBoolean(persistenceData.getData());
     }
-    return Boolean.parseBoolean(persistenceData.getData());
-  }
 
-  public static boolean parse2BoolIgnoreCase(
-      DBResponse<PersistenceData> response, boolean defaultValue) {
-    if (response == null
-        || response.getEntity() == null
-        || response.getOperationStatus() != OperationStatus.SUCCESS) {
-      return defaultValue;
+    public static boolean parse2BoolIgnoreCase(
+            DBResponse<PersistenceData> response, boolean defaultValue) {
+        if (response == null
+                || response.getEntity() == null
+                || response.getOperationStatus() != OperationStatus.SUCCESS) {
+            return defaultValue;
+        }
+        return parse2BoolIgnoreCase(response.getEntity(), defaultValue);
     }
-    return parse2BoolIgnoreCase(response.getEntity(), defaultValue);
-  }
 }

@@ -24,53 +24,53 @@ import com.alipay.sofa.registry.common.model.store.URL;
  */
 public interface Client extends Endpoint {
 
-  /**
-   * get channel by url.
-   *
-   * @param url
-   * @return channel
-   */
-  Channel getChannel(URL url);
+    /**
+     * get channel by url.
+     *
+     * @param url
+     * @return channel
+     */
+    Channel getChannel(URL url);
 
-  /**
-   * client connect target url server
-   *
-   * @param url
-   * @return
-   */
-  Channel connect(URL url);
+    /**
+     * client connect target url server
+     *
+     * @param url
+     * @return
+     */
+    Channel connect(URL url);
 
-  /**
-   * Sync send
-   *
-   * @param url the url
-   * @param message the message
-   * @param timeoutMillis the timeout millis
-   * @return object
-   */
-  Object sendSync(final URL url, final Object message, final int timeoutMillis);
+    /**
+     * Sync send
+     *
+     * @param url           the url
+     * @param message       the message
+     * @param timeoutMillis the timeout millis
+     * @return object
+     */
+    Object sendSync(final URL url, final Object message, final int timeoutMillis);
 
-  /**
-   * send with callback handler
-   *
-   * @param url the url
-   * @param message the message
-   * @param callbackHandler the callback handler
-   * @param timeoutMillis the timeout millis
-   */
-  void sendCallback(
-      final URL url,
-      final Object message,
-      CallbackHandler callbackHandler,
-      final int timeoutMillis);
+    /**
+     * send with callback handler
+     *
+     * @param url             the url
+     * @param message         the message
+     * @param callbackHandler the callback handler
+     * @param timeoutMillis   the timeout millis
+     */
+    void sendCallback(
+            final URL url,
+            final Object message,
+            CallbackHandler callbackHandler,
+            final int timeoutMillis);
 
-  /**
-   * Sync send
-   *
-   * @param channel the channel
-   * @param message the message
-   * @param timeoutMillis the timeout millis
-   * @return object
-   */
-  Object sendSync(final Channel channel, final Object message, final int timeoutMillis);
+    /**
+     * Sync send
+     *
+     * @param channel       the channel
+     * @param message       the message
+     * @param timeoutMillis the timeout millis
+     * @return object
+     */
+    Object sendSync(final Channel channel, final Object message, final int timeoutMillis);
 }

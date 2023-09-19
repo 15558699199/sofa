@@ -25,41 +25,41 @@ import com.alipay.sofa.registry.core.model.RegisterResponse;
  */
 public class RegisterResponseConvertor {
 
-  public static RegisterResponse convert2Java(RegisterResponsePb registerResponsePb) {
+    public static RegisterResponse convert2Java(RegisterResponsePb registerResponsePb) {
 
-    if (registerResponsePb == null) {
-      return null;
+        if (registerResponsePb == null) {
+            return null;
+        }
+
+        RegisterResponse registerResponse = new RegisterResponse();
+
+        registerResponse.setMessage(registerResponsePb.getMessage());
+        registerResponse.setRefused(registerResponsePb.getRefused());
+        registerResponse.setRegistId(registerResponsePb.getRegistId());
+        registerResponse.setSuccess(registerResponsePb.getSuccess());
+        registerResponse.setVersion(registerResponsePb.getVersion());
+
+        return registerResponse;
     }
 
-    RegisterResponse registerResponse = new RegisterResponse();
+    public static RegisterResponsePb convert2Pb(RegisterResponse registerResponseJava) {
 
-    registerResponse.setMessage(registerResponsePb.getMessage());
-    registerResponse.setRefused(registerResponsePb.getRefused());
-    registerResponse.setRegistId(registerResponsePb.getRegistId());
-    registerResponse.setSuccess(registerResponsePb.getSuccess());
-    registerResponse.setVersion(registerResponsePb.getVersion());
+        if (registerResponseJava == null) {
+            return null;
+        }
 
-    return registerResponse;
-  }
+        RegisterResponsePb.Builder builder = RegisterResponsePb.newBuilder();
 
-  public static RegisterResponsePb convert2Pb(RegisterResponse registerResponseJava) {
+        if (null != registerResponseJava.getMessage()) {
+            builder.setMessage(registerResponseJava.getMessage());
+        }
+        if (null != registerResponseJava.getRegistId()) {
+            builder.setRegistId(registerResponseJava.getRegistId());
+        }
+        builder.setVersion(registerResponseJava.getVersion());
+        builder.setRefused(registerResponseJava.isRefused());
+        builder.setSuccess(registerResponseJava.isSuccess());
 
-    if (registerResponseJava == null) {
-      return null;
+        return builder.build();
     }
-
-    RegisterResponsePb.Builder builder = RegisterResponsePb.newBuilder();
-
-    if (null != registerResponseJava.getMessage()) {
-      builder.setMessage(registerResponseJava.getMessage());
-    }
-    if (null != registerResponseJava.getRegistId()) {
-      builder.setRegistId(registerResponseJava.getRegistId());
-    }
-    builder.setVersion(registerResponseJava.getVersion());
-    builder.setRefused(registerResponseJava.isRefused());
-    builder.setSuccess(registerResponseJava.isSuccess());
-
-    return builder.build();
-  }
 }

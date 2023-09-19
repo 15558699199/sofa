@@ -29,24 +29,24 @@ import org.junit.Test;
 
 public class PublisherConverterTest {
 
-  @Test
-  public void test() throws Exception {
-    PublisherRegister register = new PublisherRegister();
-    TestUtils.setField(register);
-    register.setDataList(Lists.newArrayList(new DataBox("testDataBox")));
-    long now1 = System.currentTimeMillis();
-    Publisher publisher = PublisherConverter.convert(register);
-    long now2 = System.currentTimeMillis();
-    TestUtils.assertBetween(publisher.getRegisterTimestamp(), now1, now2);
-    TestUtils.assertEquals(register, publisher);
+    @Test
+    public void test() throws Exception {
+        PublisherRegister register = new PublisherRegister();
+        TestUtils.setField(register);
+        register.setDataList(Lists.newArrayList(new DataBox("testDataBox")));
+        long now1 = System.currentTimeMillis();
+        Publisher publisher = PublisherConverter.convert(register);
+        long now2 = System.currentTimeMillis();
+        TestUtils.assertBetween(publisher.getRegisterTimestamp(), now1, now2);
+        TestUtils.assertEquals(register, publisher);
 
-    Assert.assertEquals(PublishType.NORMAL, publisher.getPublishType());
-    Assert.assertEquals(PublishSource.CLIENT, publisher.getPublishSource());
+        Assert.assertEquals(PublishType.NORMAL, publisher.getPublishType());
+        Assert.assertEquals(PublishSource.CLIENT, publisher.getPublishSource());
 
-    Assert.assertEquals(register.getDataList().size(), publisher.getDataList().size());
-    Assert.assertEquals(register.getDataList().size(), 1);
-    ServerDataBox box = publisher.getDataList().get(0);
-    box.extract();
-    Assert.assertEquals(box.getObject(), "testDataBox");
-  }
+        Assert.assertEquals(register.getDataList().size(), publisher.getDataList().size());
+        Assert.assertEquals(register.getDataList().size(), 1);
+        ServerDataBox box = publisher.getDataList().get(0);
+        box.extract();
+        Assert.assertEquals(box.getObject(), "testDataBox");
+    }
 }

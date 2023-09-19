@@ -38,37 +38,6 @@ import java.util.List;
 
 public class TestGenerate {
 
-    public static final class SomeParameter {
-        private String[]     strings;
-        private List<String> stringList;
-
-        public SomeParameter[] getObjects() {
-            return objects;
-        }
-
-        public void setObjects(SomeParameter[] objects) {
-            this.objects = objects;
-        }
-
-        private SomeParameter[] objects;
-
-        public List<String> getStringList() {
-            return stringList;
-        }
-
-        public void setStringList(List<String> stringList) {
-            this.stringList = stringList;
-        }
-
-        public String[] getStrings() {
-            return strings;
-        }
-
-        public void setStrings(String[] strings) {
-            this.strings = strings;
-        }
-    }
-
     public void someMethod(SomeParameter someParameter) {
         System.out.printf("someMethod");
     }
@@ -80,7 +49,7 @@ public class TestGenerate {
         Swagger swagger = new Swagger();
         BodyParameter parameter = new BodyParameter();
         Parameter parameter1 = ParameterProcessor.applyAnnotations(swagger, parameter, type,
-            new ArrayList<Annotation>());
+                new ArrayList<Annotation>());
         Assert.assertTrue(parameter1 instanceof BodyParameter);
         Model schema = ((BodyParameter) parameter1).getSchema();
         Assert.assertTrue(schema instanceof RefModel);
@@ -101,5 +70,35 @@ public class TestGenerate {
         Property property = context.resolveProperty(type, null);
         Assert.assertTrue(property instanceof RefProperty);
         Assert.assertEquals("#/definitions/SomeParameter", ((RefProperty) property).get$ref());
+    }
+
+    public static final class SomeParameter {
+        private String[] strings;
+        private List<String> stringList;
+        private SomeParameter[] objects;
+
+        public SomeParameter[] getObjects() {
+            return objects;
+        }
+
+        public void setObjects(SomeParameter[] objects) {
+            this.objects = objects;
+        }
+
+        public List<String> getStringList() {
+            return stringList;
+        }
+
+        public void setStringList(List<String> stringList) {
+            this.stringList = stringList;
+        }
+
+        public String[] getStrings() {
+            return strings;
+        }
+
+        public void setStrings(String[] strings) {
+            this.strings = strings;
+        }
     }
 }

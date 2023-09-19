@@ -37,17 +37,17 @@ public class FallbackContext {
     /**
      * The request
      */
-    private SofaRequest   request;
+    private SofaRequest request;
 
     /**
      * The response, only {@link RpcConstants#INVOKER_TYPE_SYNC} and {@link SofaResponse#isError()} is true
      */
-    private SofaResponse  response;
+    private SofaResponse response;
 
     /**
      * The exception, from {@link HystrixCommand#getExecutionException()}
      */
-    private Throwable     exception;
+    private Throwable exception;
 
     public FallbackContext() {
     }

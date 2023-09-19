@@ -23,8 +23,6 @@ import org.junit.Test;
 import java.util.concurrent.Callable;
 
 /**
- *
- *
  * @author <a href="mailto:zhanggeng.zg@antfin.com">GengZhang</a>
  */
 public class ServiceHorizontalRegulationStrategyTest extends FaultBaseServiceTest {

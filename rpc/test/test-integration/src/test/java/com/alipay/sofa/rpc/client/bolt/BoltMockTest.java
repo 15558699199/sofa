@@ -35,18 +35,18 @@ public class BoltMockTest extends ActivelyDestroyTest {
     public void testLocal() {
 
         final ConsumerConfig<HelloService> consumerConfig = new ConsumerConfig<HelloService>()
-            .setInterfaceId(HelloService.class.getName())
-            .setProtocol(RpcConstants.PROTOCOL_TYPE_BOLT)
-            .setBootstrap("bolt")
-            .setApplication(new ApplicationConfig().setAppName("clientApp"))
-            .setReconnectPeriod(1000)
-            .setMockMode("local")
-            .setMockRef(new HelloService() {
-                @Override
-                public String sayHello(String name, int age) {
-                    return "mock";
-                }
-            });
+                .setInterfaceId(HelloService.class.getName())
+                .setProtocol(RpcConstants.PROTOCOL_TYPE_BOLT)
+                .setBootstrap("bolt")
+                .setApplication(new ApplicationConfig().setAppName("clientApp"))
+                .setReconnectPeriod(1000)
+                .setMockMode("local")
+                .setMockRef(new HelloService() {
+                    @Override
+                    public String sayHello(String name, int age) {
+                        return "mock";
+                    }
+                });
 
         HelloService helloService = consumerConfig.refer();
         Assert.assertEquals("mock", helloService.sayHello("xx", 22));
@@ -60,13 +60,13 @@ public class BoltMockTest extends ActivelyDestroyTest {
         HttpMockServer.addMockPath("/", JSON.toJSONString("mockJson"));
         HttpMockServer.start();
         final ConsumerConfig<HelloService> consumerConfig = new ConsumerConfig<HelloService>()
-            .setInterfaceId(HelloService.class.getName())
-            .setProtocol(RpcConstants.PROTOCOL_TYPE_BOLT)
-            .setBootstrap("bolt")
-            .setApplication(new ApplicationConfig().setAppName("clientApp"))
-            .setReconnectPeriod(1000)
-            .setMockMode(MockMode.REMOTE)
-            .setParameter("mockUrl", "http://127.0.0.1:1235/");
+                .setInterfaceId(HelloService.class.getName())
+                .setProtocol(RpcConstants.PROTOCOL_TYPE_BOLT)
+                .setBootstrap("bolt")
+                .setApplication(new ApplicationConfig().setAppName("clientApp"))
+                .setReconnectPeriod(1000)
+                .setMockMode(MockMode.REMOTE)
+                .setParameter("mockUrl", "http://127.0.0.1:1235/");
 
         HelloService helloService = consumerConfig.refer();
         Assert.assertEquals("mockJson", helloService.sayHello("xx", 22));

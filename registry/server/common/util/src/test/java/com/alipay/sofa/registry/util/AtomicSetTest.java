@@ -21,12 +21,12 @@ import org.junit.Test;
 
 public class AtomicSetTest {
 
-  @Test
-  public void test() {
-    AtomicSet<String> set = new AtomicSet<>();
-    set.add("1234");
-    set.add("1234");
-    Assert.assertEquals(1, set.getAndReset().size());
-    Assert.assertEquals(0, set.getAndReset().size());
-  }
+    @Test
+    public void test() {
+        AtomicSet<String> set = new AtomicSet<>();
+        set.add("1234");
+        set.add("1234");
+        Assert.assertEquals(1, set.getAndReset().size());
+        Assert.assertEquals(0, set.getAndReset().size());
+    }
 }

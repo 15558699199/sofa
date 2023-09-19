@@ -22,12 +22,11 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 
 /**
- *
  * @author yuanxuan
  * @version : RpcSofaBootApplication.java, v 0.1 2023年02月03日 15:19 yuanxuan Exp $
  */
 @SpringBootApplication
-@ComponentScan(excludeFilters = { @ComponentScan.Filter(type = FilterType.REGEX, pattern = "com.alipay.sofa.smoke.tests.rpc.boot.*") })
+@ComponentScan(excludeFilters = {@ComponentScan.Filter(type = FilterType.REGEX, pattern = "com.alipay.sofa.smoke.tests.rpc.boot.*")})
 public class RpcSofaBootApplication {
 
     public static void main(String[] args) {

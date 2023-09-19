@@ -16,16 +16,7 @@
  */
 package com.alipay.sofa.rpc.client.aft.impl;
 
-import com.alipay.sofa.rpc.client.aft.FaultToleranceConfigManager;
-import com.alipay.sofa.rpc.client.aft.InvocationStat;
-import com.alipay.sofa.rpc.client.aft.InvocationStatDimension;
-import com.alipay.sofa.rpc.client.aft.InvocationStatFactory;
-import com.alipay.sofa.rpc.client.aft.MeasureModel;
-import com.alipay.sofa.rpc.client.aft.MeasureResult;
-import com.alipay.sofa.rpc.client.aft.MeasureResultDetail;
-import com.alipay.sofa.rpc.client.aft.MeasureState;
-import com.alipay.sofa.rpc.client.aft.MeasureStrategy;
-import com.alipay.sofa.rpc.client.aft.ProviderInfoWeightManager;
+import com.alipay.sofa.rpc.client.aft.*;
 import com.alipay.sofa.rpc.common.utils.CalculateUtils;
 import com.alipay.sofa.rpc.common.utils.CommonUtils;
 import com.alipay.sofa.rpc.ext.Extension;
@@ -49,13 +40,46 @@ public class ServiceHorizontalMeasureStrategy implements MeasureStrategy {
     /**
      * Logger for this class
      */
-    private static final Logger LOGGER                   = LoggerFactory
-                                                             .getLogger(ServiceHorizontalMeasureStrategy.class);
+    private static final Logger LOGGER = LoggerFactory
+            .getLogger(ServiceHorizontalMeasureStrategy.class);
 
     /**
      * 如果配置的参与统计的窗口内最低调用次数不能小于1,限制
      */
-    private static final long   LEGAL_LEAST_WINDOW_COUNT = 1L;
+    private static final long LEGAL_LEAST_WINDOW_COUNT = 1L;
+    /**
+     * All measure model
+     */
+    protected final ConcurrentMap<String, MeasureModel> appServiceMeasureModels = new ConcurrentHashMap<String, MeasureModel>();
+
+    /**
+     * 对批量Invocation对应的InvocationStat进行一个快照
+     *
+     * @param stats Dimensions of invocation statistics
+     * @return List<InvocationStat>
+     */
+    public static List<InvocationStat> getInvocationStatSnapshots(List<InvocationStat> stats) {
+        List<InvocationStat> snapshots = new ArrayList<InvocationStat>(stats.size());
+        for (InvocationStat stat : stats) {
+            InvocationStat snapshot = stat.snapshot();
+            if (snapshot.getInvokeCount() <= 0) {
+                if (stat.getUselessCycle().incrementAndGet() > 6) {
+                    // 6 个时间窗口无调用，删除统计
+                    InvocationStatFactory.removeInvocationStat(stat);
+                    InvocationStatDimension dimension = stat.getDimension();
+                    String appName = dimension.getAppName();
+                    if (LOGGER.isDebugEnabled(appName)) {
+                        LOGGER.debugWithApp(appName, "Remove invocation stat : {}, {} because of useless cycle > 6",
+                                dimension.getDimensionKey(), dimension.getProviderInfo());
+                    }
+                }
+            } else {
+                stat.getUselessCycle().set(0);
+                snapshots.add(snapshot);
+            }
+        }
+        return snapshots;
+    }
 
     @Override
     public MeasureResult measure(MeasureModel measureModel) {
@@ -76,13 +100,13 @@ public class ServiceHorizontalMeasureStrategy implements MeasureStrategy {
         /* leastWindowCount在同一次度量中保持不变*/
         long leastWindowCount = FaultToleranceConfigManager.getLeastWindowCount(appName);
         leastWindowCount = leastWindowCount < LEGAL_LEAST_WINDOW_COUNT ? LEGAL_LEAST_WINDOW_COUNT
-            : leastWindowCount;
+                : leastWindowCount;
 
         /* 计算平均异常率和度量单个ip的时候都需要使用到appWeight*/
         double averageExceptionRate = calculateAverageExceptionRate(invocationStats, leastWindowCount);
 
         double leastWindowExceptionRateMultiple = FaultToleranceConfigManager
-            .getLeastWindowExceptionRateMultiple(appName);
+                .getLeastWindowExceptionRateMultiple(appName);
 
         for (InvocationStat invocationStat : invocationStats) {
             MeasureResultDetail measureResultDetail = null;
@@ -90,8 +114,8 @@ public class ServiceHorizontalMeasureStrategy implements MeasureStrategy {
 
             long windowCount = invocationStat.getInvokeCount();
             long invocationLeastWindowCount = getInvocationLeastWindowCount(invocationStat,
-                ProviderInfoWeightManager.getWeight(statDimension.getProviderInfo()),
-                leastWindowCount);
+                    ProviderInfoWeightManager.getWeight(statDimension.getProviderInfo()),
+                    leastWindowCount);
             if (averageExceptionRate == -1) {
                 measureResultDetail = new MeasureResultDetail(statDimension, MeasureState.IGNORE);
             } else {
@@ -101,10 +125,10 @@ public class ServiceHorizontalMeasureStrategy implements MeasureStrategy {
                         measureResultDetail = new MeasureResultDetail(statDimension, MeasureState.HEALTH);
                     } else {
                         double windowExceptionRateMultiple = CalculateUtils.divide(
-                            windowExceptionRate, averageExceptionRate);
+                                windowExceptionRate, averageExceptionRate);
                         measureResultDetail = windowExceptionRateMultiple >= leastWindowExceptionRateMultiple ?
-                            new MeasureResultDetail(statDimension, MeasureState.ABNORMAL) :
-                            new MeasureResultDetail(statDimension, MeasureState.HEALTH);
+                                new MeasureResultDetail(statDimension, MeasureState.ABNORMAL) :
+                                new MeasureResultDetail(statDimension, MeasureState.HEALTH);
                     }
                     measureResultDetail.setAbnormalRate(windowExceptionRate);
                     measureResultDetail.setAverageAbnormalRate(averageExceptionRate);
@@ -121,7 +145,7 @@ public class ServiceHorizontalMeasureStrategy implements MeasureStrategy {
         }
 
         logMeasureResult(measureResult, timeWindow, leastWindowCount, averageExceptionRate,
-            leastWindowExceptionRateMultiple);
+                leastWindowExceptionRateMultiple);
 
         InvocationStatFactory.updateInvocationStats(invocationStats);
         return measureResult;
@@ -129,6 +153,7 @@ public class ServiceHorizontalMeasureStrategy implements MeasureStrategy {
 
     /**
      * Print the measurement result details for each time window.
+     *
      * @param measureResult
      * @param timeWindow
      * @param leastWindowCount
@@ -165,8 +190,8 @@ public class ServiceHorizontalMeasureStrategy implements MeasureStrategy {
         info.append("};details{");
 
         info.append("timeWindow[" + timeWindow + "];leastWindowCount[" + leastWindowCount + "];averageExceptionRate[" +
-            averageExceptionRate
-            + "];leastWindowExceptionRateMultiple[" + leastWindowExceptionRateMultiple + "];");
+                averageExceptionRate
+                + "];leastWindowExceptionRateMultiple[" + leastWindowExceptionRateMultiple + "];");
         info.append("detail[");
         for (MeasureResultDetail detail : details) {
 
@@ -176,47 +201,13 @@ public class ServiceHorizontalMeasureStrategy implements MeasureStrategy {
             String measureState = detail.getMeasureState().name();
 
             info.append("(ip:" + ip + ",abnormalRate:" + abnormalRate + ",invocationLeastWindowCount:" +
-                invocationLeastWindowCount
-                + ",measureState:" + measureState + ")");
+                    invocationLeastWindowCount
+                    + ",measureState:" + measureState + ")");
         }
         info.append("]");
 
         LOGGER.debugWithApp(appName, info.toString());
     }
-
-    /**
-     * 对批量Invocation对应的InvocationStat进行一个快照
-     *
-     * @param stats Dimensions of invocation statistics
-     * @return List<InvocationStat>
-     */
-    public static List<InvocationStat> getInvocationStatSnapshots(List<InvocationStat> stats) {
-        List<InvocationStat> snapshots = new ArrayList<InvocationStat>(stats.size());
-        for (InvocationStat stat : stats) {
-            InvocationStat snapshot = stat.snapshot();
-            if (snapshot.getInvokeCount() <= 0) {
-                if (stat.getUselessCycle().incrementAndGet() > 6) {
-                    // 6 个时间窗口无调用，删除统计
-                    InvocationStatFactory.removeInvocationStat(stat);
-                    InvocationStatDimension dimension = stat.getDimension();
-                    String appName = dimension.getAppName();
-                    if (LOGGER.isDebugEnabled(appName)) {
-                        LOGGER.debugWithApp(appName, "Remove invocation stat : {}, {} because of useless cycle > 6",
-                            dimension.getDimensionKey(), dimension.getProviderInfo());
-                    }
-                }
-            } else {
-                stat.getUselessCycle().set(0);
-                snapshots.add(snapshot);
-            }
-        }
-        return snapshots;
-    }
-
-    /**
-     * All measure model
-     */
-    protected final ConcurrentMap<String, MeasureModel> appServiceMeasureModels = new ConcurrentHashMap<String, MeasureModel>();
 
     /**
      * 如果该Invocation不属于一个MeasureModel，那么创建一个MeasureModel。并返回该MeasureModel。
@@ -259,7 +250,7 @@ public class ServiceHorizontalMeasureStrategy implements MeasureStrategy {
     /**
      * 计算平均异常率，如果调用次数小于leastWindowCount则不参与计算。 如果所有调用次数均为0则返回-1
      *
-     * @param invocationStats List<InvocationStat>
+     * @param invocationStats  List<InvocationStat>
      * @param leastWindowCount leastWindowCount
      * @return The average exception rate of all invocation statics
      */
@@ -269,11 +260,11 @@ public class ServiceHorizontalMeasureStrategy implements MeasureStrategy {
         for (InvocationStat invocationStat : invocationStats) {
 
             long invocationLeastWindowCount = getInvocationLeastWindowCount(invocationStat,
-                ProviderInfoWeightManager.getWeight(invocationStat.getDimension().getProviderInfo()),
-                leastWindowCount);
+                    ProviderInfoWeightManager.getWeight(invocationStat.getDimension().getProviderInfo()),
+                    leastWindowCount);
 
             if (invocationLeastWindowCount != -1
-                && invocationStat.getInvokeCount() >= invocationLeastWindowCount) {
+                    && invocationStat.getInvokeCount() >= invocationLeastWindowCount) {
                 sumException += invocationStat.getExceptionCount();
                 sumCall += invocationStat.getInvokeCount();
             }
@@ -287,8 +278,8 @@ public class ServiceHorizontalMeasureStrategy implements MeasureStrategy {
     /**
      * 根据Invocation的实际权重计算该Invocation的实际最小窗口调用次数 如果目标地址原始权重为0，或者地址已经被剔除则返回-1。
      *
-     * @param invocationStat InvocationStat
-     * @param weight weight
+     * @param invocationStat   InvocationStat
+     * @param weight           weight
      * @param leastWindowCount original least Window count
      * @return leastWindowCount
      */
@@ -297,7 +288,7 @@ public class ServiceHorizontalMeasureStrategy implements MeasureStrategy {
         Integer originWeight = statDimension.getOriginWeight();
         if (originWeight == 0) {
             LOGGER.errorWithApp(statDimension.getAppName(),
-                LogCodes.getLog(LogCodes.ERROR_ORIGIN_WEIGHT_ZERO, statDimension.getService(), statDimension.getIp()));
+                    LogCodes.getLog(LogCodes.ERROR_ORIGIN_WEIGHT_ZERO, statDimension.getService(), statDimension.getIp()));
             return -1;
         } else if (weight == null) { //如果地址还未被调控过或者已经恢复。
             return leastWindowCount;
@@ -308,7 +299,7 @@ public class ServiceHorizontalMeasureStrategy implements MeasureStrategy {
         double rate = CalculateUtils.divide(weight, originWeight);
         long invocationLeastWindowCount = CalculateUtils.multiply(leastWindowCount, rate);
         return invocationLeastWindowCount < LEGAL_LEAST_WINDOW_COUNT ? LEGAL_LEAST_WINDOW_COUNT
-            : invocationLeastWindowCount;
+                : invocationLeastWindowCount;
     }
 
 }

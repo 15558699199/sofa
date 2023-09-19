@@ -16,9 +16,6 @@
  */
 package com.alipay.sofa.registry.server.meta.slot.chaos;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 import com.alipay.sofa.registry.common.model.metaserver.cluster.VersionedList;
 import com.alipay.sofa.registry.common.model.metaserver.nodes.DataNode;
 import com.alipay.sofa.registry.common.model.slot.SlotTable;
@@ -30,13 +27,17 @@ import com.alipay.sofa.registry.server.meta.slot.arrange.ScheduledSlotArranger;
 import com.alipay.sofa.registry.server.meta.slot.manager.SimpleSlotManager;
 import com.alipay.sofa.registry.server.shared.util.NodeUtils;
 import com.alipay.sofa.registry.util.DatumVersionUtil;
-import java.util.ArrayList;
-import java.util.List;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * @author xiaojian.xj
@@ -44,123 +45,125 @@ import org.mockito.MockitoAnnotations;
  */
 public class SlotChaosTest extends AbstractMetaServerTestBase {
 
-  private DataServerInjection dataServerInjection;
+    private DataServerInjection dataServerInjection;
 
-  private SimpleSlotManager slotManager;
+    private SimpleSlotManager slotManager;
 
-  @Mock private DefaultDataServerManager dataServerManager;
+    @Mock
+    private DefaultDataServerManager dataServerManager;
 
-  private ScheduledSlotArranger scheduledSlotArranger;
+    private ScheduledSlotArranger scheduledSlotArranger;
 
-  @Mock private SlotTableMonitor slotTableMonitor;
+    @Mock
+    private SlotTableMonitor slotTableMonitor;
 
-  private int dataNodeNum = 20;
+    private int dataNodeNum = 20;
 
-  private int chaosRandom;
+    private int chaosRandom;
 
-  @Before
-  public void beforeSlotMigrateChaosTest() throws Exception {
-    MockitoAnnotations.initMocks(this);
-    makeMetaLeader();
+    @Before
+    public void beforeSlotMigrateChaosTest() throws Exception {
+        MockitoAnnotations.initMocks(this);
+        makeMetaLeader();
 
-    logger.info("[slot-chaos data-node] size: " + dataNodeNum);
-    dataServerInjection = new DataServerInjection(dataNodeNum);
+        logger.info("[slot-chaos data-node] size: " + dataNodeNum);
+        dataServerInjection = new DataServerInjection(dataNodeNum);
 
-    NodeConfig nodeConfig = mock(NodeConfig.class);
-    when(nodeConfig.getLocalDataCenter()).thenReturn(getDc());
-    slotManager = new SimpleSlotManager();
-    slotManager.setSlotNums(256);
-    slotManager.setSlotReplicas(2);
-    scheduledSlotArranger =
-        new ScheduledSlotArranger(
-            dataServerManager, slotManager, slotTableMonitor, metaLeaderService, metaServerConfig);
+        NodeConfig nodeConfig = mock(NodeConfig.class);
+        when(nodeConfig.getLocalDataCenter()).thenReturn(getDc());
+        slotManager = new SimpleSlotManager();
+        slotManager.setSlotNums(256);
+        slotManager.setSlotReplicas(2);
+        scheduledSlotArranger =
+                new ScheduledSlotArranger(
+                        dataServerManager, slotManager, slotTableMonitor, metaLeaderService, metaServerConfig);
 
-    when(slotTableMonitor.isStableTableStable()).thenReturn(true);
-    when(dataServerManager.getDataServerMetaInfo()).thenReturn(VersionedList.EMPTY);
-  }
-
-  @Test
-  public void testChaosLoop() throws Exception {
-    for (int i = 0; i < 100; i++) {
-      testChaos();
-    }
-  }
-
-  @Test
-  public void testChaos() throws Exception {
-    logger.info("[slot-chaos slot] size: " + slotManager.getSlotNums());
-
-    chaosRandom = random.nextInt(20) + 30;
-
-    makeMetaLeader();
-    logger.info("[slot-chaos slot] chaosRandom: " + chaosRandom);
-
-    List<DataNode> running = null;
-
-    for (int i = 1; i <= chaosRandom; i++) {
-      // random up and down
-      running = dataServerInjection.inject(i);
-      when(dataServerManager.getDataServerMetaInfo())
-          .thenReturn(new VersionedList<>(DatumVersionUtil.nextId(), running));
-      scheduledSlotArranger.arrangeSync();
-    }
-    logger.info("[slot-chaos slot] begin balance");
-    int count = 0;
-    for (; count < slotManager.getSlotNums() * 4; count++) {
-      if (!scheduledSlotArranger.arrangeSync()) {
-        break;
-      }
-    }
-    Assert.assertFalse("unbalance after:" + count, scheduledSlotArranger.arrangeSync());
-    SlotTable finalSlotTable = slotManager.getSlotTable();
-    List<String> datas = NodeUtils.transferNodeToIpList(running);
-    for (CheckEnum checker : CheckEnum.values()) {
-      checker
-          .getCheckerAction()
-          .doCheck(
-              finalSlotTable, datas, slotManager.getSlotNums(), slotManager.getSlotReplicaNums());
-    }
-  }
-
-  public class DataServerInjection {
-    private int dataNodeNum;
-
-    private List<DataNode> dataNodes;
-
-    private List<DataNode> runningDataNodes = new ArrayList<>();
-
-    public DataServerInjection(int dataNodeNum) {
-      this.dataNodeNum = dataNodeNum;
-      this.dataNodes = randomDataNodes(dataNodeNum);
-      logger.info("[slot-chaos data-node] dataNodes: " + dataNodes);
+        when(slotTableMonitor.isStableTableStable()).thenReturn(true);
+        when(dataServerManager.getDataServerMetaInfo()).thenReturn(VersionedList.EMPTY);
     }
 
-    public List<DataNode> inject(int chaos) {
-      InjectionEnum injectType;
-      if (chaos == 1 || runningDataNodes.size() == 0) {
-        injectType = InjectionEnum.FIRST;
-      } else if (chaos == chaosRandom) {
-        injectType = InjectionEnum.FINAL;
-      } else if (runningDataNodes.size() == dataNodeNum) {
-        injectType = InjectionEnum.STOP;
-      } else {
-        injectType = InjectionEnum.pickInject();
-      }
-
-      logger.info(
-          "[slot-chaos inject before] chaos: {}, type: {}, size: {}, nodes: {}",
-          chaos,
-          injectType,
-          runningDataNodes.size(),
-          runningDataNodes);
-      injectType.getInjectionAction().doInject(dataNodes, runningDataNodes);
-      logger.info(
-          "[slot-chaos inject after] chaos: {}, type: {}, size: {}, nodes: {}",
-          chaos,
-          injectType,
-          runningDataNodes.size(),
-          runningDataNodes);
-      return runningDataNodes;
+    @Test
+    public void testChaosLoop() throws Exception {
+        for (int i = 0; i < 100; i++) {
+            testChaos();
+        }
     }
-  }
+
+    @Test
+    public void testChaos() throws Exception {
+        logger.info("[slot-chaos slot] size: " + slotManager.getSlotNums());
+
+        chaosRandom = random.nextInt(20) + 30;
+
+        makeMetaLeader();
+        logger.info("[slot-chaos slot] chaosRandom: " + chaosRandom);
+
+        List<DataNode> running = null;
+
+        for (int i = 1; i <= chaosRandom; i++) {
+            // random up and down
+            running = dataServerInjection.inject(i);
+            when(dataServerManager.getDataServerMetaInfo())
+                    .thenReturn(new VersionedList<>(DatumVersionUtil.nextId(), running));
+            scheduledSlotArranger.arrangeSync();
+        }
+        logger.info("[slot-chaos slot] begin balance");
+        int count = 0;
+        for (; count < slotManager.getSlotNums() * 4; count++) {
+            if (!scheduledSlotArranger.arrangeSync()) {
+                break;
+            }
+        }
+        Assert.assertFalse("unbalance after:" + count, scheduledSlotArranger.arrangeSync());
+        SlotTable finalSlotTable = slotManager.getSlotTable();
+        List<String> datas = NodeUtils.transferNodeToIpList(running);
+        for (CheckEnum checker : CheckEnum.values()) {
+            checker
+                    .getCheckerAction()
+                    .doCheck(
+                            finalSlotTable, datas, slotManager.getSlotNums(), slotManager.getSlotReplicaNums());
+        }
+    }
+
+    public class DataServerInjection {
+        private int dataNodeNum;
+
+        private List<DataNode> dataNodes;
+
+        private List<DataNode> runningDataNodes = new ArrayList<>();
+
+        public DataServerInjection(int dataNodeNum) {
+            this.dataNodeNum = dataNodeNum;
+            this.dataNodes = randomDataNodes(dataNodeNum);
+            logger.info("[slot-chaos data-node] dataNodes: " + dataNodes);
+        }
+
+        public List<DataNode> inject(int chaos) {
+            InjectionEnum injectType;
+            if (chaos == 1 || runningDataNodes.size() == 0) {
+                injectType = InjectionEnum.FIRST;
+            } else if (chaos == chaosRandom) {
+                injectType = InjectionEnum.FINAL;
+            } else if (runningDataNodes.size() == dataNodeNum) {
+                injectType = InjectionEnum.STOP;
+            } else {
+                injectType = InjectionEnum.pickInject();
+            }
+
+            logger.info(
+                    "[slot-chaos inject before] chaos: {}, type: {}, size: {}, nodes: {}",
+                    chaos,
+                    injectType,
+                    runningDataNodes.size(),
+                    runningDataNodes);
+            injectType.getInjectionAction().doInject(dataNodes, runningDataNodes);
+            logger.info(
+                    "[slot-chaos inject after] chaos: {}, type: {}, size: {}, nodes: {}",
+                    chaos,
+                    injectType,
+                    runningDataNodes.size(),
+                    runningDataNodes);
+            return runningDataNodes;
+        }
+    }
 }

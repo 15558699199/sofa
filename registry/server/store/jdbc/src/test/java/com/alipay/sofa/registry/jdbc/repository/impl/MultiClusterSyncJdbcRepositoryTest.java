@@ -20,9 +20,10 @@ import com.alipay.sofa.registry.common.model.metaserver.MultiClusterSyncInfo;
 import com.alipay.sofa.registry.jdbc.AbstractH2DbTestBase;
 import com.alipay.sofa.registry.store.api.meta.MultiClusterSyncRepository;
 import com.google.common.collect.Sets;
-import javax.annotation.Resource;
 import org.junit.Assert;
 import org.junit.Test;
+
+import javax.annotation.Resource;
 
 /**
  * @author xiaojian.xj
@@ -30,49 +31,50 @@ import org.junit.Test;
  */
 public class MultiClusterSyncJdbcRepositoryTest extends AbstractH2DbTestBase {
 
-  @Resource private MultiClusterSyncRepository multiClusterSyncRepository;
+    @Resource
+    private MultiClusterSyncRepository multiClusterSyncRepository;
 
-  private MultiClusterSyncInfo createMultiClusterSyncInfo(String remoteDataCenter) {
-    MultiClusterSyncInfo info = new MultiClusterSyncInfo();
-    info.setRemoteDataCenter("testDC-remote-" + remoteDataCenter);
-    info.setRemoteMetaAddress("testAddress");
-    info.setEnableSyncDatum(true);
-    info.setSyncDataInfoIds(Sets.newHashSet("testId1", "testId2"));
-    info.setSynPublisherGroups(Sets.newHashSet("testGroup1", "testGroup2"));
-    info.setIgnoreDataInfoIds(Sets.newHashSet("testId3", "testId4"));
-    info.setDataVersion(System.currentTimeMillis());
-    return info;
-  }
+    private MultiClusterSyncInfo createMultiClusterSyncInfo(String remoteDataCenter) {
+        MultiClusterSyncInfo info = new MultiClusterSyncInfo();
+        info.setRemoteDataCenter("testDC-remote-" + remoteDataCenter);
+        info.setRemoteMetaAddress("testAddress");
+        info.setEnableSyncDatum(true);
+        info.setSyncDataInfoIds(Sets.newHashSet("testId1", "testId2"));
+        info.setSynPublisherGroups(Sets.newHashSet("testGroup1", "testGroup2"));
+        info.setIgnoreDataInfoIds(Sets.newHashSet("testId3", "testId4"));
+        info.setDataVersion(System.currentTimeMillis());
+        return info;
+    }
 
-  @Test
-  public void testSaveAndUpdate() {
-    MultiClusterSyncInfo info = createMultiClusterSyncInfo("testSaveAndUpdate");
+    @Test
+    public void testSaveAndUpdate() {
+        MultiClusterSyncInfo info = createMultiClusterSyncInfo("testSaveAndUpdate");
 
-    long exceptVersion = info.getDataVersion();
-    Assert.assertTrue(multiClusterSyncRepository.insert(info));
-    MultiClusterSyncInfo query = multiClusterSyncRepository.query(info.getRemoteDataCenter());
+        long exceptVersion = info.getDataVersion();
+        Assert.assertTrue(multiClusterSyncRepository.insert(info));
+        MultiClusterSyncInfo query = multiClusterSyncRepository.query(info.getRemoteDataCenter());
 
-    info.setDataCenter(query.getDataCenter());
-    Assert.assertEquals(info, query);
+        info.setDataCenter(query.getDataCenter());
+        Assert.assertEquals(info, query);
 
-    info.getSyncDataInfoIds().add("testId5");
-    info.setDataVersion(System.currentTimeMillis() + 1);
-    Assert.assertTrue(multiClusterSyncRepository.update(info, exceptVersion));
+        info.getSyncDataInfoIds().add("testId5");
+        info.setDataVersion(System.currentTimeMillis() + 1);
+        Assert.assertTrue(multiClusterSyncRepository.update(info, exceptVersion));
 
-    query = multiClusterSyncRepository.query(info.getRemoteDataCenter());
-    Assert.assertEquals(info, query);
-  }
+        query = multiClusterSyncRepository.query(info.getRemoteDataCenter());
+        Assert.assertEquals(info, query);
+    }
 
-  @Test
-  public void testRemove() {
-    MultiClusterSyncInfo info = createMultiClusterSyncInfo("testRemove");
-    Assert.assertTrue(multiClusterSyncRepository.insert(info));
-    MultiClusterSyncInfo query = multiClusterSyncRepository.query(info.getRemoteDataCenter());
-    info.setDataCenter(query.getDataCenter());
-    Assert.assertEquals(info, query);
+    @Test
+    public void testRemove() {
+        MultiClusterSyncInfo info = createMultiClusterSyncInfo("testRemove");
+        Assert.assertTrue(multiClusterSyncRepository.insert(info));
+        MultiClusterSyncInfo query = multiClusterSyncRepository.query(info.getRemoteDataCenter());
+        info.setDataCenter(query.getDataCenter());
+        Assert.assertEquals(info, query);
 
-    Assert.assertEquals(
-        1, multiClusterSyncRepository.remove(info.getRemoteDataCenter(), info.getDataVersion()));
-    Assert.assertNull(multiClusterSyncRepository.query(info.getRemoteDataCenter()));
-  }
+        Assert.assertEquals(
+                1, multiClusterSyncRepository.remove(info.getRemoteDataCenter(), info.getDataVersion()));
+        Assert.assertNull(multiClusterSyncRepository.query(info.getRemoteDataCenter()));
+    }
 }

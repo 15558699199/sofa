@@ -135,7 +135,7 @@ public class ClassTypeUtils {
      *
      * @param types Class[]
      * @return 对象描述
-     * @see #getClasses(String[]) 
+     * @see #getClasses(String[])
      */
     public static String[] getTypeStrs(Class[] types) {
         return getTypeStrs(types, false);
@@ -145,8 +145,8 @@ public class ClassTypeUtils {
      * Class[]转String[] <br>
      * 注意，得到的String可能不能直接用于Class.forName，请使用getClasses(String[])反向获取
      *
-     * @param types Class[]
-     * @param javaStyle JDK自带格式，例如 int[], true的话返回 [I; false的话返回int[]            
+     * @param types     Class[]
+     * @param javaStyle JDK自带格式，例如 int[], true的话返回 [I; false的话返回int[]
      * @return 对象描述
      * @see #getClasses(String[])
      */

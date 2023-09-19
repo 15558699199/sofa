@@ -18,6 +18,7 @@ package com.alipay.sofa.registry.jdbc.domain;
 
 import com.alipay.sofa.registry.jdbc.version.config.ConfigEntry;
 import com.alipay.sofa.registry.store.api.meta.DbEntry;
+
 import java.util.Date;
 
 /**
@@ -25,271 +26,296 @@ import java.util.Date;
  * @version : MultiClusterSyncInfo.java, v 0.1 2022年04月13日 14:41 xiaojian.xj Exp $
  */
 public class MultiClusterSyncDomain implements DbEntry, ConfigEntry {
-  /** primary key */
-  private long id;
+    /**
+     * primary key
+     */
+    private long id;
 
-  /** local data center */
-  private String dataCenter;
+    /**
+     * local data center
+     */
+    private String dataCenter;
 
-  /** sync remote data center */
-  private String remoteDataCenter;
+    /**
+     * sync remote data center
+     */
+    private String remoteDataCenter;
 
-  /** remote meta address, use to get meta leader */
-  private String remoteMetaAddress;
+    /**
+     * remote meta address, use to get meta leader
+     */
+    private String remoteMetaAddress;
 
-  /** true/false */
-  private String enableSyncDatum;
+    /**
+     * true/false
+     */
+    private String enableSyncDatum;
 
-  /** true/false */
-  private String enablePush;
+    /**
+     * true/false
+     */
+    private String enablePush;
 
-  /** sync dataInfoIds */
-  private String syncDataInfoIds;
+    /**
+     * sync dataInfoIds
+     */
+    private String syncDataInfoIds;
 
-  /** sync publish groups */
-  private String synPublisherGroups;
+    /**
+     * sync publish groups
+     */
+    private String synPublisherGroups;
 
-  /** ignore sync dataInfoIds */
-  private String ignoreDataInfoIds;
+    /**
+     * ignore sync dataInfoIds
+     */
+    private String ignoreDataInfoIds;
 
-  /** data version */
-  private long dataVersion;
+    /**
+     * data version
+     */
+    private long dataVersion;
 
-  /** create time */
-  private Date gmtCreate;
+    /**
+     * create time
+     */
+    private Date gmtCreate;
 
-  /** last update time */
-  private Date gmtModified;
+    /**
+     * last update time
+     */
+    private Date gmtModified;
 
-  @Override
-  public long getId() {
-    return id;
-  }
+    public MultiClusterSyncDomain() {
+    }
 
-  @Override
-  public Date getGmtCreate() {
-    return gmtCreate;
-  }
+    public MultiClusterSyncDomain(
+            String dataCenter,
+            String remoteDataCenter,
+            String remoteMetaAddress,
+            String enableSyncDatum,
+            String enablePush,
+            String syncDataInfoIds,
+            String synPublisherGroups,
+            String ignoreDataInfoIds,
+            long dataVersion) {
+        this.dataCenter = dataCenter;
+        this.remoteDataCenter = remoteDataCenter;
+        this.remoteMetaAddress = remoteMetaAddress;
+        this.enableSyncDatum = enableSyncDatum;
+        this.enablePush = enablePush;
+        this.syncDataInfoIds = syncDataInfoIds;
+        this.synPublisherGroups = synPublisherGroups;
+        this.ignoreDataInfoIds = ignoreDataInfoIds;
+        this.dataVersion = dataVersion;
+    }
 
-  public MultiClusterSyncDomain() {}
+    @Override
+    public long getId() {
+        return id;
+    }
 
-  public MultiClusterSyncDomain(
-      String dataCenter,
-      String remoteDataCenter,
-      String remoteMetaAddress,
-      String enableSyncDatum,
-      String enablePush,
-      String syncDataInfoIds,
-      String synPublisherGroups,
-      String ignoreDataInfoIds,
-      long dataVersion) {
-    this.dataCenter = dataCenter;
-    this.remoteDataCenter = remoteDataCenter;
-    this.remoteMetaAddress = remoteMetaAddress;
-    this.enableSyncDatum = enableSyncDatum;
-    this.enablePush = enablePush;
-    this.syncDataInfoIds = syncDataInfoIds;
-    this.synPublisherGroups = synPublisherGroups;
-    this.ignoreDataInfoIds = ignoreDataInfoIds;
-    this.dataVersion = dataVersion;
-  }
+    /**
+     * Setter method for property <tt>id</tt>.
+     *
+     * @param id value to be assigned to property id
+     */
+    public void setId(long id) {
+        this.id = id;
+    }
 
-  /**
-   * Setter method for property <tt>id</tt>.
-   *
-   * @param id value to be assigned to property id
-   */
-  public void setId(long id) {
-    this.id = id;
-  }
+    @Override
+    public Date getGmtCreate() {
+        return gmtCreate;
+    }
 
-  /**
-   * Getter method for property <tt>dataCenter</tt>.
-   *
-   * @return property value of dataCenter
-   */
-  public String getDataCenter() {
-    return dataCenter;
-  }
+    /**
+     * Setter method for property <tt>gmtCreate</tt>.
+     *
+     * @param gmtCreate value to be assigned to property gmtCreate
+     */
+    public void setGmtCreate(Date gmtCreate) {
+        this.gmtCreate = gmtCreate;
+    }
 
-  /**
-   * Setter method for property <tt>dataCenter</tt>.
-   *
-   * @param dataCenter value to be assigned to property dataCenter
-   */
-  public void setDataCenter(String dataCenter) {
-    this.dataCenter = dataCenter;
-  }
+    /**
+     * Getter method for property <tt>dataCenter</tt>.
+     *
+     * @return property value of dataCenter
+     */
+    public String getDataCenter() {
+        return dataCenter;
+    }
 
-  /**
-   * Getter method for property <tt>remoteDataCenter</tt>.
-   *
-   * @return property value of remoteDataCenter
-   */
-  public String getRemoteDataCenter() {
-    return remoteDataCenter;
-  }
+    /**
+     * Setter method for property <tt>dataCenter</tt>.
+     *
+     * @param dataCenter value to be assigned to property dataCenter
+     */
+    public void setDataCenter(String dataCenter) {
+        this.dataCenter = dataCenter;
+    }
 
-  /**
-   * Setter method for property <tt>remoteDataCenter</tt>.
-   *
-   * @param remoteDataCenter value to be assigned to property remoteDataCenter
-   */
-  public void setRemoteDataCenter(String remoteDataCenter) {
-    this.remoteDataCenter = remoteDataCenter;
-  }
+    /**
+     * Getter method for property <tt>remoteDataCenter</tt>.
+     *
+     * @return property value of remoteDataCenter
+     */
+    public String getRemoteDataCenter() {
+        return remoteDataCenter;
+    }
 
-  /**
-   * Getter method for property <tt>remoteMetaAddress</tt>.
-   *
-   * @return property value of remoteMetaAddress
-   */
-  public String getRemoteMetaAddress() {
-    return remoteMetaAddress;
-  }
+    /**
+     * Setter method for property <tt>remoteDataCenter</tt>.
+     *
+     * @param remoteDataCenter value to be assigned to property remoteDataCenter
+     */
+    public void setRemoteDataCenter(String remoteDataCenter) {
+        this.remoteDataCenter = remoteDataCenter;
+    }
 
-  /**
-   * Setter method for property <tt>remoteMetaAddress</tt>.
-   *
-   * @param remoteMetaAddress value to be assigned to property remoteMetaAddress
-   */
-  public void setRemoteMetaAddress(String remoteMetaAddress) {
-    this.remoteMetaAddress = remoteMetaAddress;
-  }
+    /**
+     * Getter method for property <tt>remoteMetaAddress</tt>.
+     *
+     * @return property value of remoteMetaAddress
+     */
+    public String getRemoteMetaAddress() {
+        return remoteMetaAddress;
+    }
 
-  /**
-   * Getter method for property <tt>enableSyncDatum</tt>.
-   *
-   * @return property value of enableSyncDatum
-   */
-  public String getEnableSyncDatum() {
-    return enableSyncDatum;
-  }
+    /**
+     * Setter method for property <tt>remoteMetaAddress</tt>.
+     *
+     * @param remoteMetaAddress value to be assigned to property remoteMetaAddress
+     */
+    public void setRemoteMetaAddress(String remoteMetaAddress) {
+        this.remoteMetaAddress = remoteMetaAddress;
+    }
 
-  /**
-   * Setter method for property <tt>enableSyncDatum</tt>.
-   *
-   * @param enableSyncDatum value to be assigned to property enableSyncDatum
-   */
-  public void setEnableSyncDatum(String enableSyncDatum) {
-    this.enableSyncDatum = enableSyncDatum;
-  }
+    /**
+     * Getter method for property <tt>enableSyncDatum</tt>.
+     *
+     * @return property value of enableSyncDatum
+     */
+    public String getEnableSyncDatum() {
+        return enableSyncDatum;
+    }
 
-  /**
-   * Getter method for property <tt>enablePush</tt>.
-   *
-   * @return property value of enablePush
-   */
-  public String getEnablePush() {
-    return enablePush;
-  }
+    /**
+     * Setter method for property <tt>enableSyncDatum</tt>.
+     *
+     * @param enableSyncDatum value to be assigned to property enableSyncDatum
+     */
+    public void setEnableSyncDatum(String enableSyncDatum) {
+        this.enableSyncDatum = enableSyncDatum;
+    }
 
-  /**
-   * Setter method for property <tt>enablePush</tt>.
-   *
-   * @param enablePush value to be assigned to property enablePush
-   */
-  public void setEnablePush(String enablePush) {
-    this.enablePush = enablePush;
-  }
+    /**
+     * Getter method for property <tt>enablePush</tt>.
+     *
+     * @return property value of enablePush
+     */
+    public String getEnablePush() {
+        return enablePush;
+    }
 
-  /**
-   * Getter method for property <tt>syncDataInfoIds</tt>.
-   *
-   * @return property value of syncDataInfoIds
-   */
-  public String getSyncDataInfoIds() {
-    return syncDataInfoIds;
-  }
+    /**
+     * Setter method for property <tt>enablePush</tt>.
+     *
+     * @param enablePush value to be assigned to property enablePush
+     */
+    public void setEnablePush(String enablePush) {
+        this.enablePush = enablePush;
+    }
 
-  /**
-   * Setter method for property <tt>syncDataInfoIds</tt>.
-   *
-   * @param syncDataInfoIds value to be assigned to property syncDataInfoIds
-   */
-  public void setSyncDataInfoIds(String syncDataInfoIds) {
-    this.syncDataInfoIds = syncDataInfoIds;
-  }
+    /**
+     * Getter method for property <tt>syncDataInfoIds</tt>.
+     *
+     * @return property value of syncDataInfoIds
+     */
+    public String getSyncDataInfoIds() {
+        return syncDataInfoIds;
+    }
 
-  /**
-   * Getter method for property <tt>synPublisherGroups</tt>.
-   *
-   * @return property value of synPublisherGroups
-   */
-  public String getSynPublisherGroups() {
-    return synPublisherGroups;
-  }
+    /**
+     * Setter method for property <tt>syncDataInfoIds</tt>.
+     *
+     * @param syncDataInfoIds value to be assigned to property syncDataInfoIds
+     */
+    public void setSyncDataInfoIds(String syncDataInfoIds) {
+        this.syncDataInfoIds = syncDataInfoIds;
+    }
 
-  /**
-   * Setter method for property <tt>synPublisherGroups</tt>.
-   *
-   * @param synPublisherGroups value to be assigned to property synPublisherGroups
-   */
-  public void setSynPublisherGroups(String synPublisherGroups) {
-    this.synPublisherGroups = synPublisherGroups;
-  }
+    /**
+     * Getter method for property <tt>synPublisherGroups</tt>.
+     *
+     * @return property value of synPublisherGroups
+     */
+    public String getSynPublisherGroups() {
+        return synPublisherGroups;
+    }
 
-  /**
-   * Getter method for property <tt>ignoreDataInfoIds</tt>.
-   *
-   * @return property value of ignoreDataInfoIds
-   */
-  public String getIgnoreDataInfoIds() {
-    return ignoreDataInfoIds;
-  }
+    /**
+     * Setter method for property <tt>synPublisherGroups</tt>.
+     *
+     * @param synPublisherGroups value to be assigned to property synPublisherGroups
+     */
+    public void setSynPublisherGroups(String synPublisherGroups) {
+        this.synPublisherGroups = synPublisherGroups;
+    }
 
-  /**
-   * Setter method for property <tt>ignoreDataInfoIds</tt>.
-   *
-   * @param ignoreDataInfoIds value to be assigned to property ignoreDataInfoIds
-   */
-  public void setIgnoreDataInfoIds(String ignoreDataInfoIds) {
-    this.ignoreDataInfoIds = ignoreDataInfoIds;
-  }
+    /**
+     * Getter method for property <tt>ignoreDataInfoIds</tt>.
+     *
+     * @return property value of ignoreDataInfoIds
+     */
+    public String getIgnoreDataInfoIds() {
+        return ignoreDataInfoIds;
+    }
 
-  /**
-   * Setter method for property <tt>gmtCreate</tt>.
-   *
-   * @param gmtCreate value to be assigned to property gmtCreate
-   */
-  public void setGmtCreate(Date gmtCreate) {
-    this.gmtCreate = gmtCreate;
-  }
+    /**
+     * Setter method for property <tt>ignoreDataInfoIds</tt>.
+     *
+     * @param ignoreDataInfoIds value to be assigned to property ignoreDataInfoIds
+     */
+    public void setIgnoreDataInfoIds(String ignoreDataInfoIds) {
+        this.ignoreDataInfoIds = ignoreDataInfoIds;
+    }
 
-  /**
-   * Getter method for property <tt>gmtModified</tt>.
-   *
-   * @return property value of gmtModified
-   */
-  public Date getGmtModified() {
-    return gmtModified;
-  }
+    /**
+     * Getter method for property <tt>gmtModified</tt>.
+     *
+     * @return property value of gmtModified
+     */
+    public Date getGmtModified() {
+        return gmtModified;
+    }
 
-  /**
-   * Setter method for property <tt>gmtModified</tt>.
-   *
-   * @param gmtModified value to be assigned to property gmtModified
-   */
-  public void setGmtModified(Date gmtModified) {
-    this.gmtModified = gmtModified;
-  }
+    /**
+     * Setter method for property <tt>gmtModified</tt>.
+     *
+     * @param gmtModified value to be assigned to property gmtModified
+     */
+    public void setGmtModified(Date gmtModified) {
+        this.gmtModified = gmtModified;
+    }
 
-  /**
-   * Getter method for property <tt>dataVersion</tt>.
-   *
-   * @return property value of dataVersion
-   */
-  @Override
-  public long getDataVersion() {
-    return dataVersion;
-  }
+    /**
+     * Getter method for property <tt>dataVersion</tt>.
+     *
+     * @return property value of dataVersion
+     */
+    @Override
+    public long getDataVersion() {
+        return dataVersion;
+    }
 
-  /**
-   * Setter method for property <tt>dataVersion</tt>.
-   *
-   * @param dataVersion value to be assigned to property dataVersion
-   */
-  public void setDataVersion(long dataVersion) {
-    this.dataVersion = dataVersion;
-  }
+    /**
+     * Setter method for property <tt>dataVersion</tt>.
+     *
+     * @param dataVersion value to be assigned to property dataVersion
+     */
+    public void setDataVersion(long dataVersion) {
+        this.dataVersion = dataVersion;
+    }
 }

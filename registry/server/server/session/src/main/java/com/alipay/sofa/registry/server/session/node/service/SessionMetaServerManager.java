@@ -24,58 +24,60 @@ import com.alipay.sofa.registry.server.session.bootstrap.SessionServerConfig;
 import com.alipay.sofa.registry.server.shared.constant.MetaLeaderLearnModeEnum;
 import com.alipay.sofa.registry.server.shared.meta.AbstractMetaLeaderExchanger;
 import com.google.common.annotations.VisibleForTesting;
-import java.util.Collection;
-import javax.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.annotation.Resource;
+import java.util.Collection;
 
 /**
  * @author chen.zhu
- *     <p>Mar 15, 2021
+ * <p>Mar 15, 2021
  */
 public class SessionMetaServerManager extends AbstractMetaLeaderExchanger {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(AbstractMetaLeaderExchanger.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractMetaLeaderExchanger.class);
 
-  @Autowired private SessionServerConfig sessionServerConfig;
+    @Autowired
+    private SessionServerConfig sessionServerConfig;
 
-  @Resource(name = "metaClientHandlers")
-  private Collection<ChannelHandler> metaClientHandlers;
+    @Resource(name = "metaClientHandlers")
+    private Collection<ChannelHandler> metaClientHandlers;
 
-  public SessionMetaServerManager() {
-    super(Exchange.META_SERVER_TYPE, LOGGER);
-  }
-
-  @Override
-  protected MetaLeaderLearnModeEnum getMode() {
-    if (defaultCommonConfig.isJdbc()) {
-      return MetaLeaderLearnModeEnum.JDBC;
-    } else {
-      return MetaLeaderLearnModeEnum.LOADBALANCER;
+    public SessionMetaServerManager() {
+        super(Exchange.META_SERVER_TYPE, LOGGER);
     }
-  }
 
-  @Override
-  protected Collection<String> getMetaServerDomains(String dataCenter) {
-    return sessionServerConfig.getMetaServerAddresses();
-  }
+    @Override
+    protected MetaLeaderLearnModeEnum getMode() {
+        if (defaultCommonConfig.isJdbc()) {
+            return MetaLeaderLearnModeEnum.JDBC;
+        } else {
+            return MetaLeaderLearnModeEnum.LOADBALANCER;
+        }
+    }
 
-  @Override
-  public int getRpcTimeoutMillis() {
-    return sessionServerConfig.getMetaNodeExchangeTimeoutMillis();
-  }
+    @Override
+    protected Collection<String> getMetaServerDomains(String dataCenter) {
+        return sessionServerConfig.getMetaServerAddresses();
+    }
 
-  @Override
-  public int getServerPort() {
-    return sessionServerConfig.getMetaServerPort();
-  }
+    @Override
+    public int getRpcTimeoutMillis() {
+        return sessionServerConfig.getMetaNodeExchangeTimeoutMillis();
+    }
 
-  @Override
-  protected Collection<ChannelHandler> getClientHandlers() {
-    return metaClientHandlers;
-  }
+    @Override
+    public int getServerPort() {
+        return sessionServerConfig.getMetaServerPort();
+    }
 
-  @VisibleForTesting
-  void setSessionServerConfig(SessionServerConfig sessionServerConfig) {
-    this.sessionServerConfig = sessionServerConfig;
-  }
+    @Override
+    protected Collection<ChannelHandler> getClientHandlers() {
+        return metaClientHandlers;
+    }
+
+    @VisibleForTesting
+    void setSessionServerConfig(SessionServerConfig sessionServerConfig) {
+        this.sessionServerConfig = sessionServerConfig;
+    }
 }

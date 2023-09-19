@@ -20,29 +20,31 @@ import com.alipay.sofa.registry.common.model.Node;
 import com.alipay.sofa.registry.remoting.Channel;
 import com.alipay.sofa.registry.server.session.bootstrap.ExecutorManager;
 import com.alipay.sofa.registry.server.shared.remoting.AbstractServerHandler;
-import java.util.concurrent.Executor;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.concurrent.Executor;
+
 public abstract class AbstractClientDataRequestHandler<T> extends AbstractServerHandler<T> {
-  @Autowired protected ExecutorManager executorManager;
+    @Autowired
+    protected ExecutorManager executorManager;
 
-  @Override
-  protected Node.NodeType getConnectNodeType() {
-    return Node.NodeType.CLIENT;
-  }
+    @Override
+    protected Node.NodeType getConnectNodeType() {
+        return Node.NodeType.CLIENT;
+    }
 
-  @Override
-  public Executor getExecutor() {
-    return executorManager.getAccessDataExecutor();
-  }
+    @Override
+    public Executor getExecutor() {
+        return executorManager.getAccessDataExecutor();
+    }
 
-  @Override
-  public InvokeType getInvokeType() {
-    return InvokeType.SYNC;
-  }
+    @Override
+    public InvokeType getInvokeType() {
+        return InvokeType.SYNC;
+    }
 
-  @Override
-  protected void logRequest(Channel channel, T request) {
-    // not log
-  }
+    @Override
+    protected void logRequest(Channel channel, T request) {
+        // not log
+    }
 }

@@ -27,8 +27,6 @@ import org.jboss.resteasy.spi.ResteasyProviderFactory;
 import java.util.Set;
 
 /**
- * 
- * 
  * @author <a href="mailto:zhanggeng.zg@antfin.com">GengZhang</a>
  * @author <a href="mailto:lw111072@antfin.com">liangen</a>
  */
@@ -58,8 +56,8 @@ public class SofaResteasyClientBuilder extends ResteasyClientBuilder {
         if (CommonUtils.isNotEmpty(customProviderInstances)) {
             for (Object provider : customProviderInstances) {
                 PropertyInjector propertyInjector = providerFactory.getInjectorFactory()
-                    .createPropertyInjector(
-                        JAXRSProviderManager.getTargetClass(provider), providerFactory);
+                        .createPropertyInjector(
+                                JAXRSProviderManager.getTargetClass(provider), providerFactory);
                 propertyInjector.inject(provider);
                 providerFactory.registerProviderInstance(provider);
             }

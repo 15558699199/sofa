@@ -32,8 +32,9 @@ import com.alipay.sofa.registry.server.session.slot.SlotTableCache;
 import com.alipay.sofa.registry.server.shared.env.ServerEnv;
 import com.alipay.sofa.registry.server.shared.meta.AbstractMetaServerService;
 import com.google.common.annotations.VisibleForTesting;
-import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Set;
 
 /**
  * @author yuzhi.lyz
@@ -41,99 +42,104 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class MetaServerServiceImpl extends AbstractMetaServerService<BaseHeartBeatResponse> {
 
-  @Autowired private SessionServerConfig sessionServerConfig;
+    @Autowired
+    private SessionServerConfig sessionServerConfig;
 
-  @Autowired private SlotTableCache slotTableCache;
+    @Autowired
+    private SlotTableCache slotTableCache;
 
-  @Autowired private DataCenterMetadataCache dataCenterMetadataCache;
+    @Autowired
+    private DataCenterMetadataCache dataCenterMetadataCache;
 
-  @Autowired private DataNodeExchanger dataNodeExchanger;
+    @Autowired
+    private DataNodeExchanger dataNodeExchanger;
 
-  @Autowired private DataNodeNotifyExchanger dataNodeNotifyExchanger;
+    @Autowired
+    private DataNodeNotifyExchanger dataNodeNotifyExchanger;
 
-  @Override
-  protected long getCurrentSlotTableEpoch() {
-    return slotTableCache.getEpoch(sessionServerConfig.getSessionServerDataCenter());
-  }
-
-  @Override
-  public int getRenewIntervalSecs() {
-    return sessionServerConfig.getSchedulerHeartbeatIntervalSecs();
-  }
-
-  @Override
-  protected void handleRenewResult(BaseHeartBeatResponse result) {
-    Set<String> dataServerList = getDataServerList();
-    if (dataServerList != null && !dataServerList.isEmpty()) {
-      dataNodeNotifyExchanger.setServerIps(dataServerList);
-      dataNodeNotifyExchanger.notifyConnectServerAsync();
-      dataNodeExchanger.setServerIps(dataServerList);
-      dataNodeExchanger.notifyConnectServerAsync();
-    }
-    if (result.getSlotTable() != null && result.getSlotTable() != SlotTable.INIT) {
-      slotTableCache.updateLocalSlotTable(result.getSlotTable());
-    } else {
-      RENEWER_LOGGER.warn("[handleRenewResult] no slot table result");
+    @Override
+    protected long getCurrentSlotTableEpoch() {
+        return slotTableCache.getEpoch(sessionServerConfig.getSessionServerDataCenter());
     }
 
-    slotTableCache.updateRemoteSlotTable(result.getRemoteSlotTableStatus());
-    dataCenterMetadataCache.saveDataCenterZones(result.getRemoteSlotTableStatus());
-  }
+    @Override
+    public int getRenewIntervalSecs() {
+        return sessionServerConfig.getSchedulerHeartbeatIntervalSecs();
+    }
 
-  @Override
-  protected HeartbeatRequest createRequest() {
-    return new HeartbeatRequest(
-            createNode(),
-            slotTableCache.getEpoch(sessionServerConfig.getSessionServerDataCenter()),
-            sessionServerConfig.getSessionServerDataCenter(),
-            System.currentTimeMillis(),
-            SlotConfig.slotBasicInfo(),
-            slotTableCache.getRemoteSlotTableEpoch())
-        .setSlotTable(slotTableCache.getLocalSlotTable());
-  }
+    @Override
+    protected void handleRenewResult(BaseHeartBeatResponse result) {
+        Set<String> dataServerList = getDataServerList();
+        if (dataServerList != null && !dataServerList.isEmpty()) {
+            dataNodeNotifyExchanger.setServerIps(dataServerList);
+            dataNodeNotifyExchanger.notifyConnectServerAsync();
+            dataNodeExchanger.setServerIps(dataServerList);
+            dataNodeExchanger.notifyConnectServerAsync();
+        }
+        if (result.getSlotTable() != null && result.getSlotTable() != SlotTable.INIT) {
+            slotTableCache.updateLocalSlotTable(result.getSlotTable());
+        } else {
+            RENEWER_LOGGER.warn("[handleRenewResult] no slot table result");
+        }
 
-  @Override
-  protected NodeType nodeType() {
-    return NodeType.SESSION;
-  }
+        slotTableCache.updateRemoteSlotTable(result.getRemoteSlotTableStatus());
+        dataCenterMetadataCache.saveDataCenterZones(result.getRemoteSlotTableStatus());
+    }
 
-  @Override
-  protected String cell() {
-    return commonConfig.getLocalRegion();
-  }
+    @Override
+    protected HeartbeatRequest createRequest() {
+        return new HeartbeatRequest(
+                createNode(),
+                slotTableCache.getEpoch(sessionServerConfig.getSessionServerDataCenter()),
+                sessionServerConfig.getSessionServerDataCenter(),
+                System.currentTimeMillis(),
+                SlotConfig.slotBasicInfo(),
+                slotTableCache.getRemoteSlotTableEpoch())
+                .setSlotTable(slotTableCache.getLocalSlotTable());
+    }
 
-  private Node createNode() {
-    return new SessionNode(
-        new URL(ServerEnv.IP), sessionServerConfig.getSessionServerRegion(), ServerEnv.PROCESS_ID);
-  }
+    @Override
+    protected NodeType nodeType() {
+        return NodeType.SESSION;
+    }
 
-  @VisibleForTesting
-  void setSessionServerConfig(SessionServerConfig sessionServerConfig) {
-    this.sessionServerConfig = sessionServerConfig;
-  }
+    @Override
+    protected String cell() {
+        return commonConfig.getLocalRegion();
+    }
 
-  @VisibleForTesting
-  void setSlotTableCache(SlotTableCache slotTableCache) {
-    this.slotTableCache = slotTableCache;
-  }
+    private Node createNode() {
+        return new SessionNode(
+                new URL(ServerEnv.IP), sessionServerConfig.getSessionServerRegion(), ServerEnv.PROCESS_ID);
+    }
 
-  @VisibleForTesting
-  void setDataNodeExchanger(DataNodeExchanger dataNodeExchanger) {
-    this.dataNodeExchanger = dataNodeExchanger;
-  }
+    @VisibleForTesting
+    void setSessionServerConfig(SessionServerConfig sessionServerConfig) {
+        this.sessionServerConfig = sessionServerConfig;
+    }
 
-  @VisibleForTesting
-  void setDataNodeNotifyExchanger(DataNodeNotifyExchanger dataNodeNotifyExchanger) {
-    this.dataNodeNotifyExchanger = dataNodeNotifyExchanger;
-  }
+    @VisibleForTesting
+    void setSlotTableCache(SlotTableCache slotTableCache) {
+        this.slotTableCache = slotTableCache;
+    }
 
-  /**
-   * Setter method for property <tt>dataCenterMetadataCache</tt>.
-   *
-   * @param dataCenterMetadataCache value to be assigned to property dataCenterMetadataCache
-   */
-  @VisibleForTesting
-  void setDataCenterMetadataCache(DataCenterMetadataCache dataCenterMetadataCache) {
-    this.dataCenterMetadataCache = dataCenterMetadataCache;
-  }
+    @VisibleForTesting
+    void setDataNodeExchanger(DataNodeExchanger dataNodeExchanger) {
+        this.dataNodeExchanger = dataNodeExchanger;
+    }
+
+    @VisibleForTesting
+    void setDataNodeNotifyExchanger(DataNodeNotifyExchanger dataNodeNotifyExchanger) {
+        this.dataNodeNotifyExchanger = dataNodeNotifyExchanger;
+    }
+
+    /**
+     * Setter method for property <tt>dataCenterMetadataCache</tt>.
+     *
+     * @param dataCenterMetadataCache value to be assigned to property dataCenterMetadataCache
+     */
+    @VisibleForTesting
+    void setDataCenterMetadataCache(DataCenterMetadataCache dataCenterMetadataCache) {
+        this.dataCenterMetadataCache = dataCenterMetadataCache;
+    }
 }

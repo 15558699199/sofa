@@ -36,49 +36,61 @@ import org.springframework.scheduling.annotation.Scheduled;
  * @version $Id : SyncClientsHeartbeatTask.java, v 0.1 2018-03-31 16:07 zhuoyu.sjw Exp $$
  */
 public class SyncClientsHeartbeatTask {
-  private static final Logger CONSOLE_COUNT_LOGGER =
-      LoggerFactory.getLogger("SESSION-CONSOLE", "[Count]");
+    private static final Logger CONSOLE_COUNT_LOGGER =
+            LoggerFactory.getLogger("SESSION-CONSOLE", "[Count]");
 
-  @Autowired Exchange boltExchange;
+    @Autowired
+    Exchange boltExchange;
 
-  @Autowired SessionServerConfig sessionServerConfig;
+    @Autowired
+    SessionServerConfig sessionServerConfig;
 
-  /** store subscribers */
-  @Autowired Interests sessionInterests;
+    /**
+     * store subscribers
+     */
+    @Autowired
+    Interests sessionInterests;
 
-  /** store watchers */
-  @Autowired Watchers sessionWatchers;
+    /**
+     * store watchers
+     */
+    @Autowired
+    Watchers sessionWatchers;
 
-  /** store publishers */
-  @Autowired DataStore sessionDataStore;
+    /**
+     * store publishers
+     */
+    @Autowired
+    DataStore sessionDataStore;
 
-  @Autowired ExecutorManager executorManager;
+    @Autowired
+    ExecutorManager executorManager;
 
-  @Scheduled(initialDelay = 60000, fixedRate = 60000)
-  public void syncCount() {
-    Tuple<Long, Long> countSub = sessionInterests.count();
-    Tuple<Long, Long> countPub = sessionDataStore.count();
-    Tuple<Long, Long> countSubW = sessionWatchers.count();
+    @Scheduled(initialDelay = 60000, fixedRate = 60000)
+    public void syncCount() {
+        Tuple<Long, Long> countSub = sessionInterests.count();
+        Tuple<Long, Long> countPub = sessionDataStore.count();
+        Tuple<Long, Long> countSubW = sessionWatchers.count();
 
-    int channelCount = 0;
-    Server sessionServer = boltExchange.getServer(sessionServerConfig.getServerPort());
-    if (sessionServer != null) {
-      channelCount = sessionServer.getChannelCount();
+        int channelCount = 0;
+        Server sessionServer = boltExchange.getServer(sessionServerConfig.getServerPort());
+        if (sessionServer != null) {
+            channelCount = sessionServer.getChannelCount();
+        }
+
+        Metrics.PUB_SUM.set(countPub.o2);
+        Metrics.SUB_SUM.set(countSub.o2);
+        Metrics.WAT_SUM.set(countSubW.o2);
+        Metrics.CHANNEL_SUM.set(channelCount);
+
+        CONSOLE_COUNT_LOGGER.info(
+                "Subscriber count: {}, Publisher count: {}, Watcher count: {}, Connection count: {}, SubDataId={}, PubDataId={}, WatDataId={}",
+                countSub.o2,
+                countPub.o2,
+                countSubW.o2,
+                channelCount,
+                countSub.o1,
+                countPub.o1,
+                countSubW.o1);
     }
-
-    Metrics.PUB_SUM.set(countPub.o2);
-    Metrics.SUB_SUM.set(countSub.o2);
-    Metrics.WAT_SUM.set(countSubW.o2);
-    Metrics.CHANNEL_SUM.set(channelCount);
-
-    CONSOLE_COUNT_LOGGER.info(
-        "Subscriber count: {}, Publisher count: {}, Watcher count: {}, Connection count: {}, SubDataId={}, PubDataId={}, WatDataId={}",
-        countSub.o2,
-        countPub.o2,
-        countSubW.o2,
-        channelCount,
-        countSub.o1,
-        countPub.o1,
-        countSubW.o1);
-  }
 }

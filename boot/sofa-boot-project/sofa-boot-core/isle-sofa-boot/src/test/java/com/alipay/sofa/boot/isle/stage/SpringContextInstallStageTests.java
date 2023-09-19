@@ -45,7 +45,7 @@ import static org.mockito.Mockito.*;
  * @author huzijie
  * @version SpringContextInstallStageTests.java, v 0.1 2023年02月02日 6:18 PM huzijie Exp $
  */
-@ExtendWith({ MockitoExtension.class, OutputCaptureExtension.class })
+@ExtendWith({MockitoExtension.class, OutputCaptureExtension.class})
 public class SpringContextInstallStageTests {
 
     static {
@@ -55,7 +55,7 @@ public class SpringContextInstallStageTests {
     private final SpringContextInstallStage stage = new SpringContextInstallStage();
 
     @Mock
-    private ApplicationRuntimeModel         application;
+    private ApplicationRuntimeModel application;
 
     @BeforeEach
     public void init() {
@@ -90,7 +90,7 @@ public class SpringContextInstallStageTests {
     @Test
     public void ctxInstallError(CapturedOutput capturedOutput) throws Exception {
         SampleDeploymentDescriptor sampleDeploymentDescriptor = SampleDeploymentDescriptor
-            .create(new Properties());
+                .create(new Properties());
         when(application.getResolvedDeployments()).thenReturn(List.of(sampleDeploymentDescriptor));
         sampleDeploymentDescriptor.setApplicationContext(new GenericApplicationContext());
 
@@ -103,7 +103,7 @@ public class SpringContextInstallStageTests {
     @Test
     public void ctxIsNull(CapturedOutput capturedOutput) throws Exception {
         when(application.getResolvedDeployments()).thenReturn(
-            List.of(SampleDeploymentDescriptor.create(new Properties())));
+                List.of(SampleDeploymentDescriptor.create(new Properties())));
 
         stage.doProcess();
 
@@ -113,11 +113,11 @@ public class SpringContextInstallStageTests {
     @Test
     public void ctxRefreshError(CapturedOutput capturedOutput) throws Exception {
         SampleDeploymentDescriptor sampleDeploymentDescriptor = SampleDeploymentDescriptor
-            .create(new Properties());
+                .create(new Properties());
         when(application.getResolvedDeployments()).thenReturn(List.of(sampleDeploymentDescriptor));
         GenericApplicationContext genericApplicationContext = new GenericApplicationContext();
         genericApplicationContext.registerBeanDefinition("exceptionBean", new RootBeanDefinition(
-            ExceptionBean.class));
+                ExceptionBean.class));
         sampleDeploymentDescriptor.setApplicationContext(genericApplicationContext);
 
         stage.doProcess();

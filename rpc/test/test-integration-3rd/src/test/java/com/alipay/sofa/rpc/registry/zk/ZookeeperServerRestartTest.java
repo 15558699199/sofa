@@ -45,24 +45,24 @@ public class ZookeeperServerRestartTest extends BaseZkTest {
     @Test
     public void testAll() throws Exception {
         final RegistryConfig registryConfig = new RegistryConfig().setProtocol(RpcConstants.REGISTRY_PROTOCOL_ZK)
-            .setAddress("127.0.0.1:2181").setConnectTimeout(100);
+                .setAddress("127.0.0.1:2181").setConnectTimeout(100);
         final ZookeeperRegistry registry = (ZookeeperRegistry) RegistryFactory
-            .getRegistry(registryConfig);
+                .getRegistry(registryConfig);
         registry.start();
 
         final ServerConfig serverConfig2 = new ServerConfig().setPort(22111)
-            .setProtocol(RpcConstants.PROTOCOL_TYPE_BOLT);
+                .setProtocol(RpcConstants.PROTOCOL_TYPE_BOLT);
         final ProviderConfig<HelloService> providerConfig = new ProviderConfig<HelloService>()
-            .setInterfaceId(HelloService.class.getName()).setRef(new HelloServiceImpl("22"))
-            .setServer(serverConfig2).setRegistry(registryConfig)
-            .setRepeatedExportLimit(-1);
+                .setInterfaceId(HelloService.class.getName()).setRef(new HelloServiceImpl("22"))
+                .setServer(serverConfig2).setRegistry(registryConfig)
+                .setRepeatedExportLimit(-1);
 
         providerConfig.export();
 
         final ConsumerConfig<HelloService> consumerConfig = new ConsumerConfig<HelloService>()
-            .setInterfaceId(HelloService.class.getName()).setRegistry(registryConfig)
-            .setTimeout(3333).setProtocol(RpcConstants.PROTOCOL_TYPE_BOLT)
-            .setReconnectPeriod(60000); // avoid reconnect in this test case
+                .setInterfaceId(HelloService.class.getName()).setRegistry(registryConfig)
+                .setTimeout(3333).setProtocol(RpcConstants.PROTOCOL_TYPE_BOLT)
+                .setReconnectPeriod(60000); // avoid reconnect in this test case
         HelloService helloService = consumerConfig.refer();
 
         Thread thread = new Thread(new Runnable() {
@@ -74,7 +74,7 @@ public class ZookeeperServerRestartTest extends BaseZkTest {
                 }
                 // mock network disconnect cause by server force kill (kill -9) 
                 BoltClientTransport clientTransport = (BoltClientTransport) consumerConfig.getConsumerBootstrap()
-                    .getCluster().getConnectionHolder().getAvailableConnections().values().iterator().next();
+                        .getCluster().getConnectionHolder().getAvailableConnections().values().iterator().next();
                 clientTransport.disconnect();
                 serverConfig2.getServer().stop();
             }

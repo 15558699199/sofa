@@ -28,6 +28,7 @@ import java.io.IOException;
 
 /**
  * if you use zk to be registry ,your test case must be extends this class
+ *
  * @author <a href=mailto:leizhiyuan@gmail.com>leizhiyuan</a>
  */
 public abstract class BaseZkTest {

@@ -16,10 +16,6 @@
  */
 package com.alipay.sofa.registry.server.session.remoting.handler;
 
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 import com.alipay.sofa.registry.common.model.GenericResponse;
 import com.alipay.sofa.registry.common.model.Node;
 import com.alipay.sofa.registry.common.model.dataserver.DatumSummary;
@@ -32,62 +28,67 @@ import com.alipay.sofa.registry.server.session.TestUtils;
 import com.alipay.sofa.registry.server.session.bootstrap.ExecutorManager;
 import com.alipay.sofa.registry.server.session.slot.SlotTableCache;
 import com.alipay.sofa.registry.server.session.store.DataStore;
-import java.util.Collections;
-import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.Collections;
+import java.util.List;
+
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 public class DataSlotDiffPublisherRequestHandlerTest {
 
-  private static final SyncSlotAcceptorManager ACCEPT_ALL = new SyncSlotAcceptAllManager();
+    private static final SyncSlotAcceptorManager ACCEPT_ALL = new SyncSlotAcceptAllManager();
 
-  @Test
-  public void testCheckParam() {
-    DataSlotDiffPublisherRequestHandler handler = newHandler();
-    handler.checkParam(request(1, null));
-    handler.checkParam(request(1, Collections.emptyList()));
-  }
+    private static DataSlotDiffPublisherRequest request(int slotId, List<DatumSummary> summaries) {
+        return new DataSlotDiffPublisherRequest("testDc", 1, slotId, ACCEPT_ALL, summaries);
+    }
 
-  private DataSlotDiffPublisherRequestHandler newHandler() {
-    DataSlotDiffPublisherRequestHandler handler = new DataSlotDiffPublisherRequestHandler();
-    handler.executorManager = new ExecutorManager(TestUtils.newSessionConfig("testDc"));
-    handler.syncSlotAcceptAllManager = ACCEPT_ALL;
+    @Test
+    public void testCheckParam() {
+        DataSlotDiffPublisherRequestHandler handler = newHandler();
+        handler.checkParam(request(1, null));
+        handler.checkParam(request(1, Collections.emptyList()));
+    }
 
-    Assert.assertNotNull(handler.getExecutor());
-    Assert.assertEquals(handler.interest(), DataSlotDiffPublisherRequest.class);
-    Assert.assertEquals(handler.getConnectNodeType(), Node.NodeType.DATA);
-    Assert.assertEquals(handler.getType(), ChannelHandler.HandlerType.PROCESSER);
-    Assert.assertEquals(handler.getInvokeType(), ChannelHandler.InvokeType.SYNC);
-    GenericResponse failed = (GenericResponse) handler.buildFailedResponse("msg");
-    Assert.assertFalse(failed.isSuccess());
-    return handler;
-  }
+    private DataSlotDiffPublisherRequestHandler newHandler() {
+        DataSlotDiffPublisherRequestHandler handler = new DataSlotDiffPublisherRequestHandler();
+        handler.executorManager = new ExecutorManager(TestUtils.newSessionConfig("testDc"));
+        handler.syncSlotAcceptAllManager = ACCEPT_ALL;
 
-  @Test
-  public void testHandle() {
-    DataSlotDiffPublisherRequestHandler handler = newHandler();
-    handler.slotTableCache = mock(SlotTableCache.class);
-    handler.sessionServerConfig = TestUtils.newSessionConfig("testDc");
+        Assert.assertNotNull(handler.getExecutor());
+        Assert.assertEquals(handler.interest(), DataSlotDiffPublisherRequest.class);
+        Assert.assertEquals(handler.getConnectNodeType(), Node.NodeType.DATA);
+        Assert.assertEquals(handler.getType(), ChannelHandler.HandlerType.PROCESSER);
+        Assert.assertEquals(handler.getInvokeType(), ChannelHandler.InvokeType.SYNC);
+        GenericResponse failed = (GenericResponse) handler.buildFailedResponse("msg");
+        Assert.assertFalse(failed.isSuccess());
+        return handler;
+    }
 
-    TestUtils.MockBlotChannel channel = TestUtils.newChannel(9620, "localhost", 8888);
+    @Test
+    public void testHandle() {
+        DataSlotDiffPublisherRequestHandler handler = newHandler();
+        handler.slotTableCache = mock(SlotTableCache.class);
+        handler.sessionServerConfig = TestUtils.newSessionConfig("testDc");
 
-    DataSlotDiffPublisherRequest request = request(1, Collections.emptyList());
+        TestUtils.MockBlotChannel channel = TestUtils.newChannel(9620, "localhost", 8888);
 
-    // npe
-    GenericResponse resp = (GenericResponse) handler.doHandle(channel, request);
-    Assert.assertFalse(resp.isSuccess());
-    Assert.assertNull(resp.getData());
+        DataSlotDiffPublisherRequest request = request(1, Collections.emptyList());
 
-    handler.sessionDataStore = mock(DataStore.class);
-    when(handler.sessionDataStore.getDataInfoIdPublishers(anyInt()))
-        .thenReturn(Collections.emptyMap());
-    resp = (GenericResponse) handler.doHandle(channel, request);
-    Assert.assertTrue(resp.isSuccess());
-    Assert.assertNotNull(resp.getData());
-    Assert.assertTrue(resp.getData() instanceof DataSlotDiffPublisherResult);
-  }
+        // npe
+        GenericResponse resp = (GenericResponse) handler.doHandle(channel, request);
+        Assert.assertFalse(resp.isSuccess());
+        Assert.assertNull(resp.getData());
 
-  private static DataSlotDiffPublisherRequest request(int slotId, List<DatumSummary> summaries) {
-    return new DataSlotDiffPublisherRequest("testDc", 1, slotId, ACCEPT_ALL, summaries);
-  }
+        handler.sessionDataStore = mock(DataStore.class);
+        when(handler.sessionDataStore.getDataInfoIdPublishers(anyInt()))
+                .thenReturn(Collections.emptyMap());
+        resp = (GenericResponse) handler.doHandle(channel, request);
+        Assert.assertTrue(resp.isSuccess());
+        Assert.assertNotNull(resp.getData());
+        Assert.assertTrue(resp.getData() instanceof DataSlotDiffPublisherResult);
+    }
 }

@@ -20,16 +20,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.function.Function;
 
-import static com.alipay.sofa.rpc.registry.polaris.PolarisConstants.DEFAULT_HEALTH_CHECK_TTL;
-import static com.alipay.sofa.rpc.registry.polaris.PolarisConstants.DEFAULT_HEARTBEAT_CORE_SIZE;
-import static com.alipay.sofa.rpc.registry.polaris.PolarisConstants.DEFAULT_HEARTBEAT_INTERVAL;
-import static com.alipay.sofa.rpc.registry.polaris.PolarisConstants.DEFAULT_LOOKUP_INTERVAL;
-import static com.alipay.sofa.rpc.registry.polaris.PolarisConstants.HEALTH_CHECK_TTL_KEY;
-import static com.alipay.sofa.rpc.registry.polaris.PolarisConstants.HEARTBEAT_CORE_SIZE_KEY;
-import static com.alipay.sofa.rpc.registry.polaris.PolarisConstants.HEARTBEAT_INTERVAL_KEY;
-import static com.alipay.sofa.rpc.registry.polaris.PolarisConstants.LOOKUP_INTERVAL_KEY;
-import static com.alipay.sofa.rpc.registry.polaris.PolarisConstants.POLARIS_SERVER_CONNECTOR_PROTOCOL;
-import static com.alipay.sofa.rpc.registry.polaris.PolarisConstants.POLARIS_SERVER_CONNECTOR_PROTOCOL_KEY;
+import static com.alipay.sofa.rpc.registry.polaris.PolarisConstants.*;
 
 /**
  * the properties of polaris registry

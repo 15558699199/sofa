@@ -24,27 +24,27 @@ import com.alipay.sofa.registry.client.api.model.Event;
  */
 public class TestEvent implements Event {
 
-  private String data;
+    private String data;
 
-  public TestEvent(String data) {
-    this.data = data;
-  }
+    public TestEvent(String data) {
+        this.data = data;
+    }
 
-  /**
-   * Getter method for property <tt>data</tt>.
-   *
-   * @return property value of data
-   */
-  public String getData() {
-    return data;
-  }
+    /**
+     * Getter method for property <tt>data</tt>.
+     *
+     * @return property value of data
+     */
+    public String getData() {
+        return data;
+    }
 
-  /**
-   * Setter method for property <tt>data</tt>.
-   *
-   * @param data value to be assigned to property data
-   */
-  public void setData(String data) {
-    this.data = data;
-  }
+    /**
+     * Setter method for property <tt>data</tt>.
+     *
+     * @param data value to be assigned to property data
+     */
+    public void setData(String data) {
+        this.data = data;
+    }
 }

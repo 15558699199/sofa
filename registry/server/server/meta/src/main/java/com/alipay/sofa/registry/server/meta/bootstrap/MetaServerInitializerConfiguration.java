@@ -18,9 +18,10 @@ package com.alipay.sofa.registry.server.meta.bootstrap;
 
 import com.alipay.sofa.registry.log.Logger;
 import com.alipay.sofa.registry.log.LoggerFactory;
-import java.util.concurrent.atomic.AtomicBoolean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.SmartLifecycle;
+
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * @author shangyu.wh
@@ -28,51 +29,52 @@ import org.springframework.context.SmartLifecycle;
  */
 public class MetaServerInitializerConfiguration implements SmartLifecycle {
 
-  private static final Logger LOGGER =
-      LoggerFactory.getLogger(MetaServerInitializerConfiguration.class);
+    private static final Logger LOGGER =
+            LoggerFactory.getLogger(MetaServerInitializerConfiguration.class);
 
-  private AtomicBoolean running = new AtomicBoolean(false);
+    private AtomicBoolean running = new AtomicBoolean(false);
 
-  @Autowired private MetaServerBootstrap metaServerBootstrap;
+    @Autowired
+    private MetaServerBootstrap metaServerBootstrap;
 
-  @Override
-  public boolean isAutoStartup() {
-    return true;
-  }
-
-  @Override
-  public void start() {
-
-    try {
-      metaServerBootstrap.start();
-      LOGGER.info("Started MetaServer");
-
-      MetaServerInitializerConfiguration.this.running.set(true);
-    } catch (Exception ex) {
-      MetaServerInitializerConfiguration.this.running.set(false);
-      LOGGER.error("Could not initialize Meta server!", ex);
+    @Override
+    public boolean isAutoStartup() {
+        return true;
     }
-  }
 
-  @Override
-  public void stop() {
-    this.running.set(false);
-    metaServerBootstrap.destroy();
-  }
+    @Override
+    public void start() {
 
-  @Override
-  public boolean isRunning() {
-    return this.running.get();
-  }
+        try {
+            metaServerBootstrap.start();
+            LOGGER.info("Started MetaServer");
 
-  @Override
-  public int getPhase() {
-    return 0;
-  }
+            MetaServerInitializerConfiguration.this.running.set(true);
+        } catch (Exception ex) {
+            MetaServerInitializerConfiguration.this.running.set(false);
+            LOGGER.error("Could not initialize Meta server!", ex);
+        }
+    }
 
-  @Override
-  public void stop(Runnable callback) {
-    callback.run();
-    this.running.set(false);
-  }
+    @Override
+    public void stop() {
+        this.running.set(false);
+        metaServerBootstrap.destroy();
+    }
+
+    @Override
+    public boolean isRunning() {
+        return this.running.get();
+    }
+
+    @Override
+    public int getPhase() {
+        return 0;
+    }
+
+    @Override
+    public void stop(Runnable callback) {
+        callback.run();
+        this.running.set(false);
+    }
 }

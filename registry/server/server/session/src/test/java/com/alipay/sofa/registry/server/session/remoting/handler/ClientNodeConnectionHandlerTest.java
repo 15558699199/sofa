@@ -16,9 +16,6 @@
  */
 package com.alipay.sofa.registry.server.session.remoting.handler;
 
-import static org.mockito.Matchers.anyList;
-import static org.mockito.Mockito.*;
-
 import com.alipay.sofa.registry.common.model.Node;
 import com.alipay.sofa.registry.remoting.Channel;
 import com.alipay.sofa.registry.remoting.ChannelHandler;
@@ -26,32 +23,36 @@ import com.alipay.sofa.registry.server.session.TestUtils;
 import com.alipay.sofa.registry.server.session.bootstrap.ExecutorManager;
 import com.alipay.sofa.registry.server.session.registry.Registry;
 import com.alipay.sofa.registry.util.ConcurrentUtils;
-import java.util.concurrent.TimeUnit;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.concurrent.TimeUnit;
+
+import static org.mockito.Matchers.anyList;
+import static org.mockito.Mockito.*;
+
 public class ClientNodeConnectionHandlerTest {
 
-  private ClientNodeConnectionHandler newHandler() {
-    ClientNodeConnectionHandler handler = new ClientNodeConnectionHandler();
-    Assert.assertNull(handler.getExecutor());
-    Assert.assertEquals(handler.interest(), null);
-    Assert.assertEquals(handler.getConnectNodeType(), Node.NodeType.CLIENT);
-    Assert.assertEquals(handler.getType(), ChannelHandler.HandlerType.LISTENER);
-    TestUtils.assertRunException(RuntimeException.class, () -> handler.buildFailedResponse("msg"));
-    return handler;
-  }
+    private ClientNodeConnectionHandler newHandler() {
+        ClientNodeConnectionHandler handler = new ClientNodeConnectionHandler();
+        Assert.assertNull(handler.getExecutor());
+        Assert.assertEquals(handler.interest(), null);
+        Assert.assertEquals(handler.getConnectNodeType(), Node.NodeType.CLIENT);
+        Assert.assertEquals(handler.getType(), ChannelHandler.HandlerType.LISTENER);
+        TestUtils.assertRunException(RuntimeException.class, () -> handler.buildFailedResponse("msg"));
+        return handler;
+    }
 
-  @Test
-  public void testHandle() {
-    ClientNodeConnectionHandler handler = newHandler();
-    handler.sessionRegistry = mock(Registry.class);
-    handler.executorManager = new ExecutorManager(TestUtils.newSessionConfig("testDc"));
-    Channel channel = TestUtils.newChannel(9600, "127.0.0.1", 9888);
-    handler.start();
-    handler.fireCancelClient(channel);
-    ConcurrentUtils.sleepUninterruptibly(50, TimeUnit.MILLISECONDS);
-    verify(handler.sessionRegistry, times(1)).clean(anyList());
-    handler.disconnected(channel);
-  }
+    @Test
+    public void testHandle() {
+        ClientNodeConnectionHandler handler = newHandler();
+        handler.sessionRegistry = mock(Registry.class);
+        handler.executorManager = new ExecutorManager(TestUtils.newSessionConfig("testDc"));
+        Channel channel = TestUtils.newChannel(9600, "127.0.0.1", 9888);
+        handler.start();
+        handler.fireCancelClient(channel);
+        ConcurrentUtils.sleepUninterruptibly(50, TimeUnit.MILLISECONDS);
+        verify(handler.sessionRegistry, times(1)).clean(anyList());
+        handler.disconnected(channel);
+    }
 }

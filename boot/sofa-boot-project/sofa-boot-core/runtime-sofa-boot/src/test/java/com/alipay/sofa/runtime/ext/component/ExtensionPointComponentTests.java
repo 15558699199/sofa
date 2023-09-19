@@ -17,12 +17,12 @@
 package com.alipay.sofa.runtime.ext.component;
 
 import com.alipay.sofa.runtime.api.ServiceRuntimeException;
-import com.alipay.sofa.service.api.component.ExtensionPoint;
 import com.alipay.sofa.runtime.model.ComponentStatus;
 import com.alipay.sofa.runtime.spi.component.ComponentInfo;
 import com.alipay.sofa.runtime.spi.component.ComponentManager;
 import com.alipay.sofa.runtime.spi.component.Implementation;
 import com.alipay.sofa.runtime.spi.component.SofaRuntimeContext;
+import com.alipay.sofa.service.api.component.ExtensionPoint;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -45,16 +45,16 @@ import static org.mockito.Mockito.when;
 public class ExtensionPointComponentTests {
 
     @Mock
-    private ExtensionPoint          extensionPoint;
+    private ExtensionPoint extensionPoint;
 
     @Mock
-    private ComponentManager        componentManager;
+    private ComponentManager componentManager;
 
     @Mock
-    private SofaRuntimeContext      sofaRuntimeContext;
+    private SofaRuntimeContext sofaRuntimeContext;
 
     @Mock
-    private Implementation          implementation;
+    private Implementation implementation;
 
     private ExtensionPointComponent component;
 
@@ -89,7 +89,7 @@ public class ExtensionPointComponentTests {
     @Test
     void testGetType() {
         assertThat(component.getType()).isEqualTo(
-            ExtensionPointComponent.EXTENSION_POINT_COMPONENT_TYPE);
+                ExtensionPointComponent.EXTENSION_POINT_COMPONENT_TYPE);
     }
 
     @Test

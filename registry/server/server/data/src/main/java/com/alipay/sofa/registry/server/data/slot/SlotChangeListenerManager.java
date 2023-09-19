@@ -19,10 +19,11 @@ package com.alipay.sofa.registry.server.data.slot;
 import com.alipay.sofa.registry.server.data.cache.DatumStorageDelegate;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
-import java.util.ArrayList;
-import java.util.List;
+
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author xiaojian.xj
@@ -30,35 +31,36 @@ import javax.annotation.Resource;
  */
 public class SlotChangeListenerManager {
 
-  private final List<SlotChangeListener> localSlotChangeListeners = new ArrayList<>();
+    private final List<SlotChangeListener> localSlotChangeListeners = new ArrayList<>();
 
-  private final List<SlotChangeListener> remoteSlotChangeListeners = new ArrayList<>();
+    private final List<SlotChangeListener> remoteSlotChangeListeners = new ArrayList<>();
 
-  @Resource private DatumStorageDelegate datumStorageDelegate;
+    @Resource
+    private DatumStorageDelegate datumStorageDelegate;
 
-  @PostConstruct
-  public void init() {
-    localSlotChangeListeners.add(datumStorageDelegate.getSlotChangeListener(true));
+    @PostConstruct
+    public void init() {
+        localSlotChangeListeners.add(datumStorageDelegate.getSlotChangeListener(true));
 
-    remoteSlotChangeListeners.add(datumStorageDelegate.getSlotChangeListener(false));
-  }
+        remoteSlotChangeListeners.add(datumStorageDelegate.getSlotChangeListener(false));
+    }
 
-  public List<SlotChangeListener> localUpdateListeners() {
-    return Lists.newArrayList(localSlotChangeListeners);
-  }
+    public List<SlotChangeListener> localUpdateListeners() {
+        return Lists.newArrayList(localSlotChangeListeners);
+    }
 
-  public List<SlotChangeListener> remoteListeners() {
-    return Lists.newArrayList(remoteSlotChangeListeners);
-  }
+    public List<SlotChangeListener> remoteListeners() {
+        return Lists.newArrayList(remoteSlotChangeListeners);
+    }
 
-  /**
-   * Setter method for property <tt>datumStorageDelegate</tt>.
-   *
-   * @param datumStorageDelegate value to be assigned to property datumStorageDelegate
-   */
-  @VisibleForTesting
-  public void setDatumStorageDelegate(DatumStorageDelegate datumStorageDelegate) {
-    this.datumStorageDelegate = datumStorageDelegate;
-    init();
-  }
+    /**
+     * Setter method for property <tt>datumStorageDelegate</tt>.
+     *
+     * @param datumStorageDelegate value to be assigned to property datumStorageDelegate
+     */
+    @VisibleForTesting
+    public void setDatumStorageDelegate(DatumStorageDelegate datumStorageDelegate) {
+        this.datumStorageDelegate = datumStorageDelegate;
+        init();
+    }
 }

@@ -21,20 +21,23 @@ import com.alipay.sofa.registry.client.api.model.ConfigData;
 import org.junit.Assert;
 import org.junit.Test;
 
-/** @author <a href="mailto:zhanggeng.zg@antfin.com">GengZhang</a> */
+/**
+ * @author <a href="mailto:zhanggeng.zg@antfin.com">GengZhang</a>
+ */
 public class ConfiguratorRegistrationTest {
 
-  @Test
-  public void testAll() {
-    ConfiguratorRegistration registration = new ConfiguratorRegistration("xxx", null);
-    Assert.assertEquals("xxx", registration.getDataId());
-    Assert.assertNull(registration.getConfigDataObserver());
-    registration.setConfigDataObserver(
-        new ConfigDataObserver() {
-          @Override
-          public void handleData(String dataId, ConfigData configData) {}
-        });
-    Assert.assertNotNull(registration.getConfigDataObserver());
-    Assert.assertTrue(registration.toString().contains("xxx"));
-  }
+    @Test
+    public void testAll() {
+        ConfiguratorRegistration registration = new ConfiguratorRegistration("xxx", null);
+        Assert.assertEquals("xxx", registration.getDataId());
+        Assert.assertNull(registration.getConfigDataObserver());
+        registration.setConfigDataObserver(
+                new ConfigDataObserver() {
+                    @Override
+                    public void handleData(String dataId, ConfigData configData) {
+                    }
+                });
+        Assert.assertNotNull(registration.getConfigDataObserver());
+        Assert.assertTrue(registration.toString().contains("xxx"));
+    }
 }

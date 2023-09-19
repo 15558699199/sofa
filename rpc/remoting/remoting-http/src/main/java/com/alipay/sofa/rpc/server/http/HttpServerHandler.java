@@ -41,17 +41,17 @@ public class HttpServerHandler implements ServerHandler {
     /**
      * Invoker列表，接口--> Invoker
      */
-    protected Map<String, Invoker> invokerMap      = new ConcurrentHashMap<String, Invoker>();
+    protected Map<String, Invoker> invokerMap = new ConcurrentHashMap<String, Invoker>();
 
     /**
      * 当前Client正在发送的调用数量
      */
-    protected AtomicInteger        processingCount = new AtomicInteger(0);
+    protected AtomicInteger processingCount = new AtomicInteger(0);
 
     /**
      * 业务线程池
      */
-    protected ThreadPoolExecutor   bizThreadPool;
+    protected ThreadPoolExecutor bizThreadPool;
 
     public Map<String, Invoker> getInvokerMap() {
         return invokerMap;
@@ -73,9 +73,9 @@ public class HttpServerHandler implements ServerHandler {
 
     /**
      * Handle request from HTTP/1.1
-     * 
-     * @param request SofaRequest
-     * @param ctx ChannelHandlerContext
+     *
+     * @param request   SofaRequest
+     * @param ctx       ChannelHandlerContext
      * @param keepAlive keepAlive
      */
     public void handleHttp1Request(SofaRequest request, ChannelHandlerContext ctx, boolean keepAlive) {
@@ -93,11 +93,11 @@ public class HttpServerHandler implements ServerHandler {
 
     /**
      * Handle request from HTTP/2
-     * 
+     *
      * @param streamId stream Id
-     * @param request SofaRequest
-     * @param ctx ChannelHandlerContext
-     * @param encoder Http2ConnectionEncoder
+     * @param request  SofaRequest
+     * @param ctx      ChannelHandlerContext
+     * @param encoder  Http2ConnectionEncoder
      */
     public void handleHttp2Request(int streamId, SofaRequest request, ChannelHandlerContext ctx,
                                    Http2ConnectionEncoder encoder) {

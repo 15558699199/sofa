@@ -36,7 +36,7 @@ public class TraceResponseFilter implements ContainerResponseFilter {
 
     @Override
     public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext)
-        throws IOException {
+            throws IOException {
 
         // 补充服务端request和response大小
         if (RpcInternalContext.isAttachmentEnable()) {

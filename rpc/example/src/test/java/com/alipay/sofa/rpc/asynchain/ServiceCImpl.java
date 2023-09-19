@@ -20,14 +20,12 @@ import com.alipay.sofa.rpc.log.Logger;
 import com.alipay.sofa.rpc.log.LoggerFactory;
 
 /**
- *
- *
  * @author <a href="mailto:zhanggeng.zg@antfin.com">GengZhang</a>
  */
 public class ServiceCImpl implements ServiceC {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(ServiceCImpl.class);
-    int                         time   = 0;
+    int time = 0;
 
     public ServiceCImpl(int i) {
         time = i;

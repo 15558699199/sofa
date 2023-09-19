@@ -32,7 +32,7 @@ public class CompositeCompatibilityVerifierTests {
     @Test
     public void empty() {
         CompositeCompatibilityVerifier verifier = new CompositeCompatibilityVerifier(
-            new ArrayList<>());
+                new ArrayList<>());
         verifier.verifyCompatibilities();
     }
 

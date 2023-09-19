@@ -24,8 +24,9 @@ import com.alipay.sofa.registry.log.LoggerFactory;
 import com.alipay.sofa.registry.server.session.slot.SlotTableCache;
 import com.alipay.sofa.registry.util.ParaCheckUtil;
 import com.google.common.annotations.VisibleForTesting;
-import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Map;
 
 /**
  * @author shangyu.wh
@@ -33,42 +34,43 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class SessionDataStore extends AbstractDataManager<Publisher> implements DataStore {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(SessionDataStore.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SessionDataStore.class);
 
-  @Autowired SlotTableCache slotTableCache;
+    @Autowired
+    SlotTableCache slotTableCache;
 
-  private final SlotStore<Publisher> store = new SlotStore<>(this::slotOf);
+    private final SlotStore<Publisher> store = new SlotStore<>(this::slotOf);
 
-  public SessionDataStore() {
-    super(LOGGER);
-  }
+    public SessionDataStore() {
+        super(LOGGER);
+    }
 
-  @Override
-  public boolean add(Publisher publisher) {
-    ParaCheckUtil.checkNotNull(publisher.getVersion(), "publisher.version");
-    ParaCheckUtil.checkNotNull(publisher.getRegisterTimestamp(), "publisher.registerTimestamp");
+    @Override
+    public boolean add(Publisher publisher) {
+        ParaCheckUtil.checkNotNull(publisher.getVersion(), "publisher.version");
+        ParaCheckUtil.checkNotNull(publisher.getRegisterTimestamp(), "publisher.registerTimestamp");
 
-    PublisherUtils.internPublisher(publisher);
-    Tuple<Publisher, Boolean> ret = addData(publisher);
-    return ret.o2;
-  }
+        PublisherUtils.internPublisher(publisher);
+        Tuple<Publisher, Boolean> ret = addData(publisher);
+        return ret.o2;
+    }
 
-  @Override
-  public Map<String, Map<String, Publisher>> getDataInfoIdPublishers(int slotId) {
-    return store.copyMap(slotId);
-  }
+    @Override
+    public Map<String, Map<String, Publisher>> getDataInfoIdPublishers(int slotId) {
+        return store.copyMap(slotId);
+    }
 
-  @Override
-  protected Store<Publisher> getStore() {
-    return store;
-  }
+    @Override
+    protected Store<Publisher> getStore() {
+        return store;
+    }
 
-  @VisibleForTesting
-  public void setSlotTableCache(SlotTableCache slotTableCache) {
-    this.slotTableCache = slotTableCache;
-  }
+    @VisibleForTesting
+    public void setSlotTableCache(SlotTableCache slotTableCache) {
+        this.slotTableCache = slotTableCache;
+    }
 
-  protected int slotOf(String dataInfoId) {
-    return slotTableCache.slotOf(dataInfoId);
-  }
+    protected int slotOf(String dataInfoId) {
+        return slotTableCache.slotOf(dataInfoId);
+    }
 }

@@ -26,17 +26,17 @@ import com.alipay.sofa.registry.client.api.model.Event;
  */
 public interface EventSubscriber {
 
-  /**
-   * Is sync boolean.
-   *
-   * @return the boolean
-   */
-  boolean isSync();
+    /**
+     * Is sync boolean.
+     *
+     * @return the boolean
+     */
+    boolean isSync();
 
-  /**
-   * On event.
-   *
-   * @param event the event
-   */
-  void onEvent(Event event);
+    /**
+     * On event.
+     *
+     * @param event the event
+     */
+    void onEvent(Event event);
 }

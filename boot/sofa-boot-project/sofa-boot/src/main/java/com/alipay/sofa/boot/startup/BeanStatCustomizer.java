@@ -26,8 +26,9 @@ public interface BeanStatCustomizer {
 
     /**
      * Custom bean stat.
+     *
      * @param beanName beanName
-     * @param bean bean instance
+     * @param bean     bean instance
      * @param beanStat beanStat
      * @return customized bean stat. if {@code null}, no subsequent BeanStatCustomizer will be invoked
      */

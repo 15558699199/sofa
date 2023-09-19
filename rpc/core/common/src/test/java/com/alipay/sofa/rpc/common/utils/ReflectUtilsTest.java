@@ -26,12 +26,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
-import static com.alipay.sofa.rpc.common.utils.ReflectUtils.getPropertyGetterMethod;
-import static com.alipay.sofa.rpc.common.utils.ReflectUtils.getPropertyNameFromBeanReadMethod;
-import static com.alipay.sofa.rpc.common.utils.ReflectUtils.getPropertySetterMethod;
-import static com.alipay.sofa.rpc.common.utils.ReflectUtils.isBeanPropertyReadMethod;
-import static com.alipay.sofa.rpc.common.utils.ReflectUtils.isBeanPropertyWriteMethod;
-import static com.alipay.sofa.rpc.common.utils.ReflectUtils.isPublicInstanceField;
+import static com.alipay.sofa.rpc.common.utils.ReflectUtils.*;
 
 public class ReflectUtilsTest {
 
@@ -150,12 +145,12 @@ public class ReflectUtilsTest {
     public void testGetMethod() throws Exception {
         String className = "com.alipay.sofa.rpc.common.utils.TestBean";
         String methodName = "setAlias";
-        String[] argsType1 = new String[] { "java.lang.String" };
+        String[] argsType1 = new String[]{"java.lang.String"};
 
         Method method = ReflectUtils.getMethod(className, methodName, argsType1);
 
         Method method3 = ClassUtils.forName(className).getMethod(methodName,
-            ClassTypeUtils.getClasses(argsType1));
+                ClassTypeUtils.getClasses(argsType1));
         Assert.assertFalse(method == method3);
         Assert.assertTrue(method.equals(method3));
 

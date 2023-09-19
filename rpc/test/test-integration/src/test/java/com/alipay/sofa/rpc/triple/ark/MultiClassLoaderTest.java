@@ -36,7 +36,6 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- *
  * @author junyuan
  * @version MultiClassLoaderTest.java, v 0.1 2022年12月30日 15:02 junyuan Exp $
  */
@@ -188,7 +187,6 @@ public class MultiClassLoaderTest {
     }
 
 
-
     /**
      * a specific classloader
      * would load class with refClassloader if load nothing by itself
@@ -202,7 +200,9 @@ public class MultiClassLoaderTest {
 
         private Set<String/* forbidden class name */> blackList = new HashSet<>();
 
-        /** active only if not null */
+        /**
+         * active only if not null
+         */
         private Set<String/* permitted class name */> whiteList = new HashSet<>();
 
         public SpecificTestClassLoader(String identity, URL[] urls) {
@@ -248,13 +248,15 @@ public class MultiClassLoaderTest {
         @Override
         public URL getResource(String name) {
             URL url = super.getResource(name);
-            if (url == null ) {
+            if (url == null) {
                 url = refClassLoader.getResource(name);
             }
             return url;
         }
 
-        /** do load only if white list is not empty and class do in white list */
+        /**
+         * do load only if white list is not empty and class do in white list
+         */
         private Class<?> whiteListLoad(String className, boolean resolve) throws ClassNotFoundException {
             Class<?> clazz = null;
             if (!whiteList.isEmpty()) {

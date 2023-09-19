@@ -63,7 +63,7 @@ public class DefaultPipelineContextTests {
 
         private final int order;
 
-        private long      invokeTime;
+        private long invokeTime;
 
         public TestPipelineStage(int order) {
             this.order = order;

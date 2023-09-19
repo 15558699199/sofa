@@ -17,10 +17,11 @@
 package com.alipay.sofa.registry.jdbc.mapper;
 
 import com.alipay.sofa.registry.jdbc.domain.AppRevisionDomain;
+import org.apache.ibatis.annotations.Param;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
-import org.apache.ibatis.annotations.Param;
 
 /**
  * @author xiaojian.xj
@@ -28,32 +29,32 @@ import org.apache.ibatis.annotations.Param;
  */
 public interface AppRevisionMapper {
 
-  /**
-   * query revision
-   *
-   * @param dataCenters dataCenters
-   * @param revision revision
-   * @return List
-   */
-  List<AppRevisionDomain> queryRevision(
-      @Param("dataCenters") Set<String> dataCenters, @Param("revision") String revision);
+    /**
+     * query revision
+     *
+     * @param dataCenters dataCenters
+     * @param revision    revision
+     * @return List
+     */
+    List<AppRevisionDomain> queryRevision(
+            @Param("dataCenters") Set<String> dataCenters, @Param("revision") String revision);
 
-  List<AppRevisionDomain> listRevisions(
-      @Param("dataCenter") String dataCenter,
-      @Param("afterId") long afterId,
-      @Param("limit") int limit);
+    List<AppRevisionDomain> listRevisions(
+            @Param("dataCenter") String dataCenter,
+            @Param("afterId") long afterId,
+            @Param("limit") int limit);
 
-  int heartbeat(@Param("dataCenter") String dataCenter, @Param("revision") String revision);
+    int heartbeat(@Param("dataCenter") String dataCenter, @Param("revision") String revision);
 
-  void replace(AppRevisionDomain domain);
+    void replace(AppRevisionDomain domain);
 
-  List<AppRevisionDomain> getExpired(
-      @Param("dataCenter") String dataCenter,
-      @Param("beforeTime") Date beforeTime,
-      @Param("limit") int limit);
+    List<AppRevisionDomain> getExpired(
+            @Param("dataCenter") String dataCenter,
+            @Param("beforeTime") Date beforeTime,
+            @Param("limit") int limit);
 
-  int cleanDeleted(
-      @Param("dataCenter") String dataCenter,
-      @Param("beforeTime") Date beforeTime,
-      @Param("limit") int limit);
+    int cleanDeleted(
+            @Param("dataCenter") String dataCenter,
+            @Param("beforeTime") Date beforeTime,
+            @Param("limit") int limit);
 }

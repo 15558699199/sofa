@@ -17,11 +17,7 @@
 package com.alipay.sofa.rpc.registry.polaris;
 
 import com.alipay.sofa.rpc.client.ProviderGroup;
-import com.alipay.sofa.rpc.config.ApplicationConfig;
-import com.alipay.sofa.rpc.config.ConsumerConfig;
-import com.alipay.sofa.rpc.config.ProviderConfig;
-import com.alipay.sofa.rpc.config.RegistryConfig;
-import com.alipay.sofa.rpc.config.ServerConfig;
+import com.alipay.sofa.rpc.config.*;
 import com.alipay.sofa.rpc.registry.RegistryFactory;
 import com.tencent.polaris.api.core.ConsumerAPI;
 import com.tencent.polaris.api.exception.PolarisException;
@@ -43,14 +39,14 @@ import static com.tencent.polaris.api.exception.ErrorCode.SERVER_USER_ERROR;
 
 public class PolarisRegistryTest {
 
-    private static final String    APPNAME      = "polaris-test";
-    private static final String    INTERFACE_ID = "com.alipay.sofa.rpc.registry.polaris.TestService";
-    private static final String    NAMESPACE    = APPNAME;
-    private static final String    SERVICE      = "com.alipay.sofa.rpc.registry.polaris.TestService:1.0:polaris-test-1";
-    private static final String    SERVICE_1    = "com.alipay.sofa.rpc.registry.polaris.TestService:1.0:polaris-test-2";
+    private static final String APPNAME = "polaris-test";
+    private static final String INTERFACE_ID = "com.alipay.sofa.rpc.registry.polaris.TestService";
+    private static final String NAMESPACE = APPNAME;
+    private static final String SERVICE = "com.alipay.sofa.rpc.registry.polaris.TestService:1.0:polaris-test-1";
+    private static final String SERVICE_1 = "com.alipay.sofa.rpc.registry.polaris.TestService:1.0:polaris-test-2";
 
-    private static NamingServer    polaris;
-    private static RegistryConfig  registryConfig;
+    private static NamingServer polaris;
+    private static RegistryConfig registryConfig;
     private static PolarisRegistry registry;
 
     @BeforeClass
@@ -66,9 +62,9 @@ public class PolarisRegistryTest {
         }
 
         registryConfig = new RegistryConfig()
-            .setProtocol("polaris")
-            .setAddress("127.0.0.1:8091")
-            .setRegister(true);
+                .setProtocol("polaris")
+                .setAddress("127.0.0.1:8091")
+                .setRegister(true);
 
         registry = (PolarisRegistry) RegistryFactory.getRegistry(registryConfig);
         registry.init();
@@ -160,13 +156,13 @@ public class PolarisRegistryTest {
     private ConsumerConfig<?> consumerConfig(String uniqueId) {
         ConsumerConfig<?> consumer = new ConsumerConfig();
         consumer.setInterfaceId(INTERFACE_ID)
-            .setUniqueId(uniqueId)
-            .setApplication(new ApplicationConfig().setAppName(APPNAME))
-            .setProxy("javassist")
-            .setSubscribe(true)
-            .setSerialization("java")
-            .setInvokeType("sync")
-            .setTimeout(4444);
+                .setUniqueId(uniqueId)
+                .setApplication(new ApplicationConfig().setAppName(APPNAME))
+                .setProxy("javassist")
+                .setSubscribe(true)
+                .setSerialization("java")
+                .setInvokeType("sync")
+                .setTimeout(4444);
 
         return consumer;
     }

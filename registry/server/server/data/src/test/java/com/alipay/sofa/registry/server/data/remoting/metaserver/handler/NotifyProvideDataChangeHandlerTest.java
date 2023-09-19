@@ -16,10 +16,6 @@
  */
 package com.alipay.sofa.registry.server.data.remoting.metaserver.handler;
 
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 import com.alipay.sofa.registry.common.model.CommonResponse;
 import com.alipay.sofa.registry.common.model.Node;
 import com.alipay.sofa.registry.common.model.metaserver.ProvideData;
@@ -31,47 +27,51 @@ import com.alipay.sofa.registry.server.shared.meta.MetaServerService;
 import org.junit.Assert;
 import org.junit.Test;
 
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 public class NotifyProvideDataChangeHandlerTest {
-  @Test
-  public void testCheckParam() {
-    NotifyProvideDataChangeHandler handler = newHandler();
-    TestBaseUtils.assertException(
-        IllegalArgumentException.class,
-        () -> {
-          handler.checkParam(request(null, 10));
-        });
+    private static ProvideDataChangeEvent request(String dataInfoId, long version) {
+        return new ProvideDataChangeEvent(dataInfoId, version);
+    }
 
-    handler.checkParam(request("111", 10));
-  }
+    @Test
+    public void testCheckParam() {
+        NotifyProvideDataChangeHandler handler = newHandler();
+        TestBaseUtils.assertException(
+                IllegalArgumentException.class,
+                () -> {
+                    handler.checkParam(request(null, 10));
+                });
 
-  private NotifyProvideDataChangeHandler newHandler() {
-    NotifyProvideDataChangeHandler handler = new NotifyProvideDataChangeHandler();
-    Assert.assertNull(handler.getExecutor());
-    Assert.assertEquals(handler.interest(), ProvideDataChangeEvent.class);
-    Assert.assertEquals(handler.getConnectNodeType(), Node.NodeType.META);
-    Assert.assertEquals(handler.getType(), ChannelHandler.HandlerType.PROCESSER);
-    Assert.assertEquals(handler.getInvokeType(), ChannelHandler.InvokeType.SYNC);
-    CommonResponse failed = (CommonResponse) handler.buildFailedResponse("msg");
-    Assert.assertFalse(failed.isSuccess());
-    return handler;
-  }
+        handler.checkParam(request("111", 10));
+    }
 
-  @Test
-  public void testHandle() {
-    NotifyProvideDataChangeHandler handler = newHandler();
-    handler.setProvideDataProcessorManager(new ProvideDataProcessorManager());
-    MetaServerService svc = mock(MetaServerService.class);
-    when(svc.fetchData(anyString())).thenReturn(new ProvideData(null, "test", 100L));
-    handler.setMetaServerService(svc);
-    TestBaseUtils.MockBlotChannel channel = TestBaseUtils.newChannel(9620, "localhost", 8888);
+    private NotifyProvideDataChangeHandler newHandler() {
+        NotifyProvideDataChangeHandler handler = new NotifyProvideDataChangeHandler();
+        Assert.assertNull(handler.getExecutor());
+        Assert.assertEquals(handler.interest(), ProvideDataChangeEvent.class);
+        Assert.assertEquals(handler.getConnectNodeType(), Node.NodeType.META);
+        Assert.assertEquals(handler.getType(), ChannelHandler.HandlerType.PROCESSER);
+        Assert.assertEquals(handler.getInvokeType(), ChannelHandler.InvokeType.SYNC);
+        CommonResponse failed = (CommonResponse) handler.buildFailedResponse("msg");
+        Assert.assertFalse(failed.isSuccess());
+        return handler;
+    }
 
-    ProvideDataChangeEvent request = request("testDataId", 100);
+    @Test
+    public void testHandle() {
+        NotifyProvideDataChangeHandler handler = newHandler();
+        handler.setProvideDataProcessorManager(new ProvideDataProcessorManager());
+        MetaServerService svc = mock(MetaServerService.class);
+        when(svc.fetchData(anyString())).thenReturn(new ProvideData(null, "test", 100L));
+        handler.setMetaServerService(svc);
+        TestBaseUtils.MockBlotChannel channel = TestBaseUtils.newChannel(9620, "localhost", 8888);
 
-    Object obj = handler.doHandle(channel, request);
-    Assert.assertNull(obj);
-  }
+        ProvideDataChangeEvent request = request("testDataId", 100);
 
-  private static ProvideDataChangeEvent request(String dataInfoId, long version) {
-    return new ProvideDataChangeEvent(dataInfoId, version);
-  }
+        Object obj = handler.doHandle(channel, request);
+        Assert.assertNull(obj);
+    }
 }

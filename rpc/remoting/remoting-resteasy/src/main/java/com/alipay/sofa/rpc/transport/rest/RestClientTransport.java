@@ -55,15 +55,15 @@ public class RestClientTransport extends AbstractProxyClientTransport {
         SofaResteasyClientBuilder builder = new SofaResteasyClientBuilder();
 
         ResteasyClient client = builder
-            .registerProvider().logProviders()
-            .establishConnectionTimeout(transportConfig.getConnectTimeout(), TimeUnit.MILLISECONDS)
-            .socketTimeout(transportConfig.getInvokeTimeout(), TimeUnit.MILLISECONDS)
-            .connectionPoolSize(Math.max(transportConfig.getConnectionNum(), MIN_CONNECTION_POOL_SIZE))
-            .build();
+                .registerProvider().logProviders()
+                .establishConnectionTimeout(transportConfig.getConnectTimeout(), TimeUnit.MILLISECONDS)
+                .socketTimeout(transportConfig.getInvokeTimeout(), TimeUnit.MILLISECONDS)
+                .connectionPoolSize(Math.max(transportConfig.getConnectionNum(), MIN_CONNECTION_POOL_SIZE))
+                .build();
 
         ProviderInfo provider = transportConfig.getProviderInfo();
         String url = "http://" + provider.getHost() + ":" + provider.getPort()
-            + StringUtils.CONTEXT_SEP + StringUtils.trimToEmpty(provider.getPath());
+                + StringUtils.CONTEXT_SEP + StringUtils.trimToEmpty(provider.getPath());
         ResteasyWebTarget target = client.target(url);
         return target.proxy(ClassUtils.forName(transportConfig.getConsumerConfig().getInterfaceId()));
     }
@@ -79,7 +79,7 @@ public class RestClientTransport extends AbstractProxyClientTransport {
             try {
                 String interfaceName = request.getInterfaceName();
                 method = ClassUtils.forName(interfaceName)
-                    .getMethod(methodName, ClassTypeUtils.getClasses(methodSigns));
+                        .getMethod(methodName, ClassTypeUtils.getClasses(methodSigns));
                 ReflectCache.putOverloadMethodCache(serviceUniqueName, method);
             } catch (NoSuchMethodException e) {
                 throw new SofaRpcException(RpcErrorType.CLIENT_UNDECLARED_ERROR, "Method not found", e);

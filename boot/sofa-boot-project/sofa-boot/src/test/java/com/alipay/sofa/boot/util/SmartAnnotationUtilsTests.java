@@ -19,11 +19,7 @@ package com.alipay.sofa.boot.util;
 import org.junit.jupiter.api.Test;
 import org.springframework.util.ReflectionUtils;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Repeatable;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 import java.util.List;
@@ -93,34 +89,49 @@ public class SmartAnnotationUtilsTests {
     @Test
     public void testAnnotationOnMethod() {
         assertThat(0).isEqualTo(
-            getAnnotations(getMethod(ChildMethodClass.class, "noMethod")).size());
+                getAnnotations(getMethod(ChildMethodClass.class, "noMethod")).size());
 
         assertThat(1).isEqualTo(
-            getAnnotations(getMethod(ChildMethodClass.class, "parentMethod")).size());
+                getAnnotations(getMethod(ChildMethodClass.class, "parentMethod")).size());
         assertThat("overrideParentMethod").isEqualTo(
-            getAnnotations(getMethod(ChildMethodClass.class, "parentMethod")).get(0));
+                getAnnotations(getMethod(ChildMethodClass.class, "parentMethod")).get(0));
 
         assertThat(2).isEqualTo(
-            getAnnotations(getMethod(ChildMethodClass.class, "selfMethod")).size());
+                getAnnotations(getMethod(ChildMethodClass.class, "selfMethod")).size());
         assertThat("selfMethodA").isEqualTo(
-            getAnnotations(getMethod(ChildMethodClass.class, "selfMethod")).get(0));
+                getAnnotations(getMethod(ChildMethodClass.class, "selfMethod")).get(0));
         assertThat("selfMethodB").isEqualTo(
-            getAnnotations(getMethod(ChildMethodClass.class, "selfMethod")).get(1));
+                getAnnotations(getMethod(ChildMethodClass.class, "selfMethod")).get(1));
 
         assertThat(1).isEqualTo(
-            getAnnotations(getMethod(ChildMethodClass.class, "parentSelfMethod")).size());
+                getAnnotations(getMethod(ChildMethodClass.class, "parentSelfMethod")).size());
         assertThat("parentSelfMethod").isEqualTo(
-            getAnnotations(getMethod(ChildMethodClass.class, "parentSelfMethod")).get(0));
+                getAnnotations(getMethod(ChildMethodClass.class, "parentSelfMethod")).get(0));
 
         assertThat(1).isEqualTo(
-            getAnnotations(getMethod(ParentMethodClass.class, "parentMethod")).size());
+                getAnnotations(getMethod(ParentMethodClass.class, "parentMethod")).size());
         assertThat("parentMethod").isEqualTo(
-            getAnnotations(getMethod(ParentMethodClass.class, "parentMethod")).get(0));
+                getAnnotations(getMethod(ParentMethodClass.class, "parentMethod")).get(0));
     }
 
     @SampleAnnotation(id = "SampleClass")
     interface SampleService {
 
+    }
+
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target({ElementType.TYPE, ElementType.METHOD})
+    @Repeatable(SampleAnnotations.class)
+    public @interface SampleAnnotation {
+
+        String id() default "";
+    }
+
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target({ElementType.TYPE, ElementType.METHOD})
+    public @interface SampleAnnotations {
+
+        SampleAnnotation[] value();
     }
 
     @SampleAnnotation(id = "NormalClass")
@@ -134,8 +145,8 @@ public class SmartAnnotationUtilsTests {
 
     }
 
-    @SampleAnnotations(value = { @SampleAnnotation(id = "RepeatableA"),
-            @SampleAnnotation(id = "RepeatableB") })
+    @SampleAnnotations(value = {@SampleAnnotation(id = "RepeatableA"),
+            @SampleAnnotation(id = "RepeatableB")})
     static class RepeatAnnotationClass {
 
     }
@@ -208,20 +219,5 @@ public class SmartAnnotationUtilsTests {
         public void selfMethod() {
 
         }
-    }
-
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target({ ElementType.TYPE, ElementType.METHOD })
-    @Repeatable(SampleAnnotations.class)
-    public @interface SampleAnnotation {
-
-        String id() default "";
-    }
-
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target({ ElementType.TYPE, ElementType.METHOD })
-    public @interface SampleAnnotations {
-
-        SampleAnnotation[] value();
     }
 }

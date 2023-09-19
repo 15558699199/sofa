@@ -18,6 +18,7 @@ package com.alipay.sofa.registry.common.model.metaserver;
 
 import com.alipay.sofa.registry.common.model.Node.NodeType;
 import com.google.common.collect.Sets;
+
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Set;
@@ -28,62 +29,62 @@ import java.util.Set;
  */
 public class ProvideDataChangeEvent implements Serializable {
 
-  private final String dataInfoId;
+    private final String dataInfoId;
 
-  private final long version;
+    private final long version;
 
-  private final Set<NodeType> nodeTypes;
+    private final Set<NodeType> nodeTypes;
 
-  /**
-   * constructor
-   *
-   * @param dataInfoId dataInfoId
-   * @param version version
-   */
-  public ProvideDataChangeEvent(String dataInfoId, long version) {
-    this(dataInfoId, version, Sets.newHashSet(NodeType.SESSION));
-  }
+    /**
+     * constructor
+     *
+     * @param dataInfoId dataInfoId
+     * @param version    version
+     */
+    public ProvideDataChangeEvent(String dataInfoId, long version) {
+        this(dataInfoId, version, Sets.newHashSet(NodeType.SESSION));
+    }
 
-  public ProvideDataChangeEvent(String dataInfoId, long version, Set<NodeType> nodeTypes) {
-    this.dataInfoId = dataInfoId;
-    this.version = version;
-    this.nodeTypes = Collections.unmodifiableSet(nodeTypes);
-  }
+    public ProvideDataChangeEvent(String dataInfoId, long version, Set<NodeType> nodeTypes) {
+        this.dataInfoId = dataInfoId;
+        this.version = version;
+        this.nodeTypes = Collections.unmodifiableSet(nodeTypes);
+    }
 
-  /**
-   * Getter method for property <tt>dataInfoId</tt>.
-   *
-   * @return property value of dataInfoId
-   */
-  public String getDataInfoId() {
-    return dataInfoId;
-  }
+    /**
+     * Getter method for property <tt>dataInfoId</tt>.
+     *
+     * @return property value of dataInfoId
+     */
+    public String getDataInfoId() {
+        return dataInfoId;
+    }
 
-  /**
-   * Getter method for property <tt>version</tt>.
-   *
-   * @return property value of version
-   */
-  public long getVersion() {
-    return version;
-  }
+    /**
+     * Getter method for property <tt>version</tt>.
+     *
+     * @return property value of version
+     */
+    public long getVersion() {
+        return version;
+    }
 
-  /**
-   * Getter method for property <tt>nodeType</tt>.
-   *
-   * @return property value of nodeType
-   */
-  public Set<NodeType> getNodeTypes() {
-    return nodeTypes;
-  }
+    /**
+     * Getter method for property <tt>nodeType</tt>.
+     *
+     * @return property value of nodeType
+     */
+    public Set<NodeType> getNodeTypes() {
+        return nodeTypes;
+    }
 
-  @Override
-  public String toString() {
-    final StringBuilder sb = new StringBuilder("NotifyProvideDataChange{");
-    sb.append("dataInfoId='").append(dataInfoId).append('\'');
-    sb.append(", version=").append(version);
-    sb.append(", nodeTypes=").append(nodeTypes);
-    sb.append('}');
-    return sb.toString();
-  }
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("NotifyProvideDataChange{");
+        sb.append("dataInfoId='").append(dataInfoId).append('\'');
+        sb.append(", version=").append(version);
+        sb.append(", nodeTypes=").append(nodeTypes);
+        sb.append('}');
+        return sb.toString();
+    }
 }

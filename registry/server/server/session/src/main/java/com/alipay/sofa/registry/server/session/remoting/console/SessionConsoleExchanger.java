@@ -21,40 +21,42 @@ import com.alipay.sofa.registry.remoting.exchange.Exchange;
 import com.alipay.sofa.registry.server.session.bootstrap.SessionServerConfig;
 import com.alipay.sofa.registry.server.shared.remoting.ClientSideExchanger;
 import com.google.common.annotations.VisibleForTesting;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.util.Collection;
 import java.util.Collections;
-import org.springframework.beans.factory.annotation.Autowired;
 
 public class SessionConsoleExchanger extends ClientSideExchanger {
 
-  @Autowired private SessionServerConfig sessionServerConfig;
+    @Autowired
+    private SessionServerConfig sessionServerConfig;
 
-  public SessionConsoleExchanger() {
-    super(Exchange.SESSION_SERVER_CONSOLE_TYPE);
-  }
+    public SessionConsoleExchanger() {
+        super(Exchange.SESSION_SERVER_CONSOLE_TYPE);
+    }
 
-  @Override
-  protected Collection<ChannelHandler> getClientHandlers() {
-    return Collections.emptyList();
-  }
+    @Override
+    protected Collection<ChannelHandler> getClientHandlers() {
+        return Collections.emptyList();
+    }
 
-  @Override
-  public int getRpcTimeoutMillis() {
-    return 3000;
-  }
+    @Override
+    public int getRpcTimeoutMillis() {
+        return 3000;
+    }
 
-  @Override
-  public int getServerPort() {
-    return sessionServerConfig.getConsolePort();
-  }
+    @Override
+    public int getServerPort() {
+        return sessionServerConfig.getConsolePort();
+    }
 
-  @Override
-  public int getConnNum() {
-    return 2;
-  }
+    @Override
+    public int getConnNum() {
+        return 2;
+    }
 
-  @VisibleForTesting
-  public void setSessionServerConfig(SessionServerConfig sessionServerConfig) {
-    this.sessionServerConfig = sessionServerConfig;
-  }
+    @VisibleForTesting
+    public void setSessionServerConfig(SessionServerConfig sessionServerConfig) {
+        this.sessionServerConfig = sessionServerConfig;
+    }
 }

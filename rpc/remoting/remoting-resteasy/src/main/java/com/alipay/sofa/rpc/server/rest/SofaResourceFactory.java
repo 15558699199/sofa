@@ -28,8 +28,8 @@ import org.jboss.resteasy.plugins.server.resourcefactory.SingletonResource;
  */
 public class SofaResourceFactory extends SingletonResource {
     private final ProviderConfig providerConfig;
-    private final String         serviceName;
-    private final String         appName;
+    private final String serviceName;
+    private final String appName;
 
     public SofaResourceFactory(ProviderConfig providerConfig, Object object) {
         super(object);

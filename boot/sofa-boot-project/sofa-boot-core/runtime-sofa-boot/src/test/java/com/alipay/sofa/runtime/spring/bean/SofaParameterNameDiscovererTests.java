@@ -38,25 +38,25 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class SofaParameterNameDiscovererTests {
 
-    private SofaParameterNameDiscoverer      parameterNameDiscoverer;
+    private SofaParameterNameDiscoverer parameterNameDiscoverer;
 
     private AnnotationWrapper<SofaReference> annotationWrapper;
 
-    private MockEnvironment                  mockEnvironment;
+    private MockEnvironment mockEnvironment;
 
     @BeforeEach
     public void setUp() {
         mockEnvironment = new MockEnvironment();
         annotationWrapper = AnnotationWrapper.create(SofaReference.class)
-            .withEnvironment(mockEnvironment).withBinder(DefaultPlaceHolderBinder.INSTANCE);
+                .withEnvironment(mockEnvironment).withBinder(DefaultPlaceHolderBinder.INSTANCE);
         parameterNameDiscoverer = new SofaParameterNameDiscoverer(
-            new DefaultParameterNameDiscoverer(), annotationWrapper);
+                new DefaultParameterNameDiscoverer(), annotationWrapper);
     }
 
     @Test
     public void getParameterNamesOnMethods() {
         Method method = ReflectionUtils.findMethod(SofaReferenceOnMethod.class, "hello",
-            String.class);
+                String.class);
         String[] parameters = parameterNameDiscoverer.getParameterNames(method);
         assertThat(parameters).hasSize(1);
         assertThat(parameters[0]).isEqualTo("ReferenceFactoryBean#java.lang.String:a");
@@ -65,7 +65,7 @@ public class SofaParameterNameDiscovererTests {
     @Test
     public void getParameterNamesOnConstructs() throws NoSuchMethodException {
         Constructor<SofaReferenceOnConstructs> constructor = ReflectionUtils.accessibleConstructor(
-            SofaReferenceOnConstructs.class, String.class);
+                SofaReferenceOnConstructs.class, String.class);
         String[] parameters = parameterNameDiscoverer.getParameterNames(constructor);
         assertThat(parameters).hasSize(1);
         assertThat(parameters[0]).isEqualTo("ReferenceFactoryBean#java.lang.String:a");

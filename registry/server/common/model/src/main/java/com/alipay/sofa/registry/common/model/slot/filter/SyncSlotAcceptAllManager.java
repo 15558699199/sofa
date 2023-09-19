@@ -22,8 +22,8 @@ package com.alipay.sofa.registry.common.model.slot.filter;
  */
 public class SyncSlotAcceptAllManager implements SyncSlotAcceptorManager {
 
-  @Override
-  public boolean accept(SyncAcceptorRequest request) {
-    return true;
-  }
+    @Override
+    public boolean accept(SyncAcceptorRequest request) {
+        return true;
+    }
 }

@@ -17,6 +17,7 @@
 package com.alipay.sofa.registry.client.auth;
 
 import com.alipay.sofa.registry.core.model.BaseRegister;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,18 +27,19 @@ import java.util.Map;
  */
 public final class NoopAuthManager implements AuthManager {
 
-  public static final AuthManager INSTANCE = new NoopAuthManager();
+    public static final AuthManager INSTANCE = new NoopAuthManager();
 
-  private NoopAuthManager() {}
+    private NoopAuthManager() {
+    }
 
-  /**
-   * Gets auth content.
-   *
-   * @param register the register
-   * @return the auth content
-   */
-  @Override
-  public Map<String, String> getAuthContent(BaseRegister register) {
-    return new HashMap<String, String>();
-  }
+    /**
+     * Gets auth content.
+     *
+     * @param register the register
+     * @return the auth content
+     */
+    @Override
+    public Map<String, String> getAuthContent(BaseRegister register) {
+        return new HashMap<String, String>();
+    }
 }

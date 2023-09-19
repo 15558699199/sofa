@@ -17,6 +17,7 @@
 package com.alipay.sofa.registry.jdbc.domain;
 
 import com.alipay.sofa.registry.jdbc.version.config.ConfigEntry;
+
 import java.util.Date;
 
 /**
@@ -25,181 +26,196 @@ import java.util.Date;
  */
 public class ProvideDataDomain implements ConfigEntry {
 
-  /** primary dataKey */
-  private long id;
+    /**
+     * primary dataKey
+     */
+    private long id;
 
-  /** local data center */
-  private String dataCenter;
+    /**
+     * local data center
+     */
+    private String dataCenter;
 
-  /** data dataKey */
-  private String dataKey;
+    /**
+     * data dataKey
+     */
+    private String dataKey;
 
-  /** data dataValue */
-  private String dataValue;
+    /**
+     * data dataValue
+     */
+    private String dataValue;
 
-  /** create time */
-  private Date gmtCreate;
+    /**
+     * create time
+     */
+    private Date gmtCreate;
 
-  /** last update time */
-  private Date gmtModified;
+    /**
+     * last update time
+     */
+    private Date gmtModified;
 
-  /** data version */
-  private long dataVersion;
+    /**
+     * data version
+     */
+    private long dataVersion;
 
-  public ProvideDataDomain() {}
+    public ProvideDataDomain() {
+    }
 
-  public ProvideDataDomain(String dataCenter, String dataKey, String dataValue, long dataVersion) {
-    this.dataCenter = dataCenter;
-    this.dataKey = dataKey;
-    this.dataValue = dataValue;
-    this.dataVersion = dataVersion;
-  }
+    public ProvideDataDomain(String dataCenter, String dataKey, String dataValue, long dataVersion) {
+        this.dataCenter = dataCenter;
+        this.dataKey = dataKey;
+        this.dataValue = dataValue;
+        this.dataVersion = dataVersion;
+    }
 
-  /**
-   * Getter method for property <tt>id</tt>.
-   *
-   * @return property dataValue of id
-   */
-  public long getId() {
-    return id;
-  }
+    /**
+     * Getter method for property <tt>id</tt>.
+     *
+     * @return property dataValue of id
+     */
+    public long getId() {
+        return id;
+    }
 
-  /**
-   * Setter method for property <tt>id</tt>.
-   *
-   * @param id dataValue to be assigned to property id
-   */
-  public void setId(long id) {
-    this.id = id;
-  }
+    /**
+     * Setter method for property <tt>id</tt>.
+     *
+     * @param id dataValue to be assigned to property id
+     */
+    public void setId(long id) {
+        this.id = id;
+    }
 
-  /**
-   * Getter method for property <tt>dataCenter</tt>.
-   *
-   * @return property dataValue of dataCenter
-   */
-  public String getDataCenter() {
-    return dataCenter;
-  }
+    /**
+     * Getter method for property <tt>dataCenter</tt>.
+     *
+     * @return property dataValue of dataCenter
+     */
+    public String getDataCenter() {
+        return dataCenter;
+    }
 
-  /**
-   * Setter method for property <tt>dataCenter</tt>.
-   *
-   * @param dataCenter dataValue to be assigned to property dataCenter
-   */
-  public void setDataCenter(String dataCenter) {
-    this.dataCenter = dataCenter;
-  }
+    /**
+     * Setter method for property <tt>dataCenter</tt>.
+     *
+     * @param dataCenter dataValue to be assigned to property dataCenter
+     */
+    public void setDataCenter(String dataCenter) {
+        this.dataCenter = dataCenter;
+    }
 
-  /**
-   * Getter method for property <tt>dataKey</tt>.
-   *
-   * @return property dataValue of dataKey
-   */
-  public String getDataKey() {
-    return dataKey;
-  }
+    /**
+     * Getter method for property <tt>dataKey</tt>.
+     *
+     * @return property dataValue of dataKey
+     */
+    public String getDataKey() {
+        return dataKey;
+    }
 
-  /**
-   * Setter method for property <tt>dataKey</tt>.
-   *
-   * @param dataKey dataValue to be assigned to property dataKey
-   */
-  public void setDataKey(String dataKey) {
-    this.dataKey = dataKey;
-  }
+    /**
+     * Setter method for property <tt>dataKey</tt>.
+     *
+     * @param dataKey dataValue to be assigned to property dataKey
+     */
+    public void setDataKey(String dataKey) {
+        this.dataKey = dataKey;
+    }
 
-  /**
-   * Getter method for property <tt>dataValue</tt>.
-   *
-   * @return property dataValue of dataValue
-   */
-  public String getDataValue() {
-    return dataValue;
-  }
+    /**
+     * Getter method for property <tt>dataValue</tt>.
+     *
+     * @return property dataValue of dataValue
+     */
+    public String getDataValue() {
+        return dataValue;
+    }
 
-  /**
-   * Setter method for property <tt>dataValue</tt>.
-   *
-   * @param dataValue dataValue to be assigned to property dataValue
-   */
-  public void setDataValue(String dataValue) {
-    this.dataValue = dataValue;
-  }
+    /**
+     * Setter method for property <tt>dataValue</tt>.
+     *
+     * @param dataValue dataValue to be assigned to property dataValue
+     */
+    public void setDataValue(String dataValue) {
+        this.dataValue = dataValue;
+    }
 
-  /**
-   * Getter method for property <tt>gmtCreate</tt>.
-   *
-   * @return property dataValue of gmtCreate
-   */
-  public Date getGmtCreate() {
-    return gmtCreate;
-  }
+    /**
+     * Getter method for property <tt>gmtCreate</tt>.
+     *
+     * @return property dataValue of gmtCreate
+     */
+    public Date getGmtCreate() {
+        return gmtCreate;
+    }
 
-  /**
-   * Setter method for property <tt>gmtCreate</tt>.
-   *
-   * @param gmtCreate dataValue to be assigned to property gmtCreate
-   */
-  public void setGmtCreate(Date gmtCreate) {
-    this.gmtCreate = gmtCreate;
-  }
+    /**
+     * Setter method for property <tt>gmtCreate</tt>.
+     *
+     * @param gmtCreate dataValue to be assigned to property gmtCreate
+     */
+    public void setGmtCreate(Date gmtCreate) {
+        this.gmtCreate = gmtCreate;
+    }
 
-  /**
-   * Getter method for property <tt>gmtModified</tt>.
-   *
-   * @return property dataValue of gmtModified
-   */
-  public Date getGmtModified() {
-    return gmtModified;
-  }
+    /**
+     * Getter method for property <tt>gmtModified</tt>.
+     *
+     * @return property dataValue of gmtModified
+     */
+    public Date getGmtModified() {
+        return gmtModified;
+    }
 
-  /**
-   * Setter method for property <tt>gmtModified</tt>.
-   *
-   * @param gmtModified dataValue to be assigned to property gmtModified
-   */
-  public void setGmtModified(Date gmtModified) {
-    this.gmtModified = gmtModified;
-  }
+    /**
+     * Setter method for property <tt>gmtModified</tt>.
+     *
+     * @param gmtModified dataValue to be assigned to property gmtModified
+     */
+    public void setGmtModified(Date gmtModified) {
+        this.gmtModified = gmtModified;
+    }
 
-  /**
-   * Getter method for property <tt>dataVersion</tt>.
-   *
-   * @return property value of dataVersion
-   */
-  @Override
-  public long getDataVersion() {
-    return dataVersion;
-  }
+    /**
+     * Getter method for property <tt>dataVersion</tt>.
+     *
+     * @return property value of dataVersion
+     */
+    @Override
+    public long getDataVersion() {
+        return dataVersion;
+    }
 
-  /**
-   * Setter method for property <tt>dataVersion</tt>.
-   *
-   * @param dataVersion value to be assigned to property dataVersion
-   */
-  public void setDataVersion(long dataVersion) {
-    this.dataVersion = dataVersion;
-  }
+    /**
+     * Setter method for property <tt>dataVersion</tt>.
+     *
+     * @param dataVersion value to be assigned to property dataVersion
+     */
+    public void setDataVersion(long dataVersion) {
+        this.dataVersion = dataVersion;
+    }
 
-  @Override
-  public String toString() {
-    return "ProvideDataDomain{"
-        + "dataCenter='"
-        + dataCenter
-        + '\''
-        + ", dataKey='"
-        + dataKey
-        + '\''
-        + ", dataValue='"
-        + dataValue
-        + '\''
-        + ", gmtCreate="
-        + gmtCreate
-        + ", gmtModified="
-        + gmtModified
-        + ", dataVersion="
-        + dataVersion
-        + '}';
-  }
+    @Override
+    public String toString() {
+        return "ProvideDataDomain{"
+                + "dataCenter='"
+                + dataCenter
+                + '\''
+                + ", dataKey='"
+                + dataKey
+                + '\''
+                + ", dataValue='"
+                + dataValue
+                + '\''
+                + ", gmtCreate="
+                + gmtCreate
+                + ", gmtModified="
+                + gmtModified
+                + ", dataVersion="
+                + dataVersion
+                + '}';
+    }
 }

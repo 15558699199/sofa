@@ -49,21 +49,14 @@ import java.util.concurrent.ThreadPoolExecutor;
 public abstract class AbstractHttpServer implements Server {
 
     protected final String container;
-
-    public AbstractHttpServer(String container) {
-        this.container = container;
-    }
-
     /**
      * 是否已经启动
      */
-    protected volatile boolean      started;
-
+    protected volatile boolean started;
     /**
      * 服务端配置
      */
-    protected ServerConfig          serverConfig;
-
+    protected ServerConfig serverConfig;
     /**
      * Server transport config
      */
@@ -71,16 +64,46 @@ public abstract class AbstractHttpServer implements Server {
     /**
      * Http Server handler
      */
-    protected HttpServerHandler     serverHandler;
-
-    /**
-     * 服务端通讯层
-     */
-    private ServerTransport         serverTransport;
+    protected HttpServerHandler serverHandler;
     /**
      * 业务线程池
      */
-    protected ThreadPoolExecutor    bizThreadPool;
+    protected ThreadPoolExecutor bizThreadPool;
+    /**
+     * 服务端通讯层
+     */
+    private ServerTransport serverTransport;
+    public AbstractHttpServer(String container) {
+        this.container = container;
+    }
+
+    /**
+     * ServerConfig转ServerTransportConfig
+     *
+     * @param serverConfig 服务端配置
+     * @return ServerTransportConfig 服务传输层配置
+     */
+    private static ServerTransportConfig convertConfig(ServerConfig serverConfig) {
+        ServerTransportConfig serverTransportConfig = new ServerTransportConfig();
+        serverTransportConfig.setPort(serverConfig.getPort());
+        serverTransportConfig.setProtocolType(serverConfig.getProtocol());
+        serverTransportConfig.setHost(serverConfig.getBoundHost());
+        serverTransportConfig.setContextPath(serverConfig.getContextPath());
+        serverTransportConfig.setBizMaxThreads(serverConfig.getMaxThreads());
+        serverTransportConfig.setBizPoolType(serverConfig.getThreadPoolType());
+        serverTransportConfig.setIoThreads(serverConfig.getIoThreads());
+        serverTransportConfig.setChannelListeners(serverConfig.getOnConnect());
+        serverTransportConfig.setMaxConnection(serverConfig.getAccepts());
+        serverTransportConfig.setPayload(serverConfig.getPayload());
+        serverTransportConfig.setTelnet(serverConfig.isTelnet());
+        serverTransportConfig.setUseEpoll(serverConfig.isEpoll());
+        serverTransportConfig.setBizPoolQueueType(serverConfig.getQueueType());
+        serverTransportConfig.setBizPoolQueues(serverConfig.getQueues());
+        serverTransportConfig.setDaemon(serverConfig.isDaemon());
+        serverTransportConfig.setParameters(serverConfig.getParameters());
+        serverTransportConfig.setContainer(serverConfig.getTransport());
+        return serverTransportConfig;
+    }
 
     @Override
     public void init(ServerConfig serverConfig) {
@@ -99,7 +122,7 @@ public abstract class AbstractHttpServer implements Server {
     protected ThreadPoolExecutor initThreadPool(ServerConfig serverConfig) {
         ThreadPoolExecutor threadPool = BusinessPool.initPool(serverConfig);
         threadPool.setThreadFactory(new NamedThreadFactory("SEV-" + serverConfig.getProtocol().toUpperCase()
-            + "-BIZ-" + serverConfig.getPort(), serverConfig.isDaemon()));
+                + "-BIZ-" + serverConfig.getPort(), serverConfig.isDaemon()));
         threadPool.setRejectedExecutionHandler(new SofaRejectedExecutionHandler());
         if (serverConfig.isPreStartCore()) { // 初始化核心线程池
             threadPool.prestartAllCoreThreads();
@@ -187,7 +210,7 @@ public abstract class AbstractHttpServer implements Server {
             if (methodsLimit.containsKey(methodName)) {
                 // 重名的方法
                 throw new SofaRpcRuntimeException(LogCodes.getLog(LogCodes.ERROR_OVERLOADING_METHOD,
-                    itfClass.getName(), methodName));
+                        itfClass.getName(), methodName));
             }
             methodsLimit.put(methodName, method);
         }
@@ -196,7 +219,7 @@ public abstract class AbstractHttpServer implements Server {
             // 缓存接口的方法
             ReflectCache.putMethodCache(serviceName, entry.getValue());
             ReflectCache.putMethodSigsCache(serviceName, entry.getKey(),
-                ClassTypeUtils.getTypeStrs(entry.getValue().getParameterTypes(), true));
+                    ClassTypeUtils.getTypeStrs(entry.getValue().getParameterTypes(), true));
         }
     }
 
@@ -238,34 +261,6 @@ public abstract class AbstractHttpServer implements Server {
 
     public ThreadPoolExecutor getBizThreadPool() {
         return bizThreadPool;
-    }
-
-    /**
-     * ServerConfig转ServerTransportConfig
-     *
-     * @param serverConfig 服务端配置
-     * @return ServerTransportConfig 服务传输层配置
-     */
-    private static ServerTransportConfig convertConfig(ServerConfig serverConfig) {
-        ServerTransportConfig serverTransportConfig = new ServerTransportConfig();
-        serverTransportConfig.setPort(serverConfig.getPort());
-        serverTransportConfig.setProtocolType(serverConfig.getProtocol());
-        serverTransportConfig.setHost(serverConfig.getBoundHost());
-        serverTransportConfig.setContextPath(serverConfig.getContextPath());
-        serverTransportConfig.setBizMaxThreads(serverConfig.getMaxThreads());
-        serverTransportConfig.setBizPoolType(serverConfig.getThreadPoolType());
-        serverTransportConfig.setIoThreads(serverConfig.getIoThreads());
-        serverTransportConfig.setChannelListeners(serverConfig.getOnConnect());
-        serverTransportConfig.setMaxConnection(serverConfig.getAccepts());
-        serverTransportConfig.setPayload(serverConfig.getPayload());
-        serverTransportConfig.setTelnet(serverConfig.isTelnet());
-        serverTransportConfig.setUseEpoll(serverConfig.isEpoll());
-        serverTransportConfig.setBizPoolQueueType(serverConfig.getQueueType());
-        serverTransportConfig.setBizPoolQueues(serverConfig.getQueues());
-        serverTransportConfig.setDaemon(serverConfig.isDaemon());
-        serverTransportConfig.setParameters(serverConfig.getParameters());
-        serverTransportConfig.setContainer(serverConfig.getTransport());
-        return serverTransportConfig;
     }
 
 }

@@ -35,11 +35,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class RpcActuatorAutoConfigurationTests {
 
     private final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
-                                                             .withConfiguration(
-                                                                 AutoConfigurations
-                                                                     .of(RpcActuatorAutoConfiguration.class))
-                                                             .withPropertyValues(
-                                                                 "management.endpoints.web.exposure.include=readiness,rpc");
+            .withConfiguration(
+                    AutoConfigurations
+                            .of(RpcActuatorAutoConfiguration.class))
+            .withPropertyValues(
+                    "management.endpoints.web.exposure.include=readiness,rpc");
 
     @Test
     void runShouldHaveRpcActuatorBeans() {

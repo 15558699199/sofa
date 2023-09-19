@@ -24,9 +24,32 @@ import com.alipay.sofa.registry.server.shared.slot.SlotTableUtils;
 import com.alipay.sofa.registry.test.TestUtils;
 import com.alipay.sofa.registry.util.MathUtils;
 import com.alipay.sofa.registry.util.StringFormatter;
+import org.junit.Assert;
+
 import java.util.*;
 import java.util.Map.Entry;
-import org.junit.Assert;
+
+enum CheckEnum {
+    SLOT_LEADER_CHECKER(new SlotLeaderChecker()),
+
+    SLOT_CHECKER(new SlotChecker()),
+    ;
+
+    private CheckerAction checkerAction;
+
+    CheckEnum(CheckerAction checkerAction) {
+        this.checkerAction = checkerAction;
+    }
+
+    /**
+     * Getter method for property <tt>checkerAction</tt>.
+     *
+     * @return property value of checkerAction
+     */
+    public CheckerAction getCheckerAction() {
+        return checkerAction;
+    }
+}
 
 /**
  * @author xiaojian.xj
@@ -34,105 +57,83 @@ import org.junit.Assert;
  */
 public interface CheckerAction {
 
-  boolean doCheck(SlotTable slotTable, List<String> dataNodes, int slotNum, int replicas);
+    boolean doCheck(SlotTable slotTable, List<String> dataNodes, int slotNum, int replicas);
 
-  default Tuple<String, Integer> max(Map<String, Integer> count) {
-    Optional<Entry<String, Integer>> max =
-        count.entrySet().stream().max((Comparator.comparing(Entry::getValue)));
-    return new Tuple<>(max.get().getKey(), max.get().getValue());
-  }
+    default Tuple<String, Integer> max(Map<String, Integer> count) {
+        Optional<Entry<String, Integer>> max =
+                count.entrySet().stream().max((Comparator.comparing(Entry::getValue)));
+        return new Tuple<>(max.get().getKey(), max.get().getValue());
+    }
 
-  default Tuple<String, Integer> min(Map<String, Integer> count) {
-    Optional<Entry<String, Integer>> max =
-        count.entrySet().stream().min((Comparator.comparing(Entry::getValue)));
-    return new Tuple<>(max.get().getKey(), max.get().getValue());
-  }
+    default Tuple<String, Integer> min(Map<String, Integer> count) {
+        Optional<Entry<String, Integer>> max =
+                count.entrySet().stream().min((Comparator.comparing(Entry::getValue)));
+        return new Tuple<>(max.get().getKey(), max.get().getValue());
+    }
 
-  default double average(Map<String, Integer> count) {
-    OptionalDouble average =
-        count.entrySet().stream().mapToInt(entry -> entry.getValue()).average();
-    return average.getAsDouble();
-  }
+    default double average(Map<String, Integer> count) {
+        OptionalDouble average =
+                count.entrySet().stream().mapToInt(entry -> entry.getValue()).average();
+        return average.getAsDouble();
+    }
 
-  default int sum(Map<String, Integer> count) {
-    return (int) count.entrySet().stream().mapToInt(entry -> entry.getValue()).sum();
-  }
+    default int sum(Map<String, Integer> count) {
+        return (int) count.entrySet().stream().mapToInt(entry -> entry.getValue()).sum();
+    }
 }
 
 class SlotLeaderChecker implements CheckerAction {
 
-  private final Logger logger = LoggerFactory.getLogger(getClass());
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
-  @Override
-  public boolean doCheck(SlotTable slotTable, List<String> dataNodes, int slotNum, int replicas) {
+    @Override
+    public boolean doCheck(SlotTable slotTable, List<String> dataNodes, int slotNum, int replicas) {
 
-    Map<String, Integer> leaderCount = SlotTableUtils.getSlotTableLeaderCount(slotTable);
-    logger.info("[slot leader checker] leaderCount: " + leaderCount);
-    String msg =
-        StringFormatter.format(
-            "datas={},counts={}",
-            new TreeSet<String>(dataNodes),
-            new TreeSet<String>(leaderCount.keySet()));
-    Assert.assertEquals(msg, dataNodes.size(), leaderCount.size());
-    Assert.assertTrue(leaderCount.keySet().containsAll(dataNodes));
-    Tuple<String, Integer> max = max(leaderCount);
-    Tuple<String, Integer> min = min(leaderCount);
-    int average = MathUtils.divideCeil(sum(leaderCount), leaderCount.size());
-    logger.info(
-        "[slot leader checker] max-ip: {}, max-count:{}, min-ip: {}, min-count:{}, average: {}",
-        max.getFirst(),
-        max.getSecond(),
-        min.getFirst(),
-        min.getSecond(),
-        (int) average);
-    TestUtils.assertBalance(slotTable, dataNodes, slotNum, replicas, false, "");
-    return max.getSecond() < min.getSecond() * 2;
-  }
+        Map<String, Integer> leaderCount = SlotTableUtils.getSlotTableLeaderCount(slotTable);
+        logger.info("[slot leader checker] leaderCount: " + leaderCount);
+        String msg =
+                StringFormatter.format(
+                        "datas={},counts={}",
+                        new TreeSet<String>(dataNodes),
+                        new TreeSet<String>(leaderCount.keySet()));
+        Assert.assertEquals(msg, dataNodes.size(), leaderCount.size());
+        Assert.assertTrue(leaderCount.keySet().containsAll(dataNodes));
+        Tuple<String, Integer> max = max(leaderCount);
+        Tuple<String, Integer> min = min(leaderCount);
+        int average = MathUtils.divideCeil(sum(leaderCount), leaderCount.size());
+        logger.info(
+                "[slot leader checker] max-ip: {}, max-count:{}, min-ip: {}, min-count:{}, average: {}",
+                max.getFirst(),
+                max.getSecond(),
+                min.getFirst(),
+                min.getSecond(),
+                (int) average);
+        TestUtils.assertBalance(slotTable, dataNodes, slotNum, replicas, false, "");
+        return max.getSecond() < min.getSecond() * 2;
+    }
 }
 
 class SlotChecker implements CheckerAction {
 
-  private final Logger logger = LoggerFactory.getLogger(getClass());
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
-  @Override
-  public boolean doCheck(SlotTable slotTable, List<String> dataNodes, int slotNum, int replicas) {
-    Map<String, Integer> slotCount = SlotTableUtils.getSlotTableSlotCount(slotTable);
-    logger.info("[slot checker] slotCount: " + slotCount);
-    Assert.assertEquals(dataNodes.size(), slotCount.size());
-    Assert.assertTrue(slotCount.keySet().containsAll(dataNodes));
-    Tuple<String, Integer> max = max(slotCount);
-    Tuple<String, Integer> min = min(slotCount);
-    double average = average(slotCount);
-    logger.info(
-        "[slot checker] max-ip: {}, max-count:{}, min-ip: {}, min-count:{}, average: {}",
-        max.getFirst(),
-        max.getSecond(),
-        min.getFirst(),
-        min.getSecond(),
-        (int) average);
-    TestUtils.assertBalance(slotTable, dataNodes, slotNum, replicas, false, "");
-    return max.getSecond() < min.getSecond() * 2;
-  }
-}
-
-enum CheckEnum {
-  SLOT_LEADER_CHECKER(new SlotLeaderChecker()),
-
-  SLOT_CHECKER(new SlotChecker()),
-  ;
-
-  private CheckerAction checkerAction;
-
-  CheckEnum(CheckerAction checkerAction) {
-    this.checkerAction = checkerAction;
-  }
-
-  /**
-   * Getter method for property <tt>checkerAction</tt>.
-   *
-   * @return property value of checkerAction
-   */
-  public CheckerAction getCheckerAction() {
-    return checkerAction;
-  }
+    @Override
+    public boolean doCheck(SlotTable slotTable, List<String> dataNodes, int slotNum, int replicas) {
+        Map<String, Integer> slotCount = SlotTableUtils.getSlotTableSlotCount(slotTable);
+        logger.info("[slot checker] slotCount: " + slotCount);
+        Assert.assertEquals(dataNodes.size(), slotCount.size());
+        Assert.assertTrue(slotCount.keySet().containsAll(dataNodes));
+        Tuple<String, Integer> max = max(slotCount);
+        Tuple<String, Integer> min = min(slotCount);
+        double average = average(slotCount);
+        logger.info(
+                "[slot checker] max-ip: {}, max-count:{}, min-ip: {}, min-count:{}, average: {}",
+                max.getFirst(),
+                max.getSecond(),
+                min.getFirst(),
+                min.getSecond(),
+                (int) average);
+        TestUtils.assertBalance(slotTable, dataNodes, slotNum, replicas, false, "");
+        return max.getSecond() < min.getSecond() * 2;
+    }
 }

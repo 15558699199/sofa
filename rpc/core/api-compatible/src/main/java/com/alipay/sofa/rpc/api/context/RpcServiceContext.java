@@ -26,14 +26,22 @@ public class RpcServiceContext {
     protected String traceId;
     protected String rpcId;
 
-    /** service invoke method */
+    /**
+     * service invoke method
+     */
     protected String methodName;
-    /** service unique name */
+    /**
+     * service unique name
+     */
     protected String serviceName;
 
-    /** target appName */
+    /**
+     * target appName
+     */
     protected String callerAppName;
-    /** target url */
+    /**
+     * target url
+     */
     protected String callerUrl;
 
     public String getMethodName() {
