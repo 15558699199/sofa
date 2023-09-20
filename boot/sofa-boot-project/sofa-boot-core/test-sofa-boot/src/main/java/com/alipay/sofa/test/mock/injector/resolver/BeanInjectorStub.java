@@ -40,17 +40,17 @@ public class BeanInjectorStub {
     /**
      * Field to inject
      */
-    private final Field field;
+    private final Field      field;
 
     /**
      * The original value of the injected field
      */
-    private final Object originalValue;
+    private final Object     originalValue;
 
     /**
      * The bean to inject field
      */
-    private final Object bean;
+    private final Object     bean;
 
     public BeanInjectorStub(Definition definition, Field field, Object bean) {
         this.definition = definition;
@@ -71,7 +71,7 @@ public class BeanInjectorStub {
             ReflectionUtils.setField(field, bean, ((MockDefinition) definition).createMock());
         } else if (definition instanceof SpyDefinition) {
             ReflectionUtils.setField(field, bean,
-                    ((SpyDefinition) definition).createSpy(originalValue));
+                ((SpyDefinition) definition).createSpy(originalValue));
         }
     }
 

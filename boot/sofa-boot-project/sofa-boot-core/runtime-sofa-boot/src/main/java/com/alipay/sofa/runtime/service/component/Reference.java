@@ -34,14 +34,12 @@ public interface Reference extends Contract {
 
     /**
      * Whether the reference is required.
-     *
      * @return true or false
      */
     boolean isRequired();
 
     /**
      * Set the reference is required.
-     *
      * @param required true or false
      */
     void setRequired(boolean required);

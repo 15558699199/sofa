@@ -51,7 +51,7 @@ public class InjectorMockTestExecutionListenerTests {
     @Test
     public void prepareTestInstanceShouldInjectMockBean() {
         AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext(
-                TargetBean.class);
+            TargetBean.class);
 
         WithMockBean instance = new WithMockBean();
         TestContext testContext = mockTestContext(instance);
@@ -127,7 +127,7 @@ public class InjectorMockTestExecutionListenerTests {
 
     private MockDefinition createMockDefinition(Class<?> clazz, MockReset mockReset) {
         return new MockDefinition(ResolvableType.forClass(clazz), null, null, null, null, null,
-                null, false, mockReset, null);
+            null, false, mockReset, null);
     }
 
     private TestContext mockTestContext(Object instance) {
@@ -149,11 +149,11 @@ public class InjectorMockTestExecutionListenerTests {
 
     static class WithMockBean {
 
-        @MockBeanInjector(field = "fieldA", type = TargetBean.class)
-        private ExampleService mockBean;
-
         public ExampleService getMockBean() {
             return mockBean;
         }
+
+        @MockBeanInjector(field = "fieldA", type = TargetBean.class)
+        private ExampleService mockBean;
     }
 }

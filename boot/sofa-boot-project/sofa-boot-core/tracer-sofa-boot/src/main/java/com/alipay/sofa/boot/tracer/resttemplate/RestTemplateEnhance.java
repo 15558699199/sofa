@@ -45,7 +45,7 @@ public class RestTemplateEnhance {
             return;
         }
         List<ClientHttpRequestInterceptor> interceptors = new ArrayList<>(
-                restTemplate.getInterceptors());
+            restTemplate.getInterceptors());
         interceptors.add(0, this.restTemplateInterceptor);
         restTemplate.setInterceptors(interceptors);
     }

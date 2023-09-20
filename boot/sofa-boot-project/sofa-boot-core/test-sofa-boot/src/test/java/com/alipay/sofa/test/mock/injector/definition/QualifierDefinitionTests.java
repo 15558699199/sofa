@@ -61,29 +61,29 @@ public class QualifierDefinitionTests {
     @Test
     void forElementWhenElementIsFieldWithNoQualifiersShouldReturnNull() {
         QualifierDefinition definition = QualifierDefinition.forElement(ReflectionUtils.findField(
-                ConfigA.class, "noQualifier"));
+            ConfigA.class, "noQualifier"));
         assertThat(definition).isNull();
     }
 
     @Test
     void forElementWhenElementIsFieldWithQualifierShouldReturnDefinition() {
         QualifierDefinition definition = QualifierDefinition.forElement(ReflectionUtils.findField(
-                ConfigA.class, "directQualifier"));
+            ConfigA.class, "directQualifier"));
         assertThat(definition).isNotNull();
     }
 
     @Test
-    void matchesShouldCallBeanFactory() {
-        Field field = ReflectionUtils.findField(ConfigA.class, "directQualifier");
-        QualifierDefinition qualifierDefinition = QualifierDefinition.forElement(field);
-        qualifierDefinition.matches(this.beanFactory, "bean");
-        then(this.beanFactory).should()
-                .isAutowireCandidate(eq("bean"), argThat(
-                        (dependencyDescriptor) -> {
-                            assertThat(dependencyDescriptor.getAnnotatedElement()).isEqualTo(field);
-                            return true;
-                        }));
-    }
+	void matchesShouldCallBeanFactory() {
+		Field field = ReflectionUtils.findField(ConfigA.class, "directQualifier");
+		QualifierDefinition qualifierDefinition = QualifierDefinition.forElement(field);
+		qualifierDefinition.matches(this.beanFactory, "bean");
+		then(this.beanFactory).should()
+			.isAutowireCandidate(eq("bean"), argThat(
+					(dependencyDescriptor) -> {
+						assertThat(dependencyDescriptor.getAnnotatedElement()).isEqualTo(field);
+						return true;
+					}));
+	}
 
     @Test
     void applyToShouldSetQualifierElement() {
@@ -97,32 +97,26 @@ public class QualifierDefinitionTests {
     @Test
     void hashCodeAndEqualsShouldWorkOnDifferentClasses() {
         QualifierDefinition directQualifier1 = QualifierDefinition.forElement(ReflectionUtils
-                .findField(ConfigA.class, "directQualifier"));
+            .findField(ConfigA.class, "directQualifier"));
         QualifierDefinition directQualifier2 = QualifierDefinition.forElement(ReflectionUtils
-                .findField(ConfigB.class, "directQualifier"));
+            .findField(ConfigB.class, "directQualifier"));
         QualifierDefinition differentDirectQualifier1 = QualifierDefinition
-                .forElement(ReflectionUtils.findField(ConfigA.class, "differentDirectQualifier"));
+            .forElement(ReflectionUtils.findField(ConfigA.class, "differentDirectQualifier"));
         QualifierDefinition differentDirectQualifier2 = QualifierDefinition
-                .forElement(ReflectionUtils.findField(ConfigB.class, "differentDirectQualifier"));
+            .forElement(ReflectionUtils.findField(ConfigB.class, "differentDirectQualifier"));
         QualifierDefinition customQualifier1 = QualifierDefinition.forElement(ReflectionUtils
-                .findField(ConfigA.class, "customQualifier"));
+            .findField(ConfigA.class, "customQualifier"));
         QualifierDefinition customQualifier2 = QualifierDefinition.forElement(ReflectionUtils
-                .findField(ConfigB.class, "customQualifier"));
+            .findField(ConfigB.class, "customQualifier"));
         assertThat(directQualifier1).hasSameHashCodeAs(directQualifier2);
         assertThat(differentDirectQualifier1).hasSameHashCodeAs(differentDirectQualifier2);
         assertThat(customQualifier1).hasSameHashCodeAs(customQualifier2);
         assertThat(differentDirectQualifier1).isEqualTo(differentDirectQualifier1)
-                .isEqualTo(differentDirectQualifier2).isNotEqualTo(directQualifier2);
+            .isEqualTo(differentDirectQualifier2).isNotEqualTo(directQualifier2);
         assertThat(directQualifier1).isEqualTo(directQualifier1).isEqualTo(directQualifier2)
-                .isNotEqualTo(differentDirectQualifier1);
+            .isNotEqualTo(differentDirectQualifier1);
         assertThat(customQualifier1).isEqualTo(customQualifier1).isEqualTo(customQualifier2)
-                .isNotEqualTo(differentDirectQualifier1);
-    }
-
-    @Qualifier
-    @Retention(RetentionPolicy.RUNTIME)
-    public @interface CustomQualifier {
-
+            .isNotEqualTo(differentDirectQualifier1);
     }
 
     @Configuration(proxyBeanMethods = false)
@@ -158,6 +152,12 @@ public class QualifierDefinitionTests {
         @MockBeanInjector(field = "Field")
         @CustomQualifier
         private Object customQualifier;
+
+    }
+
+    @Qualifier
+    @Retention(RetentionPolicy.RUNTIME)
+    public @interface CustomQualifier {
 
     }
 

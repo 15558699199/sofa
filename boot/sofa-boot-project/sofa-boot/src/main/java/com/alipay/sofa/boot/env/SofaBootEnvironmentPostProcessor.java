@@ -41,10 +41,10 @@ import java.util.Properties;
  */
 public class SofaBootEnvironmentPostProcessor implements EnvironmentPostProcessor, Ordered {
 
-    private static final String PROPERTY_NAME_AUTOCONFIGURE_EXCLUDE = "spring.autoconfigure.exclude";
+    private static final String       PROPERTY_NAME_AUTOCONFIGURE_EXCLUDE        = "spring.autoconfigure.exclude";
 
     private static final List<String> SOFABOOT_EXCLUDE_AUTOCONFIGURATION_CLASSES = List
-            .of("org.springframework.boot.actuate.autoconfigure.startup.StartupEndpointAutoConfiguration");
+                                                                                     .of("org.springframework.boot.actuate.autoconfigure.startup.StartupEndpointAutoConfiguration");
 
     @Override
     public void postProcessEnvironment(ConfigurableEnvironment environment,
@@ -67,9 +67,9 @@ public class SofaBootEnvironmentPostProcessor implements EnvironmentPostProcesso
 
         // Config default value of {@literal management.endpoints.web.exposure.include}
         defaultConfiguration.put(SofaBootConstants.ENDPOINTS_WEB_EXPOSURE_INCLUDE_CONFIG,
-                SofaBootConstants.SOFA_DEFAULT_ENDPOINTS_WEB_EXPOSURE_VALUE);
+            SofaBootConstants.SOFA_DEFAULT_ENDPOINTS_WEB_EXPOSURE_VALUE);
         PropertiesPropertySource propertySource = new PropertiesPropertySource(
-                SofaBootConstants.SOFA_DEFAULT_PROPERTY_SOURCE, defaultConfiguration);
+            SofaBootConstants.SOFA_DEFAULT_PROPERTY_SOURCE, defaultConfiguration);
         environment.getPropertySources().addLast(propertySource);
     }
 
@@ -99,10 +99,10 @@ public class SofaBootEnvironmentPostProcessor implements EnvironmentPostProcesso
         // generally, it would not be null and just for test.
         sofaBootVersion = !StringUtils.hasText(sofaBootVersion) ? "" : sofaBootVersion;
         String sofaBootFormattedVersion = sofaBootVersion.isEmpty() ? "" : String.format(" (v%s)",
-                sofaBootVersion);
+            sofaBootVersion);
         properties.setProperty(SofaBootConstants.SOFA_BOOT_VERSION, sofaBootVersion);
         properties.setProperty(SofaBootConstants.SOFA_BOOT_FORMATTED_VERSION,
-                sofaBootFormattedVersion);
+            sofaBootFormattedVersion);
         return properties;
     }
 

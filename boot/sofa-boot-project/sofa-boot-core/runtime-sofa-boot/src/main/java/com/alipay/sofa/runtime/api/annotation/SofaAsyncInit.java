@@ -35,12 +35,11 @@ import java.lang.annotation.Target;
  *     }
  * }
  * </pre>
- *
  * @author huzijie
  * @version SofaAsyncInit.java, v 0.1 2022年03月25日 11:52 AM huzijie Exp $
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE, ElementType.METHOD})
+@Target({ ElementType.TYPE, ElementType.METHOD })
 public @interface SofaAsyncInit {
 
     /**

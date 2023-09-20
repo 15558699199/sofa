@@ -33,9 +33,9 @@ import java.lang.annotation.Target;
  *
  * <code>
  * public class ClientAnnotatedBean {
- * <p>
- * &#064;SofaClientFactory
- * private ClientFactory clientFactory;
+ *
+ *     &#064;SofaClientFactory
+ *     private ClientFactory clientFactory;
  * }
  * </code>
  *
@@ -47,9 +47,9 @@ import java.lang.annotation.Target;
  *
  * <code>
  * public class ClientAnnotatedBean {
- * <p>
- * &#064;SofaClientFactory
- * private ServiceClient serviceClient;
+ *
+ *     &#064;SofaClientFactory
+ *     private ServiceClient serviceClient;
  * }
  * </code>
  *

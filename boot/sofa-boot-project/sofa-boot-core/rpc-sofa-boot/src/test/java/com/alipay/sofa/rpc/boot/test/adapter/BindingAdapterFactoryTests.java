@@ -37,7 +37,7 @@ public class BindingAdapterFactoryTests {
     public void checkOrder() {
         BindingAdapterFactoryImpl bindingAdapterFactory = new BindingAdapterFactoryImpl();
         bindingAdapterFactory.addBindingAdapters(new HashSet<>(SpringFactoriesLoader.loadFactories(
-                BindingAdapter.class, null)));
+            BindingAdapter.class, null)));
         BindingAdapter bindingAdapter = bindingAdapterFactory.getBindingAdapter(XBindingAdapter.X);
         assertThat(bindingAdapter).isInstanceOf(XBindingAdapter2.class);
     }

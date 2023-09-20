@@ -38,15 +38,15 @@ public class ManualReadinessCallbackEndPointTests {
     private ManualReadinessCallbackEndpoint manualReadinessCallbackEndPoint;
 
     @Mock
-    private ReadinessCheckListener readinessCheckListener;
+    private ReadinessCheckListener          readinessCheckListener;
 
     @Test
     public void trigger() {
         ReadinessCheckListener.ManualReadinessCallbackResult mockResult = new ReadinessCheckListener.ManualReadinessCallbackResult(
-                true, "trigger Success");
+            true, "trigger Success");
         Mockito.doReturn(mockResult).when(readinessCheckListener).triggerReadinessCallback();
         ReadinessCheckListener.ManualReadinessCallbackResult result = manualReadinessCallbackEndPoint
-                .trigger();
+            .trigger();
         assertThat(result.isSuccess()).isTrue();
         assertThat(result.getDetails()).isEqualTo("trigger Success");
     }

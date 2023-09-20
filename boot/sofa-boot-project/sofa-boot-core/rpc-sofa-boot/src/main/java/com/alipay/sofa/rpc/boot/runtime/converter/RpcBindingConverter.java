@@ -28,7 +28,12 @@ import com.alipay.sofa.rpc.config.UserThreadPoolManager;
 import com.alipay.sofa.rpc.filter.ExcludeFilter;
 import com.alipay.sofa.rpc.filter.Filter;
 import com.alipay.sofa.rpc.server.UserThreadPool;
-import com.alipay.sofa.runtime.api.annotation.*;
+import com.alipay.sofa.runtime.api.annotation.SofaMethod;
+import com.alipay.sofa.runtime.api.annotation.SofaParameter;
+import com.alipay.sofa.runtime.api.annotation.SofaReference;
+import com.alipay.sofa.runtime.api.annotation.SofaReferenceBinding;
+import com.alipay.sofa.runtime.api.annotation.SofaService;
+import com.alipay.sofa.runtime.api.annotation.SofaServiceBinding;
 import com.alipay.sofa.runtime.spi.service.BindingConverter;
 import com.alipay.sofa.runtime.spi.service.BindingConverterContext;
 import org.springframework.context.ApplicationContext;
@@ -38,7 +43,11 @@ import org.springframework.util.xml.DomUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 解析 XML配置或者 {@link RpcBindingParam} 为 {@link RpcBinding}
@@ -48,8 +57,8 @@ import java.util.*;
  */
 public abstract class RpcBindingConverter implements BindingConverter<RpcBindingParam, RpcBinding> {
 
-    private static final String FILTER_SEPERATOR_SYMBOL = ",";
-    private static final char EXCLUDE_FILTER_BEGIN_SYMBOL = '!';
+    private static final String FILTER_SEPERATOR_SYMBOL     = ",";
+    private static final char   EXCLUDE_FILTER_BEGIN_SYMBOL = '!';
 
     /**
      * convert {@link RpcBindingParam} to concrete {@link RpcBinding}
@@ -62,7 +71,7 @@ public abstract class RpcBindingConverter implements BindingConverter<RpcBinding
     public RpcBinding convert(RpcBindingParam bindingParam,
                               BindingConverterContext bindingConverterContext) {
         RpcBinding binding = createRpcBinding(bindingParam,
-                bindingConverterContext.getApplicationContext(), bindingConverterContext.isInBinding());
+            bindingConverterContext.getApplicationContext(), bindingConverterContext.isInBinding());
 
         setCallback(bindingParam, bindingConverterContext);
 
@@ -83,13 +92,13 @@ public abstract class RpcBindingConverter implements BindingConverter<RpcBinding
         RpcBindingParam param = createRpcBindingParam();
         //global-attrs,filter,method,route
         Element globalAttrsElement = DomUtils.getChildElementByTagName(element,
-                RpcBindingXmlConstants.TAG_GLOBAL_ATTRS);
+            RpcBindingXmlConstants.TAG_GLOBAL_ATTRS);
         Element routeElement = DomUtils.getChildElementByTagName(element,
-                RpcBindingXmlConstants.TAG_ROUTE);
+            RpcBindingXmlConstants.TAG_ROUTE);
         List<Element> methodElements = DomUtils.getChildElementsByTagName(element,
-                RpcBindingXmlConstants.TAG_METHOD);
+            RpcBindingXmlConstants.TAG_METHOD);
         List<Element> parameterElements = DomUtils.getChildElementsByTagName(element,
-                RpcBindingXmlConstants.TAG_PARAMETER);
+            RpcBindingXmlConstants.TAG_PARAMETER);
 
         parseGlobalAttrs(globalAttrsElement, param, bindingConverterContext);
         parseFilter(globalAttrsElement, param, bindingConverterContext);
@@ -130,13 +139,13 @@ public abstract class RpcBindingConverter implements BindingConverter<RpcBinding
 
         for (Element element : elements) {
             if (element.getNodeType() == Node.ELEMENT_NODE
-                    && element.getLocalName().equals(RpcBindingXmlConstants.TAG_METHOD)) {
+                && element.getLocalName().equals(RpcBindingXmlConstants.TAG_METHOD)) {
 
                 String name = element.getAttribute(RpcBindingXmlConstants.TAG_NAME);
                 Integer timeout = SofaBootRpcParserUtil.parseInteger(element
-                        .getAttribute(RpcBindingXmlConstants.TAG_TIMEOUT));
+                    .getAttribute(RpcBindingXmlConstants.TAG_TIMEOUT));
                 Integer retries = SofaBootRpcParserUtil.parseInteger(element
-                        .getAttribute(RpcBindingXmlConstants.TAG_RETRIES));
+                    .getAttribute(RpcBindingXmlConstants.TAG_RETRIES));
                 String type = element.getAttribute(RpcBindingXmlConstants.TAG_TYPE);
 
                 RpcBindingMethodInfo boltBindingMethodInfo = new RpcBindingMethodInfo();
@@ -155,9 +164,9 @@ public abstract class RpcBindingConverter implements BindingConverter<RpcBinding
 
                 if (type.equalsIgnoreCase(RpcBindingXmlConstants.TYPE_CALLBACK)) {
                     String callbackRef = element
-                            .getAttribute(RpcBindingXmlConstants.TAG_CALLBACK_REF);
+                        .getAttribute(RpcBindingXmlConstants.TAG_CALLBACK_REF);
                     String callbackClass = element
-                            .getAttribute(RpcBindingXmlConstants.TAG_CALLBACK_CLASS);
+                        .getAttribute(RpcBindingXmlConstants.TAG_CALLBACK_CLASS);
 
                     boltBindingMethodInfo.setCallbackRef(callbackRef);
                     boltBindingMethodInfo.setCallbackClass(callbackClass);
@@ -177,7 +186,7 @@ public abstract class RpcBindingConverter implements BindingConverter<RpcBinding
         Map<String, String> parameters = new LinkedHashMap<String, String>(parameterElements.size());
         for (Element element : parameterElements) {
             if (element.getNodeType() == Node.ELEMENT_NODE
-                    && element.getLocalName().equals(RpcBindingXmlConstants.TAG_PARAMETER)) {
+                && element.getLocalName().equals(RpcBindingXmlConstants.TAG_PARAMETER)) {
                 String key = element.getAttribute(RpcBindingXmlConstants.TAG_PARAMETER_KEY);
                 String value = element.getAttribute(RpcBindingXmlConstants.TAG_PARAMETER_VALUE);
                 parameters.put(key, value);
@@ -193,35 +202,35 @@ public abstract class RpcBindingConverter implements BindingConverter<RpcBinding
         }
 
         Integer timeout = SofaBootRpcParserUtil.parseInteger(element
-                .getAttribute(RpcBindingXmlConstants.TAG_TIMEOUT));
+            .getAttribute(RpcBindingXmlConstants.TAG_TIMEOUT));
         Integer addressWaitTime = SofaBootRpcParserUtil.parseInteger(element
-                .getAttribute(RpcBindingXmlConstants.TAG_ADDRESS_WAIT_TIME));
+            .getAttribute(RpcBindingXmlConstants.TAG_ADDRESS_WAIT_TIME));
         Integer connectTimeout = SofaBootRpcParserUtil.parseInteger(element
-                .getAttribute(RpcBindingXmlConstants.TAG_CONNECT_TIMEOUT));
+            .getAttribute(RpcBindingXmlConstants.TAG_CONNECT_TIMEOUT));
         Integer connectionNum = SofaBootRpcParserUtil.parseInteger(element
-                .getAttribute(RpcBindingXmlConstants.TAG_CONNECT_NUM));
+            .getAttribute(RpcBindingXmlConstants.TAG_CONNECT_NUM));
         Integer retries = SofaBootRpcParserUtil.parseInteger(element
-                .getAttribute(RpcBindingXmlConstants.TAG_RETRIES));
+            .getAttribute(RpcBindingXmlConstants.TAG_RETRIES));
         String type = element.getAttribute(RpcBindingXmlConstants.TAG_TYPE);
         String callbackClass = element.getAttribute(RpcBindingXmlConstants.TAG_CALLBACK_CLASS);
         String callbackRef = element.getAttribute(RpcBindingXmlConstants.TAG_CALLBACK_REF);
         Integer weight = SofaBootRpcParserUtil.parseInteger(element
-                .getAttribute(RpcBindingXmlConstants.TAG_WEIGHT));
+            .getAttribute(RpcBindingXmlConstants.TAG_WEIGHT));
         Integer warmUpTime = SofaBootRpcParserUtil.parseInteger(element
-                .getAttribute(RpcBindingXmlConstants.TAG_WARMUP_TIME));
+            .getAttribute(RpcBindingXmlConstants.TAG_WARMUP_TIME));
         Integer warmUpWeight = SofaBootRpcParserUtil.parseInteger(element
-                .getAttribute(RpcBindingXmlConstants.TAG_WARMUP_WEIGHT));
+            .getAttribute(RpcBindingXmlConstants.TAG_WARMUP_WEIGHT));
         Object treadPoolRef = SofaBootRpcSpringUtil.getSpringBean(
-                element.getAttribute(RpcBindingXmlConstants.TAG_THREAD_POOL_REF),
-                bindingConverterContext.getApplicationContext(),
-                bindingConverterContext.getAppClassLoader(), bindingConverterContext.getAppName());
+            element.getAttribute(RpcBindingXmlConstants.TAG_THREAD_POOL_REF),
+            bindingConverterContext.getApplicationContext(),
+            bindingConverterContext.getAppClassLoader(), bindingConverterContext.getAppName());
         String genericInterface = element
-                .getAttribute(RpcBindingXmlConstants.TAG_GENERIC_INTERFACE);
+            .getAttribute(RpcBindingXmlConstants.TAG_GENERIC_INTERFACE);
         String loadBalancer = element.getAttribute(RpcBindingXmlConstants.TAG_LOAD_BALANCER);
         Boolean lazy = SofaBootRpcParserUtil.parseBoolean(element
-                .getAttribute(RpcBindingXmlConstants.TAG_LAZY));
+            .getAttribute(RpcBindingXmlConstants.TAG_LAZY));
         Boolean check = SofaBootRpcParserUtil.parseBoolean(element
-                .getAttribute(RpcBindingXmlConstants.TAG_CHECK));
+            .getAttribute(RpcBindingXmlConstants.TAG_CHECK));
         String registryAlias = element.getAttribute(RpcBindingXmlConstants.TAG_REGISTRY);
         String mockMode = element.getAttribute(RpcBindingXmlConstants.TAG_MOCK_MODE);
         String mockBean = element.getAttribute(RpcBindingXmlConstants.TAG_MOCK_BEAN);
@@ -295,7 +304,7 @@ public abstract class RpcBindingConverter implements BindingConverter<RpcBinding
     protected void parseFilter(Element element, RpcBindingParam param,
                                BindingConverterContext bindingConverterContext) {
         List<Filter> filters = new ArrayList<Filter>(RpcFilterContainer.getInstance().getFilters(
-                bindingConverterContext.getApplicationContext()));
+            bindingConverterContext.getApplicationContext()));
 
         if (element != null) {
             List<String> filterNames = new ArrayList<String>();
@@ -323,12 +332,12 @@ public abstract class RpcBindingConverter implements BindingConverter<RpcBinding
             if (!CollectionUtils.isEmpty(filterNames)) {
                 for (String filterName : filterNames) {
                     Object filter = bindingConverterContext.getApplicationContext().getBean(
-                            filterName);
+                        filterName);
                     if (filter instanceof Filter) {
                         filters.add((Filter) filter);
                     } else {
                         throw new SofaBootRpcRuntimeException("filter name[" + filterName
-                                + "] is not ref a Filter.");
+                                                              + "] is not ref a Filter.");
                     }
                 }
             }
@@ -354,9 +363,9 @@ public abstract class RpcBindingConverter implements BindingConverter<RpcBinding
         //global
         if (bindingParam.getCallbackHandler() == null) {
             Object globalCallbackHandler = SofaBootRpcSpringUtil.getSpringBean(
-                    bindingParam.getCallbackRef(), bindingParam.getCallbackClass(),
-                    bindingConverterContext.getApplicationContext(),
-                    bindingConverterContext.getAppClassLoader(), bindingConverterContext.getAppName());
+                bindingParam.getCallbackRef(), bindingParam.getCallbackClass(),
+                bindingConverterContext.getApplicationContext(),
+                bindingConverterContext.getAppClassLoader(), bindingConverterContext.getAppName());
 
             if (globalCallbackHandler != null) {
                 bindingParam.setCallbackHandler(globalCallbackHandler);
@@ -369,10 +378,10 @@ public abstract class RpcBindingConverter implements BindingConverter<RpcBinding
                 Object methodCallbackHandler = methodInfo.getCallbackHandler();
                 if (methodCallbackHandler == null) {
                     methodCallbackHandler = SofaBootRpcSpringUtil.getSpringBean(
-                            methodInfo.getCallbackRef(), methodInfo.getCallbackClass(),
-                            bindingConverterContext.getApplicationContext(),
-                            bindingConverterContext.getAppClassLoader(),
-                            bindingConverterContext.getAppName());
+                        methodInfo.getCallbackRef(), methodInfo.getCallbackClass(),
+                        bindingConverterContext.getApplicationContext(),
+                        bindingConverterContext.getAppClassLoader(),
+                        bindingConverterContext.getAppName());
                     methodInfo.setCallbackHandler(methodCallbackHandler);
                 }
             }
@@ -423,7 +432,7 @@ public abstract class RpcBindingConverter implements BindingConverter<RpcBinding
 
         ApplicationContext applicationContext = bindingConverterContext.getApplicationContext();
         List<Filter> filters = new ArrayList<Filter>(RpcFilterContainer.getInstance().getFilters(
-                applicationContext));
+            applicationContext));
 
         String[] filterNames = sofaServiceBindingAnnotation.filters();
         if (filterNames.length > 0) {
@@ -433,7 +442,7 @@ public abstract class RpcBindingConverter implements BindingConverter<RpcBinding
                     filters.add((Filter) filter);
                 } else {
                     throw new SofaBootRpcRuntimeException("filter name[" + filterName
-                            + "] is not ref a Filter.");
+                                                          + "] is not ref a Filter.");
                 }
             }
         }
@@ -449,7 +458,7 @@ public abstract class RpcBindingConverter implements BindingConverter<RpcBinding
             String interfaceName = sofaServiceAnnotation.interfaceType().getCanonicalName();
             String uniqId = sofaServiceAnnotation.uniqueId();
             String uniqueName = interfaceName + ":1.0"
-                    + (StringUtils.isEmpty(uniqId) ? "" : ":" + uniqId);
+                                + (StringUtils.isEmpty(uniqId) ? "" : ":" + uniqId);
 
             UserThreadPoolManager.registerUserThread(uniqueName, threadPoolObj);
         }
@@ -520,7 +529,7 @@ public abstract class RpcBindingConverter implements BindingConverter<RpcBinding
 
         ApplicationContext applicationContext = bindingConverterContext.getApplicationContext();
         List<Filter> filters = new ArrayList<Filter>(RpcFilterContainer.getInstance().getFilters(
-                applicationContext));
+            applicationContext));
 
         String[] filterNames = sofaReferenceBindingAnnotation.filters();
 
@@ -531,7 +540,7 @@ public abstract class RpcBindingConverter implements BindingConverter<RpcBinding
                     filters.add((Filter) filter);
                 } else {
                     throw new SofaBootRpcRuntimeException("filter name[" + filterName
-                            + "] is not ref a Filter.");
+                                                          + "] is not ref a Filter.");
                 }
             }
         }

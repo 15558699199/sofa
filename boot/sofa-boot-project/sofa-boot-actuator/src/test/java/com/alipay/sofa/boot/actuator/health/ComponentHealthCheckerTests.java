@@ -48,11 +48,10 @@ public class ComponentHealthCheckerTests {
     private ComponentHealthChecker componentHealthChecker;
 
     @Mock
-    private SofaRuntimeContext sofaRuntimeContext;
-    ;
+    private SofaRuntimeContext     sofaRuntimeContext;     ;
 
     @Mock
-    private ComponentManager componentManager;
+    private ComponentManager       componentManager;
 
     @Test
     public void componentsHealthCheckSuccess() {

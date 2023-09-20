@@ -43,19 +43,19 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class ReadinessCheckCallbackProcessor implements ApplicationContextAware {
 
-    private static final Logger logger = SofaBootLoggerFactory
-            .getLogger(ReadinessCheckCallbackProcessor.class);
+    private static final Logger                           logger                                = SofaBootLoggerFactory
+                                                                                                    .getLogger(ReadinessCheckCallbackProcessor.class);
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper                            objectMapper                          = new ObjectMapper();
 
-    private final AtomicBoolean isInitiated = new AtomicBoolean(
-            false);
+    private final AtomicBoolean                           isInitiated                           = new AtomicBoolean(
+                                                                                                    false);
 
-    private final List<BaseStat> readinessCheckCallbackStartupStatList = new CopyOnWriteArrayList<>();
+    private final List<BaseStat>                          readinessCheckCallbackStartupStatList = new CopyOnWriteArrayList<>();
 
-    private ApplicationContext applicationContext;
+    private ApplicationContext                            applicationContext;
 
-    private LinkedHashMap<String, ReadinessCheckCallback> readinessCheckCallbacks = null;
+    private LinkedHashMap<String, ReadinessCheckCallback> readinessCheckCallbacks               = null;
 
     public void init() {
         if (isInitiated.compareAndSet(false, true)) {
@@ -86,10 +86,10 @@ public class ReadinessCheckCallbackProcessor implements ApplicationContextAware 
             } else {
                 logger.warn(beanId + " is skipped due to the failure of " + failedBeanId);
                 callbackDetails.put(
-                        beanId,
-                        Health.down()
-                                .withDetail("invoking", "skipped due to the failure of " + failedBeanId)
-                                .build());
+                    beanId,
+                    Health.down()
+                        .withDetail("invoking", "skipped due to the failure of " + failedBeanId)
+                        .build());
             }
         }
 

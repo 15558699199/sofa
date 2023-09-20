@@ -37,8 +37,8 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @version HealthStageStartupReporterTests.java, v 0.1 2021年01月04日 8:31 下午 huzijie Exp $
  */
 @SpringBootTest(classes = ActuatorSofaBootApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@TestPropertySource(properties = {"management.endpoints.web.exposure.include=startup,readiness",
-        "spring.autoconfigure.exclude=com.alipay.sofa.boot.autoconfigure.isle.SofaModuleAutoConfiguration"})
+@TestPropertySource(properties = { "management.endpoints.web.exposure.include=startup,readiness",
+                                  "spring.autoconfigure.exclude=com.alipay.sofa.boot.autoconfigure.isle.SofaModuleAutoConfiguration" })
 public class HealthStageStartupReporterTests {
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
@@ -49,12 +49,12 @@ public class HealthStageStartupReporterTests {
     public void startupReporter() {
         assertThat(startupReporter).isNotNull();
         StartupReporter.StartupStaticsModel startupStaticsModel = startupReporter
-                .getStartupStaticsModel();
+            .getStartupStaticsModel();
         assertThat(startupStaticsModel).isNotNull();
         assertThat(startupStaticsModel.getStageStats().size()).isEqualTo(6);
 
         ChildrenStat<BaseStat> healthCheckStage = (ChildrenStat<BaseStat>) startupReporter
-                .getStageNyName(ReadinessCheckListener.READINESS_CHECK_STAGE);
+            .getStageNyName(ReadinessCheckListener.READINESS_CHECK_STAGE);
         assertThat(healthCheckStage).isNotNull();
         assertThat(healthCheckStage.getCost() > 0).isTrue();
 

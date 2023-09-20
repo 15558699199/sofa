@@ -36,8 +36,8 @@ import java.util.stream.Collectors;
  */
 public class SwaggerServiceImpl implements SwaggerService {
     private final ComponentManager componentManager;
-    private volatile OpenAPI openapi;
-    private Set<String> restfulServices;
+    private volatile OpenAPI       openapi;
+    private Set<String>            restfulServices;
 
     public SwaggerServiceImpl(ComponentManager componentManager) {
         this.componentManager = componentManager;
@@ -67,13 +67,13 @@ public class SwaggerServiceImpl implements SwaggerService {
 
     private OpenAPI updateOpenApi() {
         OpenApiContext openApiContext = OpenApiContextLocator.getInstance().getOpenApiContext(
-                OpenApiContext.OPENAPI_CONTEXT_ID_DEFAULT);
+            OpenApiContext.OPENAPI_CONTEXT_ID_DEFAULT);
         if (openApiContext instanceof GenericOpenApiContext) {
             restfulServices = getAllRestfulService();
             SwaggerConfiguration oasConfig = new SwaggerConfiguration()
-                    .resourceClasses(restfulServices);
+                .resourceClasses(restfulServices);
             ((GenericOpenApiContext) openApiContext).getOpenApiScanner()
-                    .setConfiguration(oasConfig);
+                .setConfiguration(oasConfig);
             try {
                 ((GenericOpenApiContext) openApiContext).setCacheTTL(0);
                 return openApiContext.read();
@@ -89,10 +89,10 @@ public class SwaggerServiceImpl implements SwaggerService {
         try {
             restfulServices = getAllRestfulService();
             SwaggerConfiguration oasConfig = new SwaggerConfiguration()
-                    .resourceClasses(restfulServices);
+                .resourceClasses(restfulServices);
 
             OpenApiContext oac = new JaxrsOpenApiContextBuilder().openApiConfiguration(oasConfig)
-                    .buildContext(true);
+                .buildContext(true);
             return oac.read();
         } catch (OpenApiConfigurationException e) {
             throw new RuntimeException(e.getMessage(), e);

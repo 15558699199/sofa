@@ -41,7 +41,7 @@ public class SpyDefinition extends Definition {
 
     private static final int MULTIPLIER = 31;
 
-    private final boolean proxyTargetAware;
+    private final boolean    proxyTargetAware;
 
     public SpyDefinition(ResolvableType resolvableType, String name, ResolvableType type,
                          String module, String field, MockReset reset, boolean proxyTargetAware,
@@ -61,7 +61,7 @@ public class SpyDefinition extends Definition {
             MockSettings settings = MockReset.withSettings(getReset());
             if (this.proxyTargetAware) {
                 settings
-                        .verificationStartedListeners(new SpyDefinition.SpringAopBypassingVerificationStartedListener());
+                    .verificationStartedListeners(new SpyDefinition.SpringAopBypassingVerificationStartedListener());
             }
             Class<?> toSpy;
             if (Proxy.isProxyClass(instance.getClass())) {
@@ -101,10 +101,10 @@ public class SpyDefinition extends Definition {
     @Override
     public String toString() {
         return new ToStringCreator(this).append("mockType", this.getMockType())
-                .append("name", this.getName()).append("type", this.getType())
-                .append("module", this.getModule()).append("field", this.getField())
-                .append("proxyTargetAware", this.proxyTargetAware).append("reset", getReset())
-                .append("qualifier", getQualifier()).toString();
+            .append("name", this.getName()).append("type", this.getType())
+            .append("module", this.getModule()).append("field", this.getField())
+            .append("proxyTargetAware", this.proxyTargetAware).append("reset", getReset())
+            .append("qualifier", getQualifier()).toString();
     }
 
     /**
@@ -112,7 +112,7 @@ public class SpyDefinition extends Definition {
      * when the verification of a spy starts.
      */
     private static final class SpringAopBypassingVerificationStartedListener implements
-            VerificationStartedListener {
+                                                                            VerificationStartedListener {
 
         @Override
         public void onVerificationStarted(VerificationStartedEvent event) {

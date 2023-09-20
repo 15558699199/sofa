@@ -34,8 +34,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class DataSourceAutoConfigurationTests {
 
     private final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
-            .withConfiguration(AutoConfigurations
-                    .of(DataSourceAutoConfiguration.class));
+                                                             .withConfiguration(AutoConfigurations
+                                                                 .of(DataSourceAutoConfiguration.class));
 
     @Test
     public void registerDataSourcePostProcessors() {

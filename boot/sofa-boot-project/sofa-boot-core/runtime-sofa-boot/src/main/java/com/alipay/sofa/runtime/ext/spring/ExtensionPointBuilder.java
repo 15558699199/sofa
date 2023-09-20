@@ -34,9 +34,16 @@ public class ExtensionPointBuilder {
     }
 
     /**
+     * Get extension point
+     * @return extension point
+     */
+    public ExtensionPoint getExtensionPoint() {
+        return this.extensionPointInternal;
+    }
+
+    /**
      * Create extension point builder
-     *
-     * @param name            extension point name
+     * @param name extension point name
      * @param beanClassLoader classloader
      * @return extension point builder
      */
@@ -47,10 +54,9 @@ public class ExtensionPointBuilder {
 
     /**
      * Create extension point builder
-     *
-     * @param name              extension point name
+     * @param name extension point name
      * @param contributionClass contribution class
-     * @param beanClassLoader   classloader
+     * @param beanClassLoader classloader
      * @return extension point builder
      */
     public static ExtensionPointBuilder genericExtensionPoint(String name,
@@ -59,7 +65,7 @@ public class ExtensionPointBuilder {
         ExtensionPointBuilder builder = new ExtensionPointBuilder();
 
         ExtensionPointInternal extensionPoint = new SpringExtensionPointImpl(name,
-                contributionClass);
+            contributionClass);
         extensionPoint.setBeanClassLoader(beanClassLoader);
 
         builder.extensionPointInternal = extensionPoint;
@@ -67,17 +73,7 @@ public class ExtensionPointBuilder {
     }
 
     /**
-     * Get extension point
-     *
-     * @return extension point
-     */
-    public ExtensionPoint getExtensionPoint() {
-        return this.extensionPointInternal;
-    }
-
-    /**
      * add contribution to extension point
-     *
      * @param javaClass contribution class
      */
     public void addContribution(Class<?> javaClass) {
@@ -86,7 +82,6 @@ public class ExtensionPointBuilder {
 
     /**
      * add contribution to extension point
-     *
      * @param className contribution class name
      */
     public void addContribution(String className) {

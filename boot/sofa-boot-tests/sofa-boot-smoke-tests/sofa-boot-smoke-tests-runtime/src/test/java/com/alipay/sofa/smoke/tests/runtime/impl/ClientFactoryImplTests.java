@@ -38,7 +38,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Integration tests for {@link ClientFactoryImpl}.
- *
+ * 
  * @author qilong.zql
  * @author huzijie
  * @since 3.2.0
@@ -48,19 +48,19 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ClientFactoryImplTests {
 
     @SofaClientFactory
-    private ServiceClient serviceClient;
+    private ServiceClient          serviceClient;
 
     @SofaClientFactory
-    private ReferenceClient referenceClient;
+    private ReferenceClient        referenceClient;
 
     @SofaClientFactory
-    private ClientFactory clientFactory;
+    private ClientFactory          clientFactory;
 
     @Autowired
     private ClientFactoryAwareBean clientFactoryAwareBean;
 
     @SofaReference(uniqueId = "clientFactory")
-    private SampleService sampleService;
+    private SampleService          sampleService;
 
     @Test
     public void clientFactoryAware() {
@@ -145,11 +145,11 @@ public class ClientFactoryImplTests {
         ReferenceParam<PrivateService> referenceParam = new ReferenceParam<>();
         referenceParam.setInterfaceType(PrivateService.class);
         assertThat(PrivateServiceImpl.class.getName()).isEqualTo(
-                referenceClient.reference(referenceParam).service());
+            referenceClient.reference(referenceParam).service());
         //reference with unique id
         referenceParam.setUniqueId("uniqueId");
         assertThat(PrivateServiceImpl.class.getName()).isEqualTo(
-                referenceClient.reference(referenceParam).service());
+            referenceClient.reference(referenceParam).service());
 
         //remove Reference
         referenceClient.removeReference(PrivateService.class);
@@ -160,13 +160,9 @@ public class ClientFactoryImplTests {
             serviceClient.removeService(PrivateService.class, -1);
         } catch (IllegalArgumentException ex) {
             assertThat(ex.getMessage()).contains(
-                    "Argument delay must be a positive integer or zero");
+                "Argument delay must be a positive integer or zero");
         }
         serviceClient.removeService(PrivateService.class, "uniqueId", 0);
-    }
-
-    public interface PrivateService {
-        String service();
     }
 
     static class PrivateServiceImpl implements PrivateService {
@@ -174,6 +170,10 @@ public class ClientFactoryImplTests {
         public String service() {
             return this.getClass().getName();
         }
+    }
+
+    public interface PrivateService {
+        String service();
     }
 
     @TestConfiguration

@@ -40,15 +40,15 @@ public class SmartAnnotationUtils {
      * <p> 如果元素上仅有一个注解，返回包含该注解的集合
      * <p> 如果元素上有多个注解，通过 {@link MergedAnnotations#get(Class)} 方法拿到最近的注解，返回的集合仅包含最近的注解所在元素上的注解
      *
-     * @param element        注解所在元素
+     * @param element 注解所在元素
      * @param annotationType 注解类
-     * @param <T>            注解类型
+     * @param <T> 注解类型
      * @return 注解集合，可能为空或者多个，如果存在多个注解，仅保留最高优先级元素上的注解
      */
     public static <T extends Annotation> Collection<T> getAnnotations(AnnotatedElement element,
                                                                       Class<T> annotationType) {
         return getAnnotations(element, annotationType,
-                MergedAnnotations.SearchStrategy.TYPE_HIERARCHY);
+            MergedAnnotations.SearchStrategy.TYPE_HIERARCHY);
     }
 
     /**
@@ -57,14 +57,14 @@ public class SmartAnnotationUtils {
      * <p> 如果元素上仅有一个注解，返回包含该注解的集合
      * <p> 如果元素上有多个注解，通过 {@link MergedAnnotations#get(Class)} 方法拿到最近的注解，返回的集合仅包含最近的注解所在元素上的注解
      *
-     * @param element        注解所在元素
+     * @param element 注解所在元素
      * @param annotationType 注解类
      * @param searchStrategy 搜索策略
-     * @param <T>            注解类型
+     * @param <T> 注解类型
      * @return 注解集合，可能为空或者多个，如果存在多个注解，仅保留最高优先级元素上的注解
      */
     public static <T extends Annotation> Collection<T> getAnnotations(AnnotatedElement element, Class<T> annotationType,
-                                                                      MergedAnnotations.SearchStrategy searchStrategy) {
+                                                                                MergedAnnotations.SearchStrategy searchStrategy) {
         MergedAnnotations annotations = MergedAnnotations.from(element, searchStrategy);
         List<T> sofaServiceList = annotations.stream(annotationType).map(MergedAnnotation::synthesize).collect(Collectors.toList());
         if (sofaServiceList.size() > 1) {

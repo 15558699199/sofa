@@ -41,7 +41,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author huzijie
  * @since 3.2.0
  */
-@TestPropertySource({"/config/application-annotation.properties"})
+@TestPropertySource({ "/config/application-annotation.properties" })
 @ExtendWith(SpringExtension.class)
 public class AnnotationPlaceHolderTests {
 
@@ -52,10 +52,10 @@ public class AnnotationPlaceHolderTests {
     public void serviceAnnotationPlaceHolder() {
 
         SofaService sofaService = AnnotationSampleServiceImpl.class
-                .getAnnotation(SofaService.class);
+            .getAnnotation(SofaService.class);
         SofaService delegate = AnnotationWrapper.create(SofaService.class)
-                .withEnvironment(environment).withBinder(DefaultPlaceHolderBinder.INSTANCE)
-                .wrap(sofaService);
+            .withEnvironment(environment).withBinder(DefaultPlaceHolderBinder.INSTANCE)
+            .wrap(sofaService);
 
         assertThat(sofaService.hashCode()).isEqualTo(delegate.hashCode());
         assertThat(sofaService.toString()).isEqualTo(delegate.toString());
@@ -94,10 +94,10 @@ public class AnnotationPlaceHolderTests {
     @Test
     public void testReferenceAnnotationPlaceHolder() throws Exception {
         SofaReference sofaReference = AnnotationSampleServiceImpl.class.getField("sampleService")
-                .getAnnotation(SofaReference.class);
+            .getAnnotation(SofaReference.class);
         SofaReference delegate = AnnotationWrapper.create(SofaReference.class)
-                .withEnvironment(environment).withBinder(DefaultPlaceHolderBinder.INSTANCE)
-                .wrap(sofaReference);
+            .withEnvironment(environment).withBinder(DefaultPlaceHolderBinder.INSTANCE)
+            .wrap(sofaReference);
 
         assertThat("${annotation.sample.ref.uniqueId}").isEqualTo(sofaReference.uniqueId());
         assertThat("sample-reference-uniqueId").isEqualTo(delegate.uniqueId());

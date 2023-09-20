@@ -57,15 +57,15 @@ public class JarDeploymentDescriptor extends AbstractDeploymentDescriptor {
             ResourceUtils.useCachesIfNecessary(jarCon);
             jarFile = jarCon.getJarFile();
 
-            for (Enumeration<JarEntry> entries = jarFile.entries(); entries.hasMoreElements(); ) {
+            for (Enumeration<JarEntry> entries = jarFile.entries(); entries.hasMoreElements();) {
                 JarEntry entry = entries.nextElement();
                 String entryPath = entry.getName();
                 if (entryPath.startsWith(DeploymentDescriptorConfiguration.SPRING_CONTEXT_PATH)
-                        && entryPath.endsWith("xml")) {
+                    && entryPath.endsWith("xml")) {
                     String fileName = entry.getName().substring(
-                            DeploymentDescriptorConfiguration.SPRING_CONTEXT_PATH.length() + 1);
+                        DeploymentDescriptorConfiguration.SPRING_CONTEXT_PATH.length() + 1);
                     springResources.put(fileName,
-                            convertToByteArrayResource(jarFile.getInputStream(entry)));
+                        convertToByteArrayResource(jarFile.getInputStream(entry)));
                 }
             }
         } catch (Throwable t) {

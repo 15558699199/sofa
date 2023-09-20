@@ -31,7 +31,6 @@ public interface JvmFilter extends Ordered {
      * This method is called before the actual JVM service invoking.
      * If filter chain is not interrupted, setting of <code>invokeResult</code> of context
      * makes no sense here.
-     *
      * @param context JVM invoking context
      * @return whether to continue processing
      */
@@ -40,7 +39,6 @@ public interface JvmFilter extends Ordered {
     /**
      * This method is called after the actual JVM service invoking.
      * Filter can replace the <code>invokeResult</code> of context to do something nasty.
-     *
      * @param context JVM invoking context
      * @return whether to continue processing
      */

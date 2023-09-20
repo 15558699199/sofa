@@ -37,8 +37,8 @@ import org.springframework.messaging.support.ChannelInterceptor;
  * @since 3.9.1
  **/
 @AutoConfiguration
-@ConditionalOnClass({AbstractMessageChannel.class, ChannelInterceptor.class,
-        DirectWithAttributesChannel.class, SpringMessageTracerBeanPostProcessor.class})
+@ConditionalOnClass({ AbstractMessageChannel.class, ChannelInterceptor.class,
+                     DirectWithAttributesChannel.class, SpringMessageTracerBeanPostProcessor.class })
 @ConditionalOnProperty(name = "sofa.boot.tracer.springmessage.enabled", havingValue = "true", matchIfMissing = true)
 public class SpringMessageAutoConfiguration {
 

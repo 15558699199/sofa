@@ -45,10 +45,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class SpringContextComponentTests {
 
     @Mock
-    private ComponentName componentName;
+    private ComponentName      componentName;
 
     @Mock
-    private Implementation implementation;
+    private Implementation     implementation;
 
     @Mock
     private SofaRuntimeContext sofaRuntimeContext;
@@ -57,7 +57,7 @@ public class SpringContextComponentTests {
     void getTypeShouldReturnSpringComponentType() {
         // Arrange
         SpringContextComponent component = new SpringContextComponent(componentName,
-                implementation, sofaRuntimeContext);
+            implementation, sofaRuntimeContext);
 
         // Act
         ComponentType result = component.getType();
@@ -70,7 +70,7 @@ public class SpringContextComponentTests {
     void getPropertiesShouldReturnNull() {
         // Arrange
         SpringContextComponent component = new SpringContextComponent(componentName,
-                implementation, sofaRuntimeContext);
+            implementation, sofaRuntimeContext);
 
         // Act
         Map<String, Property> result = component.getProperties();
@@ -85,7 +85,7 @@ public class SpringContextComponentTests {
         GenericApplicationContext applicationContext = new GenericApplicationContext();
         Implementation implementation = new SpringContextImplementation(applicationContext);
         SpringContextComponent component = new SpringContextComponent(componentName,
-                implementation, sofaRuntimeContext);
+            implementation, sofaRuntimeContext);
 
         // Act
         ApplicationContext result = component.getApplicationContext();
@@ -98,7 +98,7 @@ public class SpringContextComponentTests {
     void activateShouldSetComponentStatusToActivated() throws ServiceRuntimeException {
         // Arrange
         SpringContextComponent component = new SpringContextComponent(componentName,
-                implementation, sofaRuntimeContext);
+            implementation, sofaRuntimeContext);
 
         // Act
         component.register();
@@ -111,10 +111,10 @@ public class SpringContextComponentTests {
 
     @Test
     void activateShouldNotSetComponentStatusToActivatedIfAlreadyResolved()
-            throws ServiceRuntimeException {
+                                                                          throws ServiceRuntimeException {
         // Arrange
         SpringContextComponent component = new SpringContextComponent(componentName,
-                implementation, sofaRuntimeContext);
+            implementation, sofaRuntimeContext);
 
         // Act
         component.activate();
@@ -125,13 +125,13 @@ public class SpringContextComponentTests {
 
     @Test
     void deactivateShouldCloseApplicationContextAndSetComponentStatusToDeactivated()
-            throws ServiceRuntimeException {
+                                                                                    throws ServiceRuntimeException {
         // Arrange
         GenericApplicationContext applicationContext = Mockito
-                .mock(GenericApplicationContext.class);
+            .mock(GenericApplicationContext.class);
         Implementation implementation = new SpringContextImplementation(applicationContext);
         SpringContextComponent component = new SpringContextComponent(componentName,
-                implementation, sofaRuntimeContext);
+            implementation, sofaRuntimeContext);
 
         // Act
         component.deactivate();

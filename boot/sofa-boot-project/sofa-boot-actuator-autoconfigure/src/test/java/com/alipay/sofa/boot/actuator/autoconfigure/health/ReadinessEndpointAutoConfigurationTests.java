@@ -37,10 +37,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ReadinessEndpointAutoConfigurationTests {
 
     private final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
-            .withConfiguration(AutoConfigurations
-                    .of(ReadinessEndpointAutoConfiguration.class,
-                            ReadinessAutoConfiguration.class,
-                            HealthEndpointAutoConfiguration.class));
+                                                             .withConfiguration(AutoConfigurations
+                                                                 .of(ReadinessEndpointAutoConfiguration.class,
+                                                                     ReadinessAutoConfiguration.class,
+                                                                     HealthEndpointAutoConfiguration.class));
 
     @Test
     void runShouldHaveEndpointBean() {

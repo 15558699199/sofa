@@ -16,9 +16,9 @@
  */
 package com.alipay.sofa.runtime.spi.component;
 
+import org.springframework.util.StringUtils;
 import com.alipay.sofa.runtime.api.component.ComponentName;
 import com.alipay.sofa.runtime.model.ComponentType;
-import org.springframework.util.StringUtils;
 
 /**
  * ComponentName Factory.
@@ -29,7 +29,7 @@ public class ComponentNameFactory {
     /**
      * Create ComponentName by component type and class type.
      *
-     * @param type  component type
+     * @param type component type
      * @param clazz clazz
      */
     public static ComponentName createComponentName(ComponentType type, Class<?> clazz) {
@@ -50,8 +50,8 @@ public class ComponentNameFactory {
     /**
      * Create ComponentName by component type,class type and unique id.
      *
-     * @param type     component type
-     * @param clazz    clazz
+     * @param type component type
+     * @param clazz clazz
      * @param uniqueId unique id
      */
     public static ComponentName createComponentName(ComponentType type, Class<?> clazz,
@@ -62,7 +62,7 @@ public class ComponentNameFactory {
     /**
      * Create ComponentName by class type and unique id.
      *
-     * @param clazz    clazz
+     * @param clazz clazz
      * @param uniqueId unique id
      */
     private static String mergeComponentName(Class<?> clazz, String uniqueId) {

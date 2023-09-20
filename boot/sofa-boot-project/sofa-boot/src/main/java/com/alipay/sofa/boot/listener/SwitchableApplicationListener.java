@@ -16,7 +16,12 @@
  */
 package com.alipay.sofa.boot.listener;
 
-import org.springframework.boot.context.event.*;
+import org.springframework.boot.context.event.ApplicationContextInitializedEvent;
+import org.springframework.boot.context.event.ApplicationEnvironmentPreparedEvent;
+import org.springframework.boot.context.event.ApplicationFailedEvent;
+import org.springframework.boot.context.event.ApplicationPreparedEvent;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
@@ -32,8 +37,8 @@ import org.springframework.util.StringUtils;
  * @version : SwitchableApplicationListener.java, v 0.1 2023年02月09日 17:40 yuanxuan Exp $
  */
 public abstract class SwitchableApplicationListener<E extends ApplicationEvent>
-        implements
-        ApplicationListener<E> {
+                                                                                implements
+                                                                                ApplicationListener<E> {
 
     protected static final String CONFIG_KEY_PREFIX = "sofa.boot.switch.listener.";
 

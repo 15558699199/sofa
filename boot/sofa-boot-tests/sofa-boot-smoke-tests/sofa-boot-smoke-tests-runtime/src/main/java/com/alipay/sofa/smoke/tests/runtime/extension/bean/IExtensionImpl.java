@@ -16,13 +16,21 @@
  */
 package com.alipay.sofa.smoke.tests.runtime.extension.bean;
 
-import com.alipay.sofa.service.api.component.Extension;
-import com.alipay.sofa.smoke.tests.runtime.extension.descriptor.*;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.alipay.sofa.smoke.tests.runtime.extension.descriptor.ClientExtensionDescriptor;
+import com.alipay.sofa.smoke.tests.runtime.extension.descriptor.ContextExtensionDescriptor;
+import com.alipay.sofa.smoke.tests.runtime.extension.descriptor.ListExtensionDescriptor;
+import com.alipay.sofa.smoke.tests.runtime.extension.descriptor.MapExtensionDescriptor;
+import com.alipay.sofa.smoke.tests.runtime.extension.descriptor.ParentExtensionDescriptor;
+import com.alipay.sofa.smoke.tests.runtime.extension.descriptor.SimpleExtensionDescriptor;
+import com.alipay.sofa.smoke.tests.runtime.extension.descriptor.SpringListExtensionDescriptor;
+import com.alipay.sofa.smoke.tests.runtime.extension.descriptor.SpringMapExtensionDescriptor;
+import com.alipay.sofa.smoke.tests.runtime.extension.descriptor.SpringSimpleExtensionDescriptor;
+import com.alipay.sofa.service.api.component.Extension;
 
 /**
  * @author khotyn
@@ -31,25 +39,25 @@ import java.util.Map;
  */
 public class IExtensionImpl implements IExtension {
 
-    private String clientValue;
+    private String                           clientValue;
 
-    private SimpleExtensionDescriptor simpleExtensionDescriptor;
+    private SimpleExtensionDescriptor        simpleExtensionDescriptor;
 
-    private ListExtensionDescriptor listExtensionDescriptor;
+    private ListExtensionDescriptor          listExtensionDescriptor;
 
-    private Map<String, String> testMap = new HashMap<>();
+    private Map<String, String>              testMap                = new HashMap<>();
 
-    private SimpleSpringBean simpleSpringBean;
+    private SimpleSpringBean                 simpleSpringBean;
 
-    private List<SimpleSpringListBean> simpleSpringListBeans = new ArrayList<>();
+    private List<SimpleSpringListBean>       simpleSpringListBeans  = new ArrayList<>();
 
     private Map<String, SimpleSpringMapBean> simpleSpringMapBeanMap = new HashMap<>();
 
-    private String testContextValue;
+    private String                           testContextValue;
 
-    private String testParentValue;
+    private String                           testParentValue;
 
-    private SimpleExtensionDescriptor badDescriptor;
+    private SimpleExtensionDescriptor        badDescriptor;
 
     @Override
     public String getClientValue() {
@@ -123,15 +131,15 @@ public class IExtensionImpl implements IExtension {
                 simpleSpringBean = ((SpringSimpleExtensionDescriptor) contribution).getValue();
             } else if ("testSpringList".equals(extensionPoint)) {
                 simpleSpringListBeans.addAll(((SpringListExtensionDescriptor) contribution)
-                        .getValues());
+                    .getValues());
             } else if ("testSpringMap".equals(extensionPoint)) {
                 simpleSpringMapBeanMap.putAll(((SpringMapExtensionDescriptor) contribution)
-                        .getValues());
+                    .getValues());
             } else if ("testContext".equals(extensionPoint)) {
                 testContextValue = ((ContextExtensionDescriptor) contribution).getContextValue();
             } else if ("testParent".equals(extensionPoint)) {
                 testParentValue = ((ParentExtensionDescriptor) contribution)
-                        .getSubExtensionDescriptor().getParentValue().getValue();
+                    .getSubExtensionDescriptor().getParentValue().getValue();
             } else if ("bad".equals(extensionPoint)) {
                 badDescriptor = (SimpleExtensionDescriptor) contribution;
             }

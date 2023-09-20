@@ -16,15 +16,16 @@
  */
 package com.alipay.sofa.common.xmap.annotation.spring;
 
+import org.springframework.context.ApplicationContext;
+
 import com.alipay.sofa.common.xmap.XAnnotatedObject;
 import com.alipay.sofa.common.xmap.XMap;
 import com.alipay.sofa.common.xmap.annotation.XObject;
-import org.springframework.context.ApplicationContext;
 
 /**
  * @author xi.hux@alipay.com
  * @since 2.6.0
- */
+ * */
 public class XAnnotatedSpringObject extends XAnnotatedObject {
 
     private ApplicationContext applicationContext;
@@ -35,12 +36,12 @@ public class XAnnotatedSpringObject extends XAnnotatedObject {
         this.applicationContext = applicationContext;
     }
 
-    public ApplicationContext getApplicationContext() {
-        return applicationContext;
-    }
-
     public void setApplicationContext(ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
+    }
+
+    public ApplicationContext getApplicationContext() {
+        return applicationContext;
     }
 
 }

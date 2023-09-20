@@ -60,19 +60,19 @@ public class AsyncProxyBeanPostProcessorTests {
     public void wrapAsyncBeans() throws Exception {
         AsyncInitMethodManager asyncInitMethodManager = new AsyncInitMethodManager();
         AsyncProxyBeanPostProcessor asyncProxyBeanPostProcessor = new AsyncProxyBeanPostProcessor(
-                asyncInitMethodManager);
+            asyncInitMethodManager);
         asyncProxyBeanPostProcessor.setBeanFactory(genericApplicationContext.getBeanFactory());
         RootBeanDefinition rootBeanDefinition = new RootBeanDefinition();
         rootBeanDefinition.setBeanClass(AsyncClass.class);
         rootBeanDefinition.setAttribute(ASYNC_INIT_METHOD_NAME, "init");
         genericApplicationContext.getBeanFactory().registerSingleton("asyncProxyBeanPostProcessor",
-                asyncProxyBeanPostProcessor);
+            asyncProxyBeanPostProcessor);
         genericApplicationContext.registerBeanDefinition("bean", rootBeanDefinition);
         genericApplicationContext.refresh();
         asyncProxyBeanPostProcessor.afterPropertiesSet();
 
         String initMethodName = asyncInitMethodManager.findAsyncInitMethod(
-                genericApplicationContext.getBeanFactory(), "bean");
+            genericApplicationContext.getBeanFactory(), "bean");
         assertThat(initMethodName).isEqualTo("init");
 
     }

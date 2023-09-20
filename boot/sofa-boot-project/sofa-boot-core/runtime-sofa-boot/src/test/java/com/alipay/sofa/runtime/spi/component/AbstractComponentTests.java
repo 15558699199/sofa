@@ -30,23 +30,23 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests for {@link AbstractComponent}.
- *
+ * 
  * @author huzijie
  * @author xuanbei
  */
 public class AbstractComponentTests {
 
     private final AbstractComponent abstractComponent = new AbstractComponent() {
-        @Override
-        public ComponentType getType() {
-            return null;
-        }
+                                                          @Override
+                                                          public ComponentType getType() {
+                                                              return null;
+                                                          }
 
-        @Override
-        public Map<String, Property> getProperties() {
-            return null;
-        }
-    };
+                                                          @Override
+                                                          public Map<String, Property> getProperties() {
+                                                              return null;
+                                                          }
+                                                      };
 
     @Test
     public void activate() throws Exception {

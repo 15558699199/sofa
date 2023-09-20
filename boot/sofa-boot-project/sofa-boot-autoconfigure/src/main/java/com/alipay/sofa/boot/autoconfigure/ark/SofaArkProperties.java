@@ -30,7 +30,7 @@ public class SofaArkProperties {
     /**
      * Whether enable jvm service cache.
      */
-    private boolean jvmServiceCache = false;
+    private boolean jvmServiceCache    = false;
 
     /**
      * Whether enable jvm service invoke serialize.

@@ -46,7 +46,7 @@ import java.util.Set;
  */
 public class InjectorMockTestExecutionListener extends AbstractTestExecutionListener {
 
-    static final String STUBBED_FIELDS = "_SOFA_BOOT_STUBBED_FIELDS";
+    static final String STUBBED_FIELDS      = "_SOFA_BOOT_STUBBED_FIELDS";
 
     static final String STUBBED_DEFINITIONS = "_SOFA_BOOT_STUBBED_DEFINITIONS";
 
@@ -82,7 +82,7 @@ public class InjectorMockTestExecutionListener extends AbstractTestExecutionList
                 Object target = testContext.getTestInstance();
                 ReflectionUtils.makeAccessible(field);
                 Object existingValue = ReflectionUtils.getField(field, target);
-                Object injectValue = definition.getMockInstance();
+                Object injectValue =  definition.getMockInstance();
                 if (existingValue == injectValue) {
                     return;
                 }
@@ -96,7 +96,7 @@ public class InjectorMockTestExecutionListener extends AbstractTestExecutionList
                                                      TestContext testContext) {
         Collection<BeanInjectorStub> beanInjectorStubs = new ArrayList<>();
         BeanInjectorResolver resolver = new BeanInjectorResolver(
-                testContext.getApplicationContext());
+            testContext.getApplicationContext());
         for (Definition definition : parser.getDefinitions()) {
             BeanInjectorStub field = resolver.resolveStub(definition);
             if (field != null) {

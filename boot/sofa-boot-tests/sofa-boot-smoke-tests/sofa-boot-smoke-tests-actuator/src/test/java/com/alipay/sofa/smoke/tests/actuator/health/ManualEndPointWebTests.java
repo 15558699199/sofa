@@ -38,12 +38,12 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Created on 2020/11/18
  */
 @SpringBootTest(classes = ActuatorSofaBootApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = {
-        "management.endpoints.web.exposure.include=readiness,triggerReadinessCallback",
-        "sofa.boot.actuator.health.manualReadinessCallback=true"})
+                                                                                                                                       "management.endpoints.web.exposure.include=readiness,triggerReadinessCallback",
+                                                                                                                                       "sofa.boot.actuator.health.manualReadinessCallback=true" })
 public class ManualEndPointWebTests {
 
     @Autowired
-    private TestRestTemplate restTemplate;
+    private TestRestTemplate       restTemplate;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     @Autowired
@@ -53,8 +53,8 @@ public class ManualEndPointWebTests {
     public void trigger() {
         // 健康检查通过
         ResponseEntity<ReadinessCheckListener.ManualReadinessCallbackResult> response = restTemplate
-                .getForEntity("/actuator/triggerReadinessCallback",
-                        ReadinessCheckListener.ManualReadinessCallbackResult.class);
+            .getForEntity("/actuator/triggerReadinessCallback",
+                ReadinessCheckListener.ManualReadinessCallbackResult.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isNotNull();
         assertThat(response.getBody().isSuccess()).isTrue();
@@ -62,7 +62,7 @@ public class ManualEndPointWebTests {
 
         // 重复触发
         response = restTemplate.getForEntity("/actuator/triggerReadinessCallback",
-                ReadinessCheckListener.ManualReadinessCallbackResult.class);
+            ReadinessCheckListener.ManualReadinessCallbackResult.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isNotNull();
         assertThat(response.getBody().isSuccess()).isFalse();
@@ -70,12 +70,12 @@ public class ManualEndPointWebTests {
 
         // 健康检查失败
         Field field = ReflectionUtils
-                .findField(ReadinessCheckListener.class, "healthCheckerStatus");
+            .findField(ReadinessCheckListener.class, "healthCheckerStatus");
         assertThat(field).isNotNull();
         ReflectionUtils.makeAccessible(field);
         ReflectionUtils.setField(field, readinessCheckListener, false);
         response = restTemplate.getForEntity("/actuator/triggerReadinessCallback",
-                ReadinessCheckListener.ManualReadinessCallbackResult.class);
+            ReadinessCheckListener.ManualReadinessCallbackResult.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isNotNull();
         assertThat(response.getBody().isSuccess()).isFalse();

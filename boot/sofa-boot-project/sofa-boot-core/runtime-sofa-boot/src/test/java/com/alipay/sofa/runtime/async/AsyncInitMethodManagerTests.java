@@ -99,7 +99,7 @@ public class AsyncInitMethodManagerTests {
         String asyncInitMethodName = "initAsync";
         manager.registerAsyncInitBean(beanFactory, beanName, asyncInitMethodName);
         assertThat(manager.findAsyncInitMethod(beanFactory, beanName)).isEqualTo(
-                asyncInitMethodName);
+            asyncInitMethodName);
     }
 
 }

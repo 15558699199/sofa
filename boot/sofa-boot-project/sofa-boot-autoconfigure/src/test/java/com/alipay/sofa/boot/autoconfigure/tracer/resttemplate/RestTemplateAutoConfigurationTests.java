@@ -36,8 +36,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class RestTemplateAutoConfigurationTests {
 
     private final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
-            .withConfiguration(AutoConfigurations
-                    .of(RestTemplateAutoConfiguration.class));
+                                                             .withConfiguration(AutoConfigurations
+                                                                 .of(RestTemplateAutoConfiguration.class));
 
     @Test
     public void registerRestTemplateBeans() {

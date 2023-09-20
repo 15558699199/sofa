@@ -17,6 +17,7 @@
 package com.alipay.sofa.smoke.tests.runtime.proxy;
 
 /**
+ *
  * @author ruoshan
  * @since 2.6.1
  */

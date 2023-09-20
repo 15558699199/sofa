@@ -38,7 +38,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @version SpringContextInstallStageIntegrationTestBase.java, v 0.1 2023年02月02日 7:16 PM huzijie Exp $
  */
 @SpringBootTest(classes = IsleSofaBootApplication.class)
-@AddCustomJar({"sample-module", "fail-module", "child-module"})
+@AddCustomJar({ "sample-module", "fail-module", "child-module" })
 @TestPropertySource(properties = "sofa.boot.isle.ignoreModuleInstallFailure=true")
 public abstract class SpringContextInstallStageIntegrationTestBase {
 
@@ -64,11 +64,11 @@ public abstract class SpringContextInstallStageIntegrationTestBase {
     @Test
     public void verifyRefreshParent() {
         Map<String, ApplicationContext> contextMap = applicationRuntimeModel
-                .getModuleApplicationContextMap();
+            .getModuleApplicationContextMap();
         GenericApplicationContext child = (GenericApplicationContext) contextMap
-                .get("com.alipay.sofa.child");
+            .get("com.alipay.sofa.child");
         GenericApplicationContext sample = (GenericApplicationContext) contextMap
-                .get("com.alipay.sofa.sample");
+            .get("com.alipay.sofa.sample");
 
         assertThat(child).isNotNull();
         assertThat(sample).isNotNull();

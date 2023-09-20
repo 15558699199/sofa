@@ -43,7 +43,7 @@ public class JvmFilterTests {
     private JvmFilterTestConfiguration jvmFilterConfig;
 
     @SofaReference
-    private SampleService demoService;
+    private SampleService              demoService;
 
     @Test
     public void test() {

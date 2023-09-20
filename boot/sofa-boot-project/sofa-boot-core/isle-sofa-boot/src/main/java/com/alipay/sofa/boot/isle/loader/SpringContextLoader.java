@@ -30,10 +30,10 @@ public interface SpringContextLoader {
     /**
      * create spring context but not refresh it.
      *
-     * @param deployment  deployment descriptor
+     * @param deployment deployment descriptor
      * @param application application runtime model
      * @throws Exception throws when exception occur
      */
     void loadSpringContext(DeploymentDescriptor deployment, ApplicationRuntimeModel application)
-            throws Exception;
+                                                                                                throws Exception;
 }

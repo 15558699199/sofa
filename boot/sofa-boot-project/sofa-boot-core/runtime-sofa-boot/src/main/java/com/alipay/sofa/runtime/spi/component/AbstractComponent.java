@@ -40,19 +40,19 @@ public abstract class AbstractComponent implements ComponentInfo {
     /**
      * component status
      */
-    protected ComponentStatus componentStatus = ComponentStatus.UNREGISTERED;
+    protected ComponentStatus       componentStatus = ComponentStatus.UNREGISTERED;
 
-    protected Implementation implementation;
+    protected Implementation        implementation;
 
-    protected ComponentName componentName;
+    protected ComponentName         componentName;
 
-    protected SofaRuntimeContext sofaRuntimeContext;
+    protected SofaRuntimeContext    sofaRuntimeContext;
 
-    protected Exception e;
+    protected Exception             e;
 
-    protected ApplicationContext applicationContext;
+    protected ApplicationContext    applicationContext;
 
-    protected Map<String, Property> properties = new ConcurrentHashMap<>();
+    protected Map<String, Property> properties      = new ConcurrentHashMap<>();
 
     @Override
     public SofaRuntimeContext getContext() {
@@ -92,7 +92,7 @@ public abstract class AbstractComponent implements ComponentInfo {
     @Override
     public boolean isResolved() {
         return componentStatus == ComponentStatus.ACTIVATED
-                || componentStatus == ComponentStatus.RESOLVED;
+               || componentStatus == ComponentStatus.RESOLVED;
     }
 
     @Override
@@ -109,7 +109,7 @@ public abstract class AbstractComponent implements ComponentInfo {
             return;
         }
         if (componentStatus == ComponentStatus.ACTIVATED
-                || componentStatus == ComponentStatus.RESOLVED) {
+            || componentStatus == ComponentStatus.RESOLVED) {
             unresolve();
         }
         componentStatus = ComponentStatus.UNREGISTERED;
@@ -118,7 +118,7 @@ public abstract class AbstractComponent implements ComponentInfo {
     @Override
     public void unresolve() throws ServiceRuntimeException {
         if (componentStatus == ComponentStatus.REGISTERED
-                || componentStatus == ComponentStatus.UNREGISTERED) {
+            || componentStatus == ComponentStatus.UNREGISTERED) {
             return;
         }
 
@@ -202,10 +202,10 @@ public abstract class AbstractComponent implements ComponentInfo {
         for (Binding binding : bindings) {
             HealthResult result = binding.healthCheck();
             String report = "["
-                    + result.getHealthName()
-                    + ","
-                    + (result.getHealthReport() == null ? (result.isHealthy() ? "passed"
-                    : "failed") : result.getHealthReport()) + "]";
+                            + result.getHealthName()
+                            + ","
+                            + (result.getHealthReport() == null ? (result.isHealthy() ? "passed"
+                                : "failed") : result.getHealthReport()) + "]";
             healthResult.add(report);
         }
         return String.join(" ", healthResult);

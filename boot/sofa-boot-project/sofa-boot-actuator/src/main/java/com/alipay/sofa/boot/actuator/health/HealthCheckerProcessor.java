@@ -33,7 +33,12 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.*;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
@@ -47,29 +52,29 @@ import java.util.stream.Collectors;
  */
 public class HealthCheckerProcessor implements ApplicationContextAware {
 
-    private static final Logger logger = SofaBootLoggerFactory
-            .getLogger(HealthCheckerProcessor.class);
+    private static final Logger                  logger                       = SofaBootLoggerFactory
+                                                                                  .getLogger(HealthCheckerProcessor.class);
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper                   objectMapper                 = new ObjectMapper();
 
-    private final AtomicBoolean isInitiated = new AtomicBoolean(
-            false);
+    private final AtomicBoolean                  isInitiated                  = new AtomicBoolean(
+                                                                                  false);
 
-    private final List<BaseStat> healthCheckerStartupStatList = new CopyOnWriteArrayList<>();
+    private final List<BaseStat>                 healthCheckerStartupStatList = new CopyOnWriteArrayList<>();
 
-    private ExecutorService healthCheckExecutor;
+    private ExecutorService                      healthCheckExecutor;
 
-    private ApplicationContext applicationContext;
+    private ApplicationContext                   applicationContext;
 
-    private LinkedHashMap<String, HealthChecker> healthCheckers = new LinkedHashMap<>();
+    private LinkedHashMap<String, HealthChecker> healthCheckers               = new LinkedHashMap<>();
 
-    private int globalTimeout;
+    private int                                  globalTimeout;
 
-    private Map<String, HealthCheckerConfig> healthCheckerConfigs;
+    private Map<String, HealthCheckerConfig>     healthCheckerConfigs;
 
-    private boolean parallelCheck;
+    private boolean                              parallelCheck;
 
-    private long parallelCheckTimeout;
+    private long                                 parallelCheckTimeout;
 
     public void init() {
         if (isInitiated.compareAndSet(false, true)) {
@@ -148,14 +153,14 @@ public class HealthCheckerProcessor implements ApplicationContextAware {
      * Process HealthChecker.
      *
      * @param healthChecker Specify {@link HealthChecker} to check.
-     * @param isRetry       Whether retry when check failed, true for readiness and false for liveness.
-     * @param healthMap     Used to save the information of {@link HealthChecker}.
-     * @param isReadiness   Mark whether invoked during readiness.
-     * @param wait          Whether wait for result
+     * @param isRetry Whether retry when check failed, true for readiness and false for liveness.
+     * @param healthMap Used to save the information of {@link HealthChecker}.
+     * @param isReadiness Mark whether invoked during readiness.
+     * @param wait Whether wait for result
      * @return health check passes or not
      */
     private boolean doHealthCheck(String beanId, HealthChecker healthChecker, boolean isRetry,
-                                  Map<String, Health> healthMap, boolean isReadiness, boolean wait) {
+                                      Map<String, Health> healthMap, boolean isReadiness, boolean wait) {
         Assert.notNull(healthMap, "HealthMap must not be null");
 
         Health health;
@@ -180,7 +185,7 @@ public class HealthCheckerProcessor implements ApplicationContextAware {
                 } else {
                     health = healthChecker.isHealthy();
                 }
-            } catch (TimeoutException e) {
+            }  catch (TimeoutException e) {
                 logger.error(
                         "Timeout occurred while doing HealthChecker[{}] {} check, the timeout value is: {}ms.",
                         beanId, checkType, timeout);
@@ -196,7 +201,7 @@ public class HealthCheckerProcessor implements ApplicationContextAware {
                 break;
             } else {
                 logger.info("HealthChecker[{}] {} check fail with {} retry.", beanId, checkType,
-                        retryCount);
+                    retryCount);
             }
             if (isRetry && retryCount < healthChecker.getRetryCount()) {
                 try {
@@ -204,8 +209,8 @@ public class HealthCheckerProcessor implements ApplicationContextAware {
                     TimeUnit.MILLISECONDS.sleep(healthChecker.getRetryTimeInterval());
                 } catch (InterruptedException e) {
                     logger
-                            .error(ErrorCode.convert("01-23002", retryCount, beanId,
-                                    checkType), e);
+                        .error(ErrorCode.convert("01-23002", retryCount, beanId,
+                            checkType), e);
                 }
             }
         } while (isRetry && retryCount < healthChecker.getRetryCount());
@@ -314,10 +319,10 @@ public class HealthCheckerProcessor implements ApplicationContextAware {
     public static class WrapperHealthChecker implements HealthChecker {
 
         private final HealthChecker healthCheckChecker;
-        private final int retryCount;
-        private final long retryTimeInterval;
-        private final boolean strictCheck;
-        private final int timeout;
+        private final int           retryCount;
+        private final long          retryTimeInterval;
+        private final boolean       strictCheck;
+        private final int           timeout;
 
         public WrapperHealthChecker(HealthChecker healthChecker, int retryCount,
                                     long retryTimeInterval, boolean strictCheck, int timeout) {

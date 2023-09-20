@@ -16,6 +16,8 @@
  */
 package com.alipay.sofa.rpc.boot.runtime.converter;
 
+import org.springframework.context.ApplicationContext;
+
 import com.alipay.sofa.rpc.boot.config.SofaBootRpcConfigConstants;
 import com.alipay.sofa.rpc.boot.runtime.binding.DubboBinding;
 import com.alipay.sofa.rpc.boot.runtime.binding.RpcBinding;
@@ -28,7 +30,6 @@ import com.alipay.sofa.runtime.api.annotation.SofaService;
 import com.alipay.sofa.runtime.api.annotation.SofaServiceBinding;
 import com.alipay.sofa.runtime.api.binding.BindingType;
 import com.alipay.sofa.runtime.spi.service.BindingConverterContext;
-import org.springframework.context.ApplicationContext;
 
 /**
  * @author <a href="mailto:lw111072@antfin.com">LiWei</a>
@@ -52,9 +53,9 @@ public class DubboBindingConverter extends RpcBindingConverter {
                               BindingConverterContext bindingConverterContext) {
         RpcBindingParam bindingParam = new DubboBindingParam();
         convertServiceAnnotation(bindingParam, sofaServiceAnnotation, sofaServiceBindingAnnotation,
-                bindingConverterContext);
+            bindingConverterContext);
         return new DubboBinding(bindingParam, bindingConverterContext.getApplicationContext(),
-                bindingConverterContext.isInBinding());
+            bindingConverterContext.isInBinding());
     }
 
     @Override
@@ -63,10 +64,10 @@ public class DubboBindingConverter extends RpcBindingConverter {
                               BindingConverterContext bindingConverterContext) {
         RpcBindingParam bindingParam = new DubboBindingParam();
         convertReferenceAnnotation(bindingParam, sofaReferenceBindingAnnotation,
-                bindingConverterContext);
+            bindingConverterContext);
 
         return new DubboBinding(bindingParam, bindingConverterContext.getApplicationContext(),
-                bindingConverterContext.isInBinding());
+            bindingConverterContext.isInBinding());
     }
 
     @Override

@@ -16,11 +16,12 @@
  */
 package com.alipay.sofa.runtime.ext.spring;
 
+import org.springframework.context.ApplicationContext;
+import org.w3c.dom.Element;
+
 import com.alipay.sofa.runtime.api.component.ComponentName;
 import com.alipay.sofa.runtime.ext.component.ExtensionInternal;
 import com.alipay.sofa.service.api.component.Extension;
-import org.springframework.context.ApplicationContext;
-import org.w3c.dom.Element;
 
 /**
  * Extension Builder.
@@ -38,6 +39,14 @@ public class ExtensionBuilder {
     }
 
     /**
+     * Get extension
+     * @return extension
+     */
+    public Extension getExtension() {
+        return this.extensionInternal;
+    }
+
+    /**
      * create extension builder
      *
      * @param extensionPoint     extension point name
@@ -50,17 +59,8 @@ public class ExtensionBuilder {
                                                     ClassLoader appClassLoader) {
         ExtensionBuilder builder = new ExtensionBuilder();
         builder.extensionInternal = new SpringExtensionImpl(null, extensionPoint, element,
-                appClassLoader, applicationContext);
+            appClassLoader, applicationContext);
         return builder;
-    }
-
-    /**
-     * Get extension
-     *
-     * @return extension
-     */
-    public Extension getExtension() {
-        return this.extensionInternal;
     }
 
     /**

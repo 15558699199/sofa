@@ -34,7 +34,7 @@ public class CustomModelContextCustomizerFactory implements ContextCustomizerFac
     public ContextCustomizer createContextCustomizer(Class<?> testClass,
                                                      List<ContextConfigurationAttributes> configAttributes) {
         MergedAnnotations annotations = MergedAnnotations.from(testClass,
-                MergedAnnotations.SearchStrategy.SUPERCLASS);
+            MergedAnnotations.SearchStrategy.SUPERCLASS);
         AddCustomJar addCustomJar = annotations.get(AddCustomJar.class).synthesize();
         String[] paths = addCustomJar.value();
         return new CustomModelContextCustomizer(paths);

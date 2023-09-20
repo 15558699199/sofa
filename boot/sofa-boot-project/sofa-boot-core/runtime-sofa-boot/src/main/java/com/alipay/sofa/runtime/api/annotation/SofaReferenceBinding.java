@@ -73,6 +73,7 @@ public @interface SofaReferenceBinding {
     String directUrl() default "";
 
     /**
+     *
      * @return callback handler
      * @deprecated this attribute is not intended for use and will be removed the next major version.
      * callback handler
@@ -127,7 +128,7 @@ public @interface SofaReferenceBinding {
     /**
      * Specify load balance type.
      *
-     * @return load balance type
+     * @return  load balance type
      */
     String loadBalancer() default "";
 
@@ -158,14 +159,12 @@ public @interface SofaReferenceBinding {
 
     /**
      * Mock mode of reference.
-     *
      * @return "local", "remote" or empty
      */
     String mockMode() default "";
 
     /**
      * Get mock from spring beans.
-     *
      * @return bean name
      */
     String mockBean() default "";

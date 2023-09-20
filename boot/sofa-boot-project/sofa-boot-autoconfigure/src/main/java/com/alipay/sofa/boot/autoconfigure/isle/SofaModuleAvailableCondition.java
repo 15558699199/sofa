@@ -23,7 +23,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Condition;
 
 /**
- * {@link Condition} that determine if isle is available.
+ *  {@link Condition} that determine if isle is available.
  *
  * @author huzijie
  * @version SofaModuleAvailableCondition.java, v 0.1 2023年04月25日 11:39 AM huzijie Exp $

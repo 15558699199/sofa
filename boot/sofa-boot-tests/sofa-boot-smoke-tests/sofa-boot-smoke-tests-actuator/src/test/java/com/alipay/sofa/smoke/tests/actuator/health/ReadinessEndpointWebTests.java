@@ -35,7 +35,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author huzijie
  * @version ReadinessEndpointTest.java, v 0.1 2022年04月28日 11:11 AM huzijie Exp $
  */
-@SpringBootTest(classes = ActuatorSofaBootApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = {"management.endpoints.web.exposure.include=readiness"})
+@SpringBootTest(classes = ActuatorSofaBootApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = { "management.endpoints.web.exposure.include=readiness" })
 public class ReadinessEndpointWebTests {
 
     @Autowired
@@ -44,14 +44,14 @@ public class ReadinessEndpointWebTests {
     @Test
     public void health() {
         ResponseEntity<HealthResponse> response = restTemplate.getForEntity("/actuator/readiness",
-                HealthResponse.class);
+            HealthResponse.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         HealthResponse health = response.getBody();
         assertThat(health).isNotNull();
         assertThat(health.getDetails()).isNotNull();
 
         response = restTemplate.getForEntity("/actuator/readiness?showDetail=false",
-                HealthResponse.class);
+            HealthResponse.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         health = response.getBody();
         assertThat(health).isNotNull();
@@ -60,7 +60,7 @@ public class ReadinessEndpointWebTests {
 
     private static class HealthResponse {
 
-        private String status;
+        private String              status;
 
         private Map<String, Object> details;
 

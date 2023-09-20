@@ -25,7 +25,7 @@ import org.springframework.stereotype.Component;
  * @Date: 2021/7/21 2:17 下午
  */
 @Component
-@SofaService(bindings = {@SofaServiceBinding(bindingType = "bolt", timeout = 5000)}, uniqueId = "timeout")
+@SofaService(bindings = { @SofaServiceBinding(bindingType = "bolt", timeout = 5000) }, uniqueId = "timeout")
 public class AnnotationServiceTimeoutImpl implements AnnotationService {
 
     @Override

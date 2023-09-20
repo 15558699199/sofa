@@ -34,7 +34,7 @@ import static com.alipay.sofa.runtime.async.AsyncInitMethodManager.ASYNC_INIT_ME
  * @since 2.6.0
  */
 public class AsyncInitBeanDefinitionDecorator implements BeanDefinitionDecorator,
-        SofaBootTagNameSupport {
+                                             SofaBootTagNameSupport {
     @Override
     public BeanDefinitionHolder decorate(Node node, BeanDefinitionHolder definition,
                                          ParserContext parserContext) {

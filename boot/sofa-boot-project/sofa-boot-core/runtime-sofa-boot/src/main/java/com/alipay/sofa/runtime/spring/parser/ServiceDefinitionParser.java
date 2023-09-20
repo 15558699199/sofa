@@ -16,13 +16,14 @@
  */
 package com.alipay.sofa.runtime.spring.parser;
 
-import com.alipay.sofa.runtime.spring.bean.SofaBeanNameGenerator;
-import com.alipay.sofa.runtime.spring.factory.ServiceFactoryBean;
 import org.springframework.beans.factory.BeanDefinitionStoreException;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.xml.ParserContext;
 import org.w3c.dom.Element;
+
+import com.alipay.sofa.runtime.spring.bean.SofaBeanNameGenerator;
+import com.alipay.sofa.runtime.spring.factory.ServiceFactoryBean;
 
 /**
  * Service definition parser.
@@ -30,7 +31,7 @@ import org.w3c.dom.Element;
  * @author xuanbei 18/3/1
  */
 public class ServiceDefinitionParser extends AbstractContractDefinitionParser {
-    public static final String REF = "ref";
+    public static final String REF     = "ref";
     public static final String BEAN_ID = "beanId";
 
     @Override

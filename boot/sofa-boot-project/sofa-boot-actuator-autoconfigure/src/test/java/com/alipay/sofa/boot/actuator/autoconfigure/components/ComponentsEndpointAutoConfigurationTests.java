@@ -36,9 +36,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ComponentsEndpointAutoConfigurationTests {
 
     private final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
-            .withConfiguration(AutoConfigurations
-                    .of(ComponentsEndpointAutoConfiguration.class,
-                            SofaRuntimeAutoConfiguration.class));
+                                                             .withConfiguration(AutoConfigurations
+                                                                 .of(ComponentsEndpointAutoConfiguration.class,
+                                                                     SofaRuntimeAutoConfiguration.class));
 
     @Test
     void runShouldHaveEndpointBean() {

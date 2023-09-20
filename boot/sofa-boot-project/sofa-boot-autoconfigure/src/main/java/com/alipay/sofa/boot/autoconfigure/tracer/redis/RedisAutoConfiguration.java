@@ -35,19 +35,19 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
  * @since 3.9.1
  **/
 @AutoConfiguration(after = SofaTracerAutoConfiguration.class)
-@ConditionalOnClass({RedisConnectionFactory.class, RedisActionWrapperHelper.class})
+@ConditionalOnClass({ RedisConnectionFactory.class, RedisActionWrapperHelper.class })
 @ConditionalOnProperty(name = "sofa.boot.tracer.redis.enabled", havingValue = "true", matchIfMissing = true)
 public class RedisAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public static SofaTracerRCFBeanPostProcessor sofaTracerRCFBeanPostProcessor(RedisActionWrapperHelper redisActionWrapperHelper) {
-        return new SofaTracerRCFBeanPostProcessor(redisActionWrapperHelper);
+    public RedisActionWrapperHelper redisActionWrapperHelper() {
+        return new RedisActionWrapperHelper();
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public RedisActionWrapperHelper redisActionWrapperHelper() {
-        return new RedisActionWrapperHelper();
+    public static SofaTracerRCFBeanPostProcessor sofaTracerRCFBeanPostProcessor(RedisActionWrapperHelper redisActionWrapperHelper) {
+        return new SofaTracerRCFBeanPostProcessor(redisActionWrapperHelper);
     }
 }

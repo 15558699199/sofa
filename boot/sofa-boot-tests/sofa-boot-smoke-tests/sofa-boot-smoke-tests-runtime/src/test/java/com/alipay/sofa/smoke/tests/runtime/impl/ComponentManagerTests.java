@@ -54,7 +54,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ComponentManagerTests {
 
     @Autowired
-    private SofaRuntimeContext sofaRuntimeContext;
+    private SofaRuntimeContext     sofaRuntimeContext;
 
     @Autowired
     private DemoComponentLifeCycle demoComponent;
@@ -70,7 +70,7 @@ public class ComponentManagerTests {
     public void registerServiceDuplicated() {
         ComponentManager componentManager = sofaRuntimeContext.getComponentManager();
         ComponentName componentName = ComponentNameFactory.createComponentName(
-                SERVICE_COMPONENT_TYPE, SampleService.class, "");
+            SERVICE_COMPONENT_TYPE, SampleService.class, "");
         ComponentInfo componentInfo = componentManager.getComponentInfo(componentName);
         GenericApplicationContext applicationContext = new GenericApplicationContext();
         applicationContext.setId("testModuleName");

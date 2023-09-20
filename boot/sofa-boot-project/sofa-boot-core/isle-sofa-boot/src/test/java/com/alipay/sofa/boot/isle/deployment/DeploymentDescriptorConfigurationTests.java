@@ -35,7 +35,7 @@ public class DeploymentDescriptorConfigurationTests {
         List<String> expectedModuleNames = List.of("module1", "module2");
         List<String> requireModuleNames = List.of("module3", "module4");
         DeploymentDescriptorConfiguration config = new DeploymentDescriptorConfiguration(
-                expectedModuleNames, requireModuleNames);
+            expectedModuleNames, requireModuleNames);
         assertThat(config.getModuleNameIdentities()).isEqualTo(expectedModuleNames);
     }
 
@@ -44,7 +44,7 @@ public class DeploymentDescriptorConfigurationTests {
         List<String> moduleNames = List.of("module1", "module2");
         List<String> expectedRequireModuleNames = List.of("module3", "module4");
         DeploymentDescriptorConfiguration config = new DeploymentDescriptorConfiguration(
-                moduleNames, expectedRequireModuleNames);
+            moduleNames, expectedRequireModuleNames);
         assertThat(config.getRequireModuleIdentities()).isEqualTo(expectedRequireModuleNames);
     }
 }

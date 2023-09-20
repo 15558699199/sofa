@@ -16,8 +16,6 @@
  */
 package com.alipay.sofa.rpc.boot.context;
 
-import com.alipay.sofa.rpc.boot.container.ProviderConfigContainer;
-import com.alipay.sofa.rpc.boot.container.ServerConfigContainer;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -26,6 +24,9 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ApplicationContextEvent;
 import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.context.event.ContextStoppedEvent;
+
+import com.alipay.sofa.rpc.boot.container.ProviderConfigContainer;
+import com.alipay.sofa.rpc.boot.container.ServerConfigContainer;
 
 /**
  * Spring上下文监听器.负责关闭SOFABoot RPC 的资源。
@@ -36,9 +37,9 @@ public class RpcStopApplicationListener implements ApplicationListener, Applicat
 
     private final ProviderConfigContainer providerConfigContainer;
 
-    private final ServerConfigContainer serverConfigContainer;
+    private final ServerConfigContainer   serverConfigContainer;
 
-    private ApplicationContext applicationContext;
+    private ApplicationContext            applicationContext;
 
     public RpcStopApplicationListener(ProviderConfigContainer providerConfigContainer,
                                       ServerConfigContainer serverConfigContainer) {
@@ -50,7 +51,7 @@ public class RpcStopApplicationListener implements ApplicationListener, Applicat
     public void onApplicationEvent(ApplicationEvent event) {
         if ((event instanceof ContextClosedEvent) || (event instanceof ContextStoppedEvent)) {
             if (applicationContext
-                    .equals(((ApplicationContextEvent) event).getApplicationContext())) {
+                .equals(((ApplicationContextEvent) event).getApplicationContext())) {
                 providerConfigContainer.unExportAllProviderConfig();
                 serverConfigContainer.closeAllServer();
             }

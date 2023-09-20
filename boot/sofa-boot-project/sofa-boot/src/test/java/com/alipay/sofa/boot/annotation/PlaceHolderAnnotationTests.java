@@ -41,8 +41,8 @@ public class PlaceHolderAnnotationTests {
         environment.setProperty("key", "testKey");
         environment.setProperty("subKey", "testSubKey");
         AnnotationWrapper<SampleAnnotation> annotationWrapper = AnnotationWrapper
-                .create(SampleAnnotation.class).withEnvironment(environment)
-                .withBinder(DefaultPlaceHolderBinder.INSTANCE);
+            .create(SampleAnnotation.class).withEnvironment(environment)
+            .withBinder(DefaultPlaceHolderBinder.INSTANCE);
 
         SampleAnnotation origin = SampleClass.class.getAnnotation(SampleAnnotation.class);
         SampleAnnotation delegate = annotationWrapper.wrap(origin);
@@ -52,8 +52,13 @@ public class PlaceHolderAnnotationTests {
         assertThat(delegate.bindings()[1].id()).isEqualTo("${any}");
     }
 
+    @SampleAnnotation(id = "${key}", bindings = { @SubSampleAnnotation(id = "${subKey}"),
+            @SubSampleAnnotation(id = "${any}") })
+    static class SampleClass {
+    }
+
     @Retention(RetentionPolicy.RUNTIME)
-    @Target({ElementType.TYPE, ElementType.METHOD})
+    @Target({ ElementType.TYPE, ElementType.METHOD })
     public @interface SampleAnnotation {
         String id() default "";
 
@@ -66,13 +71,8 @@ public class PlaceHolderAnnotationTests {
     }
 
     @Retention(RetentionPolicy.RUNTIME)
-    @Target({ElementType.TYPE, ElementType.METHOD})
+    @Target({ ElementType.TYPE, ElementType.METHOD })
     public @interface SubSampleAnnotation {
         String id() default "";
-    }
-
-    @SampleAnnotation(id = "${key}", bindings = {@SubSampleAnnotation(id = "${subKey}"),
-            @SubSampleAnnotation(id = "${any}")})
-    static class SampleClass {
     }
 }

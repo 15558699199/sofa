@@ -17,25 +17,25 @@
 package com.alipay.sofa.rpc.boot.runtime.binding;
 
 /**
- * Rpc 方法级别参数
  *
+ * Rpc 方法级别参数
  * @author <a href="mailto:lw111072@antfin.com">LiWei</a>
  */
 public class RpcBindingMethodInfo {
 
-    private String name;
+    private String  name;
 
-    private String type;
+    private String  type;
 
     private Integer timeout;
 
     private Integer retries;
 
-    private String callbackClass;
+    private String  callbackClass;
 
-    private String callbackRef;
+    private String  callbackRef;
 
-    private Object callbackHandler;
+    private Object  callbackHandler;
 
     /**
      * Getter method for property <code>name</code>.
@@ -49,7 +49,7 @@ public class RpcBindingMethodInfo {
     /**
      * Setter method for property <code>name</code>.
      *
-     * @param name value to be assigned to property name
+     * @param name  value to be assigned to property name
      */
     public void setName(String name) {
         this.name = name;
@@ -67,7 +67,7 @@ public class RpcBindingMethodInfo {
     /**
      * Setter method for property <code>type</code>.
      *
-     * @param type value to be assigned to property type
+     * @param type  value to be assigned to property type
      */
     public void setType(String type) {
         this.type = type;
@@ -85,7 +85,7 @@ public class RpcBindingMethodInfo {
     /**
      * Setter method for property <code>timeout</code>.
      *
-     * @param timeout value to be assigned to property timeout
+     * @param timeout  value to be assigned to property timeout
      */
     public void setTimeout(Integer timeout) {
         this.timeout = timeout;
@@ -103,7 +103,7 @@ public class RpcBindingMethodInfo {
     /**
      * Setter method for property <code>retries</code>.
      *
-     * @param retries value to be assigned to property retries
+     * @param retries  value to be assigned to property retries
      */
     public void setRetries(Integer retries) {
         this.retries = retries;
@@ -121,7 +121,7 @@ public class RpcBindingMethodInfo {
     /**
      * Setter method for property <code>callbackClass</code>.
      *
-     * @param callbackClass value to be assigned to property callbackClass
+     * @param callbackClass  value to be assigned to property callbackClass
      */
     public void setCallbackClass(String callbackClass) {
         this.callbackClass = callbackClass;
@@ -139,7 +139,7 @@ public class RpcBindingMethodInfo {
     /**
      * Setter method for property <code>callbackRef</code>.
      *
-     * @param callbackRef value to be assigned to property callbackRef
+     * @param callbackRef  value to be assigned to property callbackRef
      */
     public void setCallbackRef(String callbackRef) {
         this.callbackRef = callbackRef;
@@ -157,7 +157,7 @@ public class RpcBindingMethodInfo {
     /**
      * Setter method for property <code>callbackHandler</code>.
      *
-     * @param callbackHandler value to be assigned to property callbackHandler
+     * @param callbackHandler  value to be assigned to property callbackHandler
      */
     public void setCallbackHandler(Object callbackHandler) {
         this.callbackHandler = callbackHandler;

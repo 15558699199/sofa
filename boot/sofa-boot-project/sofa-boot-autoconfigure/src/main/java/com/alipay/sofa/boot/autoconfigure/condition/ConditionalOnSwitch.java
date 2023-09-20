@@ -18,7 +18,11 @@ package com.alipay.sofa.boot.autoconfigure.condition;
 
 import org.springframework.context.annotation.Conditional;
 
-import java.lang.annotation.*;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * {@link Conditional @Conditional} that checks if the switch is enabled in environment.
@@ -26,7 +30,7 @@ import java.lang.annotation.*;
  * @author yuanxuan
  * @version : ConditionalOnSwitch.java, v 0.1 2023年02月09日 09:48 yuanxuan Exp $
  */
-@Target({ElementType.TYPE, ElementType.METHOD})
+@Target({ ElementType.TYPE, ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Conditional(OnSwitchCondition.class)

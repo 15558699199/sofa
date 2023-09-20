@@ -64,7 +64,7 @@ public class AsyncInitBeanFactoryPostProcessorTests {
         genericApplicationContext.refresh();
 
         BeanDefinition beanDefinition = genericApplicationContext.getBeanFactory()
-                .getBeanDefinition("normalClass");
+            .getBeanDefinition("normalClass");
 
         assertThat(beanDefinition.getAttribute(ASYNC_INIT_METHOD_NAME)).isEqualTo("init");
     }

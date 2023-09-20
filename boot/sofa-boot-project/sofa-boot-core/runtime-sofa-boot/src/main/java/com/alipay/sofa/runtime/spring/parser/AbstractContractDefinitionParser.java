@@ -16,8 +16,16 @@
  */
 package com.alipay.sofa.runtime.spring.parser;
 
-import com.alipay.sofa.boot.spring.namespace.spi.SofaBootTagNameSupport;
-import com.alipay.sofa.runtime.api.ServiceRuntimeException;
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
 import org.springframework.beans.factory.config.TypedStringValue;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.xml.AbstractSingleBeanDefinitionParser;
@@ -25,14 +33,8 @@ import org.springframework.beans.factory.xml.ParserContext;
 import org.springframework.util.xml.DomUtils;
 import org.w3c.dom.Element;
 
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.List;
+import com.alipay.sofa.boot.spring.namespace.spi.SofaBootTagNameSupport;
+import com.alipay.sofa.runtime.api.ServiceRuntimeException;
 
 /**
  * Abstract parser of contract bean definition.
@@ -40,37 +42,37 @@ import java.util.List;
  * @author xuanbei 18/3/1
  */
 public abstract class AbstractContractDefinitionParser extends AbstractSingleBeanDefinitionParser
-        implements
-        SofaBootTagNameSupport {
-    public static final String INTERFACE_ELEMENT = "interface";
+                                                                                                 implements
+                                                                                                 SofaBootTagNameSupport {
+    public static final String INTERFACE_ELEMENT            = "interface";
 
-    public static final String INTERFACE_PROPERTY = "interfaceType";
+    public static final String INTERFACE_PROPERTY           = "interfaceType";
 
-    public static final String INTERFACE_CLASS_PROPERTY = "interfaceClass";
+    public static final String INTERFACE_CLASS_PROPERTY     = "interfaceClass";
 
-    public static final String BEAN_ID_ELEMENT = "id";
+    public static final String BEAN_ID_ELEMENT              = "id";
 
-    public static final String BEAN_ID_PROPERTY = "beanId";
+    public static final String BEAN_ID_PROPERTY             = "beanId";
 
-    public static final String UNIQUE_ID_ELEMENT = "unique-id";
+    public static final String UNIQUE_ID_ELEMENT            = "unique-id";
 
-    public static final String UNIQUE_ID_PROPERTY = "uniqueId";
+    public static final String UNIQUE_ID_PROPERTY           = "uniqueId";
 
-    public static final String ELEMENTS = "elements";
+    public static final String ELEMENTS                     = "elements";
 
-    public static final String BINDINGS = "bindings";
+    public static final String BINDINGS                     = "bindings";
 
-    public static final String REPEAT_REFER_LIMIT_ELEMENT = "repeatReferLimit";
+    public static final String REPEAT_REFER_LIMIT_ELEMENT   = "repeatReferLimit";
 
-    public static final String REPEAT_REFER_LIMIT_PROPERTY = "repeatReferLimit";
+    public static final String REPEAT_REFER_LIMIT_PROPERTY  = "repeatReferLimit";
 
     public static final String DEFINITION_BUILDING_API_TYPE = "apiType";
 
-    public static final String SOFA_RUNTIME_CONTEXT = "sofaRuntimeContext";
+    public static final String SOFA_RUNTIME_CONTEXT         = "sofaRuntimeContext";
 
-    public static final String BINDING_CONVERTER_FACTORY = "bindingConverterFactory";
+    public static final String BINDING_CONVERTER_FACTORY    = "bindingConverterFactory";
 
-    public static final String BINDING_ADAPTER_FACTORY = "bindingAdapterFactory";
+    public static final String BINDING_ADAPTER_FACTORY      = "bindingAdapterFactory";
 
     @Override
     protected void doParse(Element element, ParserContext parserContext,
@@ -85,7 +87,7 @@ public abstract class AbstractContractDefinitionParser extends AbstractSingleBea
         String interfaceType = element.getAttribute(INTERFACE_ELEMENT);
         builder.addPropertyValue(INTERFACE_PROPERTY, interfaceType);
         builder.getBeanDefinition().getConstructorArgumentValues()
-                .addIndexedArgumentValue(0, interfaceType);
+            .addIndexedArgumentValue(0, interfaceType);
 
         String uniqueId = element.getAttribute(UNIQUE_ID_ELEMENT);
         builder.addPropertyValue(UNIQUE_ID_PROPERTY, uniqueId);
@@ -119,9 +121,9 @@ public abstract class AbstractContractDefinitionParser extends AbstractSingleBea
     /**
      * Actually parse internal element.
      *
-     * @param element       element
+     * @param element element
      * @param parserContext parserContext
-     * @param builder       builder
+     * @param builder builder
      */
     protected abstract void doParseInternal(Element element, ParserContext parserContext,
                                             BeanDefinitionBuilder builder);

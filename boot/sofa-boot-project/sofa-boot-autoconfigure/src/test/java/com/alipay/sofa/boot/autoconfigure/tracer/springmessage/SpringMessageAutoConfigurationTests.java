@@ -35,8 +35,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class SpringMessageAutoConfigurationTests {
 
     private final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
-            .withConfiguration(AutoConfigurations
-                    .of(SpringMessageAutoConfiguration.class));
+                                                             .withConfiguration(AutoConfigurations
+                                                                 .of(SpringMessageAutoConfiguration.class));
 
     @Test
     public void registerSpringMessageBeans() {

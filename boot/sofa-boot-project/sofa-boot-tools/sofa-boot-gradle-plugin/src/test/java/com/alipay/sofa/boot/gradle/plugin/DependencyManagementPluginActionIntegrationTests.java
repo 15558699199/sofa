@@ -41,7 +41,7 @@ public class DependencyManagementPluginActionIntegrationTests {
     @Ignore
     public void bomIsImportedWhenDependencyManagementPluginIsApplied() {
         Assert.assertEquals(
-                this.gradleBuild.build("hasDependencyManagement", "-PapplyDependencyManagementPlugin")
-                        .task(":hasDependencyManagement").getOutcome(), TaskOutcome.SUCCESS);
+            this.gradleBuild.build("hasDependencyManagement", "-PapplyDependencyManagementPlugin")
+                .task(":hasDependencyManagement").getOutcome(), TaskOutcome.SUCCESS);
     }
 }

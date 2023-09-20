@@ -53,10 +53,10 @@ public class LegacyAutoConfigurationDetectListenerTests {
         assertThat(applicationContext.containsBean("bothBean")).isTrue();
 
         assertThat(capturedOutput.getAll()).contains(
-                "These configurations defined in spring.factories file will be ignored:");
+            "These configurations defined in spring.factories file will be ignored:");
         assertThat(capturedOutput.getAll())
-                .contains(
-                        "--- com.alipay.sofa.smoke.tests.boot.LegacyAutoConfigurationDetectListenerTests$LegacyAutoConfiguration");
+            .contains(
+                "--- com.alipay.sofa.smoke.tests.boot.LegacyAutoConfigurationDetectListenerTests$LegacyAutoConfiguration");
     }
 
     @AutoConfiguration

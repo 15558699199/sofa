@@ -17,6 +17,7 @@
 package com.alipay.sofa.smoke.tests.rpc.boot.bean.misc;
 
 /**
+ *
  * @author elseifer
  * @version $Id: WhateverClass2.java, v 0.1 2020年09月09日 下午3:26 elseifer Exp $
  */

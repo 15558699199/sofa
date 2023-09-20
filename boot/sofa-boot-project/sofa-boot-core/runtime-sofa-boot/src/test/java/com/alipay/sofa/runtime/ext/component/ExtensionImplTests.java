@@ -33,13 +33,13 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class ExtensionImplTests {
 
-    private final ComponentName componentName = new ComponentName(new ComponentType("extension"),
-            "name");
+    private final ComponentName componentName   = new ComponentName(new ComponentType("extension"),
+                                                    "name");
 
     private final ComponentName componentTarget = new ComponentName(new ComponentType("extension"),
-            "target");
+                                                    "target");
 
-    private ExtensionImpl extension;
+    private ExtensionImpl       extension;
 
     @BeforeEach
     void setUp() {
@@ -72,7 +72,7 @@ public class ExtensionImplTests {
 
         assertThat(extension.getContributions()).isNull();
 
-        Object[] contributions = new Object[]{"contrib1", "contrib2"};
+        Object[] contributions = new Object[] { "contrib1", "contrib2" };
         extension.setContributions(contributions);
         assertThat(extension.getContributions()).isEqualTo(contributions);
 
@@ -82,6 +82,6 @@ public class ExtensionImplTests {
     @Test
     void testToString() {
         assertThat(extension.toString()).isEqualTo(
-                "ExtensionImpl {target: extension:name, point:point}");
+            "ExtensionImpl {target: extension:name, point:point}");
     }
 }

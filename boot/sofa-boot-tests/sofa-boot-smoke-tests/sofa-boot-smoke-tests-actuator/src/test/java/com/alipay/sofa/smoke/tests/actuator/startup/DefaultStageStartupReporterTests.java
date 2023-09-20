@@ -16,7 +16,13 @@
  */
 package com.alipay.sofa.smoke.tests.actuator.startup;
 
-import com.alipay.sofa.boot.startup.*;
+import com.alipay.sofa.boot.startup.BaseStat;
+import com.alipay.sofa.boot.startup.BeanStat;
+import com.alipay.sofa.boot.startup.BootStageConstants;
+import com.alipay.sofa.boot.startup.ChildrenStat;
+import com.alipay.sofa.boot.startup.ModuleStat;
+import com.alipay.sofa.boot.startup.StartupReporter;
+import com.alipay.sofa.boot.startup.StartupSmartLifecycle;
 import com.alipay.sofa.smoke.tests.actuator.ActuatorSofaBootApplication;
 import com.alipay.sofa.smoke.tests.actuator.sample.beans.InitCostBean;
 import org.junit.jupiter.api.Test;
@@ -36,8 +42,8 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @version DefaultStageStartupReporterTests.java, v 0.1 2021年01月04日 8:31 下午 huzijie Exp $
  */
 @SpringBootTest(classes = ActuatorSofaBootApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@TestPropertySource(properties = {"management.endpoints.web.exposure.include=startup",
-        "spring.autoconfigure.exclude=com.alipay.sofa.boot.autoconfigure.isle.SofaModuleAutoConfiguration"})
+@TestPropertySource(properties = { "management.endpoints.web.exposure.include=startup",
+                                  "spring.autoconfigure.exclude=com.alipay.sofa.boot.autoconfigure.isle.SofaModuleAutoConfiguration" })
 @Import(InitCostBean.class)
 public class DefaultStageStartupReporterTests {
 
@@ -89,7 +95,7 @@ public class DefaultStageStartupReporterTests {
         assertThat(moduleStat.getEndTime() > moduleStat.getStartTime()).isTrue();
         assertThat(moduleStat.getEndTime() - moduleStat.getStartTime()).isEqualTo(moduleStat.getCost());
 
-        List<BeanStat> beanStats = moduleStat.getChildren();
+        List<BeanStat> beanStats =  moduleStat.getChildren();
         assertThat(beanStats).isNotNull();
         assertThat(beanStats.size() >= 1).isTrue();
         BeanStat initBeanStat = beanStats.stream().filter(beanStat -> beanStat.getBeanClassName().contains("InitCostBean")).findFirst().orElse(null);

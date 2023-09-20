@@ -41,13 +41,13 @@ public class BindingConverterFactoryImplTests {
 
     private final BindingType bindingType = new BindingType("test");
 
-    private final String bindingTag = "test";
+    private final String      bindingTag  = "test";
 
     @Mock
-    private BindingConverter bindingConverter1;
+    private BindingConverter  bindingConverter1;
 
     @Mock
-    private BindingConverter bindingConverter2;
+    private BindingConverter  bindingConverter2;
 
     @BeforeEach
     public void setUp() {
@@ -62,7 +62,7 @@ public class BindingConverterFactoryImplTests {
         BindingConverterFactory bindingConverterFactory = new BindingConverterFactoryImpl();
 
         BindingConverter bindingConverter = bindingConverterFactory
-                .getBindingConverter(bindingType);
+            .getBindingConverter(bindingType);
         Assertions.assertThat(bindingConverter).isNull();
 
         bindingConverterFactory.addBindingConverters(Set.of());

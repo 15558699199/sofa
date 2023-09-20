@@ -37,8 +37,9 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class OnMasterBizConditionTests {
 
-    private final ConfigurableEnvironment environment = new StandardEnvironment();
     private ConfigurableApplicationContext context;
+
+    private final ConfigurableEnvironment  environment = new StandardEnvironment();
 
     @Test
     void checkArkEnvironment() {
@@ -49,9 +50,9 @@ public class OnMasterBizConditionTests {
 
     private void load(Class<?> config, String... environment) {
         TestPropertyValues.of(environment).and("spring.application.name=test")
-                .applyTo(this.environment);
+            .applyTo(this.environment);
         this.context = new SpringApplicationBuilder(config).environment(this.environment)
-                .web(WebApplicationType.NONE).run();
+            .web(WebApplicationType.NONE).run();
     }
 
     @Configuration

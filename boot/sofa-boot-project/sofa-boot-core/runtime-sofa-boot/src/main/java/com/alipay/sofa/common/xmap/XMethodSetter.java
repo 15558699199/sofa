@@ -20,6 +20,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
+ *
  * @author xi.hux@alipay.com
  * @since 2.6.0
  */
@@ -46,7 +47,7 @@ public class XMethodSetter implements XSetter {
      * @see XSetter#setValue(Object, Object)
      */
     public void setValue(Object instance, Object value) throws IllegalAccessException,
-            InvocationTargetException {
+                                                       InvocationTargetException {
         method.invoke(instance, value);
     }
 

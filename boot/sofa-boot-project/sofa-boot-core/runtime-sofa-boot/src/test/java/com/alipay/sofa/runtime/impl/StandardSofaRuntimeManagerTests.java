@@ -38,7 +38,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class StandardSofaRuntimeManagerTests {
 
     @Mock
-    private ClientFactoryInternal clientFactoryInternal;
+    private ClientFactoryInternal      clientFactoryInternal;
 
     private StandardSofaRuntimeManager sofaRuntimeManager;
 
@@ -46,7 +46,7 @@ public class StandardSofaRuntimeManagerTests {
     public void setUp() {
         GenericApplicationContext applicationContext = new SofaGenericApplicationContext();
         sofaRuntimeManager = new StandardSofaRuntimeManager("testApp", this.getClass()
-                .getClassLoader(), clientFactoryInternal);
+            .getClassLoader(), clientFactoryInternal);
         sofaRuntimeManager.setApplicationContext(applicationContext);
     }
 
@@ -54,7 +54,7 @@ public class StandardSofaRuntimeManagerTests {
     public void getters() {
         assertThat(sofaRuntimeManager.getAppName()).isEqualTo("testApp");
         assertThat(sofaRuntimeManager.getAppClassLoader()).isEqualTo(
-                this.getClass().getClassLoader());
+            this.getClass().getClassLoader());
         assertThat(sofaRuntimeManager.getClientFactoryInternal()).isEqualTo(clientFactoryInternal);
     }
 

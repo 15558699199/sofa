@@ -51,7 +51,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Integration tests for {@link Binding}.
- *
+ * 
  * @author qilong.zql
  * @since 3.2.0
  */
@@ -79,17 +79,17 @@ public class SofaBindingTests {
     public void serviceBinding() {
         ComponentManager componentManager = sofaRuntimeContext.getComponentManager();
         ServiceComponent serializeFalseViaAnnotation = (ServiceComponent) componentManager
-                .getComponentInfo(getServiceComponentName(SampleService.class,
-                        "serializeFalseViaAnnotation"));
+            .getComponentInfo(getServiceComponentName(SampleService.class,
+                "serializeFalseViaAnnotation"));
         ServiceComponent defaultSerializeTrueViaAnnotation = (ServiceComponent) componentManager
-                .getComponentInfo(getServiceComponentName(SampleService.class,
-                        "defaultSerializeTrueViaAnnotation"));
+            .getComponentInfo(getServiceComponentName(SampleService.class,
+                "defaultSerializeTrueViaAnnotation"));
         ServiceComponent defaultElement = (ServiceComponent) componentManager
-                .getComponentInfo(getServiceComponentName(SampleService.class, "default-element"));
+            .getComponentInfo(getServiceComponentName(SampleService.class, "default-element"));
         ServiceComponent element = (ServiceComponent) componentManager
-                .getComponentInfo(getServiceComponentName(SampleService.class, "element"));
+            .getComponentInfo(getServiceComponentName(SampleService.class, "element"));
         ServiceComponent noneUniqueId = (ServiceComponent) componentManager
-                .getComponentInfo(getServiceComponentName(SampleService.class, ""));
+            .getComponentInfo(getServiceComponentName(SampleService.class, ""));
 
         assertThat(serializeFalseViaAnnotation).isNotNull();
         assertThat(defaultSerializeTrueViaAnnotation).isNotNull();
@@ -99,15 +99,15 @@ public class SofaBindingTests {
 
         JvmBinding jvmBinding;
         jvmBinding = (JvmBinding) serializeFalseViaAnnotation.getService().getBinding(
-                JvmBinding.JVM_BINDING_TYPE);
+            JvmBinding.JVM_BINDING_TYPE);
         assertThat(jvmBinding.getJvmBindingParam().isSerialize()).isFalse();
 
         jvmBinding = (JvmBinding) defaultSerializeTrueViaAnnotation.getService().getBinding(
-                JvmBinding.JVM_BINDING_TYPE);
+            JvmBinding.JVM_BINDING_TYPE);
         assertThat(jvmBinding.getJvmBindingParam().isSerialize()).isTrue();
 
         jvmBinding = (JvmBinding) defaultElement.getService().getBinding(
-                JvmBinding.JVM_BINDING_TYPE);
+            JvmBinding.JVM_BINDING_TYPE);
         assertThat(jvmBinding.getJvmBindingParam().isSerialize()).isTrue();
 
         jvmBinding = (JvmBinding) element.getService().getBinding(JvmBinding.JVM_BINDING_TYPE);
@@ -126,7 +126,7 @@ public class SofaBindingTests {
         ReferenceComponent element = null;
         ReferenceComponent noneUniqueId = null;
         Collection<ComponentInfo> componentInfos = componentManager
-                .getComponentInfosByType(ReferenceComponent.REFERENCE_COMPONENT_TYPE);
+            .getComponentInfosByType(ReferenceComponent.REFERENCE_COMPONENT_TYPE);
         for (ComponentInfo componentInfo : componentInfos) {
             String rawName = componentInfo.getName().getRawName();
             if (rawName.contains("serializeTrueViaAnnotation")) {
@@ -149,22 +149,22 @@ public class SofaBindingTests {
 
         JvmBinding jvmBinding;
         jvmBinding = (JvmBinding) serializeTrueViaAnnotation.getReference().getBinding(
-                JvmBinding.JVM_BINDING_TYPE);
+            JvmBinding.JVM_BINDING_TYPE);
         assertThat(jvmBinding.getJvmBindingParam().isSerialize()).isTrue();
 
         jvmBinding = (JvmBinding) defaultSerializeFalseViaAnnotation.getReference().getBinding(
-                JvmBinding.JVM_BINDING_TYPE);
+            JvmBinding.JVM_BINDING_TYPE);
         assertThat(jvmBinding.getJvmBindingParam().isSerialize()).isFalse();
 
         jvmBinding = (JvmBinding) defaultElement.getReference().getBinding(
-                JvmBinding.JVM_BINDING_TYPE);
+            JvmBinding.JVM_BINDING_TYPE);
         assertThat(jvmBinding.getJvmBindingParam().isSerialize()).isFalse();
 
         jvmBinding = (JvmBinding) element.getReference().getBinding(JvmBinding.JVM_BINDING_TYPE);
         assertThat(jvmBinding.getJvmBindingParam().isSerialize()).isTrue();
 
         jvmBinding = (JvmBinding) noneUniqueId.getReference().getBinding(
-                JvmBinding.JVM_BINDING_TYPE);
+            JvmBinding.JVM_BINDING_TYPE);
         assertThat(jvmBinding.getJvmBindingParam().isSerialize()).isFalse();
     }
 
@@ -183,11 +183,6 @@ public class SofaBindingTests {
         assertThat(map.get(new BindingType("rest"))).isEqualTo("rest");
         assertThat(map.get("jvm")).isEqualTo(null);
         assertThat(map.get(null)).isEqualTo(null);
-    }
-
-    private ComponentName getServiceComponentName(Class clazz, String uniqueId) {
-        return ComponentNameFactory.createComponentName(ServiceComponent.SERVICE_COMPONENT_TYPE,
-                clazz, uniqueId);
     }
 
     @TestConfiguration
@@ -211,5 +206,10 @@ public class SofaBindingTests {
         public SampleService service2() {
             return new SampleServiceImpl();
         }
+    }
+
+    private ComponentName getServiceComponentName(Class clazz, String uniqueId) {
+        return ComponentNameFactory.createComponentName(ServiceComponent.SERVICE_COMPONENT_TYPE,
+            clazz, uniqueId);
     }
 }

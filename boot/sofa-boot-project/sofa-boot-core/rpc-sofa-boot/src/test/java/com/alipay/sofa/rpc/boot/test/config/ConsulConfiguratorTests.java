@@ -16,10 +16,10 @@
  */
 package com.alipay.sofa.rpc.boot.test.config;
 
+import java.util.Map;
+
 import com.alipay.sofa.rpc.boot.config.ConsulConfigurator;
 import org.junit.jupiter.api.Test;
-
-import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

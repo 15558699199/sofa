@@ -24,7 +24,7 @@ import org.springframework.context.ConfigurableApplicationContext;
  * @version StartupInitializer.java, v 0.1 2022年03月14日 2:41 PM huzijie Exp $
  */
 public class StartupInitializer implements
-        ApplicationContextInitializer<ConfigurableApplicationContext> {
+                               ApplicationContextInitializer<ConfigurableApplicationContext> {
 
     @Override
     public void initialize(ConfigurableApplicationContext applicationContext) {

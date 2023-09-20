@@ -38,32 +38,32 @@ public class BeanDefinitionUtilTests {
     @Test
     public void fromBeanClass() {
         AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext(
-                SampleClass.class);
+            SampleClass.class);
         BeanDefinition beanDefinition = applicationContext.getBeanDefinition("beanA");
         assertThat(BeanDefinitionUtil.isFromConfigurationSource(beanDefinition)).isFalse();
         assertThat(BeanDefinitionUtil.resolveBeanClassType(beanDefinition)).isEqualTo(
-                SampleClass.class);
+            SampleClass.class);
     }
 
     @Test
     public void fromBeanMethod() {
         AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext(
-                TestBeanConfiguration.class);
+            TestBeanConfiguration.class);
         BeanDefinition beanDefinition = applicationContext.getBeanDefinition("beanA");
         assertThat(BeanDefinitionUtil.isFromConfigurationSource(beanDefinition)).isTrue();
         assertThat(BeanDefinitionUtil.resolveBeanClassType(beanDefinition)).isEqualTo(
-                SampleClass.class);
+            SampleClass.class);
     }
 
     @Test
     public void fromBeanDefinitionClass() {
         AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext();
         applicationContext.registerBeanDefinition("beanA",
-                new RootBeanDefinition(SampleClass.class));
+            new RootBeanDefinition(SampleClass.class));
         BeanDefinition beanDefinition = applicationContext.getBeanDefinition("beanA");
         assertThat(BeanDefinitionUtil.isFromConfigurationSource(beanDefinition)).isFalse();
         assertThat(BeanDefinitionUtil.resolveBeanClassType(beanDefinition)).isEqualTo(
-                SampleClass.class);
+            SampleClass.class);
     }
 
     @Test
@@ -75,7 +75,7 @@ public class BeanDefinitionUtilTests {
         BeanDefinition beanDefinition = applicationContext.getBeanDefinition("beanA");
         assertThat(BeanDefinitionUtil.isFromConfigurationSource(beanDefinition)).isFalse();
         assertThat(BeanDefinitionUtil.resolveBeanClassType(beanDefinition)).isEqualTo(
-                SampleClass.class);
+            SampleClass.class);
     }
 
     @Test
@@ -87,7 +87,7 @@ public class BeanDefinitionUtilTests {
         BeanDefinition beanDefinition = applicationContext.getBeanDefinition("beanA");
         assertThat(BeanDefinitionUtil.isFromConfigurationSource(beanDefinition)).isFalse();
         assertThat(BeanDefinitionUtil.resolveBeanClassType(beanDefinition)).isEqualTo(
-                SampleClass.class);
+            SampleClass.class);
     }
 
     @Test
@@ -103,7 +103,7 @@ public class BeanDefinitionUtilTests {
         BeanDefinition beanDefinition = applicationContext.getBeanDefinition("beanA");
         assertThat(BeanDefinitionUtil.isFromConfigurationSource(beanDefinition)).isFalse();
         assertThat(BeanDefinitionUtil.resolveBeanClassType(beanDefinition)).isEqualTo(
-                SampleClass.class);
+            SampleClass.class);
     }
 
     @Component("beanA")

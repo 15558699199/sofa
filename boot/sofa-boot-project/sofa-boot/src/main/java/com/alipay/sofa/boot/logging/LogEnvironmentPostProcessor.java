@@ -36,13 +36,13 @@ import java.util.Map;
 /**
  * Implementation of {@link EnvironmentPostProcessor}
  * to register spring environment to {@link CommonLoggingConfigurations}.
- *
+ * 
  * @author <a href="mailto:guaner.zzx@alipay.com">Alaneuler</a>
  * Created on 2020/11/7
  */
 public class LogEnvironmentPostProcessor implements EnvironmentPostProcessor, Ordered {
 
-    public static final int ORDER = ConfigDataEnvironmentPostProcessor.ORDER + 1;
+    public static final int    ORDER                            = ConfigDataEnvironmentPostProcessor.ORDER + 1;
 
     /**
      * support use config to disable sofa common thread pool monitor.
@@ -65,12 +65,12 @@ public class LogEnvironmentPostProcessor implements EnvironmentPostProcessor, Or
     private void initLoggingConfig(ConfigurableEnvironment environment) {
         Map<String, String> context = new HashMap<>();
         loadLogConfiguration(Constants.LOG_PATH, environment.getProperty(Constants.LOG_PATH),
-                Constants.LOGGING_PATH_DEFAULT, context);
+            Constants.LOGGING_PATH_DEFAULT, context);
         loadLogConfiguration(Constants.OLD_LOG_PATH,
-                environment.getProperty(Constants.OLD_LOG_PATH), context.get(Constants.LOG_PATH),
-                context);
+            environment.getProperty(Constants.OLD_LOG_PATH), context.get(Constants.LOG_PATH),
+            context);
         loadLogConfiguration(Constants.LOG_ENCODING_PROP_KEY,
-                environment.getProperty(Constants.LOG_ENCODING_PROP_KEY), context);
+            environment.getProperty(Constants.LOG_ENCODING_PROP_KEY), context);
         // Don't delete this!
         // Some old SOFA SDKs rely on JVM system properties to determine log configurations.
         LogEnvUtils.keepCompatible(context, true);
@@ -84,7 +84,7 @@ public class LogEnvironmentPostProcessor implements EnvironmentPostProcessor, Or
                 for (String key : ((EnumerablePropertySource) propertySource).getPropertyNames()) {
                     if (LogEnvUtils.isSofaCommonLoggingConfig(key)) {
                         CommonLoggingConfigurations.loadExternalConfiguration(key,
-                                environment.getProperty(key));
+                            environment.getProperty(key));
                     }
                 }
             }
@@ -94,7 +94,7 @@ public class LogEnvironmentPostProcessor implements EnvironmentPostProcessor, Or
     private void defaultConsoleLoggers() {
         if (SofaBootEnvUtils.isLocalEnv() || SofaBootEnvUtils.isSpringTestEnv()) {
             CommonLoggingConfigurations.loadExternalConfiguration(
-                    Constants.SOFA_MIDDLEWARE_ALL_LOG_CONSOLE_SWITCH, "true");
+                Constants.SOFA_MIDDLEWARE_ALL_LOG_CONSOLE_SWITCH, "true");
         }
     }
 
@@ -116,7 +116,7 @@ public class LogEnvironmentPostProcessor implements EnvironmentPostProcessor, Or
     private void initSofaCommonThread(ConfigurableEnvironment environment) {
         if (Boolean.parseBoolean(environment.getProperty(SOFA_THREAD_POOL_MONITOR_DISABLE))) {
             System
-                    .setProperty(SofaThreadPoolConstants.SOFA_THREAD_POOL_LOGGING_CAPABILITY, "false");
+                .setProperty(SofaThreadPoolConstants.SOFA_THREAD_POOL_LOGGING_CAPABILITY, "false");
         }
     }
 }

@@ -34,7 +34,6 @@ public class ServiceImpl implements IService, ApplicationContextAware {
 
     @Autowired
     private Child3 child3;
-    private ApplicationContext applicationContext;
 
     public String say() {
         return "os-sofaboot";
@@ -47,6 +46,8 @@ public class ServiceImpl implements IService, ApplicationContextAware {
             //
         }
     }
+
+    private ApplicationContext applicationContext;
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {

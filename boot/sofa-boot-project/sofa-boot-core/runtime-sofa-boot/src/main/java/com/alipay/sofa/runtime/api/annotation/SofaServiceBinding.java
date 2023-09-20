@@ -96,7 +96,7 @@ public @interface SofaServiceBinding {
      * Serialization between biz, default is true.
      * only serialize of reference and service is false
      * then invocation between biz would skip serialization.
-     * <p>
+     *
      * Note that the serialize of {@link SofaReferenceBinding} is false
      *
      * @return whether serialize

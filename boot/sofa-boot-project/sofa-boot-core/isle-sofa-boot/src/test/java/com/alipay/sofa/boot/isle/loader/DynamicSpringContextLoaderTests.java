@@ -54,15 +54,18 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class DynamicSpringContextLoaderTests {
 
-    private final MockDeploymentDescriptor mockDeploymentDescriptor = new MockDeploymentDescriptor(
-            "test");
-    private final ConfigurableApplicationContext mockApplicationContext = new GenericApplicationContext();
-    private DynamicSpringContextLoader dynamicSpringContextLoader;
-    @Mock
-    private ApplicationRuntimeModel mockApplicationRuntimeModel;
+    private DynamicSpringContextLoader           dynamicSpringContextLoader;
+
+    private final MockDeploymentDescriptor       mockDeploymentDescriptor = new MockDeploymentDescriptor(
+                                                                              "test");
+
+    private final ConfigurableApplicationContext mockApplicationContext   = new GenericApplicationContext();
 
     @Mock
-    private BeanDefinitionReader mockBeanDefinitionReader;
+    private ApplicationRuntimeModel              mockApplicationRuntimeModel;
+
+    @Mock
+    private BeanDefinitionReader                 mockBeanDefinitionReader;
 
     @BeforeEach
     public void setUp() {
@@ -72,7 +75,7 @@ public class DynamicSpringContextLoaderTests {
         dynamicSpringContextLoader.setPublishEventToParent(false);
         dynamicSpringContextLoader.setContextRefreshInterceptors(new ArrayList<>());
         dynamicSpringContextLoader
-                .setSofaPostProcessorShareManager(new SofaPostProcessorShareManager());
+            .setSofaPostProcessorShareManager(new SofaPostProcessorShareManager());
     }
 
     @Test
@@ -91,17 +94,17 @@ public class DynamicSpringContextLoaderTests {
         assertThat(dynamicSpringContextLoader.getSofaPostProcessorShareManager()).isNull();
 
         GenericApplicationContext applicationContext = (GenericApplicationContext) mockDeploymentDescriptor
-                .getApplicationContext();
+            .getApplicationContext();
         assertThat(applicationContext).isInstanceOf(SofaGenericApplicationContext.class);
         assertThat(applicationContext.getId()).isEqualTo("test");
         assertThat(applicationContext.getApplicationStartup())
-                .isEqualTo(ApplicationStartup.DEFAULT);
+            .isEqualTo(ApplicationStartup.DEFAULT);
         assertThat(applicationContext.getParent()).isEqualTo(mockApplicationContext);
         assertThat(applicationContext.getEnvironment().getActiveProfiles()).containsOnly("test");
 
         applicationContext.refresh();
         DefaultListableBeanFactory autowireCapableBeanFactory = (DefaultListableBeanFactory) applicationContext
-                .getAutowireCapableBeanFactory();
+            .getAutowireCapableBeanFactory();
         assertThat(autowireCapableBeanFactory.isAllowBeanDefinitionOverriding()).isTrue();
         assertThat(autowireCapableBeanFactory).isInstanceOf(SofaDefaultListableBeanFactory.class);
     }
@@ -110,10 +113,10 @@ public class DynamicSpringContextLoaderTests {
     public void getSpringParentContext() {
         mockDeploymentDescriptor.setSpringParent("parentModuleName");
         when(mockApplicationRuntimeModel.getDeploymentByName("parentModuleName")).thenReturn(
-                mockDeploymentDescriptor);
+            mockDeploymentDescriptor);
         mockDeploymentDescriptor.setApplicationContext(mockApplicationContext);
         ApplicationContext parentContext = dynamicSpringContextLoader.getSpringParentContext(
-                mockDeploymentDescriptor, mockApplicationRuntimeModel);
+            mockDeploymentDescriptor, mockApplicationRuntimeModel);
         assertThat(parentContext).isEqualTo(mockApplicationContext);
     }
 
@@ -121,10 +124,10 @@ public class DynamicSpringContextLoaderTests {
     public void getSpringParentContextWithNullParentContext() {
         mockDeploymentDescriptor.setSpringParent("parentModuleName");
         when(mockApplicationRuntimeModel.getDeploymentByName("parentModuleName")).thenReturn(
-                mockDeploymentDescriptor);
+            mockDeploymentDescriptor);
         mockDeploymentDescriptor.setApplicationContext(null);
         ApplicationContext parentContext = dynamicSpringContextLoader.getSpringParentContext(
-                mockDeploymentDescriptor, mockApplicationRuntimeModel);
+            mockDeploymentDescriptor, mockApplicationRuntimeModel);
         assertThat(parentContext).isEqualTo(dynamicSpringContextLoader.rootApplicationContext);
     }
 
@@ -133,7 +136,7 @@ public class DynamicSpringContextLoaderTests {
         Resource mockResource = mock(Resource.class);
         mockDeploymentDescriptor.setSpringResources(Collections.singletonMap("test", mockResource));
         dynamicSpringContextLoader.loadBeanDefinitions(mockDeploymentDescriptor,
-                mockBeanDefinitionReader);
+            mockBeanDefinitionReader);
         assertThat(mockDeploymentDescriptor.getInstalledSpringXml()).containsExactly("test");
     }
 
@@ -143,7 +146,7 @@ public class DynamicSpringContextLoaderTests {
         SofaPostProcessorShareManager shareManager = mock(SofaPostProcessorShareManager.class);
         dynamicSpringContextLoader.setSofaPostProcessorShareManager(shareManager);
         assertThat(dynamicSpringContextLoader.getSofaPostProcessorShareManager()).isEqualTo(
-                shareManager);
+            shareManager);
         Map<String, Object> objectMap = Map.of("beanA", new Object());
         Map<String, BeanDefinition> beanDefinitionMap = Map.of("beanB", new RootBeanDefinition());
         when(shareManager.getRegisterSingletonMap()).thenReturn(objectMap);

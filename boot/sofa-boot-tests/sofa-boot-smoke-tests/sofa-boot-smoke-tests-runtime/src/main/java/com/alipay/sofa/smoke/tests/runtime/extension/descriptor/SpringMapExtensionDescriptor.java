@@ -16,13 +16,13 @@
  */
 package com.alipay.sofa.smoke.tests.runtime.extension.descriptor;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.alipay.sofa.common.xmap.annotation.XObject;
 import com.alipay.sofa.common.xmap.spring.XNodeMapSpring;
 import com.alipay.sofa.smoke.tests.runtime.extension.bean.SimpleSpringMapBean;
 import com.alipay.sofa.smoke.tests.runtime.extension.bean.SimpleSpringMapBeanWithXObject;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author ruoshan
@@ -32,7 +32,7 @@ import java.util.Map;
 public class SpringMapExtensionDescriptor {
 
     @XNodeMapSpring(value = "value", key = "@name", componentType = SimpleSpringMapBean.class, type = HashMap.class)
-    private Map<String, SimpleSpringMapBean> values;
+    private Map<String, SimpleSpringMapBean>            values;
 
     @XNodeMapSpring(value = "value/attribute[@id='springMapTest']", key = "@name", componentType = SimpleSpringMapBeanWithXObject.class, type = HashMap.class)
     private Map<String, SimpleSpringMapBeanWithXObject> valueAttributes;

@@ -37,57 +37,60 @@ public abstract class RpcBindingParam implements BindingParam {
     /**
      * global attr
      */
-    protected Integer timeout;
+    protected Integer                    timeout;
 
-    protected Integer addressWaitTime;
+    protected Integer                    addressWaitTime;
 
-    protected Integer connectTimeout;
+    protected Integer                    connectTimeout;
 
-    protected Integer connectionNum;
+    protected Integer                    connectionNum;
 
-    protected Integer retries;
+    protected Integer                    retries;
 
-    protected String type;
+    protected String                     type;
 
-    protected String callbackClass;
+    protected String                     callbackClass;
 
-    protected String callbackRef;
+    protected String                     callbackRef;
 
-    protected Object callbackHandler;
+    protected Object                     callbackHandler;
 
-    protected Integer weight;
+    protected Integer                    weight;
 
-    protected Integer warmUpTime;
+    protected Integer                    warmUpTime;
 
-    protected Integer warmUpWeight;
+    protected Integer                    warmUpWeight;
 
-    protected UserThreadPool userThreadPool;
+    protected UserThreadPool             userThreadPool;
 
-    protected String genericInterface;
+    protected String                     genericInterface;
 
-    protected String loadBalancer;
+    protected String                     loadBalancer;
 
-    protected Boolean lazy;
+    protected Boolean                    lazy;
 
-    protected Boolean check;
+    protected Boolean                    check;
 
     /**
      * other
      */
-    protected List<Filter> filters;
+    protected List<Filter>               filters;
 
     protected List<RpcBindingMethodInfo> methodInfos;
 
-    protected String targetUrl;
+    protected String                     targetUrl;
 
-    protected String serialization;
+    protected String                     serialization;
 
-    protected Map<String, String> parameters = new ConcurrentHashMap<String, String>();
+    protected Map<String, String>        parameters = new ConcurrentHashMap<String, String>();
 
-    protected List<String> registrys = new ArrayList<String>();
-    protected String mockMode;
-    protected String mockBean;
-    private Integer repeatReferLimit;
+    protected List<String>               registrys  = new ArrayList<String>();
+
+    private Integer                      repeatReferLimit;
+
+    protected String                     mockMode;
+
+    protected String                     mockBean;
 
     /**
      * Getter method for property <code>timeout</code>.
@@ -498,15 +501,15 @@ public abstract class RpcBindingParam implements BindingParam {
             return false;
         }
         if (addressWaitTime != null ? !addressWaitTime.equals(that.addressWaitTime)
-                : that.addressWaitTime != null) {
+            : that.addressWaitTime != null) {
             return false;
         }
         if (connectTimeout != null ? !connectTimeout.equals(that.connectTimeout)
-                : that.connectTimeout != null) {
+            : that.connectTimeout != null) {
             return false;
         }
         if (connectionNum != null ? !connectionNum.equals(that.connectionNum)
-                : that.connectionNum != null) {
+            : that.connectionNum != null) {
             return false;
         }
         if (retries != null ? !retries.equals(that.retries) : that.retries != null) {
@@ -516,14 +519,14 @@ public abstract class RpcBindingParam implements BindingParam {
             return false;
         }
         if (callbackClass != null ? !callbackClass.equals(that.callbackClass)
-                : that.callbackClass != null) {
+            : that.callbackClass != null) {
             return false;
         }
         if (callbackRef != null ? !callbackRef.equals(that.callbackRef) : that.callbackRef != null) {
             return false;
         }
         if (callbackHandler != null ? !callbackHandler.equals(that.callbackHandler)
-                : that.callbackHandler != null) {
+            : that.callbackHandler != null) {
             return false;
         }
         if (weight != null ? !weight.equals(that.weight) : that.weight != null) {
@@ -533,19 +536,19 @@ public abstract class RpcBindingParam implements BindingParam {
             return false;
         }
         if (warmUpWeight != null ? !warmUpWeight.equals(that.warmUpWeight)
-                : that.warmUpWeight != null) {
+            : that.warmUpWeight != null) {
             return false;
         }
         if (userThreadPool != null ? !userThreadPool.equals(that.userThreadPool)
-                : that.userThreadPool != null) {
+            : that.userThreadPool != null) {
             return false;
         }
         if (genericInterface != null ? !genericInterface.equals(that.genericInterface)
-                : that.genericInterface != null) {
+            : that.genericInterface != null) {
             return false;
         }
         if (loadBalancer != null ? !loadBalancer.equals(that.loadBalancer)
-                : that.loadBalancer != null) {
+            : that.loadBalancer != null) {
             return false;
         }
         if (lazy != null ? !lazy.equals(that.lazy) : that.lazy != null) {
@@ -564,7 +567,7 @@ public abstract class RpcBindingParam implements BindingParam {
             return false;
         }
         if (serialization != null ? !serialization.equals(that.serialization)
-                : that.serialization != null) {
+            : that.serialization != null) {
             return false;
         }
         if (parameters != null ? !parameters.equals(that.parameters) : that.parameters != null) {

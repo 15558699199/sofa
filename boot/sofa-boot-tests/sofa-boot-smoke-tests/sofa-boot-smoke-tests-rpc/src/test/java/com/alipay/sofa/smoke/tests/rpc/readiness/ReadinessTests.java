@@ -19,8 +19,8 @@ package com.alipay.sofa.smoke.tests.rpc.readiness;
 import com.alipay.sofa.rpc.boot.config.SofaBootRpcConfigConstants;
 import com.alipay.sofa.rpc.core.exception.SofaRouteException;
 import com.alipay.sofa.smoke.tests.rpc.ActivelyDestroyTests;
-import com.alipay.sofa.smoke.tests.rpc.boot.RpcSofaBootApplication;
 import com.alipay.sofa.smoke.tests.rpc.boot.bean.SampleFacade;
+import com.alipay.sofa.smoke.tests.rpc.boot.RpcSofaBootApplication;
 import com.alipay.sofa.smoke.tests.rpc.util.TestUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,8 +41,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * Integration tests for check health.
  */
-@SpringBootTest(properties = {"sofa.boot.rpc.registry.address=zookeeper://localhost:2181"}, classes = RpcSofaBootApplication.class)
-@Import({ReadinessTests.Config.class})
+@SpringBootTest(properties = { "sofa.boot.rpc.registry.address=zookeeper://localhost:2181" }, classes = RpcSofaBootApplication.class)
+@Import({ ReadinessTests.Config.class })
 public class ReadinessTests extends ActivelyDestroyTests {
 
     @Autowired

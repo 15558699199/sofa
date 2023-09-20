@@ -34,7 +34,7 @@ public class SofaRuntimeProperties {
     /**
      * Skip jvm reference check in health checker.
      */
-    private boolean skipJvmReferenceHealthCheck = false;
+    private boolean      skipJvmReferenceHealthCheck     = false;
 
     /**
      * Skip jvm reference check in health checker for specific interface and uniqueId
@@ -45,57 +45,57 @@ public class SofaRuntimeProperties {
     /**
      * Skip extension check in health checker.
      */
-    private boolean skipExtensionHealthCheck = false;
+    private boolean      skipExtensionHealthCheck        = false;
 
     /**
      * Global disable jvm first.
      */
-    private boolean disableJvmFirst = false;
+    private boolean      disableJvmFirst                 = false;
 
     /**
      * Throw exception when extension failed to load contributions.
      */
-    private boolean extensionFailureInsulating = false;
+    private boolean      extensionFailureInsulating      = false;
 
     /**
      * Skip to destroy all components when shutdown.
      */
-    private boolean skipAllComponentShutdown = false;
+    private boolean      skipAllComponentShutdown        = false;
 
     /**
      * Skip to destroy all common components when shutdown.
      */
-    private boolean skipCommonComponentShutdown = false;
+    private boolean      skipCommonComponentShutdown     = false;
 
     /**
      * Enable jvm filter feature.
      */
-    private boolean jvmFilterEnable = false;
+    private boolean      jvmFilterEnable                 = false;
 
     /**
      * Enable service interface type check.
      */
-    private boolean serviceInterfaceTypeCheck = false;
+    private boolean      serviceInterfaceTypeCheck       = false;
 
     /**
      * Custom async init executor core size.
      */
-    private int asyncInitExecutorCoreSize = SofaBootConstants.CPU_CORE + 1;
+    private int          asyncInitExecutorCoreSize       = SofaBootConstants.CPU_CORE + 1;
 
     /**
      * Custom async init executor max size.
      */
-    private int asyncInitExecutorMaxSize = SofaBootConstants.CPU_CORE + 1;
+    private int          asyncInitExecutorMaxSize        = SofaBootConstants.CPU_CORE + 1;
 
     /**
      * Print details in reference health check details.
      */
-    private boolean referenceHealthCheckMoreDetailEnable;
+    private boolean      referenceHealthCheckMoreDetailEnable;
 
     /**
      * Whether support register duplicate service component.
      */
-    private boolean serviceCanBeDuplicate = true;
+    private boolean      serviceCanBeDuplicate           = true;
 
     public boolean isSkipJvmReferenceHealthCheck() {
         return skipJvmReferenceHealthCheck;

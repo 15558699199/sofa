@@ -38,16 +38,16 @@ import java.lang.reflect.Proxy;
  */
 public class JvmServiceInvoker extends ServiceProxy {
 
-    private static final Logger LOGGER = SofaBootLoggerFactory
-            .getLogger(JvmServiceInvoker.class);
+    private static final Logger      LOGGER = SofaBootLoggerFactory
+                                                .getLogger(JvmServiceInvoker.class);
 
-    private final Contract contract;
+    private final Contract           contract;
 
-    private final JvmBinding binding;
+    private final JvmBinding         binding;
 
     private final SofaRuntimeContext sofaRuntimeContext;
 
-    private Object target;
+    private Object                   target;
 
     public JvmServiceInvoker(Contract contract, JvmBinding binding,
                              SofaRuntimeContext sofaRuntimeContext) {
@@ -70,7 +70,7 @@ public class JvmServiceInvoker extends ServiceProxy {
 
         if (getTarget() == null) {
             ServiceComponent serviceComponent = sofaRuntimeContext.getServiceProxyManager()
-                    .getDynamicServiceComponent(contract, sofaRuntimeContext.getAppClassLoader());
+                .getDynamicServiceComponent(contract, sofaRuntimeContext.getAppClassLoader());
             if (serviceComponent == null) {
                 // Jvm service is not found in normal or Ark environment
                 // We're actually invoking an RPC service, skip Jvm filtering
@@ -109,12 +109,12 @@ public class JvmServiceInvoker extends ServiceProxy {
     public Object doInvoke(MethodInvocation invocation) throws Throwable {
         if (binding.isDestroyed()) {
             throw new IllegalStateException("Can not call destroyed reference! JVM Reference["
-                    + getInterfaceName() + "#" + getUniqueId()
-                    + "] has already been destroyed.");
+                                            + getInterfaceName() + "#" + getUniqueId()
+                                            + "] has already been destroyed.");
         }
 
         LOGGER.atDebug().log(">> Start in JVM service invoke, the service interface is  - {}.",
-                getInterfaceName());
+            getInterfaceName());
 
         Object retVal;
         Object targetObj = this.getTarget();
@@ -122,14 +122,14 @@ public class JvmServiceInvoker extends ServiceProxy {
         // invoke internal dynamic-biz jvm service
         if (targetObj == null) {
             ServiceProxy serviceProxy = sofaRuntimeContext.getServiceProxyManager()
-                    .getDynamicServiceProxy(contract, sofaRuntimeContext.getAppClassLoader());
+                .getDynamicServiceProxy(contract, sofaRuntimeContext.getAppClassLoader());
             if (serviceProxy != null) {
                 try {
                     return serviceProxy.invoke(invocation);
                 } finally {
                     LOGGER.atDebug().log(
-                            "<< Finish Cross App JVM service invoke, the service is  - {}.",
-                            getInterfaceName() + "#" + getUniqueId());
+                        "<< Finish Cross App JVM service invoke, the service is  - {}.",
+                        getInterfaceName() + "#" + getUniqueId());
                 }
             }
         }
@@ -137,12 +137,12 @@ public class JvmServiceInvoker extends ServiceProxy {
         if (targetObj == null || ((targetObj instanceof Proxy) && binding.hasBackupProxy())) {
             targetObj = binding.getBackupProxy();
             LOGGER.atDebug().log("<<{}.{} backup proxy invoke.", getInterfaceName().getName(),
-                    invocation.getMethod().getName());
+                invocation.getMethod().getName());
         }
 
         if (targetObj == null) {
             throw new IllegalStateException(ErrorCode.convert("01-00400", getInterfaceName(),
-                    getUniqueId()));
+                getUniqueId()));
         }
 
         ClassLoader tcl = Thread.currentThread().getContextClassLoader();
@@ -153,8 +153,8 @@ public class JvmServiceInvoker extends ServiceProxy {
             throw ex.getTargetException();
         } finally {
             LOGGER.atDebug().log(
-                    "<< Finish JVM service invoke, the service implementation is  - {}]",
-                    (this.target == null ? "null" : this.target.getClass().getName()));
+                "<< Finish JVM service invoke, the service implementation is  - {}]",
+                (this.target == null ? "null" : this.target.getClass().getName()));
 
             popThreadContextClassLoader(tcl);
         }
@@ -175,7 +175,7 @@ public class JvmServiceInvoker extends ServiceProxy {
     protected Object getTarget() {
         if (this.target == null) {
             ServiceComponent serviceComponent = JvmServiceSupport.foundServiceComponent(
-                    sofaRuntimeContext.getComponentManager(), contract);
+                sofaRuntimeContext.getComponentManager(), contract);
 
             if (serviceComponent != null) {
                 this.target = serviceComponent.getImplementation().getTarget();

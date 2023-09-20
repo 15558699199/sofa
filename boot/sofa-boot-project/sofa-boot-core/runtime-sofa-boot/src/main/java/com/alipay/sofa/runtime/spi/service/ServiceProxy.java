@@ -98,8 +98,8 @@ public abstract class ServiceProxy implements MethodInterceptor {
      * Hook to handle exception.
      *
      * @param invocation invocation
-     * @param e          exception
-     * @param startTime  start time
+     * @param e exception
+     * @param startTime start time
      */
     protected abstract void doCatch(MethodInvocation invocation, Throwable e, long startTime);
 
@@ -107,7 +107,7 @@ public abstract class ServiceProxy implements MethodInterceptor {
      * Hook to handle after invocatino.
      *
      * @param invocation invocation
-     * @param startTime  start time
+     * @param startTime start time
      */
     protected abstract void doFinally(MethodInvocation invocation, long startTime);
 }

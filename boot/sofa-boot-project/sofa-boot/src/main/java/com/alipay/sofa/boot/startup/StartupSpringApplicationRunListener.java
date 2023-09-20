@@ -42,23 +42,23 @@ import java.util.List;
  */
 public class StartupSpringApplicationRunListener implements SpringApplicationRunListener, Ordered {
 
-    private final SpringApplication application;
+    private final SpringApplication     application;
 
-    private final String[] args;
+    private final String[]              args;
 
-    private final StartupReporter startupReporter;
+    private final StartupReporter       startupReporter;
 
-    private final ApplicationStartup userApplicationStartup;
+    private final ApplicationStartup    userApplicationStartup;
 
     private BufferingApplicationStartup applicationStartup;
 
-    private BaseStat jvmStartingStage;
+    private BaseStat                    jvmStartingStage;
 
-    private BaseStat environmentPrepareStage;
+    private BaseStat                    environmentPrepareStage;
 
-    private ChildrenStat<BaseStat> applicationContextPrepareStage;
+    private ChildrenStat<BaseStat>      applicationContextPrepareStage;
 
-    private BaseStat applicationContextLoadStage;
+    private BaseStat                    applicationContextLoadStage;
 
     public StartupSpringApplicationRunListener(SpringApplication springApplication, String[] args) {
         this.application = springApplication;
@@ -101,7 +101,7 @@ public class StartupSpringApplicationRunListener implements SpringApplicationRun
     public void contextPrepared(ConfigurableApplicationContext context) {
         applicationContextPrepareStage = new ChildrenStat<>();
         applicationContextPrepareStage
-                .setName(BootStageConstants.APPLICATION_CONTEXT_PREPARE_STAGE);
+            .setName(BootStageConstants.APPLICATION_CONTEXT_PREPARE_STAGE);
         applicationContextPrepareStage.setStartTime(environmentPrepareStage.getEndTime());
         applicationContextPrepareStage.setEndTime(System.currentTimeMillis());
         if (application instanceof StartupSpringApplication startupSpringApplication) {
@@ -121,22 +121,22 @@ public class StartupSpringApplicationRunListener implements SpringApplicationRun
         applicationContextLoadStage.setStartTime(applicationContextPrepareStage.getEndTime());
         applicationContextLoadStage.setEndTime(System.currentTimeMillis());
         context.getBeanFactory().addBeanPostProcessor(
-                new StartupReporterBeanPostProcessor(startupReporter));
+            new StartupReporterBeanPostProcessor(startupReporter));
         context.getBeanFactory().registerSingleton("STARTUP_REPORTER_BEAN", startupReporter);
         StartupSmartLifecycle startupSmartLifecycle = new StartupSmartLifecycle(startupReporter);
         startupSmartLifecycle.setApplicationContext(context);
         context.getBeanFactory().registerSingleton("STARTUP_SMART_LIfE_CYCLE",
-                startupSmartLifecycle);
+            startupSmartLifecycle);
     }
 
     @Override
     public void started(ConfigurableApplicationContext context, Duration timeTaken) {
         // refresh applicationRefreshStage
         ChildrenStat<ModuleStat> applicationRefreshStage = (ChildrenStat<ModuleStat>) startupReporter
-                .getStageNyName(BootStageConstants.APPLICATION_CONTEXT_REFRESH_STAGE);
+            .getStageNyName(BootStageConstants.APPLICATION_CONTEXT_REFRESH_STAGE);
         applicationRefreshStage.setStartTime(applicationContextLoadStage.getEndTime());
         applicationRefreshStage.setCost(applicationRefreshStage.getEndTime()
-                - applicationRefreshStage.getStartTime());
+                                        - applicationRefreshStage.getStartTime());
 
         // init rootModuleStat
         ModuleStat rootModule = applicationRefreshStage.getChildren().get(0);
@@ -151,7 +151,7 @@ public class StartupSpringApplicationRunListener implements SpringApplicationRun
         startupReporter.applicationBootFinish();
 
         SofaBootLoggerFactory.getLogger(StartupSpringApplicationRunListener.class).info(
-                getStartedMessage(context.getEnvironment(), timeTaken));
+            getStartedMessage(context.getEnvironment(), timeTaken));
     }
 
     @Override
@@ -164,7 +164,7 @@ public class StartupSpringApplicationRunListener implements SpringApplicationRun
         message.append("Started ");
         message.append(environment.getProperty(SofaBootConstants.APP_NAME_KEY));
         String startupLogExtraInfo = environment
-                .getProperty(SofaBootConstants.STARTUP_LOG_EXTRA_INFO);
+            .getProperty(SofaBootConstants.STARTUP_LOG_EXTRA_INFO);
         if (StringUtils.hasText(startupLogExtraInfo)) {
             message.append(" with extra info [");
             message.append(startupLogExtraInfo);

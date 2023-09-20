@@ -36,7 +36,6 @@ public interface IsleDeploymentModel {
     /**
      * Get All module application context map, the key is module name, the value is applicationContext.
      * <p> Note the result will change when isle deployments is installing
-     *
      * @return the application context map, key is module name, value is context instances.
      */
     @NonNull

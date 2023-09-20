@@ -17,6 +17,7 @@
 package com.alipay.sofa.common.xmap;
 
 /**
+ *
  * @author xi.hux@alipay.com
  * @since 2.6.0
  */

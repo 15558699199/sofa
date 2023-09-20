@@ -31,13 +31,13 @@ public class ClientFactoryAwareBean implements ClientFactoryAware, InitializingB
 
     private ClientFactory clientFactory;
 
-    public ClientFactory getClientFactory() {
-        return clientFactory;
-    }
-
     @Override
     public void setClientFactory(ClientFactory clientFactory) {
         this.clientFactory = clientFactory;
+    }
+
+    public ClientFactory getClientFactory() {
+        return clientFactory;
     }
 
     @Override

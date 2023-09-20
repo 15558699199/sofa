@@ -35,7 +35,7 @@ public class KafkaProducerBeanFactoryPostProcessor implements BeanPostProcessor 
     @SuppressWarnings("rawtypes")
     @Override
     public Object postProcessAfterInitialization(Object bean, String beanName)
-            throws BeansException {
+                                                                              throws BeansException {
         if (bean instanceof ProducerFactory && !(bean instanceof SofaTracerKafkaProducerFactory)) {
             return new SofaTracerKafkaProducerFactory((ProducerFactory) bean);
         }

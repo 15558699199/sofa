@@ -20,6 +20,7 @@ import com.alipay.sofa.rpc.boot.runtime.binding.RpcBindingType;
 import com.alipay.sofa.runtime.api.binding.BindingType;
 
 /**
+ *
  * @author <a href="mailto:zhiyuan.lzy@antfin.com">zhiyuan.lzy</a>
  */
 public class TripleBindingParam extends RpcBindingParam {

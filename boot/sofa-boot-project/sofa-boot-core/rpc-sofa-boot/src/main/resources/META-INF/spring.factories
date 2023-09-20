@@ -1,7 +1,9 @@
 org.springframework.context.ApplicationListener=\
   com.alipay.sofa.rpc.boot.context.RpcEnvironmentApplicationListener
+
 com.alipay.sofa.boot.spring.namespace.spi.SofaBootTagNameSupport=\
   com.alipay.sofa.rpc.boot.runtime.parser.GlobalFilterParser
+
 com.alipay.sofa.runtime.spi.binding.BindingAdapter=\
   com.alipay.sofa.rpc.boot.runtime.adapter.BoltBindingAdapter,\
   com.alipay.sofa.rpc.boot.runtime.adapter.RestBindingAdapter,\
@@ -9,6 +11,7 @@ com.alipay.sofa.runtime.spi.binding.BindingAdapter=\
   com.alipay.sofa.rpc.boot.runtime.adapter.H2cBindingAdapter,\
   com.alipay.sofa.rpc.boot.runtime.adapter.HttpBindingAdapter,\
   com.alipay.sofa.rpc.boot.runtime.adapter.TripleBindingAdapter
+
 com.alipay.sofa.runtime.spi.service.BindingConverter=\
   com.alipay.sofa.rpc.boot.runtime.converter.BoltBindingConverter,\
   com.alipay.sofa.rpc.boot.runtime.converter.RestBindingConverter,\

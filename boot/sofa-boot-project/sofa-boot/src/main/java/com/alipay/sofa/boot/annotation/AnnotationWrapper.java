@@ -31,13 +31,13 @@ import java.lang.reflect.Proxy;
  */
 public class AnnotationWrapper<A extends Annotation> {
 
-    private final Class<A> clazz;
+    private final Class<A>    clazz;
 
-    private Annotation delegate;
+    private Annotation        delegate;
 
     private PlaceHolderBinder binder;
 
-    private Environment environment;
+    private Environment       environment;
 
     private AnnotationWrapper(Class<A> clazz) {
         this.clazz = clazz;
@@ -71,8 +71,8 @@ public class AnnotationWrapper<A extends Annotation> {
     @SuppressWarnings("unchecked")
     private A build() {
         ClassLoader cl = this.getClass().getClassLoader();
-        Class<?>[] exposedInterface = {delegate.annotationType(), WrapperAnnotation.class};
+        Class<?>[] exposedInterface = { delegate.annotationType(), WrapperAnnotation.class };
         return (A) Proxy.newProxyInstance(cl, exposedInterface,
-                new PlaceHolderAnnotationInvocationHandler(delegate, binder, environment));
+            new PlaceHolderAnnotationInvocationHandler(delegate, binder, environment));
     }
 }

@@ -43,7 +43,7 @@ import static com.alipay.sofa.runtime.spi.component.ComponentDefinitionInfo.SOUR
  */
 public class ServiceFactoryBean extends AbstractContractFactoryBean {
 
-    protected Object ref;
+    protected Object  ref;
 
     protected Service service;
 
@@ -76,7 +76,7 @@ public class ServiceFactoryBean extends AbstractContractFactoryBean {
         }
 
         ComponentInfo componentInfo = new ServiceComponent(implementation, service,
-                bindingAdapterFactory, sofaRuntimeContext);
+            bindingAdapterFactory, sofaRuntimeContext);
         componentInfo.setApplicationContext(applicationContext);
         ComponentDefinitionInfo definitionInfo = new ComponentDefinitionInfo();
         definitionInfo.setInterfaceMode(apiType ? InterfaceMode.api : InterfaceMode.spring);
@@ -97,7 +97,7 @@ public class ServiceFactoryBean extends AbstractContractFactoryBean {
 
         String annotationUniqueId = sofaService.uniqueId();
         if ((uniqueId == null || uniqueId.isEmpty())
-                && (annotationUniqueId == null || annotationUniqueId.isEmpty())) {
+            && (annotationUniqueId == null || annotationUniqueId.isEmpty())) {
             return true;
         }
         return annotationUniqueId.equals(uniqueId);

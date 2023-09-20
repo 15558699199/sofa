@@ -16,9 +16,10 @@
  */
 package com.alipay.sofa.runtime.spi.binding;
 
+import org.w3c.dom.Element;
+
 import com.alipay.sofa.runtime.api.binding.BindingType;
 import com.alipay.sofa.runtime.spi.health.HealthResult;
-import org.w3c.dom.Element;
 
 /**
  * Interface for binding.
@@ -83,16 +84,16 @@ public interface Binding {
     void setHealthy(boolean healthy);
 
     /**
-     * Determine whether binding is destroyed.
-     *
-     * @return true or false
-     */
-    boolean isDestroyed();
-
-    /**
      * Set binding destroyed state.
      *
      * @param destroyed destroyed or not
      */
     void setDestroyed(boolean destroyed);
+
+    /**
+     * Determine whether binding is destroyed.
+     *
+     * @return true or false
+     */
+    boolean isDestroyed();
 }

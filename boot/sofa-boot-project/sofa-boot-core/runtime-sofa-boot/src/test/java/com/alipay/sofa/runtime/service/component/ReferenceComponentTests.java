@@ -26,7 +26,11 @@ import com.alipay.sofa.runtime.service.component.impl.ReferenceImpl;
 import com.alipay.sofa.runtime.spi.binding.Binding;
 import com.alipay.sofa.runtime.spi.binding.BindingAdapter;
 import com.alipay.sofa.runtime.spi.binding.BindingAdapterFactory;
-import com.alipay.sofa.runtime.spi.component.*;
+import com.alipay.sofa.runtime.spi.component.ComponentDefinitionInfo;
+import com.alipay.sofa.runtime.spi.component.ComponentManager;
+import com.alipay.sofa.runtime.spi.component.DefaultImplementation;
+import com.alipay.sofa.runtime.spi.component.Implementation;
+import com.alipay.sofa.runtime.spi.component.SofaRuntimeContext;
 import com.alipay.sofa.runtime.spi.health.HealthResult;
 import com.alipay.sofa.runtime.spi.service.DefaultDynamicServiceProxyManager;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,7 +40,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
-import java.util.concurrent.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -51,28 +59,28 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 public class ReferenceComponentTests {
 
-    public static final Object object = new Object();
+    public static final Object            object         = new Object();
 
-    private final Implementation implementation = new DefaultImplementation();
+    private final Implementation          implementation = new DefaultImplementation();
 
-    private ReferenceComponent referenceComponent;
+    private ReferenceComponent            referenceComponent;
 
-    private Reference reference;
-
-    @Mock
-    private BindingAdapterFactory bindingAdapterFactory;
+    private Reference                     reference;
 
     @Mock
-    private SofaRuntimeContext sofaRuntimeContext;
+    private BindingAdapterFactory         bindingAdapterFactory;
 
     @Mock
-    private ComponentManager componentManager;
+    private SofaRuntimeContext            sofaRuntimeContext;
 
     @Mock
-    private ServiceComponent mockServiceComponent;
+    private ComponentManager              componentManager;
 
     @Mock
-    private Binding mockBinding;
+    private ServiceComponent              mockServiceComponent;
+
+    @Mock
+    private Binding                       mockBinding;
 
     @Mock
     private SofaRuntimeContext.Properties properties;
@@ -81,7 +89,7 @@ public class ReferenceComponentTests {
     public void setUp() {
         reference = new ReferenceImpl("ABC", SampleService.class, InterfaceMode.api, true);
         referenceComponent = new ReferenceComponent(reference, implementation,
-                bindingAdapterFactory, sofaRuntimeContext);
+            bindingAdapterFactory, sofaRuntimeContext);
     }
 
     @Test
@@ -92,7 +100,7 @@ public class ReferenceComponentTests {
     @Test
     void getTypeShouldReturnReferenceComponentType() {
         assertThat(referenceComponent.getType()).isEqualTo(
-                ReferenceComponent.REFERENCE_COMPONENT_TYPE);
+            ReferenceComponent.REFERENCE_COMPONENT_TYPE);
     }
 
     @Test
@@ -130,7 +138,7 @@ public class ReferenceComponentTests {
         HealthResult healthResult = referenceComponent.isHealthy();
         assertThat(healthResult.isHealthy()).isFalse();
         assertThat(healthResult.getHealthReport()).isEqualTo(
-                "[jvm,can not find corresponding jvm service]");
+            "[jvm,can not find corresponding jvm service]");
     }
 
     @Test
@@ -153,8 +161,8 @@ public class ReferenceComponentTests {
         HealthResult healthResult = referenceComponent.isHealthy();
         assertThat(healthResult.isHealthy()).isFalse();
         assertThat(healthResult.getHealthReport())
-                .isEqualTo(
-                        "[jvm,can not find corresponding jvm service.Which first declared through:api beanId:beanA,beanClassName:SampleClassImpl,location:fieldA]");
+            .isEqualTo(
+                "[jvm,can not find corresponding jvm service.Which first declared through:api beanId:beanA,beanClassName:SampleClassImpl,location:fieldA]");
     }
 
     @Test
@@ -206,7 +214,7 @@ public class ReferenceComponentTests {
     void activateWhenOnlyJvmBinding() {
         reference.addBinding(new JvmBinding());
         when(bindingAdapterFactory.getBindingAdapter(any())).thenReturn(
-                new MockBindingAdapter(false));
+            new MockBindingAdapter(false));
 
         referenceComponent.activate();
         assertThat(referenceComponent.getImplementation()).isNotEqualTo(implementation);
@@ -218,7 +226,7 @@ public class ReferenceComponentTests {
         reference.addBinding(new JvmBinding());
         reference.addBinding(mockBinding);
         when(bindingAdapterFactory.getBindingAdapter(any())).thenReturn(
-                new MockBindingAdapter(false));
+            new MockBindingAdapter(false));
 
         referenceComponent.activate();
         assertThat(referenceComponent.getImplementation()).isNotEqualTo(implementation);
@@ -245,7 +253,7 @@ public class ReferenceComponentTests {
     void unregisterWhenBindingSuccess() {
         reference.addBinding(new JvmBinding());
         when(bindingAdapterFactory.getBindingAdapter(any())).thenReturn(
-                new MockBindingAdapter(false));
+            new MockBindingAdapter(false));
 
         referenceComponent.unregister();
         verify(bindingAdapterFactory, times(1)).getBindingAdapter(any());
@@ -294,11 +302,11 @@ public class ReferenceComponentTests {
         if (!found) {
             when(componentManager.getComponentInfo(any())).thenReturn(null);
             when(sofaRuntimeContext.getServiceProxyManager()).thenReturn(
-                    new DefaultDynamicServiceProxyManager());
+                new DefaultDynamicServiceProxyManager());
         } else {
             when(componentManager.getComponentInfo(any())).thenReturn(mockServiceComponent);
             when(mockServiceComponent.getImplementation()).thenReturn(
-                    new DefaultImplementation(object));
+                new DefaultImplementation(object));
         }
     }
 

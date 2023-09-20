@@ -29,7 +29,7 @@ import org.springframework.aop.support.AbstractPointcutAdvisor;
  **/
 public class TracerAnnotationClassAdvisor extends AbstractPointcutAdvisor {
 
-    private final Advice advice;
+    private final Advice   advice;
 
     private final Pointcut pointcut;
 

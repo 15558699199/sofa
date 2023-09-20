@@ -18,9 +18,9 @@ package com.alipay.sofa.smoke.tests.rpc.mesh;
 
 import com.alipay.sofa.rpc.core.exception.SofaRpcException;
 import com.alipay.sofa.smoke.tests.rpc.ActivelyDestroyTests;
-import com.alipay.sofa.smoke.tests.rpc.boot.RpcSofaBootApplication;
 import com.alipay.sofa.smoke.tests.rpc.boot.bean.SampleService;
 import com.alipay.sofa.smoke.tests.rpc.boot.bean.invoke.HelloSyncService;
+import com.alipay.sofa.smoke.tests.rpc.boot.RpcSofaBootApplication;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,8 +38,8 @@ import static org.assertj.core.api.Assertions.assertThat;
  * you should change mesh address to test
  */
 @SpringBootTest(classes = RpcSofaBootApplication.class, properties = {
-        "sofa.boot.rpc.registries.mesh=mesh://127.0.0.1:13330",
-        "sofa.boot.rpc.enable.mesh=bolt"})
+                                                                      "sofa.boot.rpc.registries.mesh=mesh://127.0.0.1:13330",
+                                                                      "sofa.boot.rpc.enable.mesh=bolt" })
 @Import(MeshTests.MeshConfiguration.class)
 @Disabled
 public class MeshTests extends ActivelyDestroyTests {
@@ -49,7 +49,7 @@ public class MeshTests extends ActivelyDestroyTests {
     private HelloSyncService helloSyncConsumerMesh;
 
     @Autowired
-    private SampleService sampleService;
+    private SampleService    sampleService;
 
     @Test
     @Disabled("需要有 mesh 环境")

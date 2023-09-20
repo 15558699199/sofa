@@ -60,8 +60,7 @@ public interface ComponentInfo extends Component {
      *
      * @param applicationContext applicationContext
      */
-    default void setApplicationContext(ApplicationContext applicationContext) {
-    }
+    default void setApplicationContext(ApplicationContext applicationContext) {}
 
     /**
      * Get component implementation.

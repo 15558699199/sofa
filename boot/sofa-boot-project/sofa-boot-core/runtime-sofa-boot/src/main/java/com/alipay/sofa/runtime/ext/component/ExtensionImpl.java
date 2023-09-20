@@ -16,11 +16,12 @@
  */
 package com.alipay.sofa.runtime.ext.component;
 
-import com.alipay.sofa.runtime.api.component.ComponentName;
-import org.w3c.dom.Element;
-
 import java.io.Serial;
 import java.io.Serializable;
+
+import org.w3c.dom.Element;
+
+import com.alipay.sofa.runtime.api.component.ComponentName;
 
 /**
  * Extension Implement.
@@ -33,19 +34,19 @@ import java.io.Serializable;
 public class ExtensionImpl implements ExtensionInternal, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 14648778982899384L;
+    private static final long    serialVersionUID = 14648778982899384L;
 
-    protected ComponentName name;
+    protected ComponentName      name;
 
-    protected ComponentName target;
+    protected ComponentName      target;
 
-    protected String extensionPoint;
+    protected String             extensionPoint;
 
-    protected String documentation;
+    protected String             documentation;
 
-    protected ClassLoader appClassLoader;
+    protected ClassLoader        appClassLoader;
 
-    protected transient Element element;
+    protected transient Element  element;
 
     protected transient Object[] contributions;
 
@@ -103,13 +104,13 @@ public class ExtensionImpl implements ExtensionInternal, Serializable {
     }
 
     @Override
-    public void setContributions(Object[] contributions) {
-        this.contributions = contributions;
+    public ClassLoader getAppClassLoader() {
+        return appClassLoader;
     }
 
     @Override
-    public ClassLoader getAppClassLoader() {
-        return appClassLoader;
+    public void setContributions(Object[] contributions) {
+        this.contributions = contributions;
     }
 
     public String getDocumentation() {

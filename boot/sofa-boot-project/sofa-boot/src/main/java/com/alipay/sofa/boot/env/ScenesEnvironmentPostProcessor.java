@@ -52,17 +52,17 @@ public class ScenesEnvironmentPostProcessor implements EnvironmentPostProcessor,
         ResourceLoader resourceLoader = application.getResourceLoader();
         resourceLoader = (resourceLoader != null) ? resourceLoader : new DefaultResourceLoader();
         List<PropertySourceLoader> propertySourceLoaders = SpringFactoriesLoader.loadFactories(
-                PropertySourceLoader.class, getClass().getClassLoader());
+            PropertySourceLoader.class, getClass().getClassLoader());
         String scenesValue = environment.getProperty(SCENES_KEY);
         if (!StringUtils.hasText(scenesValue)) {
             return;
         }
         Set<String> scenes = StringUtils.commaDelimitedListToSet(scenesValue);
         List<SceneConfigDataReference> sceneConfigDataReferences = scenesResources(resourceLoader,
-                propertySourceLoaders, scenes);
+            propertySourceLoaders, scenes);
 
         SofaBootLoggerFactory.getLogger(ScenesEnvironmentPostProcessor.class).info(
-                "Configs for scenes {} enable", scenes);
+            "Configs for scenes {} enable", scenes);
         processAndApply(sceneConfigDataReferences, environment);
 
     }
@@ -95,25 +95,25 @@ public class ScenesEnvironmentPostProcessor implements EnvironmentPostProcessor,
      * {@link org.springframework.core.env.Environment}.
      */
     private void processAndApply(List<SceneConfigDataReference> sceneConfigDataReferences, ConfigurableEnvironment environment) {
-        for (SceneConfigDataReference sceneConfigDataReference :
-                sceneConfigDataReferences) {
-            try {
-                List<PropertySource<?>> propertySources = sceneConfigDataReference.propertySourceLoader.load(
-                        sceneConfigDataReference.getName(),
-                        sceneConfigDataReference.getResource());
-                if (propertySources != null) {
-                    propertySources.forEach(environment.getPropertySources()::addLast);
+            for (SceneConfigDataReference sceneConfigDataReference :
+                    sceneConfigDataReferences) {
+                try {
+                    List<PropertySource<?>> propertySources = sceneConfigDataReference.propertySourceLoader.load(
+                            sceneConfigDataReference.getName(),
+                            sceneConfigDataReference.getResource());
+                    if (propertySources != null) {
+                        propertySources.forEach(environment.getPropertySources()::addLast);
+                    }
+                } catch (IOException e) {
+                    throw new IllegalStateException("IO error on loading scene config data from " + sceneConfigDataReference.name, e);
                 }
-            } catch (IOException e) {
-                throw new IllegalStateException("IO error on loading scene config data from " + sceneConfigDataReference.name, e);
             }
-        }
     }
 
     private static class SceneConfigDataReference {
 
-        private String name;
-        private Resource resource;
+        private String               name;
+        private Resource             resource;
         private PropertySourceLoader propertySourceLoader;
 
         public SceneConfigDataReference(String name, Resource resource,

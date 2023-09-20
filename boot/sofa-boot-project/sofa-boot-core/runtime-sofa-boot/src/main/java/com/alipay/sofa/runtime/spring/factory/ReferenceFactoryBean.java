@@ -35,7 +35,7 @@ import static com.alipay.sofa.runtime.spi.component.ComponentDefinitionInfo.BEAN
  */
 public class ReferenceFactoryBean extends AbstractContractFactoryBean {
 
-    protected Object proxy;
+    protected Object  proxy;
     /**
      * jvm first or not
      */
@@ -43,7 +43,7 @@ public class ReferenceFactoryBean extends AbstractContractFactoryBean {
     /**
      * load balance
      **/
-    protected String loadBalance;
+    protected String  loadBalance;
 
     protected boolean required = true;
 
@@ -59,8 +59,8 @@ public class ReferenceFactoryBean extends AbstractContractFactoryBean {
         super.afterPropertiesSet();
         Reference reference = buildReference();
         Assert
-                .isTrue(bindings.size() <= 1,
-                        "Found more than one binding in <sofa:reference/>, <sofa:reference/> can only have one binding.");
+            .isTrue(bindings.size() <= 1,
+                "Found more than one binding in <sofa:reference/>, <sofa:reference/> can only have one binding.");
 
         // default add jvm binding and reference jvm binding should set serialize as false
         if (bindings.size() == 0) {
@@ -75,7 +75,7 @@ public class ReferenceFactoryBean extends AbstractContractFactoryBean {
         definitionInfo.setInterfaceMode(apiType ? InterfaceMode.api : InterfaceMode.spring);
         definitionInfo.putInfo(BEAN_ID, beanId);
         proxy = ReferenceRegisterHelper.registerReference(reference, bindingAdapterFactory,
-                sofaRuntimeContext, applicationContext, definitionInfo);
+            sofaRuntimeContext, applicationContext, definitionInfo);
     }
 
     @Override
@@ -85,7 +85,7 @@ public class ReferenceFactoryBean extends AbstractContractFactoryBean {
 
     protected Reference buildReference() {
         Reference reference = new ReferenceImpl(uniqueId, getInterfaceClass(),
-                InterfaceMode.spring, jvmFirst);
+            InterfaceMode.spring, jvmFirst);
         reference.setRequired(required);
         return reference;
     }
@@ -123,11 +123,11 @@ public class ReferenceFactoryBean extends AbstractContractFactoryBean {
         this.loadBalance = loadBalance;
     }
 
-    public boolean getRequired() {
-        return required;
-    }
-
     public void setRequired(boolean required) {
         this.required = required;
+    }
+
+    public boolean getRequired() {
+        return required;
     }
 }

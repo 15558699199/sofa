@@ -88,9 +88,9 @@ public class ComponentsEndpoint {
 
     public static final class ComponentDisplayInfo {
 
-        private final String name;
+        private final String       name;
 
-        private final String applicationId;
+        private final String       applicationId;
 
         private List<PropertyInfo> properties;
 

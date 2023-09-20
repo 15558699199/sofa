@@ -16,8 +16,8 @@
  */
 package com.alipay.sofa.boot.listener;
 
-import com.alipay.sofa.boot.constant.ApplicationListenerOrderConstants;
 import com.alipay.sofa.boot.constant.SofaBootConstants;
+import com.alipay.sofa.boot.constant.ApplicationListenerOrderConstants;
 import com.alipay.sofa.common.config.SofaConfigs;
 import com.alipay.sofa.common.config.source.AbstractConfigSource;
 import org.springframework.boot.context.event.ApplicationEnvironmentPreparedEvent;
@@ -33,9 +33,9 @@ import org.springframework.util.StringUtils;
  * @version SofaConfigSourceListener.java, v 0.1 2020年12月22日 7:34 下午 huzijie Exp $
  */
 public class SofaConfigSourceSupportListener
-        implements
-        ApplicationListener<ApplicationEnvironmentPreparedEvent>,
-        Ordered {
+                                            implements
+                                            ApplicationListener<ApplicationEnvironmentPreparedEvent>,
+                                            Ordered {
 
     @Override
     public void onApplicationEvent(ApplicationEnvironmentPreparedEvent event) {

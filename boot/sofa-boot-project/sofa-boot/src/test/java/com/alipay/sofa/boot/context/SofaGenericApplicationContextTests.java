@@ -37,14 +37,14 @@ public class SofaGenericApplicationContextTests {
     @Test
     public void publishEventToParent() {
         SofaGenericApplicationContext parent = new SofaGenericApplicationContext(
-                new SofaDefaultListableBeanFactory());
+            new SofaDefaultListableBeanFactory());
         TestApplicationListener parentListener = new TestApplicationListener();
         parent.addApplicationListener(parentListener);
         parent.refresh();
         assertThat(parentListener.getCount()).isEqualTo(1);
 
         SofaGenericApplicationContext child = new SofaGenericApplicationContext(
-                new SofaDefaultListableBeanFactory());
+            new SofaDefaultListableBeanFactory());
         child.setPublishEventToParent(false);
         child.setParent(parent);
         TestApplicationListener childListener1 = new TestApplicationListener();
@@ -66,7 +66,7 @@ public class SofaGenericApplicationContextTests {
     @Test
     public void contextRefreshSuccessTriggerInterceptors() {
         SofaGenericApplicationContext context = new SofaGenericApplicationContext(
-                new SofaDefaultListableBeanFactory());
+            new SofaDefaultListableBeanFactory());
         List<ContextRefreshInterceptor> interceptors = new ArrayList<>();
         TestContextRefreshInterceptor interceptor = new TestContextRefreshInterceptor();
         interceptors.add(interceptor);
@@ -80,7 +80,7 @@ public class SofaGenericApplicationContextTests {
     @Test
     public void contextRefreshFailTriggerInterceptors() {
         SofaGenericApplicationContext context = new SofaGenericApplicationContext(
-                new SofaDefaultListableBeanFactory());
+            new SofaDefaultListableBeanFactory());
         List<ContextRefreshInterceptor> interceptors = new ArrayList<>();
         TestContextRefreshInterceptor interceptor = new TestContextRefreshInterceptor();
         interceptors.add(interceptor);
@@ -115,11 +115,11 @@ public class SofaGenericApplicationContextTests {
 
     static class TestContextRefreshInterceptor implements ContextRefreshInterceptor {
 
-        private boolean started = false;
+        private boolean started  = false;
 
         private boolean finished = false;
 
-        private boolean failed = false;
+        private boolean failed   = false;
 
         @Override
         public void beforeRefresh(SofaGenericApplicationContext context) {

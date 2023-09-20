@@ -38,15 +38,15 @@ import java.util.Collection;
  */
 public class SofaBootRpcStartListener implements ApplicationListener<SofaBootRpcStartEvent> {
 
-    protected final ProviderConfigContainer providerConfigContainer;
+    protected final ProviderConfigContainer    providerConfigContainer;
 
     protected final FaultToleranceConfigurator faultToleranceConfigurator;
 
-    protected final ServerConfigContainer serverConfigContainer;
+    protected final ServerConfigContainer      serverConfigContainer;
 
-    protected final RegistryConfigContainer registryConfigContainer;
+    protected final RegistryConfigContainer    registryConfigContainer;
 
-    private String lookoutCollectDisable;
+    private String                             lookoutCollectDisable;
 
     public SofaBootRpcStartListener(ProviderConfigContainer providerConfigContainer,
                                     FaultToleranceConfigurator faultToleranceConfigurator,
@@ -72,7 +72,7 @@ public class SofaBootRpcStartListener implements ApplicationListener<SofaBootRpc
         }
 
         Collection<ProviderConfig> allProviderConfig = providerConfigContainer
-                .getAllProviderConfig();
+            .getAllProviderConfig();
         if (!CollectionUtils.isEmpty(allProviderConfig)) {
             //start server
             serverConfigContainer.startServers();

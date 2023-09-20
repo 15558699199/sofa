@@ -73,7 +73,7 @@ public class SpringContextComponent extends AbstractComponent {
     public void deactivate() throws ServiceRuntimeException {
         if (implementation instanceof SpringContextImplementation) {
             AbstractApplicationContext applicationContext = (AbstractApplicationContext) implementation
-                    .getTarget();
+                .getTarget();
             applicationContext.close();
         }
         super.deactivate();

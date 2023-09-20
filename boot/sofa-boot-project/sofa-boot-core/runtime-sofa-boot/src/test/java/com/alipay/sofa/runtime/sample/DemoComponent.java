@@ -31,13 +31,13 @@ public class DemoComponent extends AbstractComponent {
 
     public static ComponentType DEMO_COMPONENT_TYPE = new ComponentType("Demo");
 
-    private boolean canBeDuplicate = true;
+    private boolean             canBeDuplicate      = true;
 
-    private boolean registerException = false;
+    private boolean             registerException   = false;
 
-    private boolean resolveException = false;
+    private boolean             resolveException    = false;
 
-    private boolean activateException = false;
+    private boolean             activateException   = false;
 
     public DemoComponent() {
         this.componentName = ComponentNameFactory.createComponentName(DEMO_COMPONENT_TYPE, "demo");

@@ -19,6 +19,7 @@ package com.alipay.sofa.common.xmap;
 import java.lang.reflect.Method;
 
 /**
+ *
  * @author xi.hux@alipay.com
  * @since 2.6.0
  */
@@ -27,7 +28,7 @@ public class XMethodGetter implements XGetter {
     /**
      * method
      */
-    private Method method;
+    private Method   method;
 
     /**
      * class
@@ -37,7 +38,7 @@ public class XMethodGetter implements XGetter {
     /**
      * bean name
      */
-    private String name;
+    private String   name;
 
     public XMethodGetter(Method method, Class<?> clazz, String name) {
         this.method = method;
@@ -51,7 +52,7 @@ public class XMethodGetter implements XGetter {
     public Class<?> getType() {
         if (method == null) {
             throw new IllegalArgumentException("no such getter method: " + clazz.getName() + '.'
-                    + name);
+                                               + name);
         }
 
         return method.getReturnType();
@@ -63,7 +64,7 @@ public class XMethodGetter implements XGetter {
     public Object getValue(Object instance) throws Exception {
         if (method == null) {
             throw new IllegalArgumentException("no such getter method: " + clazz.getName() + '.'
-                    + name);
+                                               + name);
         }
 
         if (instance == null) {

@@ -42,7 +42,7 @@ import static org.mockito.Mockito.when;
 public class InjectSpyWithJdkProxyTests {
 
     @SpyBeanInjector(field = "service", type = ExampleServiceCaller.class)
-    private ExampleService exampleService;
+    private ExampleService     exampleService;
 
     @Autowired
     private ApplicationContext applicationContext;
@@ -67,7 +67,7 @@ public class InjectSpyWithJdkProxyTests {
 
         private ExampleService exampleService() {
             return (ExampleService) Proxy.newProxyInstance(getClass().getClassLoader(),
-                    new Class<?>[]{ExampleService.class}, (proxy, method, args) -> "jdkProxy");
+                    new Class<?>[] { ExampleService.class }, (proxy, method, args) -> "jdkProxy");
         }
     }
 }

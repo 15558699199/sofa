@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:sofa="http://sofastack.io/schema/sofaboot"
-       xmlns="http://www.springframework.org/schema/beans"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
             http://sofastack.io/schema/sofaboot   http://sofastack.io/schema/sofaboot.xsd">
 
@@ -12,10 +12,8 @@
         </sofa:binding.bolt>
     </sofa:reference>
 
-    <bean id="multiRegistryServiceImpl"
-          class="com.alipay.sofa.smoke.tests.rpc.boot.bean.registry.MultiRegistryServiceImpl"/>
-    <sofa:service id="multiRegistryServiceSer"
-                  interface="com.alipay.sofa.smoke.tests.rpc.boot.bean.registry.MultiRegistryService"
+    <bean id="multiRegistryServiceImpl" class="com.alipay.sofa.smoke.tests.rpc.boot.bean.registry.MultiRegistryServiceImpl"/>
+    <sofa:service id="multiRegistryServiceSer" interface="com.alipay.sofa.smoke.tests.rpc.boot.bean.registry.MultiRegistryService"
                   ref="multiRegistryServiceImpl">
         <sofa:binding.bolt>
             <sofa:global-attrs registry="gateway"/>

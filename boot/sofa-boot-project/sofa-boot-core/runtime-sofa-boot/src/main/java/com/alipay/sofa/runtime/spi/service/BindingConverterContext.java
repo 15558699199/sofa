@@ -24,28 +24,20 @@ import org.springframework.context.ApplicationContext;
  * @author xuanbei 18/2/28
  */
 public class BindingConverterContext {
-    /**
-     * is inBinding
-     */
-    private boolean inBinding;
-    /**
-     * spring context
-     */
+    /** is inBinding  */
+    private boolean            inBinding;
+    /** spring context */
     private ApplicationContext applicationContext;
-    /**
-     * app name
-     */
-    private String appName;
-    /**
-     * service ref beanId
-     */
-    private String beanId;
+    /** app name */
+    private String             appName;
+    /** service ref beanId */
+    private String             beanId;
 
-    private ClassLoader appClassLoader;
+    private ClassLoader        appClassLoader;
 
-    private String loadBalance;
+    private String             loadBalance;
 
-    private String repeatReferLimit;
+    private String             repeatReferLimit;
 
     public ClassLoader getAppClassLoader() {
         return appClassLoader;

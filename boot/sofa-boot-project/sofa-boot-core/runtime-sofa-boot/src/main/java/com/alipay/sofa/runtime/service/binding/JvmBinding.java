@@ -16,10 +16,11 @@
  */
 package com.alipay.sofa.runtime.service.binding;
 
+import org.w3c.dom.Element;
+
 import com.alipay.sofa.runtime.api.binding.BindingType;
 import com.alipay.sofa.runtime.spi.binding.AbstractBinding;
 import com.alipay.sofa.runtime.spi.health.HealthResult;
-import org.w3c.dom.Element;
 
 /**
  * JVM Service and Reference Binding.
@@ -31,15 +32,11 @@ public class JvmBinding extends AbstractBinding {
     /**
      * binding type: JVM
      */
-    public static BindingType JVM_BINDING_TYPE = new BindingType(XmlConstants.BINDING_TYPE);
+    public static BindingType  JVM_BINDING_TYPE = new BindingType(XmlConstants.BINDING_TYPE);
 
-    private final HealthResult healthResult = new HealthResult(getName());
+    private final HealthResult healthResult     = new HealthResult(getName());
 
-    private JvmBindingParam jvmBindingParam = new JvmBindingParam();
-    /**
-     * backup proxy
-     */
-    private Object backupProxy;
+    private JvmBindingParam    jvmBindingParam  = new JvmBindingParam();
 
     public JvmBinding() {
     }
@@ -52,6 +49,11 @@ public class JvmBinding extends AbstractBinding {
         this.jvmBindingParam = jvmBindingParam;
         return this;
     }
+
+    /**
+     * backup proxy
+     */
+    private Object backupProxy;
 
     public Object getBackupProxy() {
         return backupProxy;
@@ -97,8 +99,8 @@ public class JvmBinding extends AbstractBinding {
     }
 
     public static class XmlConstants {
-        public static String SERIALIZE = "serialize";
+        public static String SERIALIZE        = "serialize";
         public static String SUPPORT_TAG_NAME = "binding.jvm";
-        public static String BINDING_TYPE = "jvm";
+        public static String BINDING_TYPE     = "jvm";
     }
 }

@@ -38,7 +38,7 @@ public class StartupReporterBeanPostProcessor implements BeanPostProcessor {
     @Override
     @Nullable
     public Object postProcessBeforeInitialization(Object bean, String beanName)
-            throws BeansException {
+                                                                               throws BeansException {
         if (bean instanceof StartupReporterAware) {
             ((StartupReporterAware) bean).setStartupReporter(startupReporter);
         }

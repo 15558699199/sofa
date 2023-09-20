@@ -30,13 +30,16 @@ import java.util.Map;
  */
 public class MockDeploymentDescriptor implements DeploymentDescriptor {
 
-    private final String name;
-    private final List<String> requireModules = new ArrayList<>();
-    private ApplicationContext applicationContext;
-    private String springParent;
+    private final String          name;
+
+    private ApplicationContext    applicationContext;
+
+    private final List<String>    requireModules = new ArrayList<>();
+
+    private String                springParent;
 
     private Map<String, Resource> springResources;
-    private List<String> installedSpringXml;
+    private List<String>          installedSpringXml;
 
     public MockDeploymentDescriptor(String name) {
         this.name = name;
@@ -44,6 +47,14 @@ public class MockDeploymentDescriptor implements DeploymentDescriptor {
 
     public void addRequiredModule(String name) {
         requireModules.add(name);
+    }
+
+    public void setSpringParent(String springParent) {
+        this.springParent = springParent;
+    }
+
+    public void setSpringResources(Map<String, Resource> springResources) {
+        this.springResources = springResources;
     }
 
     @Override
@@ -71,23 +82,19 @@ public class MockDeploymentDescriptor implements DeploymentDescriptor {
         return springParent;
     }
 
-    public void setSpringParent(String springParent) {
-        this.springParent = springParent;
-    }
-
     @Override
     public ClassLoader getClassLoader() {
         return null;
     }
 
     @Override
-    public ApplicationContext getApplicationContext() {
-        return applicationContext;
+    public void setApplicationContext(ApplicationContext context) {
+        this.applicationContext = context;
     }
 
     @Override
-    public void setApplicationContext(ApplicationContext context) {
-        this.applicationContext = context;
+    public ApplicationContext getApplicationContext() {
+        return applicationContext;
     }
 
     @Override
@@ -121,10 +128,6 @@ public class MockDeploymentDescriptor implements DeploymentDescriptor {
     @Override
     public Map<String, Resource> getSpringResources() {
         return springResources;
-    }
-
-    public void setSpringResources(Map<String, Resource> springResources) {
-        this.springResources = springResources;
     }
 
     @Override

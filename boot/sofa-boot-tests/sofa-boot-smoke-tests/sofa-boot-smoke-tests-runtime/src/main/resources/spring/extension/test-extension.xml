@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:sofa="http://sofastack.io/schema/sofaboot"
-       xmlns="http://www.springframework.org/schema/beans"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
             http://sofastack.io/schema/sofaboot   http://sofastack.io/schema/sofaboot.xsd"
        default-autowire="byName">
@@ -29,8 +29,7 @@
                 <dateValue>17-01-2019</dateValue>
                 <fileValue>file</fileValue>
                 <urlValue>http://test</urlValue>
-                <classValue>com.alipay.sofa.smoke.tests.runtime.extension.descriptor.SimpleExtensionDescriptor
-                </classValue>
+                <classValue>com.alipay.sofa.smoke.tests.runtime.extension.descriptor.SimpleExtensionDescriptor</classValue>
                 <resourceValue>spring/extension/extension.xml</resourceValue>
             </simple>
         </sofa:content>
@@ -113,8 +112,8 @@
         <sofa:object class="com.alipay.sofa.smoke.tests.runtime.extension.descriptor.SpringListExtensionDescriptor"/>
     </sofa:extension-point>
 
-    <bean id="simpleSpringListBean1" class="com.alipay.sofa.smoke.tests.runtime.extension.bean.SimpleSpringListBean"/>
-    <bean id="simpleSpringListBean2" class="com.alipay.sofa.smoke.tests.runtime.extension.bean.SimpleSpringListBean"/>
+    <bean id="simpleSpringListBean1" class="com.alipay.sofa.smoke.tests.runtime.extension.bean.SimpleSpringListBean" />
+    <bean id="simpleSpringListBean2" class="com.alipay.sofa.smoke.tests.runtime.extension.bean.SimpleSpringListBean" />
 
     <sofa:extension bean="iExtension" point="testSpringList">
         <sofa:content>

@@ -29,7 +29,12 @@ import org.mockito.Mockito;
 import org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator;
 import org.springframework.beans.factory.NoUniqueBeanDefinitionException;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.*;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.core.ResolvableType;
 import org.springframework.util.ReflectionUtils;
@@ -51,16 +56,16 @@ public class BeanInjectorResolverTests {
     @Test
     public void targetModuleExist() {
         GenericApplicationContext applicationContext = new AnnotationConfigApplicationContext(
-                TargetClass.class);
+            TargetClass.class);
         IsleDeploymentModel isleDeploymentModel = mock(IsleDeploymentModel.class);
         when(isleDeploymentModel.getModuleApplicationContextMap()).thenReturn(
-                Map.of("testModule", applicationContext));
+            Map.of("testModule", applicationContext));
         applicationContext.getBeanFactory().registerSingleton(
-                ApplicationRuntimeModel.APPLICATION_RUNTIME_MODEL_NAME, isleDeploymentModel);
+            ApplicationRuntimeModel.APPLICATION_RUNTIME_MODEL_NAME, isleDeploymentModel);
         BeanInjectorResolver beanInjectorResolver = new BeanInjectorResolver(applicationContext);
 
         Definition definition = new MockDefinition(ResolvableType.forClass(ExampleService.class),
-                "targetClass", null, "testModule", "exampleService", null, null, false, null, null);
+            "targetClass", null, "testModule", "exampleService", null, null, false, null, null);
         BeanInjectorStub stub = beanInjectorResolver.resolveStub(definition);
         stub.inject();
 
@@ -73,7 +78,7 @@ public class BeanInjectorResolverTests {
         GenericApplicationContext applicationContext = new AnnotationConfigApplicationContext(TargetClass.class);
         BeanInjectorResolver beanInjectorResolver = new BeanInjectorResolver(applicationContext);
 
-        Definition definition = new MockDefinition(
+        Definition definition =  new MockDefinition(
                 ResolvableType.forClass(ExampleService.class), "targetClass", null, "testModule", "exampleService",
                 null, null, false, null, null);
         assertThatIllegalStateException().isThrownBy(() -> beanInjectorResolver.resolveStub(definition))
@@ -83,11 +88,11 @@ public class BeanInjectorResolverTests {
     @Test
     public void findTargetBeanByName() {
         GenericApplicationContext applicationContext = new AnnotationConfigApplicationContext(
-                TargetClass.class);
+            TargetClass.class);
         BeanInjectorResolver beanInjectorResolver = new BeanInjectorResolver(applicationContext);
 
         Definition definition = new MockDefinition(ResolvableType.forClass(ExampleService.class),
-                "targetClass", null, null, "exampleService", null, null, false, null, null);
+            "targetClass", null, null, "exampleService", null, null, false, null, null);
         BeanInjectorStub stub = beanInjectorResolver.resolveStub(definition);
         stub.inject();
 
@@ -100,7 +105,7 @@ public class BeanInjectorResolverTests {
         GenericApplicationContext applicationContext = new AnnotationConfigApplicationContext(TargetClass.class);
         BeanInjectorResolver beanInjectorResolver = new BeanInjectorResolver(applicationContext);
 
-        Definition definition = new MockDefinition(
+        Definition definition =  new MockDefinition(
                 ResolvableType.forClass(ExampleService.class), "noExistBean", null, null, "exampleService",
                 null, null, false, null, null);
         assertThatIllegalStateException().isThrownBy(() -> beanInjectorResolver.resolveStub(definition))
@@ -110,12 +115,12 @@ public class BeanInjectorResolverTests {
     @Test
     public void findTargetBeanByClass() {
         GenericApplicationContext applicationContext = new AnnotationConfigApplicationContext(
-                TargetClass.class);
+            TargetClass.class);
         BeanInjectorResolver beanInjectorResolver = new BeanInjectorResolver(applicationContext);
 
         Definition definition = new MockDefinition(ResolvableType.forClass(ExampleService.class),
-                null, ResolvableType.forClass(TargetClass.class), null, "exampleService", null, null,
-                false, null, null);
+            null, ResolvableType.forClass(TargetClass.class), null, "exampleService", null, null,
+            false, null, null);
         BeanInjectorStub stub = beanInjectorResolver.resolveStub(definition);
         stub.inject();
 
@@ -128,7 +133,7 @@ public class BeanInjectorResolverTests {
         GenericApplicationContext applicationContext = new AnnotationConfigApplicationContext(TargetClass.class);
         BeanInjectorResolver beanInjectorResolver = new BeanInjectorResolver(applicationContext);
 
-        Definition definition = new MockDefinition(
+        Definition definition =  new MockDefinition(
                 ResolvableType.forClass(ExampleService.class), null, ResolvableType.forClass(ExampleService.class), null, "exampleService",
                 null, null, false, null, null);
         assertThatIllegalStateException().isThrownBy(() -> beanInjectorResolver.resolveStub(definition))
@@ -140,7 +145,7 @@ public class BeanInjectorResolverTests {
         GenericApplicationContext applicationContext = new AnnotationConfigApplicationContext(ScopeTargetClass.class);
         BeanInjectorResolver beanInjectorResolver = new BeanInjectorResolver(applicationContext);
 
-        Definition definition = new MockDefinition(
+        Definition definition =  new MockDefinition(
                 ResolvableType.forClass(ExampleService.class), null, ResolvableType.forClass(ExampleService.class), null, "exampleService",
                 null, null, false, null, null);
         assertThatIllegalStateException().isThrownBy(() -> beanInjectorResolver.resolveStub(definition))
@@ -152,7 +157,7 @@ public class BeanInjectorResolverTests {
         GenericApplicationContext applicationContext = new AnnotationConfigApplicationContext(MultiTargetClass.class);
         BeanInjectorResolver beanInjectorResolver = new BeanInjectorResolver(applicationContext);
 
-        Definition definition = new MockDefinition(
+        Definition definition =  new MockDefinition(
                 ResolvableType.forClass(ExampleService.class), null, ResolvableType.forClass(TargetClass.class), null, "exampleService",
                 null, null, false, null, null);
         assertThatIllegalStateException().isThrownBy(() -> beanInjectorResolver.resolveStub(definition))
@@ -162,12 +167,12 @@ public class BeanInjectorResolverTests {
     @Test
     public void findTargetBeanByClassWithQualifier() {
         GenericApplicationContext applicationContext = new AnnotationConfigApplicationContext(
-                MultiTargetClass.class);
+            MultiTargetClass.class);
         BeanInjectorResolver beanInjectorResolver = new BeanInjectorResolver(applicationContext);
 
         Definition definition = new MockDefinition(ResolvableType.forClass(ExampleService.class),
-                null, ResolvableType.forClass(TargetClass.class), null, "exampleService", null, null,
-                false, null, QualifierDefinition.forElement(ReflectionUtils.findField(
+            null, ResolvableType.forClass(TargetClass.class), null, "exampleService", null, null,
+            false, null, QualifierDefinition.forElement(ReflectionUtils.findField(
                 QualifierClass.class, "targetClassField")));
         BeanInjectorStub stub = beanInjectorResolver.resolveStub(definition);
         stub.inject();
@@ -179,12 +184,12 @@ public class BeanInjectorResolverTests {
     @Test
     public void findTargetBeanByClassWithPrimary() {
         GenericApplicationContext applicationContext = new AnnotationConfigApplicationContext(
-                OnePrimaryTargetClass.class);
+            OnePrimaryTargetClass.class);
         BeanInjectorResolver beanInjectorResolver = new BeanInjectorResolver(applicationContext);
 
         Definition definition = new MockDefinition(ResolvableType.forClass(ExampleService.class),
-                null, ResolvableType.forClass(TargetClass.class), null, "exampleService", null, null,
-                false, null, null);
+            null, ResolvableType.forClass(TargetClass.class), null, "exampleService", null, null,
+            false, null, null);
         BeanInjectorStub stub = beanInjectorResolver.resolveStub(definition);
         stub.inject();
 
@@ -197,7 +202,7 @@ public class BeanInjectorResolverTests {
         GenericApplicationContext applicationContext = new AnnotationConfigApplicationContext(MultiPrimaryTargetClass.class);
         BeanInjectorResolver beanInjectorResolver = new BeanInjectorResolver(applicationContext);
 
-        Definition definition = new MockDefinition(
+        Definition definition =  new MockDefinition(
                 ResolvableType.forClass(ExampleService.class), null, ResolvableType.forClass(TargetClass.class), null, "exampleService",
                 null, null, false, null, null);
         assertThatException().isThrownBy(() -> beanInjectorResolver.resolveStub(definition))
@@ -210,7 +215,7 @@ public class BeanInjectorResolverTests {
         GenericApplicationContext applicationContext = new AnnotationConfigApplicationContext(TargetClass.class);
         BeanInjectorResolver beanInjectorResolver = new BeanInjectorResolver(applicationContext);
 
-        Definition definition = new MockDefinition(
+        Definition definition =  new MockDefinition(
                 ResolvableType.forClass(ExampleService.class), "targetClass", null, null, "exampleServiceA",
                 null, null, false, null, null);
         assertThatIllegalStateException().isThrownBy(() -> beanInjectorResolver.resolveStub(definition))
@@ -220,11 +225,11 @@ public class BeanInjectorResolverTests {
     @Test
     public void jdkProxyBeanInject() {
         GenericApplicationContext applicationContext = new AnnotationConfigApplicationContext(
-                JdkProxyTargetClass.class);
+            JdkProxyTargetClass.class);
         BeanInjectorResolver beanInjectorResolver = new BeanInjectorResolver(applicationContext);
 
         Definition definition = new MockDefinition(ResolvableType.forClass(ExampleService.class),
-                "targetClass", null, null, "exampleService", null, null, false, null, null);
+            "targetClass", null, null, "exampleService", null, null, false, null, null);
         BeanInjectorStub stub = beanInjectorResolver.resolveStub(definition);
         stub.inject();
 
@@ -235,11 +240,11 @@ public class BeanInjectorResolverTests {
     @Test
     public void cglibProxyBeanInject() {
         GenericApplicationContext applicationContext = new AnnotationConfigApplicationContext(
-                CglibProxyTargetClass.class);
+            CglibProxyTargetClass.class);
         BeanInjectorResolver beanInjectorResolver = new BeanInjectorResolver(applicationContext);
 
         Definition definition = new MockDefinition(ResolvableType.forClass(ExampleService.class),
-                "targetClass", null, null, "exampleService", null, null, false, null, null);
+            "targetClass", null, null, "exampleService", null, null, false, null, null);
         BeanInjectorStub stub = beanInjectorResolver.resolveStub(definition);
         stub.inject();
 
@@ -262,13 +267,13 @@ public class BeanInjectorResolverTests {
     @Test
     public void spyTargetBean() {
         GenericApplicationContext applicationContext = new AnnotationConfigApplicationContext(
-                TargetClass.class);
+            TargetClass.class);
         BeanInjectorResolver beanInjectorResolver = new BeanInjectorResolver(applicationContext);
         TargetClass targetClass = applicationContext.getBean(TargetClass.class);
         targetClass.setExampleService(new RealExampleService("test"));
 
         Definition definition = new SpyDefinition(ResolvableType.forClass(ExampleService.class),
-                "targetClass", null, null, "exampleService", null, false, null);
+            "targetClass", null, null, "exampleService", null, false, null);
         BeanInjectorStub stub = beanInjectorResolver.resolveStub(definition);
         stub.inject();
 

@@ -35,21 +35,21 @@ public class ComponentToStringTests {
     public void getString() throws Exception {
 
         ServiceImpl service = new ServiceImpl("uniqueId", ComponentToStringTests.class,
-                new Object());
+            new Object());
         assertThat(service.toString()).isEqualTo(
-                "com.alipay.sofa.runtime.spi.component.ComponentToStringTests:uniqueId");
+            "com.alipay.sofa.runtime.spi.component.ComponentToStringTests:uniqueId");
 
         service = new ServiceImpl("", ComponentToStringTests.class, new Object());
         assertThat(service.toString()).isEqualTo(
-                "com.alipay.sofa.runtime.spi.component.ComponentToStringTests");
+            "com.alipay.sofa.runtime.spi.component.ComponentToStringTests");
 
         ReferenceImpl reference = new ReferenceImpl("uniqueId", ComponentToStringTests.class,
-                InterfaceMode.api, true);
+            InterfaceMode.api, true);
         assertThat(reference.toString()).isEqualTo(
-                "com.alipay.sofa.runtime.spi.component.ComponentToStringTests:uniqueId");
+            "com.alipay.sofa.runtime.spi.component.ComponentToStringTests:uniqueId");
 
         reference = new ReferenceImpl(null, ComponentToStringTests.class, InterfaceMode.api, true);
         assertThat(reference.toString()).isEqualTo(
-                "com.alipay.sofa.runtime.spi.component.ComponentToStringTests");
+            "com.alipay.sofa.runtime.spi.component.ComponentToStringTests");
     }
 }

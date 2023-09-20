@@ -29,8 +29,7 @@ public class ClassLoaderContextUtils {
     /**
      * Store thread context classloader then use new classloader to invoke runnable,
      * finally reset thread context classloader.
-     *
-     * @param runnable       runnable to invoke
+     * @param runnable runnable to invoke
      * @param newClassloader classloader used to invoke runnable
      */
     public static void runWithTemporaryContextClassloader(Runnable runnable,
@@ -47,8 +46,7 @@ public class ClassLoaderContextUtils {
     /**
      * Store thread context classloader then use new classloader to invoke callable,
      * finally reset thread context classloader.
-     *
-     * @param callable       callable to invoke
+     * @param callable callable to invoke
      * @param newClassloader classloader used to invoke callable
      */
     public static <T> T callWithTemporaryContextClassloader(Callable<T> callable,

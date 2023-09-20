@@ -31,12 +31,12 @@ public class JvmFilterContext {
      * Jvm invocation result.
      * Null when in <code>before</code> invoking except some filter sets it explicitly.
      */
-    private Object invokeResult;
+    private Object                       invokeResult;
 
     /**
-     * Jvm invocation AOP, could be used to fetch method name and args.
+     *  Jvm invocation AOP, could be used to fetch method name and args.
      */
-    private transient MethodInvocation methodInvocation;
+    private transient MethodInvocation   methodInvocation;
 
     /**
      * In normal SOFABoot application, this is always current application's SOFABoot runtime context.
@@ -48,7 +48,7 @@ public class JvmFilterContext {
      * Thrown exception when do Jvm service invoking.
      * Null when in <code>before</code> invoking except some filter sets it explicitly
      */
-    private Throwable exception;
+    private Throwable                    exception;
 
     public JvmFilterContext() {
     }

@@ -43,13 +43,13 @@ public class SofaBootNamespaceHandlerTests {
         Field parsersField = ReflectionUtils.findField(SofaBootNamespaceHandler.class, "parsers");
         parsersField.setAccessible(true);
         Map<String, BeanDefinitionParser> parsers = (Map<String, BeanDefinitionParser>) ReflectionUtils
-                .getField(parsersField, sofaBootNamespaceHandler);
+            .getField(parsersField, sofaBootNamespaceHandler);
 
         Field decoratorsField = ReflectionUtils.findField(SofaBootNamespaceHandler.class,
-                "attributeDecorators");
+            "attributeDecorators");
         decoratorsField.setAccessible(true);
         Map<String, BeanDefinitionDecorator> decorators = (Map<String, BeanDefinitionDecorator>) ReflectionUtils
-                .getField(decoratorsField, sofaBootNamespaceHandler);
+            .getField(decoratorsField, sofaBootNamespaceHandler);
 
         assertThat(parsers.get("test-parser")).isNotNull();
         assertThat(decorators.get("test-decorator")).isNotNull();

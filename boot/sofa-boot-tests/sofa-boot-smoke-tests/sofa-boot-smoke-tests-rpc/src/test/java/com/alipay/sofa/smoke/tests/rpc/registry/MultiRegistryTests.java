@@ -18,8 +18,8 @@ package com.alipay.sofa.smoke.tests.rpc.registry;
 
 import com.alipay.sofa.rpc.core.exception.SofaRpcException;
 import com.alipay.sofa.smoke.tests.rpc.ActivelyDestroyTests;
-import com.alipay.sofa.smoke.tests.rpc.boot.RpcSofaBootApplication;
 import com.alipay.sofa.smoke.tests.rpc.boot.bean.registry.MultiRegistryService;
+import com.alipay.sofa.smoke.tests.rpc.boot.RpcSofaBootApplication;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -35,7 +35,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author zhiyuan.lzy
  * @version $Id: MeshTest.java, v 0.1 2018-06-25 19:26 zhiyuan.lzy Exp $$
  */
-@SpringBootTest(properties = {"sofa.boot.rpc.registries.gateway=zookeeper://127.0.0.1:2181"}, classes = RpcSofaBootApplication.class)
+@SpringBootTest(properties = { "sofa.boot.rpc.registries.gateway=zookeeper://127.0.0.1:2181" }, classes = RpcSofaBootApplication.class)
 @Import(MultiRegistryTests.MultiRegistryConfiguration.class)
 public class MultiRegistryTests extends ActivelyDestroyTests {
 

@@ -51,24 +51,24 @@ import java.util.Map;
  * @author huzijie
  */
 public class DynamicSpringContextLoader implements SpringContextLoader, InitializingBean,
-        StartupReporterAware {
+                                       StartupReporterAware {
 
-    private static final Logger LOGGER = SofaBootLoggerFactory
-            .getLogger(DynamicSpringContextLoader.class);
+    private static final Logger                    LOGGER                     = SofaBootLoggerFactory
+                                                                                  .getLogger(DynamicSpringContextLoader.class);
 
     protected final ConfigurableApplicationContext rootApplicationContext;
 
-    private boolean allowBeanOverriding;
+    private boolean                                allowBeanOverriding;
 
-    private List<String> activeProfiles = new ArrayList<>();
+    private List<String>                           activeProfiles             = new ArrayList<>();
 
-    private List<ContextRefreshInterceptor> contextRefreshInterceptors = new ArrayList<>();
+    private List<ContextRefreshInterceptor>        contextRefreshInterceptors = new ArrayList<>();
 
-    private boolean publishEventToParent;
+    private boolean                                publishEventToParent;
 
-    private SofaPostProcessorShareManager sofaPostProcessorShareManager;
+    private SofaPostProcessorShareManager          sofaPostProcessorShareManager;
 
-    private StartupReporter startupReporter;
+    private StartupReporter                        startupReporter;
 
     public DynamicSpringContextLoader(ApplicationContext rootApplicationContext) {
         this.rootApplicationContext = (ConfigurableApplicationContext) rootApplicationContext;
@@ -78,7 +78,7 @@ public class DynamicSpringContextLoader implements SpringContextLoader, Initiali
     public void afterPropertiesSet() throws Exception {
         Assert.notNull(rootApplicationContext, "rootApplicationContext must not be null");
         Assert.isInstanceOf(ConfigurableApplicationContext.class, rootApplicationContext,
-                "rootApplicationContext must be ConfigurableApplicationContext");
+            "rootApplicationContext must be ConfigurableApplicationContext");
     }
 
     @Override
@@ -144,10 +144,10 @@ public class DynamicSpringContextLoader implements SpringContextLoader, Initiali
                 DeploymentDescriptor parent = application.getDeploymentByName(springParent);
                 if (parent != null) {
                     parentSpringContext = (ConfigurableApplicationContext) parent
-                            .getApplicationContext();
+                        .getApplicationContext();
                     if (parentSpringContext == null) {
                         LOGGER.warn("Module [{}]'s Spring-Parent [{}] is Null!",
-                                deployment.getModuleName(), springParent);
+                            deployment.getModuleName(), springParent);
                     }
                 }
             }

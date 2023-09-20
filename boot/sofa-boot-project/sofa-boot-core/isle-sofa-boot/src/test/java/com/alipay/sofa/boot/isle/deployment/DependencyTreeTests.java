@@ -56,7 +56,7 @@ public class DependencyTreeTests {
         assertThat(tree.getEntry(1).getDependencies()).isNull();
         assertThat(tree.getEntry(2).getDependencies()).containsExactly(tree.getEntry(1));
         assertThat(tree.getEntry(3).getDependencies()).containsExactlyInAnyOrder(tree.getEntry(1),
-                tree.getEntry(2));
+            tree.getEntry(2));
     }
 
     @Test
@@ -113,7 +113,7 @@ public class DependencyTreeTests {
         tree.unresolve(tree.getEntry(2));
         assertThat(tree.getPendingEntries()).hasSize(1);
         assertThat(tree.getEntries()).containsExactly(tree.getEntry(1), tree.getEntry(2),
-                tree.getEntry(3));
+            tree.getEntry(3));
     }
 
     @Test
@@ -151,7 +151,7 @@ public class DependencyTreeTests {
         assertThat(tree.getResolvedEntries()).isEmpty();
         tree.add(4, "test");
         assertThat(tree.getResolvedEntries()).containsExactly(tree.getEntry(4), tree.getEntry(3),
-                tree.getEntry(2), tree.getEntry(1));
+            tree.getEntry(2), tree.getEntry(1));
     }
 
     @Test

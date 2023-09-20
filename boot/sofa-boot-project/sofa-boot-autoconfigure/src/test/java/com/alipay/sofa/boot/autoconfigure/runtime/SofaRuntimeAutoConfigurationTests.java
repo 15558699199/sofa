@@ -46,8 +46,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class SofaRuntimeAutoConfigurationTests {
 
     private final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
-            .withConfiguration(AutoConfigurations
-                    .of(SofaRuntimeAutoConfiguration.class));
+                                                             .withConfiguration(AutoConfigurations
+                                                                 .of(SofaRuntimeAutoConfiguration.class));
 
     @Test
     public void registerRuntimeBeans() {
@@ -98,7 +98,7 @@ public class SofaRuntimeAutoConfigurationTests {
                 .withPropertyValues("sofa.boot.runtime.referenceHealthCheckMoreDetailEnable=true")
                 .withPropertyValues("sofa.boot.runtime.serviceCanBeDuplicate=false")
                 .run((context) -> {
-                    SofaRuntimeContext.Properties properties = context.getBean(SofaRuntimeContext.class).getProperties();
+                    SofaRuntimeContext.Properties properties= context.getBean(SofaRuntimeContext.class).getProperties();
                     assertThat(properties.isSkipJvmReferenceHealthCheck()).isTrue();
                     assertThat(properties.isSkipExtensionHealthCheck()).isTrue();
                     assertThat(properties.isDisableJvmFirst()).isTrue();

@@ -38,12 +38,12 @@ public class SofaRuntimeActivator implements PluginActivator {
     public void start(PluginContext context) {
         registerEventHandler(context);
         context.publishService(DynamicJvmServiceProxyFinder.class,
-                DynamicJvmServiceProxyFinder.getInstance());
+            DynamicJvmServiceProxyFinder.getInstance());
     }
 
     private void registerEventHandler(final PluginContext context) {
         EventAdminService eventAdminService = context.referenceService(EventAdminService.class)
-                .getService();
+            .getService();
         eventAdminService.register(new SofaBizUninstallEventHandler());
         eventAdminService.register(new SofaBizHealthCheckEventHandler());
         eventAdminService.register(new FinishStartupEventHandler());

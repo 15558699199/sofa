@@ -42,6 +42,6 @@ public class SofaBootLoggerFactoryTests {
         assertThat(SofaBootLoggerFactory.getLogger(clazz)).isNull();
         assertThat(SofaBootLoggerFactory.getLogger("")).isNull();
         assertThat(SofaBootLoggerFactory.getLogger(this.getClass().getCanonicalName()))
-                .isInstanceOf(Logger.class);
+            .isInstanceOf(Logger.class);
     }
 }

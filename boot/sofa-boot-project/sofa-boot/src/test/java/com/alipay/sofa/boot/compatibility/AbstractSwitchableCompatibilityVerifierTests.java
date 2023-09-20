@@ -34,7 +34,7 @@ public class AbstractSwitchableCompatibilityVerifierTests {
     public void enableKey() {
         mockEnvironment.setProperty("sofa.boot.compatibility-verifier.test.enabled", "true");
         TestSwitchableCompatibilityVerifier verifier = new TestSwitchableCompatibilityVerifier(
-                mockEnvironment);
+            mockEnvironment);
         assertThat(verifier.verify().isNotCompatible()).isTrue();
     }
 
@@ -42,12 +42,12 @@ public class AbstractSwitchableCompatibilityVerifierTests {
     public void disableKey() {
         mockEnvironment.setProperty("sofa.boot.compatibility-verifier.test.enabled", "false");
         TestSwitchableCompatibilityVerifier verifier = new TestSwitchableCompatibilityVerifier(
-                mockEnvironment);
+            mockEnvironment);
         assertThat(verifier.verify().isNotCompatible()).isFalse();
     }
 
     public static class TestSwitchableCompatibilityVerifier extends
-            AbstractSwitchableCompatibilityVerifier {
+                                                           AbstractSwitchableCompatibilityVerifier {
 
         public TestSwitchableCompatibilityVerifier(Environment environment) {
             super(environment);

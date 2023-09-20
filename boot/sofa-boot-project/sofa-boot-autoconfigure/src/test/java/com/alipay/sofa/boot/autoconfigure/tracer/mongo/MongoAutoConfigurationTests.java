@@ -34,8 +34,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class MongoAutoConfigurationTests {
 
     private final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
-            .withConfiguration(AutoConfigurations
-                    .of(MongoAutoConfiguration.class));
+                                                             .withConfiguration(AutoConfigurations
+                                                                 .of(MongoAutoConfiguration.class));
 
     @Test
     public void registerMongoBean() {

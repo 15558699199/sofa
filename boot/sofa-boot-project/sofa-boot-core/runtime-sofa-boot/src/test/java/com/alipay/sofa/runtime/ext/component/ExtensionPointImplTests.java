@@ -139,7 +139,7 @@ public class ExtensionPointImplTests {
 
         // then
         assertThat(extensionPoint.contributions).containsExactly(contributionClass1,
-                contributionClass2);
+            contributionClass2);
     }
 
     @Test

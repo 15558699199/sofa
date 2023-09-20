@@ -32,23 +32,19 @@ import java.util.List;
  */
 public class SofaRuntimeContext {
 
-    /**
-     * component manager
-     */
-    private final ComponentManager componentManager;
+    /** component manager */
+    private final ComponentManager      componentManager;
 
-    private final SofaRuntimeManager sofaRuntimeManager;
+    private final SofaRuntimeManager    sofaRuntimeManager;
 
-    /**
-     * client factory
-     */
+    /** client factory */
     private final ClientFactoryInternal clientFactory;
 
-    private final Properties properties;
+    private final Properties            properties;
 
-    private final JvmFilterHolder jvmFilterHolder;
+    private final JvmFilterHolder       jvmFilterHolder;
 
-    private DynamicServiceProxyManager serviceProxyManager;
+    private DynamicServiceProxyManager  serviceProxyManager;
 
     public SofaRuntimeContext(SofaRuntimeManager sofaRuntimeManager) {
         this.sofaRuntimeManager = sofaRuntimeManager;
@@ -97,17 +93,17 @@ public class SofaRuntimeContext {
 
     public static class Properties {
 
-        private boolean skipJvmReferenceHealthCheck = false;
-        private boolean skipExtensionHealthCheck = false;
-        private boolean disableJvmFirst = false;
-        private boolean extensionFailureInsulating = false;
-        private boolean skipAllComponentShutdown = false;
-        private boolean skipCommonComponentShutdown = false;
-        private boolean jvmFilterEnable = false;
-        private boolean serviceInterfaceTypeCheck = false;
-        private List<String> skipJvmReferenceHealthCheckList = new ArrayList<>();
-        private boolean referenceHealthCheckMoreDetailEnable = false;
-        private boolean serviceCanBeDuplicate = true;
+        private boolean      skipJvmReferenceHealthCheck          = false;
+        private boolean      skipExtensionHealthCheck             = false;
+        private boolean      disableJvmFirst                      = false;
+        private boolean      extensionFailureInsulating           = false;
+        private boolean      skipAllComponentShutdown             = false;
+        private boolean      skipCommonComponentShutdown          = false;
+        private boolean      jvmFilterEnable                      = false;
+        private boolean      serviceInterfaceTypeCheck            = false;
+        private List<String> skipJvmReferenceHealthCheckList      = new ArrayList<>();
+        private boolean      referenceHealthCheckMoreDetailEnable = false;
+        private boolean      serviceCanBeDuplicate                = true;
 
         public boolean isSkipJvmReferenceHealthCheck() {
             return skipJvmReferenceHealthCheck;

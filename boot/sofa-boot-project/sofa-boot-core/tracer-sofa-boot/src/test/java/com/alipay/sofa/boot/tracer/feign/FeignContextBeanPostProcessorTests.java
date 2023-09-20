@@ -36,7 +36,7 @@ public class FeignContextBeanPostProcessorTests {
     public void wrapFeignClientFactory() {
         FeignClientFactory feignClientFactory = new FeignClientFactory();
         Object bean = feignContextBeanPostProcessor.postProcessBeforeInitialization(
-                feignClientFactory, "feignClientFactory");
+            feignClientFactory, "feignClientFactory");
         assertThat(bean).isNotEqualTo(feignClientFactory);
         assertThat(bean).isInstanceOf(SofaTracerFeignClientFactory.class);
     }
@@ -45,7 +45,7 @@ public class FeignContextBeanPostProcessorTests {
     public void skipNotFeignClientFactory() {
         Object object = new Object();
         Object bean = feignContextBeanPostProcessor.postProcessBeforeInitialization(object,
-                "feignContext");
+            "feignContext");
         assertThat(bean).isEqualTo(object);
         assertThat(bean).isNotInstanceOf(SofaTracerFeignClientFactory.class);
     }
@@ -54,9 +54,9 @@ public class FeignContextBeanPostProcessorTests {
     public void skipTransformedFeignClientFactory() {
         FeignClientFactory feignContext = new FeignClientFactory();
         SofaTracerFeignClientFactory sofaTracerFeignContext = new SofaTracerFeignClientFactory(
-                feignContext);
+            feignContext);
         Object bean = feignContextBeanPostProcessor.postProcessBeforeInitialization(
-                sofaTracerFeignContext, "feignContext");
+            sofaTracerFeignContext, "feignContext");
         assertThat(bean).isEqualTo(sofaTracerFeignContext);
     }
 }

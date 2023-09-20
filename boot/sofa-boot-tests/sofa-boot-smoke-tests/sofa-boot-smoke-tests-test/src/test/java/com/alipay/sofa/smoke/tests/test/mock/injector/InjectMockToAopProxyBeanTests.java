@@ -41,7 +41,7 @@ import static org.mockito.Mockito.when;
 public class InjectMockToAopProxyBeanTests {
 
     @MockBeanInjector(field = "service", type = ExampleServiceCallerInterface.class)
-    private ExampleService exampleService;
+    private ExampleService     exampleService;
 
     @Autowired
     private ApplicationContext applicationContext;
@@ -50,7 +50,7 @@ public class InjectMockToAopProxyBeanTests {
     public void checkMock() {
         when(exampleService.greeting()).thenReturn("amock");
         ExampleServiceCallerInterface bean = this.applicationContext
-                .getBean(ExampleServiceCallerInterface.class);
+            .getBean(ExampleServiceCallerInterface.class);
         assertThat(bean.sayGreeting()).isEqualTo("amock");
     }
 

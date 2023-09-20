@@ -42,10 +42,10 @@ public class BindingAdapterFactoryImplTests {
     private final BindingType bindingType = new BindingType("test");
 
     @Mock
-    private BindingAdapter bindingAdapter1;
+    private BindingAdapter    bindingAdapter1;
 
     @Mock
-    private BindingAdapter bindingAdapter2;
+    private BindingAdapter    bindingAdapter2;
 
     @BeforeEach
     public void setUp() {

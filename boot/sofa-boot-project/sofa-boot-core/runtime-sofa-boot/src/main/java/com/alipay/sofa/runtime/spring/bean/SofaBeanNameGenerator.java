@@ -16,9 +16,10 @@
  */
 package com.alipay.sofa.runtime.spring.bean;
 
-import com.alipay.sofa.runtime.spring.parser.AbstractContractDefinitionParser;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.util.StringUtils;
+
+import com.alipay.sofa.runtime.spring.parser.AbstractContractDefinitionParser;
 
 import static com.alipay.sofa.runtime.spring.parser.ServiceDefinitionParser.BEAN_ID;
 
@@ -30,22 +31,22 @@ import static com.alipay.sofa.runtime.spring.parser.ServiceDefinitionParser.BEAN
  */
 public class SofaBeanNameGenerator {
 
-    private static final String SERVICE_BEAN_NAME_PREFIX = "ServiceFactoryBean#";
+    private static final String SERVICE_BEAN_NAME_PREFIX   = "ServiceFactoryBean#";
 
     private static final String REFERENCE_BEAN_NAME_PREFIX = "ReferenceFactoryBean#";
 
     public static String generateSofaServiceBeanName(BeanDefinition definition) {
         String interfaceName = (String) definition.getPropertyValues().get(
-                AbstractContractDefinitionParser.INTERFACE_PROPERTY);
+            AbstractContractDefinitionParser.INTERFACE_PROPERTY);
         Class<?> clazz = (Class<?>) definition.getPropertyValues().get(
-                AbstractContractDefinitionParser.INTERFACE_CLASS_PROPERTY);
+            AbstractContractDefinitionParser.INTERFACE_CLASS_PROPERTY);
         if (clazz != null) {
             interfaceName = clazz.getCanonicalName();
         }
         String uniqueId = (String) definition.getPropertyValues().get(
-                AbstractContractDefinitionParser.UNIQUE_ID_PROPERTY);
+            AbstractContractDefinitionParser.UNIQUE_ID_PROPERTY);
         return generateSofaServiceBeanName(interfaceName, uniqueId, (String) definition
-                .getPropertyValues().get(BEAN_ID));
+            .getPropertyValues().get(BEAN_ID));
     }
 
     public static String generateSofaServiceBeanName(Class<?> interfaceType, String uniqueId) {

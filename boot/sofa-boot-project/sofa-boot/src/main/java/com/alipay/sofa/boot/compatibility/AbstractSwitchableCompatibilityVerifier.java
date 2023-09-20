@@ -20,7 +20,7 @@ import org.springframework.core.env.Environment;
 
 /**
  * Abstract class for {@link CompatibilityVerifier} to support switch.
- *
+ * 
  * @author huzijie
  * @version AbstractSwitchableCompatibilityVerifier.java, v 0.1 2023年08月03日 6:10 PM huzijie Exp $
  */
@@ -30,7 +30,7 @@ public abstract class AbstractSwitchableCompatibilityVerifier implements Compati
 
     protected final Environment environment;
 
-    protected String enableKey;
+    protected String            enableKey;
 
     public AbstractSwitchableCompatibilityVerifier(Environment environment) {
         this.environment = environment;

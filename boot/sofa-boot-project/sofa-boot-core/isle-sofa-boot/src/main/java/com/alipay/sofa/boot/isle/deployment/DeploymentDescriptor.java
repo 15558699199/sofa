@@ -74,18 +74,18 @@ public interface DeploymentDescriptor extends Comparable<DeploymentDescriptor> {
     ClassLoader getClassLoader();
 
     /**
-     * get application context of this SOFABoot module.
-     *
-     * @return application context of this SOFABoot module
-     */
-    ApplicationContext getApplicationContext();
-
-    /**
      * set application context of this SOFABoot module.
      *
      * @param context application context of this SOFABoot module.
      */
     void setApplicationContext(ApplicationContext context);
+
+    /**
+     * get application context of this SOFABoot module.
+     *
+     * @return application context of this SOFABoot module
+     */
+    ApplicationContext getApplicationContext();
 
     /**
      * add installed spring xml of this SOFABoot module.

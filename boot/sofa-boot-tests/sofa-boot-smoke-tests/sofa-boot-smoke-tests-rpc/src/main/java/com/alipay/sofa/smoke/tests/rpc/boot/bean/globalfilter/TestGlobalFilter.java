@@ -29,7 +29,7 @@ public class TestGlobalFilter extends Filter {
     @Override
     public SofaResponse invoke(FilterInvoker invoker, SofaRequest request) throws SofaRpcException {
         if (request.getInterfaceName() != null
-                && request.getInterfaceName().equals(GlobalFilterService.class.getName())) {
+            && request.getInterfaceName().equals(GlobalFilterService.class.getName())) {
             if ("globalFilter".equals(request.getMethodArgs()[0])) {
                 request.getMethodArgs()[0] = "globalFilter_change";
             }

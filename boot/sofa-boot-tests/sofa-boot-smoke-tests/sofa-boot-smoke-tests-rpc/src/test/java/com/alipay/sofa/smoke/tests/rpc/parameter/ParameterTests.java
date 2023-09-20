@@ -16,9 +16,9 @@
  */
 package com.alipay.sofa.smoke.tests.rpc.parameter;
 
-import com.alipay.sofa.smoke.tests.rpc.boot.RpcSofaBootApplication;
 import com.alipay.sofa.smoke.tests.rpc.boot.bean.filter.ParameterFilter;
 import com.alipay.sofa.smoke.tests.rpc.boot.bean.invoke.HelloSyncService;
+import com.alipay.sofa.smoke.tests.rpc.boot.RpcSofaBootApplication;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -38,16 +38,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest(classes = RpcSofaBootApplication.class)
 @Import(ParameterTests.ParameterConfiguration.class)
 @TestPropertySource(properties = {
-        "sofa.boot.rpc.registry.address=", // override default zk path
-        "dynamic_key=dynamic_test_key",
-        "dynamic_value=dynamic_test_value"})
+                                  "sofa.boot.rpc.registry.address=", // override default zk path
+                                  "dynamic_key=dynamic_test_key",
+                                  "dynamic_value=dynamic_test_value" })
 public class ParameterTests {
 
     @Autowired
     private HelloSyncService helloSyncService;
 
     @Autowired
-    private ParameterFilter parameterFilter;
+    private ParameterFilter  parameterFilter;
 
     @Test
     public void parameter() {
@@ -57,7 +57,7 @@ public class ParameterTests {
         helloSyncService.saySync("sync");
 
         for (Map<String, String> parameters : Arrays.asList(
-                parameterFilter.getConsumerParameters(), parameterFilter.getProviderParameters())) {
+            parameterFilter.getConsumerParameters(), parameterFilter.getProviderParameters())) {
             assertThat(parameters.size()).isEqualTo(2);
             assertThat(parameters.get("static_key")).isEqualTo("static_value");
             assertThat(parameters.get("dynamic_test_key")).isEqualTo("dynamic_test_value");

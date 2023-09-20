@@ -37,11 +37,11 @@ public class ReadinessHttpCodeStatusMapperTests {
         ReadinessHttpCodeStatusMapper mapper = new ReadinessHttpCodeStatusMapper();
         assertThat(mapper.getStatusCode(Status.UP)).isEqualTo(WebEndpointResponse.STATUS_OK);
         assertThat(mapper.getStatusCode(Status.DOWN)).isEqualTo(
-                WebEndpointResponse.STATUS_SERVICE_UNAVAILABLE);
+            WebEndpointResponse.STATUS_SERVICE_UNAVAILABLE);
         assertThat(mapper.getStatusCode(Status.OUT_OF_SERVICE)).isEqualTo(
-                WebEndpointResponse.STATUS_INTERNAL_SERVER_ERROR);
+            WebEndpointResponse.STATUS_INTERNAL_SERVER_ERROR);
         assertThat(mapper.getStatusCode(Status.UNKNOWN)).isEqualTo(
-                WebEndpointResponse.STATUS_INTERNAL_SERVER_ERROR);
+            WebEndpointResponse.STATUS_INTERNAL_SERVER_ERROR);
     }
 
     @Test
@@ -52,6 +52,6 @@ public class ReadinessHttpCodeStatusMapperTests {
         assertThat(mapper.getStatusCode(Status.DOWN)).isEqualTo(301);
         assertThat(mapper.getStatusCode(Status.OUT_OF_SERVICE)).isEqualTo(302);
         assertThat(mapper.getStatusCode(Status.UNKNOWN)).isEqualTo(
-                WebEndpointResponse.STATUS_INTERNAL_SERVER_ERROR);
+            WebEndpointResponse.STATUS_INTERNAL_SERVER_ERROR);
     }
 }

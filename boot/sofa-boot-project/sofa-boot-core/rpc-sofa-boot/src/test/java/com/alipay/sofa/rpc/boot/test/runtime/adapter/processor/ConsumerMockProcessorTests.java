@@ -33,7 +33,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class ConsumerMockProcessorTests {
 
-    public static final String MOCK_URL = "mock";
+    public static final String          MOCK_URL  = "mock";
     private final ConsumerMockProcessor processor = new ConsumerMockProcessor("");
 
     @BeforeEach
@@ -53,8 +53,8 @@ public class ConsumerMockProcessorTests {
         processor.processorConsumer(consumerConfig2);
         assertThat(StringUtils.hasText(consumerConfig2.getMockMode())).isFalse();
         assertThat(
-                StringUtils.hasText(consumerConfig2.getParameter(ConsumerMockProcessor.MOCK_URL)))
-                .isFalse();
+            StringUtils.hasText(consumerConfig2.getParameter(ConsumerMockProcessor.MOCK_URL)))
+            .isFalse();
     }
 
     @Test
@@ -63,7 +63,7 @@ public class ConsumerMockProcessorTests {
         consumerConfig.setMockMode(MockMode.LOCAL);
         processor.processorConsumer(consumerConfig);
         assertThat(StringUtils.hasText(consumerConfig.getParameter(ConsumerMockProcessor.MOCK_URL)))
-                .isFalse();
+            .isFalse();
         assertThat(MockMode.LOCAL).isEqualTo(consumerConfig.getMockMode());
 
         consumerConfig = new ConsumerConfig();
@@ -71,7 +71,7 @@ public class ConsumerMockProcessorTests {
         consumerConfig.setParameter(ConsumerMockProcessor.MOCK_URL, "another");
         processor.processorConsumer(consumerConfig);
         assertThat("another")
-                .isEqualTo(consumerConfig.getParameter(ConsumerMockProcessor.MOCK_URL));
+            .isEqualTo(consumerConfig.getParameter(ConsumerMockProcessor.MOCK_URL));
         assertThat(MockMode.REMOTE).isEqualTo(consumerConfig.getMockMode());
     }
 

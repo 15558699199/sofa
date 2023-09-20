@@ -29,7 +29,7 @@ public class ProxyTestBeanFactoryPostProcessor implements BeanFactoryPostProcess
 
     @Override
     public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory)
-            throws BeansException {
+                                                                                   throws BeansException {
         // trigger early init
         beanFactory.getBeanNamesForType(BeanDefinitionRegistryPostProcessor.class, true, true);
     }

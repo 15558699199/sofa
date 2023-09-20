@@ -33,8 +33,8 @@ public class JvmServiceSupport {
     public static ServiceComponent foundServiceComponent(ComponentManager componentManager,
                                                          Contract contract) {
         ComponentName componentName = ComponentNameFactory.createComponentName(
-                ServiceComponent.SERVICE_COMPONENT_TYPE, contract.getInterfaceType(),
-                contract.getUniqueId());
+            ServiceComponent.SERVICE_COMPONENT_TYPE, contract.getInterfaceType(),
+            contract.getUniqueId());
         return (ServiceComponent) componentManager.getComponentInfo(componentName);
     }
 }

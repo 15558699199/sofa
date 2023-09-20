@@ -34,7 +34,7 @@ import java.util.List;
  * @author <a href=mailto:orezsilence@163.com>zhangchengxi</a>
  */
 public class BoltSwaggerServiceApplicationListener implements
-        ApplicationListener<ApplicationStartedEvent> {
+                                                  ApplicationListener<ApplicationStartedEvent> {
 
     private final ClientFactory clientFactory;
 

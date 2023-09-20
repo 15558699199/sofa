@@ -16,6 +16,11 @@
  */
 package org.springframework.boot.gradle.junit;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import org.gradle.api.JavaVersion;
 import org.gradle.api.Rule;
 import org.junit.runner.Runner;
 import org.junit.runners.BlockJUnit4ClassRunner;
@@ -23,10 +28,6 @@ import org.junit.runners.Suite;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
 import org.springframework.boot.gradle.testkit.GradleBuild;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * Custom {@link Suite} that runs tests against multiple versions of Gradle. Test classes
@@ -36,14 +37,14 @@ import java.util.List;
  * @author Andy Wilkinson
  */
 public final class GradleCompatibilitySuite extends Suite {
+    public static void main(String[] args) {
+        System.out.println(System.getProperty("java.version"));
+    }
+
     private static List<String> GRADLE_VERSIONS = Arrays.asList("7.5.1");
 
     public GradleCompatibilitySuite(Class<?> clazz) throws InitializationError {
         super(clazz, createRunners(clazz));
-    }
-
-    public static void main(String[] args) {
-        System.out.println(System.getProperty("java.version"));
     }
 
     private static List<Runner> createRunners(Class<?> clazz) throws InitializationError {
@@ -59,7 +60,7 @@ public final class GradleCompatibilitySuite extends Suite {
         private final String gradleVersion;
 
         private GradleCompatibilityClassRunner(Class<?> klass, String gradleVersion)
-                throws InitializationError {
+                                                                                    throws InitializationError {
             super(klass);
             this.gradleVersion = gradleVersion;
         }

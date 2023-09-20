@@ -41,13 +41,16 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class BeanInjectorStubTests {
 
-    private final Field field = ReflectionUtils.findField(TargetClass.class,
-            "exampleService");
+    @Mock
+    private MockDefinition       mockDefinition;
+
+    @Mock
+    private SpyDefinition        spyDefinition;
+
+    private final Field          field          = ReflectionUtils.findField(TargetClass.class,
+                                                    "exampleService");
+
     private final ExampleService exampleService = new RealExampleService("real");
-    @Mock
-    private MockDefinition mockDefinition;
-    @Mock
-    private SpyDefinition spyDefinition;
 
     @Test
     public void mockBeanInjectorStub() {
@@ -82,14 +85,14 @@ public class BeanInjectorStubTests {
 
     static class TargetClass {
 
+        public void setExampleService(ExampleService exampleService) {
+            this.exampleService = exampleService;
+        }
+
         private ExampleService exampleService;
 
         public ExampleService getExampleService() {
             return exampleService;
-        }
-
-        public void setExampleService(ExampleService exampleService) {
-            this.exampleService = exampleService;
         }
     }
 }

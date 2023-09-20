@@ -50,27 +50,27 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class JvmServiceInvokerTests {
 
-    private final ClassLoader mockClassLoader = new FilteredClassLoader("");
+    private final ClassLoader   mockClassLoader = new FilteredClassLoader("");
 
-    private final ReferenceImpl reference = new ReferenceImpl("", SampleService.class,
-            InterfaceMode.api, true);
-
-    @Mock
-    private JvmBinding jvmBinding;
+    private final ReferenceImpl reference       = new ReferenceImpl("", SampleService.class,
+                                                    InterfaceMode.api, true);
 
     @Mock
-    private ServiceComponent serviceComponent;
+    private JvmBinding          jvmBinding;
 
     @Mock
-    private Implementation implementation;
+    private ServiceComponent    serviceComponent;
 
     @Mock
-    private SofaRuntimeContext sofaRuntimeContext;
+    private Implementation      implementation;
 
     @Mock
-    private ComponentManager componentManager;
+    private SofaRuntimeContext  sofaRuntimeContext;
 
-    private JvmFilterHolder jvmFilterHolder = new JvmFilterHolder();
+    @Mock
+    private ComponentManager    componentManager;
+
+    private JvmFilterHolder     jvmFilterHolder = new JvmFilterHolder();
 
     @BeforeEach
     public void setUp() {
@@ -136,7 +136,7 @@ public class JvmServiceInvokerTests {
         ProxyFactory proxyFactory = new ProxyFactory();
         proxyFactory.setInterfaces(SampleService.class);
         JvmServiceInvoker jvmServiceInvoker = new JvmServiceInvoker(reference, jvmBinding,
-                sofaRuntimeContext);
+            sofaRuntimeContext);
         proxyFactory.addAdvice(jvmServiceInvoker);
         return (SampleService) proxyFactory.getProxy();
     }
@@ -164,7 +164,7 @@ public class JvmServiceInvokerTests {
 
     private void registerNoService() {
         when(sofaRuntimeContext.getServiceProxyManager()).thenReturn(
-                new DefaultDynamicServiceProxyManager());
+            new DefaultDynamicServiceProxyManager());
     }
 
     static class RealSampleServiceImpl implements SampleService {

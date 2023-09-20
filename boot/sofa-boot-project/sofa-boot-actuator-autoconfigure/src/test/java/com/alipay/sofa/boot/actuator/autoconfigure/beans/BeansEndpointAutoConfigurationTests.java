@@ -36,32 +36,32 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class BeansEndpointAutoConfigurationTests {
 
     private final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
-            .withConfiguration(AutoConfigurations
-                    .of(IsleBeansEndpointAutoConfiguration.class,
-                            SofaModuleAutoConfiguration.class,
-                            SofaRuntimeAutoConfiguration.class));
+                                                             .withConfiguration(AutoConfigurations
+                                                                 .of(IsleBeansEndpointAutoConfiguration.class,
+                                                                     SofaModuleAutoConfiguration.class,
+                                                                     SofaRuntimeAutoConfiguration.class));
 
     @Test
-    void runShouldHaveEndpointBean() {
-        this.contextRunner.withPropertyValues("management.endpoints.web.exposure.include=beans")
-                .run((context) -> assertThat(context).hasSingleBean(IsleBeansEndpoint.class));
-    }
+	void runShouldHaveEndpointBean() {
+		this.contextRunner.withPropertyValues("management.endpoints.web.exposure.include=beans")
+				.run((context) -> assertThat(context).hasSingleBean(IsleBeansEndpoint.class));
+	}
 
     @Test
-    void runWhenNotExposedShouldNotHaveEndpointBean() {
-        this.contextRunner.run((context) -> assertThat(context).doesNotHaveBean(IsleBeansEndpoint.class));
-    }
+	void runWhenNotExposedShouldNotHaveEndpointBean() {
+		this.contextRunner.run((context) -> assertThat(context).doesNotHaveBean(IsleBeansEndpoint.class));
+	}
 
     @Test
-    void runWhenNotExposedShouldNotHaveIsleClass() {
-        this.contextRunner.withClassLoader(new FilteredClassLoader(ApplicationRuntimeModel.class))
-                .run((context) -> assertThat(context).doesNotHaveBean(IsleBeansEndpoint.class));
-    }
+	void runWhenNotExposedShouldNotHaveIsleClass() {
+		this.contextRunner.withClassLoader(new FilteredClassLoader(ApplicationRuntimeModel.class))
+				.run((context) -> assertThat(context).doesNotHaveBean(IsleBeansEndpoint.class));
+	}
 
     @Test
-    void runWhenEnabledPropertyIsFalseShouldNotHaveEndpointBean() {
-        this.contextRunner.withPropertyValues("management.endpoint.beans.enabled:false")
-                .withPropertyValues("management.endpoints.web.exposure.include=*")
-                .run((context) -> assertThat(context).doesNotHaveBean(IsleBeansEndpoint.class));
-    }
+	void runWhenEnabledPropertyIsFalseShouldNotHaveEndpointBean() {
+		this.contextRunner.withPropertyValues("management.endpoint.beans.enabled:false")
+				.withPropertyValues("management.endpoints.web.exposure.include=*")
+				.run((context) -> assertThat(context).doesNotHaveBean(IsleBeansEndpoint.class));
+	}
 }

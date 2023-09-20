@@ -31,9 +31,9 @@ public class SpringImplementationImpl extends DefaultImplementation {
 
     protected ApplicationContext applicationContext;
 
-    protected String beanName;
+    protected String             beanName;
 
-    protected Object target;
+    protected Object             target;
 
     public SpringImplementationImpl(String beanName, ApplicationContext applicationContext) {
         Assert.hasText(beanName, "beanName must not be empty");
@@ -48,13 +48,13 @@ public class SpringImplementationImpl extends DefaultImplementation {
     }
 
     @Override
-    public void setTarget(Object target) {
-        this.target = target;
+    public Class<?> getTargetClass() {
+        return applicationContext.getBean(this.beanName).getClass();
     }
 
     @Override
-    public Class<?> getTargetClass() {
-        return applicationContext.getBean(this.beanName).getClass();
+    public void setTarget(Object target) {
+        this.target = target;
     }
 
     @Override

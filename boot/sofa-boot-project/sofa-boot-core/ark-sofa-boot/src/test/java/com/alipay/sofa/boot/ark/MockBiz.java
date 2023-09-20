@@ -31,11 +31,11 @@ import java.util.Set;
  */
 public class MockBiz implements Biz {
 
-    private boolean called = false;
+    private boolean  called = false;
 
     private BizState bizState;
 
-    private String bizVersion;
+    private String   bizVersion;
 
     @Override
     public void start(String[] strings) throws Throwable {
@@ -70,10 +70,6 @@ public class MockBiz implements Biz {
     @Override
     public String getBizVersion() {
         return bizVersion;
-    }
-
-    public void setBizVersion(String bizVersion) {
-        this.bizVersion = bizVersion;
     }
 
     @Override
@@ -137,10 +133,6 @@ public class MockBiz implements Biz {
         return bizState;
     }
 
-    public void setBizState(BizState bizState) {
-        this.bizState = bizState;
-    }
-
     @Override
     public String getWebContextPath() {
         return null;
@@ -156,7 +148,15 @@ public class MockBiz implements Biz {
         return 0;
     }
 
+    public void setBizState(BizState bizState) {
+        this.bizState = bizState;
+    }
+
     public boolean isCalled() {
         return called;
+    }
+
+    public void setBizVersion(String bizVersion) {
+        this.bizVersion = bizVersion;
     }
 }

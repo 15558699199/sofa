@@ -20,6 +20,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 
 /**
+ *
  * @author ruoshan
  * @since 2.6.1
  */
@@ -27,13 +28,13 @@ public class ProxyTestPostProcessor implements BeanPostProcessor {
 
     @Override
     public Object postProcessBeforeInitialization(Object bean, String beanName)
-            throws BeansException {
+                                                                               throws BeansException {
         return bean;
     }
 
     @Override
     public Object postProcessAfterInitialization(Object bean, String beanName)
-            throws BeansException {
+                                                                              throws BeansException {
         if ("proxyTestBean".equals(beanName)) {
             ((ProxyTestBeanFacade) bean).setPostProcessed(true);
         }

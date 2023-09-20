@@ -29,7 +29,7 @@ import java.lang.annotation.Target;
  * @version SofaServices.java, v 0.1 2023年03月28日 8:16 PM huzijie Exp $
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE, ElementType.METHOD})
+@Target({ ElementType.TYPE, ElementType.METHOD })
 public @interface SofaServices {
 
     /**

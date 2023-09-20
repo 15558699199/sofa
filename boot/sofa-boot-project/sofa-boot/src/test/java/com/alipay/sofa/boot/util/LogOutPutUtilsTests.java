@@ -35,8 +35,8 @@ public class LogOutPutUtilsTests {
         LogOutPutUtils.openOutPutForLoggers("abc", "efg");
 
         assertThat(
-                CommonLoggingConfigurations.getExternalConfigurations().get(
-                        Constants.SOFA_MIDDLEWARE_ALL_LOG_CONSOLE_SWITCH)).isEqualTo("true");
+            CommonLoggingConfigurations.getExternalConfigurations().get(
+                Constants.SOFA_MIDDLEWARE_ALL_LOG_CONSOLE_SWITCH)).isEqualTo("true");
         assertThat(CommonLoggingConfigurations.shouldAttachConsoleAppender("abc")).isTrue();
         assertThat(CommonLoggingConfigurations.shouldAttachConsoleAppender("efg")).isTrue();
     }
@@ -46,11 +46,11 @@ public class LogOutPutUtilsTests {
         LogOutPutUtils.openOutPutForLoggers(LogOutPutUtilsTests.class);
 
         assertThat(
-                CommonLoggingConfigurations.getExternalConfigurations().get(
-                        Constants.SOFA_MIDDLEWARE_ALL_LOG_CONSOLE_SWITCH)).isEqualTo("true");
+            CommonLoggingConfigurations.getExternalConfigurations().get(
+                Constants.SOFA_MIDDLEWARE_ALL_LOG_CONSOLE_SWITCH)).isEqualTo("true");
         assertThat(
-                CommonLoggingConfigurations.shouldAttachConsoleAppender(LogOutPutUtilsTests.class
-                        .getName())).isTrue();
+            CommonLoggingConfigurations.shouldAttachConsoleAppender(LogOutPutUtilsTests.class
+                .getName())).isTrue();
     }
 
 }

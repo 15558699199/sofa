@@ -29,7 +29,6 @@ public interface HealthCheckerComparatorProvider {
 
     /**
      * Provider a Comparator
-     *
      * @return
      */
     Comparator<Object> getComparator();

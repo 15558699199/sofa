@@ -40,8 +40,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ZipkinAutoConfigurationTests {
 
     private final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
-            .withConfiguration(AutoConfigurations
-                    .of(ZipkinAutoConfiguration.class));
+                                                             .withConfiguration(AutoConfigurations
+                                                                 .of(ZipkinAutoConfiguration.class));
 
     @Test
     public void registerZipkinBeans() {
@@ -101,7 +101,7 @@ public class ZipkinAutoConfigurationTests {
         this.contextRunner
                 .withPropertyValues("sofa.boot.tracer.zipkin.baseUrl=abc")
                 .withPropertyValues("sofa.boot.tracer.zipkin.gzipped=true")
-                .run((context) -> {
+                .run((context) ->{
                     ZipkinSofaTracerRestTemplateCustomizer customizer = context.getBean(ZipkinSofaTracerRestTemplateCustomizer.class);
                     ZipkinSofaTracerSpanRemoteReporter remoteReporter = context.getBean(ZipkinSofaTracerSpanRemoteReporter.class);
 

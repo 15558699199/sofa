@@ -38,7 +38,7 @@ public class RestTemplateBeanPostProcessor implements BeanPostProcessor {
 
     @Override
     public Object postProcessAfterInitialization(Object bean, String beanName)
-            throws BeansException {
+                                                                              throws BeansException {
         if (bean instanceof RestTemplate restTemplate) {
             sofaTracerRestTemplateEnhance.enhanceRestTemplateWithSofaTracer(restTemplate);
         }

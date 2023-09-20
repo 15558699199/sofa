@@ -45,23 +45,26 @@ import java.util.concurrent.TimeUnit;
 @SuppressWarnings("unchecked")
 public class ServiceComponent extends AbstractComponent {
 
-    public static final String UNREGISTER_DELAY_MILLISECONDS = "UNREGISTER_DELAY_MILLISECONDS";
-    public static final ComponentType SERVICE_COMPONENT_TYPE = new ComponentType("service");
-    private static final Logger LOGGER = SofaBootLoggerFactory
-            .getLogger(ServiceComponent.class);
-    private final Service service;
+    private static final Logger         LOGGER                        = SofaBootLoggerFactory
+                                                                          .getLogger(ServiceComponent.class);
+
+    public static final String          UNREGISTER_DELAY_MILLISECONDS = "UNREGISTER_DELAY_MILLISECONDS";
+
+    public static final ComponentType   SERVICE_COMPONENT_TYPE        = new ComponentType("service");
+
+    private final Service               service;
 
     private final BindingAdapterFactory bindingAdapterFactory;
 
-    private final Map<String, Property> properties = new ConcurrentHashMap<>();
+    private final Map<String, Property> properties                    = new ConcurrentHashMap<>();
 
-    private final boolean canBeDuplicate;
+    private final boolean               canBeDuplicate;
 
     public ServiceComponent(Implementation implementation, Service service,
                             BindingAdapterFactory bindingAdapterFactory,
                             SofaRuntimeContext sofaRuntimeContext) {
         this.componentName = ComponentNameFactory.createComponentName(SERVICE_COMPONENT_TYPE,
-                service.getInterfaceType(), service.getUniqueId());
+            service.getInterfaceType(), service.getUniqueId());
         this.implementation = implementation;
         this.service = service;
         this.bindingAdapterFactory = bindingAdapterFactory;
@@ -92,7 +95,7 @@ public class ServiceComponent extends AbstractComponent {
             Class<?> interfaceType = service.getInterfaceType();
             if (!interfaceType.isAssignableFrom(target.getClass())) {
                 throw new ServiceRuntimeException(ErrorCode.convert("01-00104", service,
-                        target.getClass(), interfaceType));
+                    target.getClass(), interfaceType));
             }
         }
 
@@ -112,21 +115,21 @@ public class ServiceComponent extends AbstractComponent {
             boolean allPassed = true;
             for (Binding binding : bindings) {
                 BindingAdapter<Binding> bindingAdapter = this.bindingAdapterFactory
-                        .getBindingAdapter(binding.getBindingType());
+                    .getBindingAdapter(binding.getBindingType());
 
                 if (bindingAdapter == null) {
                     throw new ServiceRuntimeException(ErrorCode.convert("01-00001",
-                            binding.getBindingType(), service));
+                        binding.getBindingType(), service));
                 }
 
                 LOGGER.info(" <<PreOut Binding [{}] Begins - {}.", binding.getBindingType(),
-                        service);
+                    service);
                 try {
                     bindingAdapter.preOutBinding(service, binding, target, getContext());
                 } catch (Throwable t) {
                     allPassed = false;
                     LOGGER.error(ErrorCode.convert("01-00002", binding.getBindingType(), service),
-                            t);
+                        t);
                     continue;
                 }
                 LOGGER.info(" <<PreOut Binding [{}] Ends - {}.", binding.getBindingType(), service);
@@ -158,32 +161,32 @@ public class ServiceComponent extends AbstractComponent {
             Set<Binding> bindings = service.getBindings();
             for (Binding binding : bindings) {
                 BindingAdapter<Binding> bindingAdapter = this.bindingAdapterFactory
-                        .getBindingAdapter(binding.getBindingType());
+                    .getBindingAdapter(binding.getBindingType());
 
                 if (bindingAdapter == null) {
                     throw new ServiceRuntimeException(ErrorCode.convert("01-00001",
-                            binding.getBindingType(), service));
+                        binding.getBindingType(), service));
                 }
 
                 Object outBindingResult;
                 LOGGER.info(" <<Out Binding [{}] Begins - {}.", binding.getBindingType(), service);
                 try {
                     outBindingResult = bindingAdapter.outBinding(service, binding, target,
-                            getContext());
+                        getContext());
                 } catch (Throwable t) {
                     allPassed = false;
                     binding.setHealthy(false);
                     LOGGER.error(ErrorCode.convert("01-00004", binding.getBindingType(), service),
-                            t);
+                        t);
                     continue;
                 }
                 if (!Boolean.FALSE.equals(outBindingResult)) {
                     LOGGER
-                            .info(" <<Out Binding [{}] Ends - {}.", binding.getBindingType(), service);
+                        .info(" <<Out Binding [{}] Ends - {}.", binding.getBindingType(), service);
                 } else {
                     binding.setHealthy(false);
                     LOGGER.info(" <<Out Binding [{}] Fails, Don't publish service - {}.",
-                            binding.getBindingType(), service);
+                        binding.getBindingType(), service);
                 }
             }
 
@@ -208,25 +211,25 @@ public class ServiceComponent extends AbstractComponent {
             Set<Binding> bindings = service.getBindings();
             for (Binding binding : bindings) {
                 BindingAdapter<Binding> bindingAdapter = this.bindingAdapterFactory
-                        .getBindingAdapter(binding.getBindingType());
+                    .getBindingAdapter(binding.getBindingType());
 
                 if (bindingAdapter == null) {
                     throw new ServiceRuntimeException(ErrorCode.convert("01-00001",
-                            binding.getBindingType(), service));
+                        binding.getBindingType(), service));
                 }
 
                 LOGGER.info(" <<Pre un-out Binding [{}] Begins - {}.", binding.getBindingType(),
-                        service);
+                    service);
                 try {
                     bindingAdapter.preUnoutBinding(service, binding, target, getContext());
                 } catch (Throwable t) {
                     allPassed = false;
                     LOGGER.error(ErrorCode.convert("01-00006", binding.getBindingType(), service),
-                            t);
+                        t);
                     continue;
                 }
                 LOGGER.info(" <<Pre un-out Binding [{}] Ends - {}.", binding.getBindingType(),
-                        service);
+                    service);
             }
 
             if (!allPassed) {
@@ -242,7 +245,7 @@ public class ServiceComponent extends AbstractComponent {
         super.unregister();
 
         Property unregisterDelayMillisecondsProperty = properties
-                .get(UNREGISTER_DELAY_MILLISECONDS);
+            .get(UNREGISTER_DELAY_MILLISECONDS);
 
         if (unregisterDelayMillisecondsProperty != null) {
             int unregisterDelayMilliseconds = unregisterDelayMillisecondsProperty.getInteger();
@@ -265,25 +268,25 @@ public class ServiceComponent extends AbstractComponent {
             Set<Binding> bindings = service.getBindings();
             for (Binding binding : bindings) {
                 BindingAdapter<Binding> bindingAdapter = this.bindingAdapterFactory
-                        .getBindingAdapter(binding.getBindingType());
+                    .getBindingAdapter(binding.getBindingType());
 
                 if (bindingAdapter == null) {
                     throw new ServiceRuntimeException(ErrorCode.convert("01-00001",
-                            binding.getBindingType(), service));
+                        binding.getBindingType(), service));
                 }
 
                 LOGGER.info(" <<Post un-out Binding [{}] Begins - {}.", binding.getBindingType(),
-                        service);
+                    service);
                 try {
                     bindingAdapter.postUnoutBinding(service, binding, target, getContext());
                 } catch (Throwable t) {
                     allPassed = false;
                     LOGGER.error(ErrorCode.convert("01-00008", binding.getBindingType(), service),
-                            t);
+                        t);
                     continue;
                 }
                 LOGGER.info(" <<Post un-out Binding [{}] Ends - {}.", binding.getBindingType(),
-                        service);
+                    service);
             }
 
             if (!allPassed) {

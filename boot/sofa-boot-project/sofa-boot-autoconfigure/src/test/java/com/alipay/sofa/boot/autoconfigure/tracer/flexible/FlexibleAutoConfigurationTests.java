@@ -43,9 +43,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class FlexibleAutoConfigurationTests {
 
     private final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
-            .withConfiguration(AutoConfigurations
-                    .of(FlexibleAutoConfiguration.class,
-                            SofaTracerAutoConfiguration.class));
+                                                             .withConfiguration(AutoConfigurations
+                                                                 .of(FlexibleAutoConfiguration.class,
+                                                                     SofaTracerAutoConfiguration.class));
 
     @Test
     public void registerFlexibleBeans() {

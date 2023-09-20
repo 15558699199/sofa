@@ -20,6 +20,7 @@ import com.alipay.sofa.rpc.boot.runtime.binding.RpcBindingType;
 import com.alipay.sofa.runtime.api.binding.BindingType;
 
 /**
+ *
  * @author <a href="mailto:lw111072@antfin.com">LiWei</a>
  */
 public class RestBindingAdapter extends RpcBindingAdapter {

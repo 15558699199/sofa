@@ -23,7 +23,7 @@ package com.alipay.sofa.runtime.spi.binding;
  */
 public abstract class AbstractBinding implements Binding {
 
-    protected boolean isHealthy = true;
+    protected boolean isHealthy   = true;
 
     protected boolean isDestroyed = false;
 
@@ -47,6 +47,11 @@ public abstract class AbstractBinding implements Binding {
         isHealthy = healthy;
     }
 
+    @Override
+    public void setDestroyed(boolean destroyed) {
+        isDestroyed = destroyed;
+    }
+
     /**
      * Getter method for property of isDestroyed.
      *
@@ -55,10 +60,5 @@ public abstract class AbstractBinding implements Binding {
     @Override
     public boolean isDestroyed() {
         return isDestroyed;
-    }
-
-    @Override
-    public void setDestroyed(boolean destroyed) {
-        isDestroyed = destroyed;
     }
 }

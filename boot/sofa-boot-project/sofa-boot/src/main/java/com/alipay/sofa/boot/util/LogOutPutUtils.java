@@ -36,13 +36,13 @@ public class LogOutPutUtils {
         openOutPutForLoggers(Arrays.asList(loggers));
     }
 
-    public static void openOutPutForLoggers(Class<?>... classes) {
+    public static void openOutPutForLoggers(Class<?> ... classes) {
         openOutPutForLoggers(Arrays.stream(classes).map(Class::getName).collect(Collectors.toList()));
     }
 
     public static void openOutPutForLoggers(Collection<String> loggers) {
         CommonLoggingConfigurations.loadExternalConfiguration(
-                Constants.SOFA_MIDDLEWARE_ALL_LOG_CONSOLE_SWITCH, "true");
+            Constants.SOFA_MIDDLEWARE_ALL_LOG_CONSOLE_SWITCH, "true");
         CommonLoggingConfigurations.addAllConsoleLogger(new HashSet<>(loggers));
     }
 }

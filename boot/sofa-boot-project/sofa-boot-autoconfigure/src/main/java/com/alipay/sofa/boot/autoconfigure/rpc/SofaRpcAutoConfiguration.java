@@ -31,7 +31,12 @@ import com.alipay.sofa.rpc.boot.context.RpcStopApplicationListener;
 import com.alipay.sofa.rpc.boot.context.SofaBootRpcStartListener;
 import com.alipay.sofa.rpc.boot.runtime.adapter.helper.ConsumerConfigHelper;
 import com.alipay.sofa.rpc.boot.runtime.adapter.helper.ProviderConfigHelper;
-import com.alipay.sofa.rpc.boot.runtime.adapter.processor.*;
+import com.alipay.sofa.rpc.boot.runtime.adapter.processor.ConsumerConfigProcessor;
+import com.alipay.sofa.rpc.boot.runtime.adapter.processor.ConsumerMockProcessor;
+import com.alipay.sofa.rpc.boot.runtime.adapter.processor.DynamicConfigProcessor;
+import com.alipay.sofa.rpc.boot.runtime.adapter.processor.ProcessorContainer;
+import com.alipay.sofa.rpc.boot.runtime.adapter.processor.ProviderConfigProcessor;
+import com.alipay.sofa.rpc.boot.runtime.adapter.processor.ProviderRegisterProcessor;
 import com.alipay.sofa.rpc.common.SofaOptions;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -61,8 +66,8 @@ import java.util.Map;
 @AutoConfiguration(after = SofaRuntimeAutoConfiguration.class)
 @ConditionalOnClass(ProviderConfigContainer.class)
 @EnableConfigurationProperties(SofaBootRpcProperties.class)
-@Import({RegistryConfigurationImportSelector.class, SwaggerConfiguration.class,
-        RestFilterConfiguration.class})
+@Import({ RegistryConfigurationImportSelector.class, SwaggerConfiguration.class,
+         RestFilterConfiguration.class })
 public class SofaRpcAutoConfiguration {
 
     @Bean
@@ -78,24 +83,24 @@ public class SofaRpcAutoConfiguration {
                                                                  Environment environment) {
         FaultToleranceConfigurator faultToleranceConfigurator = new FaultToleranceConfigurator();
         faultToleranceConfigurator.setAppName(environment
-                .getProperty(SofaBootConstants.APP_NAME_KEY));
+            .getProperty(SofaBootConstants.APP_NAME_KEY));
         faultToleranceConfigurator.setRegulationEffectiveStr(sofaBootRpcProperties
-                .getAftRegulationEffective());
+            .getAftRegulationEffective());
         faultToleranceConfigurator.setDegradeEffectiveStr(sofaBootRpcProperties
-                .getAftDegradeEffective());
+            .getAftDegradeEffective());
         faultToleranceConfigurator.setTimeWindowStr(sofaBootRpcProperties.getAftTimeWindow());
         faultToleranceConfigurator.setLeastWindowCountStr(sofaBootRpcProperties
-                .getAftLeastWindowCount());
+            .getAftLeastWindowCount());
         faultToleranceConfigurator.setLeastWindowExceptionRateMultipleStr(sofaBootRpcProperties
-                .getAftLeastWindowExceptionRateMultiple());
+            .getAftLeastWindowExceptionRateMultiple());
         faultToleranceConfigurator.setWeightDegradeRateStr(sofaBootRpcProperties
-                .getAftWeightDegradeRate());
+            .getAftWeightDegradeRate());
         faultToleranceConfigurator.setWeightRecoverRateStr(sofaBootRpcProperties
-                .getAftWeightRecoverRate());
+            .getAftWeightRecoverRate());
         faultToleranceConfigurator.setDegradeLeastWeightStr(sofaBootRpcProperties
-                .getAftDegradeLeastWeight());
+            .getAftDegradeLeastWeight());
         faultToleranceConfigurator.setDegradeMaxIpCountStr(sofaBootRpcProperties
-                .getAftDegradeMaxIpCount());
+            .getAftDegradeMaxIpCount());
         return faultToleranceConfigurator;
     }
 
@@ -106,7 +111,7 @@ public class SofaRpcAutoConfiguration {
 
         serverConfigContainer.setEnabledIpRange(sofaBootRpcProperties.getEnabledIpRange());
         serverConfigContainer.setBindNetworkInterface(sofaBootRpcProperties
-                .getBindNetworkInterface());
+            .getBindNetworkInterface());
         serverConfigContainer.setBoundHostStr(sofaBootRpcProperties.getBoundHost());
         serverConfigContainer.setVirtualHostStr(sofaBootRpcProperties.getVirtualHost());
         serverConfigContainer.setVirtualPortStr(sofaBootRpcProperties.getVirtualPort());
@@ -114,24 +119,24 @@ public class SofaRpcAutoConfiguration {
         // init h2c property
         serverConfigContainer.setH2cPortStr(sofaBootRpcProperties.getH2cPort());
         serverConfigContainer.setH2cThreadPoolCoreSizeStr(sofaBootRpcProperties
-                .getH2cThreadPoolCoreSize());
+            .getH2cThreadPoolCoreSize());
         serverConfigContainer.setH2cThreadPoolMaxSizeStr(sofaBootRpcProperties
-                .getH2cThreadPoolMaxSize());
+            .getH2cThreadPoolMaxSize());
         serverConfigContainer.setH2cAcceptsSizeStr(sofaBootRpcProperties.getH2cAcceptsSize());
         serverConfigContainer.setH2cThreadPoolQueueSizeStr(sofaBootRpcProperties
-                .getH2cThreadPoolQueueSize());
+            .getH2cThreadPoolQueueSize());
 
         // init bolt property
         serverConfigContainer.setBoltPortStr(sofaBootRpcProperties.getBoltPort());
         serverConfigContainer.setBoltThreadPoolCoreSizeStr(sofaBootRpcProperties
-                .getBoltThreadPoolCoreSize());
+            .getBoltThreadPoolCoreSize());
         serverConfigContainer.setBoltThreadPoolMaxSizeStr(sofaBootRpcProperties
-                .getBoltThreadPoolMaxSize());
+            .getBoltThreadPoolMaxSize());
         serverConfigContainer.setBoltAcceptsSizeStr(sofaBootRpcProperties.getBoltAcceptsSize());
         serverConfigContainer.setBoltThreadPoolQueueSizeStr(sofaBootRpcProperties
-                .getBoltThreadPoolQueueSize());
+            .getBoltThreadPoolQueueSize());
         serverConfigContainer.setBoltProcessInIoThread(sofaBootRpcProperties
-                .getBoltProcessInIoThread());
+            .getBoltProcessInIoThread());
 
         // init rest property
         serverConfigContainer.setRestHostName(sofaBootRpcProperties.getRestHostname());
@@ -139,9 +144,9 @@ public class SofaRpcAutoConfiguration {
         serverConfigContainer.setRestIoThreadSizeStr(sofaBootRpcProperties.getRestIoThreadSize());
         serverConfigContainer.setRestContextPath(sofaBootRpcProperties.getRestContextPath());
         serverConfigContainer.setRestThreadPoolMaxSizeStr(sofaBootRpcProperties
-                .getRestThreadPoolMaxSize());
+            .getRestThreadPoolMaxSize());
         serverConfigContainer.setRestMaxRequestSizeStr(sofaBootRpcProperties
-                .getRestMaxRequestSize());
+            .getRestMaxRequestSize());
         serverConfigContainer.setRestTelnetStr(sofaBootRpcProperties.getRestTelnet());
         serverConfigContainer.setRestDaemonStr(sofaBootRpcProperties.getRestDaemon());
         serverConfigContainer.setRestAllowedOrigins(sofaBootRpcProperties.getRestAllowedOrigins());
@@ -150,28 +155,28 @@ public class SofaRpcAutoConfiguration {
         serverConfigContainer.setDubboPortStr(sofaBootRpcProperties.getDubboPort());
         serverConfigContainer.setDubboIoThreadSizeStr(sofaBootRpcProperties.getDubboIoThreadSize());
         serverConfigContainer.setDubboThreadPoolMaxSizeStr(sofaBootRpcProperties
-                .getDubboThreadPoolMaxSize());
+            .getDubboThreadPoolMaxSize());
         serverConfigContainer.setDubboAcceptsSizeStr(sofaBootRpcProperties.getDubboAcceptsSize());
 
         // init http property
         serverConfigContainer.setHttpPortStr(sofaBootRpcProperties.getHttpPort());
         serverConfigContainer.setHttpThreadPoolCoreSizeStr(sofaBootRpcProperties
-                .getHttpThreadPoolCoreSize());
+            .getHttpThreadPoolCoreSize());
         serverConfigContainer.setHttpThreadPoolMaxSizeStr(sofaBootRpcProperties
-                .getHttpThreadPoolMaxSize());
+            .getHttpThreadPoolMaxSize());
         serverConfigContainer.setHttpAcceptsSizeStr(sofaBootRpcProperties.getHttpAcceptsSize());
         serverConfigContainer.setHttpThreadPoolQueueSizeStr(sofaBootRpcProperties
-                .getHttpThreadPoolQueueSize());
+            .getHttpThreadPoolQueueSize());
 
         // init triple property
         serverConfigContainer.setTriplePortStr(sofaBootRpcProperties.getTriplePort());
         serverConfigContainer.setTripleThreadPoolCoreSizeStr(sofaBootRpcProperties
-                .getTripleThreadPoolCoreSize());
+            .getTripleThreadPoolCoreSize());
         serverConfigContainer.setTripleThreadPoolMaxSizeStr(sofaBootRpcProperties
-                .getTripleThreadPoolMaxSize());
+            .getTripleThreadPoolMaxSize());
         serverConfigContainer.setTripleAcceptsSizeStr(sofaBootRpcProperties.getTripleAcceptsSize());
         serverConfigContainer.setTripleThreadPoolQueueSizeStr(sofaBootRpcProperties
-                .getTripleThreadPoolQueueSize());
+            .getTripleThreadPoolQueueSize());
 
         return serverConfigContainer;
     }
@@ -182,14 +187,14 @@ public class SofaRpcAutoConfiguration {
                                                            Environment environment,
                                                            @Qualifier("registryConfigMap") Map<String, RegistryConfigureProcessor> registryConfigMap) {
         RegistryConfigContainer registryConfigContainer = new RegistryConfigContainer(
-                registryConfigMap);
+            registryConfigMap);
 
         registryConfigContainer.setDefaultRegistryAddress(sofaBootRpcProperties
-                .getRegistryAddress());
+            .getRegistryAddress());
         registryConfigContainer.setRegistries(sofaBootRpcProperties.getRegistries());
         registryConfigContainer.setMeshConfig(sofaBootRpcProperties.getEnableMesh());
         registryConfigContainer.setIgnoreRegistry(Boolean.parseBoolean(environment
-                .getProperty(SofaOptions.CONFIG_RPC_REGISTER_REGISTRY_IGNORE)));
+            .getProperty(SofaOptions.CONFIG_RPC_REGISTER_REGISTRY_IGNORE)));
         return registryConfigContainer;
     }
 
@@ -200,7 +205,7 @@ public class SofaRpcAutoConfiguration {
                                                      Environment environment) {
         String appName = environment.getProperty(SofaBootConstants.APP_NAME_KEY);
         ConsumerConfigHelper configHelper = new ConsumerConfigHelper(registryConfigContainer,
-                appName);
+            appName);
         configHelper.setReferenceLimit(sofaBootRpcProperties.getConsumerRepeatedReferenceLimit());
         configHelper.setHystrixEnable(sofaBootRpcProperties.getHystrixEnable());
         return configHelper;
@@ -243,7 +248,7 @@ public class SofaRpcAutoConfiguration {
     public RpcStartApplicationListener applicationContextRefreshedListener(SofaBootRpcProperties sofaBootRpcProperties) {
         RpcStartApplicationListener rpcStartApplicationListener = new RpcStartApplicationListener();
         rpcStartApplicationListener.setEnableAutoPublish(sofaBootRpcProperties
-                .isEnableAutoPublish());
+            .isEnableAutoPublish());
         return rpcStartApplicationListener;
     }
 
@@ -255,8 +260,8 @@ public class SofaRpcAutoConfiguration {
                                                              ServerConfigContainer serverConfigContainer,
                                                              RegistryConfigContainer registryConfigContainer) {
         SofaBootRpcStartListener rpcStartListener = new SofaBootRpcStartListener(
-                providerConfigContainer, faultToleranceConfigurator.getIfUnique(),
-                serverConfigContainer, registryConfigContainer);
+            providerConfigContainer, faultToleranceConfigurator.getIfUnique(),
+            serverConfigContainer, registryConfigContainer);
         rpcStartListener.setLookoutCollectDisable(sofaBootRpcProperties.getLookoutCollectDisable());
         return rpcStartListener;
     }

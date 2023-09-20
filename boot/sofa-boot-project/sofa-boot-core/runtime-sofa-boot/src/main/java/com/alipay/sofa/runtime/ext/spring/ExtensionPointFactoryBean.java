@@ -29,7 +29,9 @@ import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
-import static com.alipay.sofa.runtime.spi.component.ComponentDefinitionInfo.*;
+import static com.alipay.sofa.runtime.spi.component.ComponentDefinitionInfo.BEAN_ID;
+import static com.alipay.sofa.runtime.spi.component.ComponentDefinitionInfo.EXTENSION_POINT_NAME;
+import static com.alipay.sofa.runtime.spi.component.ComponentDefinitionInfo.SOURCE;
 
 /**
  * Implementation of {@link org.springframework.beans.factory.FactoryBean} to register extension point.
@@ -41,13 +43,13 @@ import static com.alipay.sofa.runtime.spi.component.ComponentDefinitionInfo.*;
 public class ExtensionPointFactoryBean extends AbstractExtFactoryBean {
 
     private static final Logger LOGGER = SofaBootLoggerFactory
-            .getLogger(ExtensionPointFactoryBean.class);
+                                           .getLogger(ExtensionPointFactoryBean.class);
 
     /* extension point name */
-    private String name;
+    private String              name;
 
     /* contributions for the extension point */
-    private String[] contribution;
+    private String[]            contribution;
 
     @Override
     public void afterPropertiesSet() throws Exception {
@@ -56,29 +58,29 @@ public class ExtensionPointFactoryBean extends AbstractExtFactoryBean {
         Assert.notNull(name, "required property 'name' has not been set for extension point");
 
         if (!StringUtils.hasText(targetBeanName) && target == null
-                || (StringUtils.hasText(targetBeanName) && target != null)) {
+            || (StringUtils.hasText(targetBeanName) && target != null)) {
             throw new IllegalArgumentException(
-                    "either 'target' or 'targetBeanName' have to be specified");
+                "either 'target' or 'targetBeanName' have to be specified");
         }
 
         // determine serviceClass (can still be null if using a FactoryBean
         // which doesn't declare its product type)
         Class<?> extensionPointClass = (target != null ? target.getClass() : beanFactory
-                .getType(targetBeanName));
+            .getType(targetBeanName));
 
         // check if there is a reference to a non-lazy bean
         if (StringUtils.hasText(targetBeanName)) {
             if (beanFactory instanceof ConfigurableListableBeanFactory) {
                 // in case the target is non-lazy, singleton bean, initialize it
                 BeanDefinition beanDef = ((ConfigurableListableBeanFactory) beanFactory)
-                        .getBeanDefinition(targetBeanName);
+                    .getBeanDefinition(targetBeanName);
 
                 if (beanDef.isSingleton() && !beanDef.isLazyInit()) {
                     LOGGER
-                            .atDebug()
-                            .log(
-                                    "target bean [{}] is a non-lazy singleton; forcing initialization before publishing",
-                                    targetBeanName);
+                        .atDebug()
+                        .log(
+                            "target bean [{}] is a non-lazy singleton; forcing initialization before publishing",
+                            targetBeanName);
                     beanFactory.getBean(targetBeanName);
                 }
             }
@@ -96,7 +98,7 @@ public class ExtensionPointFactoryBean extends AbstractExtFactoryBean {
         Assert.notNull(beanClass, "Service must be implement!");
 
         ExtensionPointBuilder extensionPointBuilder = ExtensionPointBuilder.genericExtensionPoint(
-                this.name, applicationContext.getClassLoader());
+            this.name, applicationContext.getClassLoader());
 
         if (this.contribution != null && this.contribution.length != 0) {
             for (String s : contribution) {
@@ -104,13 +106,13 @@ public class ExtensionPointFactoryBean extends AbstractExtFactoryBean {
             }
         }
         Assert.hasLength(beanName,
-                "required property 'beanName' has not been set for creating implementation");
+            "required property 'beanName' has not been set for creating implementation");
         Assert.notNull(applicationContext,
-                "required property 'applicationContext' has not been set for creating implementation");
+            "required property 'applicationContext' has not been set for creating implementation");
         Implementation implementation = new SpringImplementationImpl(targetBeanName,
-                applicationContext);
+            applicationContext);
         ComponentInfo extensionPointComponent = new ExtensionPointComponent(
-                extensionPointBuilder.getExtensionPoint(), sofaRuntimeContext, implementation);
+            extensionPointBuilder.getExtensionPoint(), sofaRuntimeContext, implementation);
         ComponentDefinitionInfo definitionInfo = new ComponentDefinitionInfo();
         definitionInfo.setInterfaceMode(InterfaceMode.spring);
         definitionInfo.putInfo(EXTENSION_POINT_NAME, name);
@@ -123,12 +125,12 @@ public class ExtensionPointFactoryBean extends AbstractExtFactoryBean {
         sofaRuntimeContext.getComponentManager().register(extensionPointComponent);
     }
 
-    public String getName() {
-        return name;
-    }
-
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public void setContribution(String[] contribution) throws Exception {

@@ -42,31 +42,31 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class TracerDataSourceTests {
 
     private static final File logFile = new File(System.getProperty("user.dir")
-            + "/logs/tracelog/datasource-client-digest.log");
+                                                 + "/logs/tracelog/datasource-client-digest.log");
 
     @Autowired
     @Qualifier("druidDataSource")
-    private DataSource druidDataSource;
+    private DataSource        druidDataSource;
 
     @Autowired
     @Qualifier("dbcpDataSource")
-    private DataSource dbcpDataSource;
+    private DataSource        dbcpDataSource;
 
     @Autowired
     @Qualifier("dbcp2DataSource")
-    private DataSource dbcp2DataSource;
+    private DataSource        dbcp2DataSource;
 
     @Autowired
     @Qualifier("tomcatDatasource")
-    private DataSource tomcatDatasource;
+    private DataSource        tomcatDatasource;
 
     @Autowired
     @Qualifier("hikariDataSource")
-    private DataSource hikariDataSource;
+    private DataSource        hikariDataSource;
 
     @Autowired
     @Qualifier("comboPooledDataSource")
-    private DataSource comboPooledDataSource;
+    private DataSource        comboPooledDataSource;
 
     @BeforeAll
     public static void clearFile() {
@@ -109,7 +109,7 @@ public class TracerDataSourceTests {
 
         jdbcTemplate.execute("DROP TABLE IF EXISTS TEST;");
         jdbcTemplate.execute("CREATE TABLE TEST(ID INT PRIMARY KEY, NAME VARCHAR(255));");
-        jdbcTemplate.execute("INSERT INTO TEST(ID,NAME) VALUES(1, '" + dataSourceName + "');");
+        jdbcTemplate.execute("INSERT INTO TEST(ID,NAME) VALUES(1, '" + dataSourceName +"');");
         jdbcTemplate.query("SELECT * FROM TEST", rs -> {
             int id = rs.getInt("id");
             String name = rs.getString("name");

@@ -42,8 +42,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class RabbitMqAutoConfigurationTests {
 
     private final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
-            .withConfiguration(AutoConfigurations
-                    .of(RabbitMqAutoConfiguration.class));
+                                                             .withConfiguration(AutoConfigurations
+                                                                 .of(RabbitMqAutoConfiguration.class));
 
     @Test
     public void registerRabbitMqBeans() {

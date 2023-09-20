@@ -51,10 +51,10 @@ public class ComponentsEndpointTests {
     private SofaRuntimeContext sofaRuntimeContext;
 
     @Mock
-    private ComponentManager componentManager;
+    private ComponentManager   componentManager;
 
     @Mock
-    private ServiceComponent serviceComponent;
+    private ServiceComponent   serviceComponent;
 
     @Mock
     private ExtensionComponent extensionComponent;
@@ -74,13 +74,13 @@ public class ComponentsEndpointTests {
         List<ServiceComponent> serviceComponents = new ArrayList<>();
         serviceComponents.add(serviceComponent);
         Mockito
-                .doReturn(new ComponentName(ServiceComponent.SERVICE_COMPONENT_TYPE, "testSofaService"))
-                .when(serviceComponent).getName();
+            .doReturn(new ComponentName(ServiceComponent.SERVICE_COMPONENT_TYPE, "testSofaService"))
+            .when(serviceComponent).getName();
         GenericApplicationContext contextA = new GenericApplicationContext();
         contextA.setId("moduleA");
         Mockito.doReturn(contextA).when(serviceComponent).getApplicationContext();
         Mockito.doReturn(serviceComponents).when(componentManager)
-                .getComponentInfosByType(ServiceComponent.SERVICE_COMPONENT_TYPE);
+            .getComponentInfosByType(ServiceComponent.SERVICE_COMPONENT_TYPE);
         Property propertyA = new Property();
         propertyA.setName("serviceA");
         propertyA.setValue("valueA");
@@ -90,52 +90,52 @@ public class ComponentsEndpointTests {
         List<ExtensionComponent> extensionComponents = new ArrayList<>();
         extensionComponents.add(extensionComponent);
         Mockito
-                .doReturn(new ComponentName(ExtensionComponent.EXTENSION_COMPONENT_TYPE, "testSofaExt"))
-                .when(extensionComponent).getName();
+            .doReturn(new ComponentName(ExtensionComponent.EXTENSION_COMPONENT_TYPE, "testSofaExt"))
+            .when(extensionComponent).getName();
         GenericApplicationContext contextB = new GenericApplicationContext();
         contextB.setId("moduleB");
         Mockito.doReturn(contextB).when(extensionComponent).getApplicationContext();
         Mockito.doReturn(extensionComponents).when(componentManager)
-                .getComponentInfosByType(ExtensionComponent.EXTENSION_COMPONENT_TYPE);
+            .getComponentInfosByType(ExtensionComponent.EXTENSION_COMPONENT_TYPE);
 
         ComponentsEndpoint.ComponentsDescriptor applicationComponents = sofaBootComponentsEndPoint
-                .components();
+            .components();
         assertThat(applicationComponents).isNotNull();
         Map<String, Collection<ComponentsEndpoint.ComponentDisplayInfo>> componentTypeCollectionMap = applicationComponents
-                .getComponentsInfoMap();
+            .getComponentsInfoMap();
         assertThat(componentTypeCollectionMap).isNotNull();
         assertThat(componentTypeCollectionMap.size()).isEqualTo(2);
 
         Collection<ComponentsEndpoint.ComponentDisplayInfo> serviceComponentCollection = componentTypeCollectionMap
-                .get(ServiceComponent.SERVICE_COMPONENT_TYPE.getName());
+            .get(ServiceComponent.SERVICE_COMPONENT_TYPE.getName());
         assertThat(serviceComponents.size()).isEqualTo(1);
         assertThat(serviceComponentCollection).isInstanceOf(List.class);
         assertThat(
-                ((List<ComponentsEndpoint.ComponentDisplayInfo>) serviceComponentCollection).get(0)
-                        .getName()).isEqualTo("testSofaService");
+            ((List<ComponentsEndpoint.ComponentDisplayInfo>) serviceComponentCollection).get(0)
+                .getName()).isEqualTo("testSofaService");
         assertThat(
-                ((List<ComponentsEndpoint.ComponentDisplayInfo>) serviceComponentCollection).get(0)
-                        .getApplicationId()).isEqualTo("moduleA");
+            ((List<ComponentsEndpoint.ComponentDisplayInfo>) serviceComponentCollection).get(0)
+                .getApplicationId()).isEqualTo("moduleA");
         assertThat(
-                ((List<ComponentsEndpoint.ComponentDisplayInfo>) serviceComponentCollection).get(0)
-                        .getName()).isEqualTo("testSofaService");
+            ((List<ComponentsEndpoint.ComponentDisplayInfo>) serviceComponentCollection).get(0)
+                .getName()).isEqualTo("testSofaService");
         assertThat(
-                ((List<ComponentsEndpoint.ComponentDisplayInfo>) serviceComponentCollection).get(0)
-                        .getProperties().get(0).getName()).isEqualTo("serviceA");
+            ((List<ComponentsEndpoint.ComponentDisplayInfo>) serviceComponentCollection).get(0)
+                .getProperties().get(0).getName()).isEqualTo("serviceA");
         assertThat(
-                ((List<ComponentsEndpoint.ComponentDisplayInfo>) serviceComponentCollection).get(0)
-                        .getProperties().get(0).getValue()).isEqualTo("valueA");
+            ((List<ComponentsEndpoint.ComponentDisplayInfo>) serviceComponentCollection).get(0)
+                .getProperties().get(0).getValue()).isEqualTo("valueA");
 
         Collection<ComponentsEndpoint.ComponentDisplayInfo> extComponentCollection = componentTypeCollectionMap
-                .get(ExtensionComponent.EXTENSION_COMPONENT_TYPE.getName());
+            .get(ExtensionComponent.EXTENSION_COMPONENT_TYPE.getName());
         assertThat(extComponentCollection.size()).isEqualTo(1);
         assertThat(extComponentCollection).isInstanceOf(List.class);
         assertThat(
-                ((List<ComponentsEndpoint.ComponentDisplayInfo>) extComponentCollection).get(0)
-                        .getName()).isEqualTo("testSofaExt");
+            ((List<ComponentsEndpoint.ComponentDisplayInfo>) extComponentCollection).get(0)
+                .getName()).isEqualTo("testSofaExt");
         assertThat(
-                ((List<ComponentsEndpoint.ComponentDisplayInfo>) extComponentCollection).get(0)
-                        .getApplicationId()).isEqualTo("moduleB");
+            ((List<ComponentsEndpoint.ComponentDisplayInfo>) extComponentCollection).get(0)
+                .getApplicationId()).isEqualTo("moduleB");
     }
 
 }

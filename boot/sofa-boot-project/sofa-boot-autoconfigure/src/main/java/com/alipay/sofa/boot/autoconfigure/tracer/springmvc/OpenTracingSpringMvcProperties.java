@@ -36,7 +36,7 @@ public class OpenTracingSpringMvcProperties {
     /**
      * order for {@link SpringMvcSofaTracerFilter}
      */
-    private int filterOrder = Ordered.HIGHEST_PRECEDENCE + 1;
+    private int          filterOrder = Ordered.HIGHEST_PRECEDENCE + 1;
 
     /**
      * Url Pattens for {@link SpringMvcSofaTracerFilter}

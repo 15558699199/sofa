@@ -43,65 +43,70 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 public class SofaBizHealthCheckEventHandlerTests {
 
-    private final SofaBizHealthCheckEventHandler sofaBizHealthCheckEventHandler = new SofaBizHealthCheckEventHandler();
-    private final ObjectProvider<ReadinessCheckListener> nullProvider = new ObjectProvider<>() {
-
-        @Override
-        public ReadinessCheckListener getObject(Object... args)
-                throws BeansException {
-            return null;
-        }
-
-        @Override
-        public ReadinessCheckListener getIfAvailable()
-                throws BeansException {
-            return null;
-        }
-
-        @Override
-        public ReadinessCheckListener getIfUnique()
-                throws BeansException {
-            return null;
-        }
-
-        @Override
-        public ReadinessCheckListener getObject()
-                throws BeansException {
-            return null;
-        }
-    };
     @Mock
-    private GenericApplicationContext applicationContext;
+    private GenericApplicationContext                    applicationContext;
+
     @Mock
-    private ReadinessCheckListener readinessCheckListener;
-    private final ObjectProvider<ReadinessCheckListener> objectProvider = new ObjectProvider<>() {
+    private ReadinessCheckListener                       readinessCheckListener;
 
-        @Override
-        public ReadinessCheckListener getObject(Object... args)
-                throws BeansException {
-            return readinessCheckListener;
-        }
-
-        @Override
-        public ReadinessCheckListener getIfAvailable()
-                throws BeansException {
-            return readinessCheckListener;
-        }
-
-        @Override
-        public ReadinessCheckListener getIfUnique()
-                throws BeansException {
-            return readinessCheckListener;
-        }
-
-        @Override
-        public ReadinessCheckListener getObject()
-                throws BeansException {
-            return readinessCheckListener;
-        }
-    };
     @Mock
-    private SofaRuntimeManager sofaRuntimeManager;
+    private SofaRuntimeManager                           sofaRuntimeManager;
+
+    private final SofaBizHealthCheckEventHandler         sofaBizHealthCheckEventHandler = new SofaBizHealthCheckEventHandler();
+
+    private final ObjectProvider<ReadinessCheckListener> objectProvider                 = new ObjectProvider<>() {
+
+                                                                                            @Override
+                                                                                            public ReadinessCheckListener getObject(Object... args)
+                                                                                                                                                   throws BeansException {
+                                                                                                return readinessCheckListener;
+                                                                                            }
+
+                                                                                            @Override
+                                                                                            public ReadinessCheckListener getIfAvailable()
+                                                                                                                                          throws BeansException {
+                                                                                                return readinessCheckListener;
+                                                                                            }
+
+                                                                                            @Override
+                                                                                            public ReadinessCheckListener getIfUnique()
+                                                                                                                                       throws BeansException {
+                                                                                                return readinessCheckListener;
+                                                                                            }
+
+                                                                                            @Override
+                                                                                            public ReadinessCheckListener getObject()
+                                                                                                                                     throws BeansException {
+                                                                                                return readinessCheckListener;
+                                                                                            }
+                                                                                        };
+
+    private final ObjectProvider<ReadinessCheckListener> nullProvider                   = new ObjectProvider<>() {
+
+                                                                                            @Override
+                                                                                            public ReadinessCheckListener getObject(Object... args)
+                                                                                                                                                   throws BeansException {
+                                                                                                return null;
+                                                                                            }
+
+                                                                                            @Override
+                                                                                            public ReadinessCheckListener getIfAvailable()
+                                                                                                                                          throws BeansException {
+                                                                                                return null;
+                                                                                            }
+
+                                                                                            @Override
+                                                                                            public ReadinessCheckListener getIfUnique()
+                                                                                                                                       throws BeansException {
+                                                                                                return null;
+                                                                                            }
+
+                                                                                            @Override
+                                                                                            public ReadinessCheckListener getObject()
+                                                                                                                                     throws BeansException {
+                                                                                                return null;
+                                                                                            }
+                                                                                        };
 
     @BeforeEach
     public void clear() {
@@ -122,7 +127,7 @@ public class SofaBizHealthCheckEventHandlerTests {
         SofaRuntimeContainer sofaRuntimeContainer = new SofaRuntimeContainer(sofaRuntimeManager);
         sofaRuntimeContainer.setApplicationContext(applicationContext);
         when(applicationContext.getBeanProvider(ReadinessCheckListener.class)).thenReturn(
-                nullProvider);
+            nullProvider);
 
         sofaBizHealthCheckEventHandler.handleEvent(new AfterBizStartupEvent(mockBiz));
 
@@ -135,7 +140,7 @@ public class SofaBizHealthCheckEventHandlerTests {
         SofaRuntimeContainer sofaRuntimeContainer = new SofaRuntimeContainer(sofaRuntimeManager);
         sofaRuntimeContainer.setApplicationContext(applicationContext);
         when(applicationContext.getBeanProvider(ReadinessCheckListener.class)).thenReturn(
-                objectProvider);
+            objectProvider);
         when(readinessCheckListener.aggregateReadinessHealth()).thenReturn(Health.up().build());
 
         sofaBizHealthCheckEventHandler.handleEvent(new AfterBizStartupEvent(mockBiz));

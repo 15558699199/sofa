@@ -45,7 +45,7 @@ import static org.mockito.Mockito.only;
  * @author huzijie
  * @version ReadinessCheckListenerTests.java, v 0.1 2023年01月06日 1:20 PM huzijie Exp $
  */
-@ExtendWith({MockitoExtension.class, OutputCaptureExtension.class})
+@ExtendWith({ MockitoExtension.class, OutputCaptureExtension.class })
 public class ReadinessCheckListenerTests {
 
     static {
@@ -53,19 +53,19 @@ public class ReadinessCheckListenerTests {
     }
 
     @InjectMocks
-    private ReadinessCheckListener readinessCheckListener;
+    private ReadinessCheckListener          readinessCheckListener;
 
     @Mock
-    private HealthCheckerProcessor healthCheckerProcessor;
+    private HealthCheckerProcessor          healthCheckerProcessor;
 
     @Mock
-    private HealthIndicatorProcessor healthIndicatorProcessor;
+    private HealthIndicatorProcessor        healthIndicatorProcessor;
 
     @Mock
     private ReadinessCheckCallbackProcessor readinessCheckCallbackProcessor;
 
     @Mock
-    private ApplicationContext applicationContext;
+    private ApplicationContext              applicationContext;
 
     @Test
     public void applicationContextNull() {
@@ -78,7 +78,7 @@ public class ReadinessCheckListenerTests {
         Mockito.doReturn(true).when(healthCheckerProcessor).readinessHealthCheck(anyMap());
         Mockito.doReturn(true).when(healthIndicatorProcessor).readinessHealthCheck(anyMap());
         Mockito.doReturn(true).when(readinessCheckCallbackProcessor)
-                .readinessCheckCallback(anyMap());
+            .readinessCheckCallback(anyMap());
         readinessCheckListener.setApplicationContext(applicationContext);
         readinessCheckListener.readinessHealthCheck();
 
@@ -89,7 +89,7 @@ public class ReadinessCheckListenerTests {
         assertThat(readinessCheckListener.getHealthCallbackStatus()).isTrue();
         assertThat(readinessCheckListener.getReadinessCallbackTriggered()).isTrue();
         assertThat(readinessCheckListener.getReadinessState()).isEqualTo(
-                ReadinessState.ACCEPTING_TRAFFIC);
+            ReadinessState.ACCEPTING_TRAFFIC);
         assertThat(readinessCheckListener.isReadinessCheckFinish()).isTrue();
 
         Health health = readinessCheckListener.aggregateReadinessHealth();
@@ -107,14 +107,14 @@ public class ReadinessCheckListenerTests {
         readinessCheckListener.readinessHealthCheck();
 
         assertThat(capturedOutput.getOut()).contains(
-                "SOFA-BOOT-01-20000: Readiness check result: fail");
+            "SOFA-BOOT-01-20000: Readiness check result: fail");
         Mockito.verify(readinessCheckCallbackProcessor, never()).readinessCheckCallback(anyMap());
         assertThat(readinessCheckListener.getHealthCheckerStatus()).isFalse();
         assertThat(readinessCheckListener.getHealthIndicatorStatus()).isTrue();
         assertThat(readinessCheckListener.getHealthCallbackStatus()).isTrue();
         assertThat(readinessCheckListener.getReadinessCallbackTriggered()).isFalse();
         assertThat(readinessCheckListener.getReadinessState()).isEqualTo(
-                ReadinessState.REFUSING_TRAFFIC);
+            ReadinessState.REFUSING_TRAFFIC);
         assertThat(readinessCheckListener.isReadinessCheckFinish()).isTrue();
 
         Health health = readinessCheckListener.aggregateReadinessHealth();
@@ -132,14 +132,14 @@ public class ReadinessCheckListenerTests {
         readinessCheckListener.readinessHealthCheck();
 
         assertThat(capturedOutput.getOut()).contains(
-                "SOFA-BOOT-01-20000: Readiness check result: fail");
+            "SOFA-BOOT-01-20000: Readiness check result: fail");
         Mockito.verify(readinessCheckCallbackProcessor, never()).readinessCheckCallback(anyMap());
         assertThat(readinessCheckListener.getHealthCheckerStatus()).isTrue();
         assertThat(readinessCheckListener.getHealthIndicatorStatus()).isFalse();
         assertThat(readinessCheckListener.getHealthCallbackStatus()).isTrue();
         assertThat(readinessCheckListener.getReadinessCallbackTriggered()).isFalse();
         assertThat(readinessCheckListener.getReadinessState()).isEqualTo(
-                ReadinessState.REFUSING_TRAFFIC);
+            ReadinessState.REFUSING_TRAFFIC);
         assertThat(readinessCheckListener.isReadinessCheckFinish()).isTrue();
 
         Health health = readinessCheckListener.aggregateReadinessHealth();
@@ -154,19 +154,19 @@ public class ReadinessCheckListenerTests {
         Mockito.doReturn(true).when(healthCheckerProcessor).readinessHealthCheck(anyMap());
         Mockito.doReturn(true).when(healthIndicatorProcessor).readinessHealthCheck(anyMap());
         Mockito.doReturn(false).when(readinessCheckCallbackProcessor)
-                .readinessCheckCallback(anyMap());
+            .readinessCheckCallback(anyMap());
         readinessCheckListener.setApplicationContext(applicationContext);
         readinessCheckListener.readinessHealthCheck();
 
         assertThat(capturedOutput.getOut()).contains("Invoking all readiness check callbacks...");
         assertThat(capturedOutput.getOut()).contains(
-                "SOFA-BOOT-01-20000: Readiness check result: fail");
+            "SOFA-BOOT-01-20000: Readiness check result: fail");
         assertThat(readinessCheckListener.getHealthCheckerStatus()).isTrue();
         assertThat(readinessCheckListener.getHealthIndicatorStatus()).isTrue();
         assertThat(readinessCheckListener.getHealthCallbackStatus()).isFalse();
         assertThat(readinessCheckListener.getReadinessCallbackTriggered()).isTrue();
         assertThat(readinessCheckListener.getReadinessState()).isEqualTo(
-                ReadinessState.REFUSING_TRAFFIC);
+            ReadinessState.REFUSING_TRAFFIC);
         assertThat(readinessCheckListener.isReadinessCheckFinish()).isTrue();
 
         Health health = readinessCheckListener.aggregateReadinessHealth();
@@ -179,7 +179,7 @@ public class ReadinessCheckListenerTests {
     @Test
     public void skipAll() {
         Mockito.doReturn(true).when(readinessCheckCallbackProcessor)
-                .readinessCheckCallback(anyMap());
+            .readinessCheckCallback(anyMap());
         readinessCheckListener.setApplicationContext(applicationContext);
         readinessCheckListener.setSkipAll(true);
         readinessCheckListener.readinessHealthCheck();
@@ -191,7 +191,7 @@ public class ReadinessCheckListenerTests {
         assertThat(readinessCheckListener.getHealthCallbackStatus()).isTrue();
         assertThat(readinessCheckListener.getReadinessCallbackTriggered()).isTrue();
         assertThat(readinessCheckListener.getReadinessState()).isEqualTo(
-                ReadinessState.ACCEPTING_TRAFFIC);
+            ReadinessState.ACCEPTING_TRAFFIC);
         assertThat(readinessCheckListener.isReadinessCheckFinish()).isTrue();
     }
 
@@ -199,7 +199,7 @@ public class ReadinessCheckListenerTests {
     public void skipHealthChecker() {
         Mockito.doReturn(true).when(healthIndicatorProcessor).readinessHealthCheck(anyMap());
         Mockito.doReturn(true).when(readinessCheckCallbackProcessor)
-                .readinessCheckCallback(anyMap());
+            .readinessCheckCallback(anyMap());
         readinessCheckListener.setApplicationContext(applicationContext);
         readinessCheckListener.setSkipHealthChecker(true);
         readinessCheckListener.readinessHealthCheck();
@@ -210,7 +210,7 @@ public class ReadinessCheckListenerTests {
         assertThat(readinessCheckListener.getHealthCallbackStatus()).isTrue();
         assertThat(readinessCheckListener.getReadinessCallbackTriggered()).isTrue();
         assertThat(readinessCheckListener.getReadinessState()).isEqualTo(
-                ReadinessState.ACCEPTING_TRAFFIC);
+            ReadinessState.ACCEPTING_TRAFFIC);
         assertThat(readinessCheckListener.isReadinessCheckFinish()).isTrue();
     }
 
@@ -218,7 +218,7 @@ public class ReadinessCheckListenerTests {
     public void skipHealthIndicator() {
         Mockito.doReturn(true).when(healthCheckerProcessor).readinessHealthCheck(anyMap());
         Mockito.doReturn(true).when(readinessCheckCallbackProcessor)
-                .readinessCheckCallback(anyMap());
+            .readinessCheckCallback(anyMap());
         readinessCheckListener.setApplicationContext(applicationContext);
         readinessCheckListener.setSkipHealthIndicator(true);
         readinessCheckListener.readinessHealthCheck();
@@ -229,7 +229,7 @@ public class ReadinessCheckListenerTests {
         assertThat(readinessCheckListener.getHealthCallbackStatus()).isTrue();
         assertThat(readinessCheckListener.getReadinessCallbackTriggered()).isTrue();
         assertThat(readinessCheckListener.getReadinessState()).isEqualTo(
-                ReadinessState.ACCEPTING_TRAFFIC);
+            ReadinessState.ACCEPTING_TRAFFIC);
         assertThat(readinessCheckListener.isReadinessCheckFinish()).isTrue();
     }
 
@@ -250,7 +250,7 @@ public class ReadinessCheckListenerTests {
         Mockito.doReturn(true).when(healthCheckerProcessor).readinessHealthCheck(anyMap());
         Mockito.doReturn(true).when(healthIndicatorProcessor).readinessHealthCheck(anyMap());
         Mockito.doReturn(true).when(readinessCheckCallbackProcessor)
-                .readinessCheckCallback(anyMap());
+            .readinessCheckCallback(anyMap());
         readinessCheckListener.setApplicationContext(applicationContext);
         readinessCheckListener.setManualReadinessCallback(true);
         readinessCheckListener.readinessHealthCheck();
@@ -261,28 +261,28 @@ public class ReadinessCheckListenerTests {
         assertThat(readinessCheckListener.getHealthCallbackStatus()).isTrue();
         assertThat(readinessCheckListener.getReadinessCallbackTriggered()).isFalse();
         assertThat(readinessCheckListener.getReadinessState()).isEqualTo(
-                ReadinessState.ACCEPTING_TRAFFIC);
+            ReadinessState.ACCEPTING_TRAFFIC);
         assertThat(readinessCheckListener.isReadinessCheckFinish()).isTrue();
 
         ReadinessCheckListener.ManualReadinessCallbackResult manualReadinessCallbackResult = readinessCheckListener
-                .triggerReadinessCallback();
+            .triggerReadinessCallback();
 
         Mockito.verify(readinessCheckCallbackProcessor, only()).readinessCheckCallback(anyMap());
         assertThat(manualReadinessCallbackResult).isNotNull();
         assertThat(manualReadinessCallbackResult.isSuccess()).isTrue();
         assertThat(manualReadinessCallbackResult.getDetails()).contains(
-                "Readiness callbacks invoked successfully with result: true");
+            "Readiness callbacks invoked successfully with result: true");
         assertThat(readinessCheckListener.getReadinessCallbackTriggered()).isTrue();
         assertThat(readinessCheckListener.getHealthCallbackStatus()).isTrue();
         assertThat(readinessCheckListener.getReadinessState()).isEqualTo(
-                ReadinessState.ACCEPTING_TRAFFIC);
+            ReadinessState.ACCEPTING_TRAFFIC);
 
         manualReadinessCallbackResult = readinessCheckListener.triggerReadinessCallback();
         Mockito.verify(readinessCheckCallbackProcessor, only()).readinessCheckCallback(anyMap());
         assertThat(manualReadinessCallbackResult).isNotNull();
         assertThat(manualReadinessCallbackResult.isSuccess()).isFalse();
         assertThat(manualReadinessCallbackResult.getDetails()).contains(
-                "Readiness callbacks are already triggered");
+            "Readiness callbacks are already triggered");
     }
 
     @Test
@@ -296,17 +296,17 @@ public class ReadinessCheckListenerTests {
         Mockito.verify(readinessCheckCallbackProcessor, never()).readinessCheckCallback(anyMap());
 
         ReadinessCheckListener.ManualReadinessCallbackResult manualReadinessCallbackResult = readinessCheckListener
-                .triggerReadinessCallback();
+            .triggerReadinessCallback();
 
         assertThat(manualReadinessCallbackResult).isNotNull();
         assertThat(manualReadinessCallbackResult.isSuccess()).isFalse();
         assertThat(manualReadinessCallbackResult.getDetails()).contains(
-                "Health checker or indicator failed");
+            "Health checker or indicator failed");
         Mockito.verify(readinessCheckCallbackProcessor, never()).readinessCheckCallback(anyMap());
         assertThat(readinessCheckListener.getReadinessCallbackTriggered()).isFalse();
         assertThat(readinessCheckListener.getHealthCallbackStatus()).isTrue();
         assertThat(readinessCheckListener.getReadinessState()).isEqualTo(
-                ReadinessState.REFUSING_TRAFFIC);
+            ReadinessState.REFUSING_TRAFFIC);
         assertThat(readinessCheckListener.isReadinessCheckFinish()).isTrue();
     }
 
@@ -315,7 +315,7 @@ public class ReadinessCheckListenerTests {
         Mockito.doReturn(true).when(healthCheckerProcessor).readinessHealthCheck(anyMap());
         Mockito.doReturn(true).when(healthIndicatorProcessor).readinessHealthCheck(anyMap());
         Mockito.doReturn(false).when(readinessCheckCallbackProcessor)
-                .readinessCheckCallback(anyMap());
+            .readinessCheckCallback(anyMap());
         readinessCheckListener.setApplicationContext(applicationContext);
         readinessCheckListener.setManualReadinessCallback(true);
         readinessCheckListener.readinessHealthCheck();
@@ -323,17 +323,17 @@ public class ReadinessCheckListenerTests {
         Mockito.verify(readinessCheckCallbackProcessor, never()).readinessCheckCallback(anyMap());
 
         ReadinessCheckListener.ManualReadinessCallbackResult manualReadinessCallbackResult = readinessCheckListener
-                .triggerReadinessCallback();
+            .triggerReadinessCallback();
 
         assertThat(manualReadinessCallbackResult).isNotNull();
         assertThat(manualReadinessCallbackResult.isSuccess()).isTrue();
         assertThat(manualReadinessCallbackResult.getDetails()).contains(
-                "Readiness callbacks invoked successfully with result: false");
+            "Readiness callbacks invoked successfully with result: false");
         Mockito.verify(readinessCheckCallbackProcessor, only()).readinessCheckCallback(anyMap());
         assertThat(readinessCheckListener.getReadinessCallbackTriggered()).isTrue();
         assertThat(readinessCheckListener.getHealthCallbackStatus()).isFalse();
         assertThat(readinessCheckListener.getReadinessState()).isEqualTo(
-                ReadinessState.REFUSING_TRAFFIC);
+            ReadinessState.REFUSING_TRAFFIC);
         assertThat(readinessCheckListener.isReadinessCheckFinish()).isTrue();
     }
 
@@ -342,7 +342,7 @@ public class ReadinessCheckListenerTests {
         Health health = readinessCheckListener.aggregateReadinessHealth();
         assertThat(health.getStatus()).isEqualTo(Status.UNKNOWN);
         assertThat(health.getDetails().toString()).isEqualTo(
-                "{HEALTH-CHECK-NOT-READY=App is still in startup process, please try later!}");
+            "{HEALTH-CHECK-NOT-READY=App is still in startup process, please try later!}");
     }
 
     @Test
@@ -353,31 +353,31 @@ public class ReadinessCheckListenerTests {
 
         Map<String, Health> healthCheckDetails = new HashMap<>();
         healthCheckDetails
-                .put("healthChecker", Health.up().withDetail("reason", "success").build());
+            .put("healthChecker", Health.up().withDetail("reason", "success").build());
         Mockito.doReturn(true).when(readinessCheckListener).getHealthCheckerStatus();
         Mockito.doReturn(healthCheckDetails).when(readinessCheckListener).getHealthCheckerDetails();
 
         Map<String, Health> healthIndicatorDetails = new HashMap<>();
         healthIndicatorDetails.put("healthIndicator", Health.up().withDetail("reason", "success")
-                .build());
+            .build());
         Mockito.doReturn(true).when(readinessCheckListener).getHealthIndicatorStatus();
         Mockito.doReturn(healthIndicatorDetails).when(readinessCheckListener)
-                .getHealthIndicatorDetails();
+            .getHealthIndicatorDetails();
 
         Map<String, Health> healthCallBackDetails = new HashMap<>();
         healthCallBackDetails.put("healthCallBack", Health.up().withDetail("reason", "success")
-                .build());
+            .build());
         Mockito.doReturn(true).when(readinessCheckListener).getHealthCallbackStatus();
         Mockito.doReturn(healthCallBackDetails).when(readinessCheckListener)
-                .getHealthCallbackDetails();
+            .getHealthCallbackDetails();
 
         Health health = readinessCheckListener.aggregateReadinessHealth();
         assertThat(health.getStatus()).isEqualTo(Status.UP);
         assertThat(health.getDetails().toString()).contains(
-                "HealthCheckerInfo=UP {healthChecker=UP {reason=success}");
+            "HealthCheckerInfo=UP {healthChecker=UP {reason=success}");
         assertThat(health.getDetails().toString()).contains(
-                "HealthIndicatorInfo=UP {healthIndicator=UP {reason=success}");
+            "HealthIndicatorInfo=UP {healthIndicator=UP {reason=success}");
         assertThat(health.getDetails().toString()).contains(
-                "HealthCallBackInfo=UP {healthCallBack=UP {reason=success}");
+            "HealthCallBackInfo=UP {healthCallBack=UP {reason=success}");
     }
 }

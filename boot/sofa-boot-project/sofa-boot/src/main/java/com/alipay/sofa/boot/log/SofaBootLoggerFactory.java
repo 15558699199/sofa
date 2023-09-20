@@ -42,7 +42,6 @@ public class SofaBootLoggerFactory {
 
     /**
      * get Logger Object
-     *
      * @param clazz the returned logger will be named after clazz
      * @return Logger Object
      */

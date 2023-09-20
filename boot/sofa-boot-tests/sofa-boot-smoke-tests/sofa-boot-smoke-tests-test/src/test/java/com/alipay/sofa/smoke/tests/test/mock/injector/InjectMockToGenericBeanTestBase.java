@@ -39,7 +39,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 abstract class InjectMockToGenericBeanTestBase<T extends InjectMockToGenericBeanTestBase.Thing<U>, U extends InjectMockToGenericBeanTestBase.Something> {
 
     @MockBeanInjector(field = "something", name = "thing")
-    private U something;
+    private U                  something;
 
     @Autowired
     private ApplicationContext applicationContext;

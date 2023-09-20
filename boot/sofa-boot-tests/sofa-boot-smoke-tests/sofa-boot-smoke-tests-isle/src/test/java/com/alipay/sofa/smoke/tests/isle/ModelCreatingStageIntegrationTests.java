@@ -36,11 +36,11 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @version ModelCreatingStageIntegrationTests.java, v 0.1 2023年02月21日 8:37 PM huzijie Exp $
  */
 @SpringBootTest(classes = IsleSofaBootApplication.class)
-@AddCustomJar({"sample-module", "sample-module", "miss-module", "fail-module", "duplicate-module"})
+@AddCustomJar({ "sample-module", "sample-module", "miss-module", "fail-module", "duplicate-module" })
 @TestPropertySource(properties = {
-        "sofa.boot.isle.ignoreCalculateRequireModules=com.alipay.sofa.miss",
-        "sofa.boot.isle.ignoreModules=com.alipay.sofa.fail",
-        "sofa.boot.isle.allowModuleOverriding=true"})
+                                  "sofa.boot.isle.ignoreCalculateRequireModules=com.alipay.sofa.miss",
+                                  "sofa.boot.isle.ignoreModules=com.alipay.sofa.fail",
+                                  "sofa.boot.isle.allowModuleOverriding=true" })
 public class ModelCreatingStageIntegrationTests {
 
     @Autowired

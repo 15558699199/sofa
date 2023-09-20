@@ -40,7 +40,7 @@ public class DefaultSofaModuleProfileChecker implements SofaModuleProfileChecker
 
     private final Set<String> activeProfiles = new HashSet<>();
 
-    private List<String> userCustomProfiles;
+    private List<String>      userCustomProfiles;
 
     @Override
     public void afterPropertiesSet() {
@@ -60,7 +60,7 @@ public class DefaultSofaModuleProfileChecker implements SofaModuleProfileChecker
     @Override
     public boolean acceptProfiles(String[] sofaModuleProfiles) {
         Assert.notEmpty(sofaModuleProfiles,
-                ErrorCode.convert("01-13000", DeploymentDescriptorConfiguration.DEFAULT_PROFILE_VALUE));
+            ErrorCode.convert("01-13000", DeploymentDescriptorConfiguration.DEFAULT_PROFILE_VALUE));
         for (String sofaModuleProfile : sofaModuleProfiles) {
             if (StringUtils.hasText(sofaModuleProfile) && sofaModuleProfile.charAt(0) == '!') {
                 if (!isProfileActive(sofaModuleProfile.substring(1))) {
@@ -86,7 +86,7 @@ public class DefaultSofaModuleProfileChecker implements SofaModuleProfileChecker
     private void validateProfile(String profile) {
         if (!StringUtils.hasText(profile)) {
             throw new IllegalArgumentException(ErrorCode.convert("01-13001", profile,
-                    DeploymentDescriptorConfiguration.DEFAULT_PROFILE_VALUE));
+                DeploymentDescriptorConfiguration.DEFAULT_PROFILE_VALUE));
         }
 
         if (profile.charAt(0) == '!') {
@@ -96,11 +96,11 @@ public class DefaultSofaModuleProfileChecker implements SofaModuleProfileChecker
 
     private String[] getModuleProfiles(DeploymentDescriptor deploymentDescriptor) {
         String profiles = deploymentDescriptor
-                .getProperty(DeploymentDescriptorConfiguration.MODULE_PROFILE);
+            .getProperty(DeploymentDescriptorConfiguration.MODULE_PROFILE);
         if (StringUtils.hasText(profiles)) {
             return StringUtils.commaDelimitedListToStringArray(profiles);
         } else {
-            return new String[]{DeploymentDescriptorConfiguration.DEFAULT_PROFILE_VALUE};
+            return new String[] { DeploymentDescriptorConfiguration.DEFAULT_PROFILE_VALUE };
         }
 
     }

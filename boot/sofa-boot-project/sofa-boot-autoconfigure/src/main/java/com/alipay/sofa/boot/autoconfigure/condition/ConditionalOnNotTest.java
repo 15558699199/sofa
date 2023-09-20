@@ -18,7 +18,11 @@ package com.alipay.sofa.boot.autoconfigure.condition;
 
 import org.springframework.context.annotation.Conditional;
 
-import java.lang.annotation.*;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * {@link Conditional @Conditional} that checks if the running environment is not test.
@@ -26,7 +30,7 @@ import java.lang.annotation.*;
  * @author huzijie
  * @version ConditionalOnNotTest.java, v 0.1 2022年10月17日 2:54 PM huzijie Exp $
  */
-@Target({ElementType.TYPE, ElementType.METHOD})
+@Target({ ElementType.TYPE, ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Conditional(OnTestCondition.class)

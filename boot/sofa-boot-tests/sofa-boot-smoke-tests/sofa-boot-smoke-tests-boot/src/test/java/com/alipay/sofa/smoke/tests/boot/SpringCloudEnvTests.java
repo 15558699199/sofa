@@ -49,30 +49,30 @@ public class SpringCloudEnvTests {
         assertThat(SofaBootEnvUtils.isSpringCloud()).isTrue();
         assertThat(SofaBootEnvUtils.isSpringCloudEnvironmentEnabled(environment)).isTrue();
         assertThat("smoke-tests-boot").isEqualTo(
-                SampleSpringContextInitializer.bootstrapEnvironment
-                        .getProperty(SofaBootConstants.APP_NAME_KEY));
+            SampleSpringContextInitializer.bootstrapEnvironment
+                .getProperty(SofaBootConstants.APP_NAME_KEY));
         assertThat("smoke-tests-boot").isEqualTo(
-                SampleSpringContextInitializer.applicationEnvironment
-                        .getProperty(SofaBootConstants.APP_NAME_KEY));
+            SampleSpringContextInitializer.applicationEnvironment
+                .getProperty(SofaBootConstants.APP_NAME_KEY));
         assertThat("INFO").isEqualTo(
-                SampleSpringContextInitializer.bootstrapEnvironment
-                        .getProperty("logging.level.com.alipay.test"));
+            SampleSpringContextInitializer.bootstrapEnvironment
+                .getProperty("logging.level.com.alipay.test"));
         assertThat("INFO").isEqualTo(
-                SampleSpringContextInitializer.applicationEnvironment
-                        .getProperty("logging.level.com.alipay.test"));
+            SampleSpringContextInitializer.applicationEnvironment
+                .getProperty("logging.level.com.alipay.test"));
         assertThat("WARN").isEqualTo(
-                SampleSpringContextInitializer.bootstrapEnvironment
-                        .getProperty("logging.level.com.test.demo"));
+            SampleSpringContextInitializer.bootstrapEnvironment
+                .getProperty("logging.level.com.test.demo"));
         assertThat("WARN").isEqualTo(
-                SampleSpringContextInitializer.applicationEnvironment
-                        .getProperty("logging.level.com.test.demo"));
+            SampleSpringContextInitializer.applicationEnvironment
+                .getProperty("logging.level.com.test.demo"));
         assertThat("./logs").isEqualTo(
-                SampleSpringContextInitializer.bootstrapEnvironment.getProperty("logging.path"));
+            SampleSpringContextInitializer.bootstrapEnvironment.getProperty("logging.path"));
         assertThat("./logs").isEqualTo(
-                SampleSpringContextInitializer.applicationEnvironment.getProperty("logging.path"));
+            SampleSpringContextInitializer.applicationEnvironment.getProperty("logging.path"));
         assertThat(SampleSpringContextInitializer.bootstrapEnvironment.getProperty("any.key"))
-                .isNull();
+            .isNull();
         assertThat("any.value").isEqualTo(
-                SampleSpringContextInitializer.applicationEnvironment.getProperty("any.key"));
+            SampleSpringContextInitializer.applicationEnvironment.getProperty("any.key"));
     }
 }

@@ -24,11 +24,11 @@ import java.util.Objects;
  */
 public class SampleServiceImpl implements SampleService {
 
-    private final String name;
-
     public SampleServiceImpl() {
         this.name = "hello";
     }
+
+    private final String name;
 
     @Override
     public String hello() {

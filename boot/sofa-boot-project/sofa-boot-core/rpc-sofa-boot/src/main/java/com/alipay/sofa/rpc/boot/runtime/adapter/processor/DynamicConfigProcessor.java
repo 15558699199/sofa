@@ -44,15 +44,15 @@ public class DynamicConfigProcessor implements ConsumerConfigProcessor, Provider
         setDynamicConfig(providerConfig);
     }
 
-    public String getDynamicConfig() {
-        return dynamicConfig;
-    }
-
     private void setDynamicConfig(AbstractInterfaceConfig config) {
         String configAlias = config.getParameter(DynamicConfigKeys.DYNAMIC_ALIAS);
         if (StringUtils.isBlank(configAlias) && StringUtils.isNotBlank(dynamicConfig)) {
             config.setParameter(DynamicConfigKeys.DYNAMIC_ALIAS, dynamicConfig);
         }
+    }
+
+    public String getDynamicConfig() {
+        return dynamicConfig;
     }
 
     public void setDynamicConfig(String dynamicConfig) {

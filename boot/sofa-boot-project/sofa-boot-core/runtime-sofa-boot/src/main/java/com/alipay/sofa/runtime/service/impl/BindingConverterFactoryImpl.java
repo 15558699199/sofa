@@ -21,7 +21,11 @@ import com.alipay.sofa.runtime.spi.service.BindingConverter;
 import com.alipay.sofa.runtime.spi.service.BindingConverterFactory;
 import org.springframework.core.annotation.AnnotationAwareOrderComparator;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Base implementation of {@link BindingConverterFactory}.
@@ -33,7 +37,7 @@ public class BindingConverterFactoryImpl implements BindingConverterFactory {
 
     private final Map<BindingType, BindingConverter> bindingTypeBindingConverterMap = new HashMap<>();
 
-    private final Map<String, BindingConverter> tagBindingConverterMap = new HashMap<>();
+    private final Map<String, BindingConverter>      tagBindingConverterMap         = new HashMap<>();
 
     @Override
     public BindingConverter getBindingConverter(BindingType bindingType) {
@@ -56,7 +60,7 @@ public class BindingConverterFactoryImpl implements BindingConverterFactory {
 
         for (BindingConverter<?, ?> bindingConverter : sortedBindingConverter) {
             bindingTypeBindingConverterMap.putIfAbsent(bindingConverter.supportBindingType(),
-                    bindingConverter);
+                bindingConverter);
             tagBindingConverterMap.putIfAbsent(bindingConverter.supportTagName(), bindingConverter);
         }
     }

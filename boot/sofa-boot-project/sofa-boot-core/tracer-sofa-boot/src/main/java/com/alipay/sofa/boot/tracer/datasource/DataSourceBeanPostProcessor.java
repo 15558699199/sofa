@@ -46,7 +46,7 @@ public class DataSourceBeanPostProcessor implements BeanPostProcessor, PriorityO
 
     @Override
     public Object postProcessAfterInitialization(Object bean, String beanName)
-            throws BeansException {
+                                                                              throws BeansException {
         /*
 
          * filter bean which is type of {@link SmartDataSource}
@@ -63,10 +63,10 @@ public class DataSourceBeanPostProcessor implements BeanPostProcessor, PriorityO
          * Now DataSource Tracer only support the following type: Druid, C3p0, Dbcp, tomcat datasource, hikari
          */
         if (DataSourceUtils.isDruidDataSource(bean) || DataSourceUtils.isDbcpDataSource(bean)
-                || DataSourceUtils.isDbcp2DataSource(bean) || DataSourceUtils.isTomcatDataSource(bean)) {
+            || DataSourceUtils.isDbcp2DataSource(bean) || DataSourceUtils.isTomcatDataSource(bean)) {
             getUrlMethodName = DataSourceUtils.METHOD_GET_URL;
         } else if (DataSourceUtils.isC3p0DataSource(bean)
-                || DataSourceUtils.isHikariDataSource(bean)) {
+                   || DataSourceUtils.isHikariDataSource(bean)) {
             getUrlMethodName = DataSourceUtils.METHOD_GET_JDBC_URL;
         } else {
             return bean;
@@ -78,7 +78,7 @@ public class DataSourceBeanPostProcessor implements BeanPostProcessor, PriorityO
             url = (String) urlMethod.invoke(bean);
         } catch (Throwable throwable) {
             throw new BeanCreationException(String.format("Can not find method: %s in class %s.",
-                    getUrlMethodName, bean.getClass().getCanonicalName()), throwable);
+                getUrlMethodName, bean.getClass().getCanonicalName()), throwable);
         }
 
         SmartDataSource proxiedDataSource = new SmartDataSource((DataSource) bean);

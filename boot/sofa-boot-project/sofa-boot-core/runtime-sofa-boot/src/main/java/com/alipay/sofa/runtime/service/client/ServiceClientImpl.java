@@ -16,6 +16,9 @@
  */
 package com.alipay.sofa.runtime.service.client;
 
+import java.util.Collection;
+import java.util.Map;
+
 import com.alipay.sofa.boot.log.ErrorCode;
 import com.alipay.sofa.runtime.api.ServiceRuntimeException;
 import com.alipay.sofa.runtime.api.client.ServiceClient;
@@ -37,9 +40,6 @@ import com.alipay.sofa.runtime.spi.service.BindingConverter;
 import com.alipay.sofa.runtime.spi.service.BindingConverterContext;
 import com.alipay.sofa.runtime.spi.service.BindingConverterFactory;
 
-import java.util.Collection;
-import java.util.Map;
-
 /**
  * Service Client Implementation，you can publish a service by this class.
  *
@@ -47,11 +47,11 @@ import java.util.Map;
  */
 public class ServiceClientImpl implements ServiceClient {
 
-    private final SofaRuntimeContext sofaRuntimeContext;
+    private final SofaRuntimeContext      sofaRuntimeContext;
 
     private final BindingConverterFactory bindingConverterFactory;
 
-    private final BindingAdapterFactory bindingAdapterFactory;
+    private final BindingAdapterFactory   bindingAdapterFactory;
 
     public ServiceClientImpl(SofaRuntimeContext sofaRuntimeContext,
                              BindingConverterFactory bindingConverterFactory,
@@ -71,15 +71,15 @@ public class ServiceClientImpl implements ServiceClient {
             throw new ServiceRuntimeException(ErrorCode.convert("01-00201"));
         }
         Service service = new ServiceImpl(serviceParam.getUniqueId(),
-                serviceParam.getInterfaceType(), InterfaceMode.api, serviceParam.getInstance(), null);
+            serviceParam.getInterfaceType(), InterfaceMode.api, serviceParam.getInstance(), null);
 
         for (BindingParam bindingParam : serviceParam.getBindingParams()) {
             BindingConverter bindingConverter = bindingConverterFactory
-                    .getBindingConverter(bindingParam.getBindingType());
+                .getBindingConverter(bindingParam.getBindingType());
 
             if (bindingConverter == null) {
                 throw new ServiceRuntimeException(ErrorCode.convert("01-00200",
-                        bindingParam.getBindingType()));
+                    bindingParam.getBindingType()));
             }
             BindingConverterContext bindingConverterContext = new BindingConverterContext();
             bindingConverterContext.setInBinding(false);
@@ -102,7 +102,7 @@ public class ServiceClientImpl implements ServiceClient {
         }
 
         ComponentInfo componentInfo = new ServiceComponent(implementation, service,
-                bindingAdapterFactory, sofaRuntimeContext);
+            bindingAdapterFactory, sofaRuntimeContext);
         sofaRuntimeContext.getComponentManager().register(componentInfo);
     }
 
@@ -118,7 +118,7 @@ public class ServiceClientImpl implements ServiceClient {
         }
 
         Collection<ComponentInfo> serviceComponents = sofaRuntimeContext.getComponentManager()
-                .getComponentInfosByType(ServiceComponent.SERVICE_COMPONENT_TYPE);
+            .getComponentInfosByType(ServiceComponent.SERVICE_COMPONENT_TYPE);
 
         for (ComponentInfo componentInfo : serviceComponents) {
             if (!(componentInfo instanceof ServiceComponent serviceComponent)) {
@@ -126,7 +126,7 @@ public class ServiceClientImpl implements ServiceClient {
             }
 
             if (serviceComponent.getService().getInterfaceType() == interfaceClass
-                    && serviceComponent.getService().getUniqueId().equals(uniqueId)) {
+                && serviceComponent.getService().getUniqueId().equals(uniqueId)) {
                 Map<String, Property> properties = serviceComponent.getProperties();
                 Property property = new Property();
                 property.setValue(millisecondsToDelay);

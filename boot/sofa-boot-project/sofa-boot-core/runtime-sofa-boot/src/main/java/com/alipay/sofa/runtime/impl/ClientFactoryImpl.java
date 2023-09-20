@@ -16,11 +16,11 @@
  */
 package com.alipay.sofa.runtime.impl;
 
-import com.alipay.sofa.runtime.spi.client.ClientFactoryInternal;
-
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import com.alipay.sofa.runtime.spi.client.ClientFactoryInternal;
 
 /**
  * Default implementation of {@link ClientFactoryInternal}.

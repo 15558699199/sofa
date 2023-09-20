@@ -16,7 +16,12 @@
  */
 package com.alipay.sofa.boot.isle;
 
-import com.alipay.sofa.boot.isle.deployment.*;
+import com.alipay.sofa.boot.isle.deployment.AbstractDeploymentDescriptor;
+import com.alipay.sofa.boot.isle.deployment.DefaultModuleDeploymentValidator;
+import com.alipay.sofa.boot.isle.deployment.DeploymentDescriptor;
+import com.alipay.sofa.boot.isle.deployment.DeploymentDescriptorConfiguration;
+import com.alipay.sofa.boot.isle.deployment.DeploymentDescriptorFactory;
+import com.alipay.sofa.boot.isle.deployment.FileDeploymentDescriptor;
 import com.alipay.sofa.boot.isle.profile.DefaultSofaModuleProfileChecker;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ByteArrayResource;
@@ -25,27 +30,31 @@ import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
 import java.net.URL;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests for {@link ApplicationRuntimeModel}.
- *
+ * 
  * @author xuanbei 18/5/8
  * @author huzijie
  */
 public class ApplicationRuntimeModelTests {
 
     private final DeploymentDescriptorConfiguration deploymentDescriptorConfiguration = new DeploymentDescriptorConfiguration(
-            Collections
-                    .singletonList(DeploymentDescriptorConfiguration.MODULE_NAME),
-            Collections
-                    .singletonList(DeploymentDescriptorConfiguration.REQUIRE_MODULE));
+                                                                                          Collections
+                                                                                              .singletonList(DeploymentDescriptorConfiguration.MODULE_NAME),
+                                                                                          Collections
+                                                                                              .singletonList(DeploymentDescriptorConfiguration.REQUIRE_MODULE));
 
-    private final DeploymentDescriptorFactory deploymentDescriptorFactory = new DeploymentDescriptorFactory();
+    private final DeploymentDescriptorFactory       deploymentDescriptorFactory       = new DeploymentDescriptorFactory();
 
-    private final String testModuleConfigFile = "test-module.config";
+    private final String                            testModuleConfigFile              = "test-module.config";
 
     @Test
     public void addSofaModule() throws Exception {
@@ -61,8 +70,8 @@ public class ApplicationRuntimeModelTests {
         props.setProperty(DeploymentDescriptorConfiguration.MODULE_NAME, "com.alipay.common");
         URL jarUrl = new URL("file:/" + testModuleConfigFile);
         DeploymentDescriptor dd = deploymentDescriptorFactory.build(jarUrl, props,
-                deploymentDescriptorConfiguration, ApplicationRuntimeModelTests.class.getClassLoader(),
-                testModuleConfigFile);
+            deploymentDescriptorConfiguration, ApplicationRuntimeModelTests.class.getClassLoader(),
+            testModuleConfigFile);
         assertThat(dd instanceof FileDeploymentDescriptor).isTrue();
         addSpringXml(dd);
         assertThat(application.isModuleDeployment(dd)).isTrue();
@@ -74,7 +83,7 @@ public class ApplicationRuntimeModelTests {
         props.setProperty(DeploymentDescriptorConfiguration.REQUIRE_MODULE, "com.alipay.util");
         URL fileUrl = new URL("file:/" + testModuleConfigFile);
         dd = deploymentDescriptorFactory.build(fileUrl, props, deploymentDescriptorConfiguration,
-                ApplicationRuntimeModelTests.class.getClassLoader(), testModuleConfigFile);
+            ApplicationRuntimeModelTests.class.getClassLoader(), testModuleConfigFile);
         assertThat(dd instanceof FileDeploymentDescriptor).isTrue();
         addSpringXml(dd);
         assertThat(application.isModuleDeployment(dd)).isTrue();
@@ -83,14 +92,14 @@ public class ApplicationRuntimeModelTests {
         // missing com.alipay.util module
         assertThat(2).isEqualTo(application.getDeployRegistry().getPendingEntries().size());
         assertThat(Arrays.asList("com.alipay.util", "com.alipay.dal")).contains(
-                application.getDeployRegistry().getPendingEntries().get(0).getKey());
+            application.getDeployRegistry().getPendingEntries().get(0).getKey());
         assertThat(Arrays.asList("com.alipay.util", "com.alipay.dal")).contains(
-                application.getDeployRegistry().getPendingEntries().get(1).getKey());
+            application.getDeployRegistry().getPendingEntries().get(1).getKey());
         assertThat(application.getDeployRegistry().getEntry("com.alipay.util").getWaitsFor())
-                .isNull();
+            .isNull();
         assertThat("com.alipay.util").isEqualTo(
-                application.getDeployRegistry().getEntry("com.alipay.dal").getWaitsFor().iterator()
-                        .next().getKey());
+            application.getDeployRegistry().getEntry("com.alipay.dal").getWaitsFor().iterator()
+                .next().getKey());
     }
 
     @Test
@@ -106,8 +115,8 @@ public class ApplicationRuntimeModelTests {
         props.setProperty(DeploymentDescriptorConfiguration.REQUIRE_MODULE, "com.alipay.util");
         URL fileUrl = new URL("file:/" + testModuleConfigFile);
         DeploymentDescriptor dd = deploymentDescriptorFactory.build(fileUrl, props,
-                deploymentDescriptorConfiguration, ApplicationRuntimeModelTests.class.getClassLoader(),
-                testModuleConfigFile);
+            deploymentDescriptorConfiguration, ApplicationRuntimeModelTests.class.getClassLoader(),
+            testModuleConfigFile);
         assertThat(dd).isInstanceOf(FileDeploymentDescriptor.class);
         assertThat(application.isModuleDeployment(dd)).isFalse();
     }
@@ -123,8 +132,8 @@ public class ApplicationRuntimeModelTests {
         props.setProperty(DeploymentDescriptorConfiguration.MODULE_NAME, "com.alipay.util");
         URL jarUrl = new URL("file:/" + testModuleConfigFile);
         DeploymentDescriptor dd = deploymentDescriptorFactory.build(jarUrl, props,
-                deploymentDescriptorConfiguration, ApplicationRuntimeModelTests.class.getClassLoader(),
-                testModuleConfigFile);
+            deploymentDescriptorConfiguration, ApplicationRuntimeModelTests.class.getClassLoader(),
+            testModuleConfigFile);
         assertThat(dd).isInstanceOf(FileDeploymentDescriptor.class);
         addSpringXml(dd);
         assertThat(application.isModuleDeployment(dd)).isTrue();
@@ -134,10 +143,10 @@ public class ApplicationRuntimeModelTests {
 
     private void addSpringXml(DeploymentDescriptor deploymentDescriptor) {
         Field field = ReflectionUtils.findField(AbstractDeploymentDescriptor.class,
-                "springResources");
+            "springResources");
         field.setAccessible(true);
         Map<String, Resource> map = new HashMap<>();
-        map.put("test", new ByteArrayResource(new byte[]{}));
+        map.put("test", new ByteArrayResource(new byte[] {}));
         ReflectionUtils.setField(field, deploymentDescriptor, map);
     }
 }

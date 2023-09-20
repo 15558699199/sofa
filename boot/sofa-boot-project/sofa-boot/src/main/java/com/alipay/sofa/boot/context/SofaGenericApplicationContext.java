@@ -44,25 +44,26 @@ import java.util.Set;
  */
 public class SofaGenericApplicationContext extends GenericApplicationContext {
 
-    private static final Method GET_APPLICATION_EVENT_MULTICASTER_METHOD;
+    private static final Method             GET_APPLICATION_EVENT_MULTICASTER_METHOD;
 
-    private static final Field EARLY_APPLICATION_EVENTS_FIELD;
+    private static final Field              EARLY_APPLICATION_EVENTS_FIELD;
+
+    private List<ContextRefreshInterceptor> interceptors = new ArrayList<>();
+
+    private boolean                         publishEventToParent;
 
     static {
         try {
             GET_APPLICATION_EVENT_MULTICASTER_METHOD = AbstractApplicationContext.class
-                    .getDeclaredMethod("getApplicationEventMulticaster");
+                .getDeclaredMethod("getApplicationEventMulticaster");
             GET_APPLICATION_EVENT_MULTICASTER_METHOD.setAccessible(true);
             EARLY_APPLICATION_EVENTS_FIELD = AbstractApplicationContext.class
-                    .getDeclaredField("earlyApplicationEvents");
+                .getDeclaredField("earlyApplicationEvents");
             EARLY_APPLICATION_EVENTS_FIELD.setAccessible(true);
         } catch (Throwable t) {
             throw new RuntimeException(t);
         }
     }
-
-    private List<ContextRefreshInterceptor> interceptors = new ArrayList<>();
-    private boolean publishEventToParent;
 
     public SofaGenericApplicationContext() {
         this(new SofaDefaultListableBeanFactory());
@@ -70,7 +71,6 @@ public class SofaGenericApplicationContext extends GenericApplicationContext {
 
     /**
      * Create a new SofaApplicationContext with the given DefaultListableBeanFactory.
-     *
      * @param beanFactory the DefaultListableBeanFactory instance to use for this context
      * @see #registerBeanDefinition
      * @see #refresh
@@ -120,12 +120,12 @@ public class SofaGenericApplicationContext extends GenericApplicationContext {
         }
 
         Set<ApplicationEvent> earlyApplicationEvents = getFieldValueByReflect(
-                EARLY_APPLICATION_EVENTS_FIELD, this);
+            EARLY_APPLICATION_EVENTS_FIELD, this);
         if (earlyApplicationEvents != null) {
             earlyApplicationEvents.add(applicationEvent);
         } else {
             ApplicationEventMulticaster applicationEventMulticaster = getMethodValueByReflect(
-                    GET_APPLICATION_EVENT_MULTICASTER_METHOD, this);
+                GET_APPLICATION_EVENT_MULTICASTER_METHOD, this);
             applicationEventMulticaster.multicastEvent(applicationEvent, eventType);
         }
     }

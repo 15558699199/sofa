@@ -16,7 +16,11 @@
  */
 package com.alipay.sofa.boot.context.processor;
 
-import java.lang.annotation.*;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * Indicates that an annotated class with type match
@@ -29,7 +33,7 @@ import java.lang.annotation.*;
  * @since 4.0.0
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE})
+@Target({ ElementType.TYPE })
 @Inherited
 public @interface SingletonSofaPostProcessor {
 }

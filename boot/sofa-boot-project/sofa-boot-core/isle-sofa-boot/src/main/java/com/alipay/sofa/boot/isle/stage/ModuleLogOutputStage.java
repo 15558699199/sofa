@@ -33,17 +33,19 @@ import java.util.List;
  */
 public class ModuleLogOutputStage extends AbstractPipelineStage {
 
-    public static final String MODULE_LOG_OUTPUT_STAGE_NAME = "ModuleLogOutputStage";
-    private static final Logger LOGGER = SofaBootLoggerFactory
-            .getLogger(ModuleLogOutputStage.class);
-    private static final String SYMBOLIC1 = "  ├─";
-    private static final String SYMBOLIC2 = "  └─";
+    private static final Logger LOGGER                       = SofaBootLoggerFactory
+                                                                 .getLogger(ModuleLogOutputStage.class);
 
-    private static final String SYMBOLIC3 = "  │   +---";
-    private static final String SYMBOLIC4 = "  │   `---";
+    public static final String  MODULE_LOG_OUTPUT_STAGE_NAME = "ModuleLogOutputStage";
 
-    private static final String SYMBOLIC5 = "      +---";
-    private static final String SYMBOLIC6 = "      `---";
+    private static final String SYMBOLIC1                    = "  ├─";
+    private static final String SYMBOLIC2                    = "  └─";
+
+    private static final String SYMBOLIC3                    = "  │   +---";
+    private static final String SYMBOLIC4                    = "  │   `---";
+
+    private static final String SYMBOLIC5                    = "      +---";
+    private static final String SYMBOLIC6                    = "      `---";
 
     @Override
     protected void doProcess() throws Exception {
@@ -58,9 +60,9 @@ public class ModuleLogOutputStage extends AbstractPipelineStage {
         long realStart = 0;
         long realEnd = 0;
         stringBuilder.append("\n").append("Spring context initialize success module list")
-                .append("(").append(deploys.size()).append(") >>>>>>>");
+            .append("(").append(deploys.size()).append(") >>>>>>>");
         StringBuilder sb = new StringBuilder();
-        for (Iterator<DeploymentDescriptor> i = deploys.iterator(); i.hasNext(); ) {
+        for (Iterator<DeploymentDescriptor> i = deploys.iterator(); i.hasNext();) {
             DeploymentDescriptor dd = i.next();
             String outTreeSymbol = SYMBOLIC1;
             String innerTreeSymbol1 = SYMBOLIC3;
@@ -72,10 +74,10 @@ public class ModuleLogOutputStage extends AbstractPipelineStage {
                 innerTreeSymbol2 = SYMBOLIC6;
             }
             sb.append(outTreeSymbol).append(dd.getName()).append(" [").append(dd.getElapsedTime())
-                    .append(" ms]\n");
+                .append(" ms]\n");
             totalTime += dd.getElapsedTime();
 
-            for (Iterator<String> j = dd.getInstalledSpringXml().iterator(); j.hasNext(); ) {
+            for (Iterator<String> j = dd.getInstalledSpringXml().iterator(); j.hasNext();) {
                 String xmlPath = j.next();
                 String innerTreeSymbol = innerTreeSymbol1;
                 if (!j.hasNext()) {
@@ -93,7 +95,7 @@ public class ModuleLogOutputStage extends AbstractPipelineStage {
             }
         }
         stringBuilder.append(" [totalTime = ").append(totalTime).append(" ms, realTime = ")
-                .append(realEnd - realStart).append(" ms]\n").append(sb);
+            .append(realEnd - realStart).append(" ms]\n").append(sb);
 
         LOGGER.info(stringBuilder.toString());
     }
@@ -102,8 +104,8 @@ public class ModuleLogOutputStage extends AbstractPipelineStage {
         List<DeploymentDescriptor> deploys = application.getFailed();
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("\n").append("Spring context initialize failed module list")
-                .append("(").append(deploys.size()).append(") >>>>>>>\n");
-        for (Iterator<DeploymentDescriptor> i = deploys.iterator(); i.hasNext(); ) {
+            .append("(").append(deploys.size()).append(") >>>>>>>\n");
+        for (Iterator<DeploymentDescriptor> i = deploys.iterator(); i.hasNext();) {
             DeploymentDescriptor dd = i.next();
             String treeSymbol = SYMBOLIC1;
             if (!i.hasNext()) {

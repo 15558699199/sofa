@@ -18,10 +18,15 @@ package com.alipay.sofa.runtime.ext.component;
 
 import com.alipay.sofa.runtime.api.ServiceRuntimeException;
 import com.alipay.sofa.runtime.api.component.ComponentLifeCycle;
-import com.alipay.sofa.runtime.ext.spring.SpringImplementationImpl;
 import com.alipay.sofa.runtime.model.ComponentStatus;
 import com.alipay.sofa.runtime.model.ComponentType;
-import com.alipay.sofa.runtime.spi.component.*;
+import com.alipay.sofa.runtime.spi.component.AbstractComponent;
+import com.alipay.sofa.runtime.spi.component.ComponentInfo;
+import com.alipay.sofa.runtime.spi.component.ComponentManager;
+import com.alipay.sofa.runtime.spi.component.Implementation;
+import com.alipay.sofa.runtime.spi.component.SofaRuntimeContext;
+import com.alipay.sofa.runtime.ext.spring.SpringImplementationImpl;
+import com.alipay.sofa.runtime.spi.component.ComponentNameFactory;
 import com.alipay.sofa.service.api.component.ExtensionPoint;
 
 /**
@@ -33,11 +38,12 @@ import com.alipay.sofa.service.api.component.ExtensionPoint;
  */
 public class ExtensionPointComponent extends AbstractComponent {
 
+    private static final String       LINK_SYMBOL                    = "$";
+
     public static final ComponentType EXTENSION_POINT_COMPONENT_TYPE = new ComponentType(
-            "extension-point");
-    private static final String LINK_SYMBOL = "$";
+                                                                         "extension-point");
     // Extension
-    private final ExtensionPoint extensionPoint;
+    private final ExtensionPoint      extensionPoint;
 
     public ExtensionPointComponent(ExtensionPoint extensionPoint,
                                    SofaRuntimeContext sofaRuntimeContext,
@@ -46,8 +52,8 @@ public class ExtensionPointComponent extends AbstractComponent {
         this.sofaRuntimeContext = sofaRuntimeContext;
         this.implementation = implementation;
         this.componentName = ComponentNameFactory.createComponentName(
-                EXTENSION_POINT_COMPONENT_TYPE, implementation.getName() + LINK_SYMBOL
-                        + this.extensionPoint.getName());
+            EXTENSION_POINT_COMPONENT_TYPE, implementation.getName() + LINK_SYMBOL
+                                            + this.extensionPoint.getName());
     }
 
     @Override
@@ -63,10 +69,10 @@ public class ExtensionPointComponent extends AbstractComponent {
 
         for (ComponentInfo componentInfo : componentManager.getComponents()) {
             if (componentInfo.getType().equals(ExtensionComponent.EXTENSION_COMPONENT_TYPE)
-                    && !componentInfo.isResolved()) {
+                && !componentInfo.isResolved()) {
                 ExtensionComponent extensionComponent = (ExtensionComponent) componentInfo;
                 if (extensionComponent.getExtension().getTargetComponentName()
-                        .equals(componentName)) {
+                    .equals(componentName)) {
                     componentManager.resolvePendingResolveComponent(componentInfo.getName());
                 }
             }
@@ -81,7 +87,7 @@ public class ExtensionPointComponent extends AbstractComponent {
             if (componentInfo.getType().equals(ExtensionComponent.EXTENSION_COMPONENT_TYPE)) {
                 ExtensionComponent extensionComponent = (ExtensionComponent) componentInfo;
                 if (extensionComponent.getExtension().getTargetComponentName()
-                        .equals(componentName)) {
+                    .equals(componentName)) {
                     componentManager.unregister(componentInfo);
                 }
             }

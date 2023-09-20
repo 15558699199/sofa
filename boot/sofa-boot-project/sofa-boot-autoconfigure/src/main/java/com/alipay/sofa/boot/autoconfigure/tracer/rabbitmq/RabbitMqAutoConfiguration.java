@@ -35,25 +35,25 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
  *
  * @author chenchen6  2020/8/09 20:44
  * @author huzijie
- * @since 3.9.1
+ * @since  3.9.1
  */
 @AutoConfiguration(after = RabbitAutoConfiguration.class)
-@ConditionalOnClass({Message.class, RabbitTemplate.class, SofaTracerSendMessageAspect.class,
-        RabbitMqBeanPostProcessor.class})
+@ConditionalOnClass({ Message.class, RabbitTemplate.class, SofaTracerSendMessageAspect.class,
+                     RabbitMqBeanPostProcessor.class })
 @ConditionalOnProperty(name = "sofa.boot.tracer.rabbitmq.enabled", havingValue = "true", matchIfMissing = true)
 @EnableAspectJAutoProxy(proxyTargetClass = true)
 public class RabbitMqAutoConfiguration {
 
     @Bean
-    @ConditionalOnMissingBean
-    public static RabbitMqBeanPostProcessor sofaTracerRabbitMqBeanPostProcessor() {
-        return new RabbitMqBeanPostProcessor();
-    }
-
-    @Bean
     @ConditionalOnBean(RabbitTemplate.class)
     public SofaTracerSendMessageAspect rabbitMqSendTracingAspect(RabbitTemplate rabbitTemplate) {
         return new SofaTracerSendMessageAspect(rabbitTemplate.getExchange(),
-                rabbitTemplate.getRoutingKey(), rabbitTemplate.getMessageConverter(), rabbitTemplate);
+            rabbitTemplate.getRoutingKey(), rabbitTemplate.getMessageConverter(), rabbitTemplate);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public static RabbitMqBeanPostProcessor sofaTracerRabbitMqBeanPostProcessor() {
+        return new RabbitMqBeanPostProcessor();
     }
 }

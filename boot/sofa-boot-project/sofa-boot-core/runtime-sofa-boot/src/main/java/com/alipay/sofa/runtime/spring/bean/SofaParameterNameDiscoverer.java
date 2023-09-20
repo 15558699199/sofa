@@ -32,7 +32,7 @@ import java.lang.reflect.Method;
  */
 public class SofaParameterNameDiscoverer implements ParameterNameDiscoverer {
 
-    private final ParameterNameDiscoverer parameterNameDiscoverer;
+    private final ParameterNameDiscoverer          parameterNameDiscoverer;
 
     private final AnnotationWrapper<SofaReference> referenceAnnotationWrapper;
 
@@ -68,14 +68,14 @@ public class SofaParameterNameDiscoverer implements ParameterNameDiscoverer {
             for (Annotation annotation : annotations[i]) {
                 if (annotation instanceof SofaReference) {
                     SofaReference delegate = referenceAnnotationWrapper
-                            .wrap((SofaReference) annotation);
+                        .wrap((SofaReference) annotation);
                     Class<?> interfaceType = delegate.interfaceType();
                     if (interfaceType.equals(void.class)) {
                         interfaceType = parameterType[i];
                     }
                     String uniqueId = delegate.uniqueId();
                     parameterNames[i] = SofaBeanNameGenerator.generateSofaReferenceBeanName(
-                            interfaceType, uniqueId);
+                        interfaceType, uniqueId);
                 }
             }
         }

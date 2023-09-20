@@ -44,14 +44,14 @@ public class ClientFactoryAnnotationBeanPostProcessor implements BeanPostProcess
 
     @Override
     public Object postProcessBeforeInitialization(final Object bean, String beanName)
-            throws BeansException {
+                                                                                     throws BeansException {
         ReflectionUtils.doWithFields(bean.getClass(), field -> {
             if (ClientFactory.class.isAssignableFrom(field.getType())) {
                 ReflectionUtils.makeAccessible(field);
                 ReflectionUtils.setField(field, bean, clientFactory);
             } else if ((clientFactory instanceof ClientFactoryImpl)
-                    && ((ClientFactoryImpl) clientFactory).getAllClientTypes().contains(
-                    field.getType())) {
+                       && ((ClientFactoryImpl) clientFactory).getAllClientTypes().contains(
+                           field.getType())) {
                 Object client = clientFactory.getClient(field.getType());
 
                 ReflectionUtils.makeAccessible(field);
@@ -60,7 +60,7 @@ public class ClientFactoryAnnotationBeanPostProcessor implements BeanPostProcess
                 throw new RuntimeException(ErrorCode.convert("01-02000"));
             }
         }, field -> !Modifier.isStatic(field.getModifiers())
-                && field.isAnnotationPresent(SofaClientFactory.class));
+               && field.isAnnotationPresent(SofaClientFactory.class));
 
         return bean;
     }

@@ -44,7 +44,7 @@ public class SofaTracerIntroductionInterceptor implements IntroductionIntercepto
     public Object invoke(MethodInvocation invocation) throws Throwable {
         Method method = invocation.getMethod();
         Method mostSpecificMethod = AopUtils.getMostSpecificMethod(method, invocation.getThis()
-                .getClass());
+            .getClass());
 
         Tracer tracerSpan = findAnnotation(mostSpecificMethod, Tracer.class);
         if (tracerSpan == null) {
@@ -63,8 +63,8 @@ public class SofaTracerIntroductionInterceptor implements IntroductionIntercepto
         if (annotation == null) {
             try {
                 annotation = AnnotationUtils.findAnnotation(
-                        method.getDeclaringClass().getMethod(method.getName(),
-                                method.getParameterTypes()), clazz);
+                    method.getDeclaringClass().getMethod(method.getName(),
+                        method.getParameterTypes()), clazz);
             } catch (NoSuchMethodException | SecurityException ex) {
                 SelfLog.warn("Exception occurred while tyring to find the annotation");
             }

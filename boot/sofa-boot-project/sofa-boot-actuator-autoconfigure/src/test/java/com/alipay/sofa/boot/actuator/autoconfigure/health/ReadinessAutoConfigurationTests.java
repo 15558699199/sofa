@@ -16,7 +16,12 @@
  */
 package com.alipay.sofa.boot.actuator.autoconfigure.health;
 
-import com.alipay.sofa.boot.actuator.health.*;
+import com.alipay.sofa.boot.actuator.health.ComponentHealthChecker;
+import com.alipay.sofa.boot.actuator.health.HealthCheckerProcessor;
+import com.alipay.sofa.boot.actuator.health.HealthIndicatorProcessor;
+import com.alipay.sofa.boot.actuator.health.ModuleHealthChecker;
+import com.alipay.sofa.boot.actuator.health.ReadinessCheckCallbackProcessor;
+import com.alipay.sofa.boot.actuator.health.ReadinessCheckListener;
 import com.alipay.sofa.boot.autoconfigure.isle.SofaModuleAutoConfiguration;
 import com.alipay.sofa.boot.autoconfigure.runtime.SofaRuntimeAutoConfiguration;
 import com.alipay.sofa.boot.isle.ApplicationRuntimeModel;
@@ -39,11 +44,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ReadinessAutoConfigurationTests {
 
     private final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
-            .withConfiguration(
-                    AutoConfigurations
-                            .of(ReadinessAutoConfiguration.class))
-            .withPropertyValues(
-                    "management.endpoints.web.exposure.include=readiness");
+                                                             .withConfiguration(
+                                                                 AutoConfigurations
+                                                                     .of(ReadinessAutoConfiguration.class))
+                                                             .withPropertyValues(
+                                                                 "management.endpoints.web.exposure.include=readiness");
 
     @Test
     void runShouldHaveReadinessBeans() {

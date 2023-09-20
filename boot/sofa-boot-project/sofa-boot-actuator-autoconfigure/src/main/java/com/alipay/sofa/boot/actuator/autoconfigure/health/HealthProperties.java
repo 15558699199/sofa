@@ -39,69 +39,69 @@ public class HealthProperties {
      * Used to custom web response status.
      */
     @NestedConfigurationProperty
-    private final org.springframework.boot.actuate.autoconfigure.health.HealthProperties.Status status = new org.springframework.boot.actuate.autoconfigure.health.HealthProperties.Status();
+    private final org.springframework.boot.actuate.autoconfigure.health.HealthProperties.Status status                       = new org.springframework.boot.actuate.autoconfigure.health.HealthProperties.Status();
 
     /**
      * Thrown exception when the health check fails.
      */
-    private boolean insulator = false;
+    private boolean                                                                             insulator                    = false;
 
     /**
      * Enable parallel health check.
      */
-    private boolean parallelCheck = true;
+    private boolean                                                                             parallelCheck                = true;
 
     /**
      * Timeout duration of parallel health check, in milliseconds.
      */
-    private long parallelCheckTimeout = 120 * 1000;
+    private long                                                                                parallelCheckTimeout         = 120 * 1000;
 
     /**
      * Manually trigger the readinessCallBack.
      */
-    private boolean manualReadinessCallback = false;
+    private boolean                                                                             manualReadinessCallback      = false;
 
     /**
      * Exclude {@link org.springframework.boot.actuate.health.HealthIndicator} component list.
      */
-    private List<String> excludedIndicators = new ArrayList<>();
+    private List<String>                                                                        excludedIndicators           = new ArrayList<>();
 
     /**
      * Readiness health check skips all components.
      */
-    private boolean skipAll = false;
+    private boolean                                                                             skipAll                      = false;
 
     /**
      * Readiness health check skips all {@link com.alipay.sofa.boot.actuator.health.HealthChecker} components.
      */
-    private boolean skipHealthChecker = false;
+    private boolean                                                                             skipHealthChecker            = false;
 
     /**
      * Readiness health check skips all {@link org.springframework.boot.actuate.health.HealthIndicator} components.
      */
-    private boolean skipHealthIndicator = false;
+    private boolean                                                                             skipHealthIndicator          = false;
 
     /**
      * Global {@link com.alipay.sofa.boot.actuator.health.HealthChecker} health check timeout，in milliseconds.
      */
-    private int globalHealthCheckerTimeout = 60 * 1000;
+    private int                                                                                 globalHealthCheckerTimeout   = 60 * 1000;
 
     /**
      * Customize {@link com.alipay.sofa.boot.actuator.health.HealthChecker} component property,
      * key is {@link com.alipay.sofa.boot.actuator.health.HealthChecker#getComponentName()} return value.
      */
-    private Map<String, HealthCheckerConfig> healthCheckerConfig = new HashMap<>();
+    private Map<String, HealthCheckerConfig>                                                    healthCheckerConfig          = new HashMap<>();
 
     /**
      * Global {@link org.springframework.boot.actuate.health.HealthIndicator} health check timeout，in milliseconds.
      */
-    private int globalHealthIndicatorTimeout = 60 * 1000;
+    private int                                                                                 globalHealthIndicatorTimeout = 60 * 1000;
 
     /**
      * Customize {@link org.springframework.boot.actuate.health.HealthIndicator} component property,
      * key is bean name.
      */
-    private Map<String, HealthCheckerConfig> healthIndicatorConfig = new HashMap<>();
+    private Map<String, HealthCheckerConfig>                                                    healthIndicatorConfig        = new HashMap<>();
 
     public org.springframework.boot.actuate.autoconfigure.health.HealthProperties.Status getStatus() {
         return this.status;

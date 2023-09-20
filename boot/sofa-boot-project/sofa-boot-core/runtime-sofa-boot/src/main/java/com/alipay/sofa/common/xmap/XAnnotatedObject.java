@@ -16,29 +16,36 @@
  */
 package com.alipay.sofa.common.xmap;
 
-import com.alipay.sofa.common.xmap.annotation.XObject;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-import java.util.*;
+import com.alipay.sofa.common.xmap.annotation.XObject;
 
 /**
+ *
  * @author <a href="mailto:bs@nuxeo.com">Bogdan Stefanescu</a>
  * @author xi.hux@alipay.com
  * @since 2.6.0
  */
 public class XAnnotatedObject {
 
-    public final XMap xmap;
-    public final Class<?> klass;
-    public final Path path;
+    public final XMap            xmap;
+    public final Class<?>        klass;
+    public final Path            path;
 
     final List<XAnnotatedMember> members;
 
-    Sorter sorter;
+    Sorter                       sorter;
 
-    Sorter deSorter;
+    Sorter                       deSorter;
 
     public XAnnotatedObject(XMap xmap, Class<?> klass, XObject xob) {
         this.xmap = xmap;
@@ -78,7 +85,7 @@ public class XAnnotatedObject {
     }
 
     public Object newInstance(Context ctx, Map<String, Object> map, String keyPrefix)
-            throws Exception {
+                                                                                     throws Exception {
         Object ob = klass.newInstance();
         ctx.push(ob);
 
@@ -91,7 +98,7 @@ public class XAnnotatedObject {
     }
 
     public void decode(Object instance, Node base, Document document, List<String> filters)
-            throws Exception {
+                                                                                           throws Exception {
 
         Node node = base;
         String name = path.path;

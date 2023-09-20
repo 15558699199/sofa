@@ -20,6 +20,7 @@ import com.alipay.sofa.common.xmap.annotation.XObject;
 import com.alipay.sofa.common.xmap.annotation.XParent;
 
 /**
+ *
  * @author ruoshan
  * @since 2.6.0
  */

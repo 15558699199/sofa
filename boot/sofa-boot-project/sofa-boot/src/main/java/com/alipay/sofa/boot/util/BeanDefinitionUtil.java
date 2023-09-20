@@ -30,7 +30,7 @@ import org.springframework.util.StringUtils;
 
 /**
  * Utility methods that are useful for bean definition resolve.
- * <p>
+ *
  * Created by TomorJM on 2019-10-09.
  */
 public class BeanDefinitionUtil {
@@ -52,11 +52,11 @@ public class BeanDefinitionUtil {
             String className;
             if (isFromConfigurationSource(beanDefinition)) {
                 MethodMetadata methodMetadata = ((AnnotatedBeanDefinition) beanDefinition)
-                        .getFactoryMethodMetadata();
+                    .getFactoryMethodMetadata();
                 className = methodMetadata.getReturnTypeName();
             } else {
                 AnnotationMetadata annotationMetadata = ((AnnotatedBeanDefinition) beanDefinition)
-                        .getMetadata();
+                    .getMetadata();
                 className = annotationMetadata.getClassName();
             }
 
@@ -104,9 +104,9 @@ public class BeanDefinitionUtil {
      */
     public static boolean isFromConfigurationSource(BeanDefinition beanDefinition) {
         return beanDefinition
-                .getClass()
-                .getCanonicalName()
-                .startsWith(
-                        "org.springframework.context.annotation.ConfigurationClassBeanDefinitionReader");
+            .getClass()
+            .getCanonicalName()
+            .startsWith(
+                "org.springframework.context.annotation.ConfigurationClassBeanDefinitionReader");
     }
 }

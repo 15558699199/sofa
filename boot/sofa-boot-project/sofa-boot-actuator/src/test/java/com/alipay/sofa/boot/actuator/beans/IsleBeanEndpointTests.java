@@ -59,17 +59,17 @@ public class IsleBeanEndpointTests {
         assertThat(contextBeansA).isNotNull();
         assertThat(contextBeansA.getParentId()).isEqualTo("isle-module-parentA");
         assertThat(
-                contextBeansA.getBeans().toString()
-                        .contains("com.alipay.sofa.boot.actuator.beans.IsleBeanEndpointTests$TestBean"))
-                .isTrue();
+            contextBeansA.getBeans().toString()
+                .contains("com.alipay.sofa.boot.actuator.beans.IsleBeanEndpointTests$TestBean"))
+            .isTrue();
 
         BeansEndpoint.ContextBeansDescriptor contextBeansB = beansMap.get("isle-module-B");
         assertThat(contextBeansB).isNotNull();
         assertThat(contextBeansB.getParentId()).isEqualTo("isle-module-parentB");
         assertThat(
-                contextBeansB.getBeans().toString()
-                        .contains("com.alipay.sofa.boot.actuator.beans.IsleBeanEndpointTests$TestBean"))
-                .isTrue();
+            contextBeansB.getBeans().toString()
+                .contains("com.alipay.sofa.boot.actuator.beans.IsleBeanEndpointTests$TestBean"))
+            .isTrue();
     }
 
     private static class TestBean {
@@ -114,16 +114,16 @@ public class IsleBeanEndpointTests {
         }
 
         @Override
+        public void setApplicationContext(ApplicationContext context) {
+
+        }
+
+        @Override
         public ApplicationContext getApplicationContext() {
             GenericApplicationContext applicationContext = new GenericApplicationContext();
             applicationContext.registerBean(TestBean.class);
             applicationContext.refresh();
             return applicationContext;
-        }
-
-        @Override
-        public void setApplicationContext(ApplicationContext context) {
-
         }
 
         @Override

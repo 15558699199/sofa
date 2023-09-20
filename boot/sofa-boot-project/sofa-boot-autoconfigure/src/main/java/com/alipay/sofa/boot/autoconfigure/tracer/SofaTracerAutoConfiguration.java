@@ -38,7 +38,7 @@ import java.util.List;
  */
 @AutoConfiguration
 @EnableConfigurationProperties(SofaTracerProperties.class)
-@ConditionalOnClass({SpanReportListenerHolder.class, Tracer.class})
+@ConditionalOnClass({ SpanReportListenerHolder.class, Tracer.class })
 public class SofaTracerAutoConfiguration {
 
     @Bean

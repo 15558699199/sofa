@@ -23,6 +23,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ImportResource;
 
 /**
+ *
  * @author ruoshan
  * @since 2.6.1
  */
@@ -36,18 +37,18 @@ public class TestProxyConfiguration {
     }
 
     @Bean
-    public static ProxyFactoryBean proxyFactoryBean6() {
-        ProxyFactoryBean proxyFactoryBean = new ProxyFactoryBean();
-        proxyFactoryBean.setInterfaces(ProxyTestBeanFacade.class);
-        proxyFactoryBean.setTarget(new ProxyTestBeanImpl());
-        return proxyFactoryBean;
-    }
-
-    @Bean
     public ProxyFactoryBean proxyFactoryBean5(@Qualifier("proxyTestBean") ProxyTestBeanFacade proxyTestBean) {
         ProxyFactoryBean proxyFactoryBean = new ProxyFactoryBean();
         proxyFactoryBean.setInterfaces(ProxyTestBeanFacade.class);
         proxyFactoryBean.setTarget(proxyTestBean);
+        return proxyFactoryBean;
+    }
+
+    @Bean
+    public static ProxyFactoryBean proxyFactoryBean6() {
+        ProxyFactoryBean proxyFactoryBean = new ProxyFactoryBean();
+        proxyFactoryBean.setInterfaces(ProxyTestBeanFacade.class);
+        proxyFactoryBean.setTarget(new ProxyTestBeanImpl());
         return proxyFactoryBean;
     }
 }

@@ -30,7 +30,12 @@ import com.alipay.sofa.runtime.spi.component.SofaRuntimeContext;
 import org.slf4j.Logger;
 import org.springframework.context.ApplicationContext;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -42,22 +47,18 @@ import java.util.concurrent.ConcurrentMap;
 @SuppressWarnings("unchecked")
 public class ComponentManagerImpl implements ComponentManager {
 
-    private static final Logger LOGGER = SofaBootLoggerFactory
-            .getLogger(ComponentManager.class);
-    private final ClassLoader appClassLoader;
-    /**
-     * container for all components
-     */
-    protected ConcurrentMap<ComponentName, ComponentInfo> registry;
-    /**
-     * container for resolved components
-     */
+    private static final Logger                                               LOGGER = SofaBootLoggerFactory
+                                                                                         .getLogger(ComponentManager.class);
+    /** container for all components */
+    protected ConcurrentMap<ComponentName, ComponentInfo>                     registry;
+    /** container for resolved components */
     protected ConcurrentMap<ComponentType, Map<ComponentName, ComponentInfo>> resolvedRegistry;
-    /**
-     * client factory
-     */
-    private ClientFactoryInternal clientFactoryInternal;
-    private SofaRuntimeContext sofaRuntimeContext;
+    /** client factory */
+    private ClientFactoryInternal                                             clientFactoryInternal;
+
+    private SofaRuntimeContext                                                sofaRuntimeContext;
+
+    private final ClassLoader                                                 appClassLoader;
 
     public ComponentManagerImpl(ClientFactoryInternal clientFactoryInternal,
                                 ClassLoader appClassLoader) {

@@ -56,7 +56,7 @@ public class FaultToleranceConfigurator {
         Long timeWindow = SofaBootRpcParserUtil.parseLong(timeWindowStr);
         Long leastWindowCount = SofaBootRpcParserUtil.parseLong(leastWindowCountStr);
         Double leastWindowExceptionRateMultiple = SofaBootRpcParserUtil
-                .parseDouble(leastWindowExceptionRateMultipleStr);
+            .parseDouble(leastWindowExceptionRateMultipleStr);
         Double weightDegradeRate = SofaBootRpcParserUtil.parseDouble(weightDegradeRateStr);
         Double weightRecoverRate = SofaBootRpcParserUtil.parseDouble(weightRecoverRateStr);
         Integer degradeLeastWeight = SofaBootRpcParserUtil.parseInteger(degradeLeastWeightStr);
@@ -77,7 +77,7 @@ public class FaultToleranceConfigurator {
         }
         if (leastWindowExceptionRateMultiple != null) {
             faultToleranceConfig
-                    .setLeastWindowExceptionRateMultiple(leastWindowExceptionRateMultiple);
+                .setLeastWindowExceptionRateMultiple(leastWindowExceptionRateMultiple);
         }
         if (weightDegradeRate != null) {
             faultToleranceConfig.setWeightDegradeRate(weightDegradeRate);

@@ -36,7 +36,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author huzijie
  * @version IsleBeanEndpointWebTests.java, v 0.1 2022年03月17日 11:43 AM huzijie Exp $
  */
-@SpringBootTest(classes = ActuatorSofaBootApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = {"management.endpoints.web.exposure.include=beans"})
+@SpringBootTest(classes = ActuatorSofaBootApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = { "management.endpoints.web.exposure.include=beans" })
 public class IsleBeanEndpointWebTests {
 
     @Autowired
@@ -45,7 +45,7 @@ public class IsleBeanEndpointWebTests {
     @Test
     public void isleBeanActuator() throws JsonProcessingException {
         ResponseEntity<String> response = restTemplate
-                .getForEntity("/actuator/beans", String.class);
+            .getForEntity("/actuator/beans", String.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode rootNode = objectMapper.readTree(response.getBody());

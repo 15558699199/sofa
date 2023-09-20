@@ -36,8 +36,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class RocketMqAutoConfigurationTests {
 
     private final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
-            .withConfiguration(AutoConfigurations
-                    .of(RocketMqAutoConfiguration.class));
+                                                             .withConfiguration(AutoConfigurations
+                                                                 .of(RocketMqAutoConfiguration.class));
 
     @Test
     public void registerRocketMqBeans() {

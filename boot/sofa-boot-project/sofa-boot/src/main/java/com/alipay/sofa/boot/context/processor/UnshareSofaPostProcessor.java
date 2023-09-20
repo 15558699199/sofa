@@ -28,7 +28,7 @@ import java.lang.annotation.*;
  * @since 4.0.0
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE})
+@Target({ ElementType.TYPE })
 @Inherited
 public @interface UnshareSofaPostProcessor {
 }

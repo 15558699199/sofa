@@ -32,32 +32,36 @@ import java.lang.reflect.Method;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Tests for {@link SofaTracerIntroductionInterceptor}.
- *
- * @author huzijie
- * @version SofaTracerIntroductionInterceptorTests.java, v 0.1 2023年01月10日 8:58 PM huzijie Exp $
- */
+* Tests for {@link SofaTracerIntroductionInterceptor}.
+*
+* @author huzijie
+* @version SofaTracerIntroductionInterceptorTests.java, v 0.1 2023年01月10日 8:58 PM huzijie Exp $
+*/
 @ExtendWith(MockitoExtension.class)
 public class SofaTracerIntroductionInterceptorTests {
 
-    private final Method methodA = ReflectionUtils
-            .findMethod(A.class, "hello");
-    private final Method methodB = ReflectionUtils
-            .findMethod(B.class, "hello");
     @InjectMocks
     private SofaTracerIntroductionInterceptor sofaTracerIntroductionInterceptor;
+
     @Mock
-    private MethodInvocationProcessor sofaTracerIntroductionProcessor;
+    private MethodInvocationProcessor         sofaTracerIntroductionProcessor;
+
     @Mock
-    private MethodInvocation methodInvocation;
+    private MethodInvocation                  methodInvocation;
+
+    private final Method                      methodA = ReflectionUtils
+                                                          .findMethod(A.class, "hello");
+
+    private final Method                      methodB = ReflectionUtils
+                                                          .findMethod(B.class, "hello");
 
     @Test
     public void invokeWithAnnotation() throws Throwable {
         Mockito.when(methodInvocation.getMethod()).thenReturn(methodA);
         Mockito.when(methodInvocation.getThis()).thenReturn(new A());
         Mockito.when(
-                        sofaTracerIntroductionProcessor.process(methodInvocation, getTracerAnnotation()))
-                .thenReturn("Hello");
+            sofaTracerIntroductionProcessor.process(methodInvocation, getTracerAnnotation()))
+            .thenReturn("Hello");
         Object result = sofaTracerIntroductionInterceptor.invoke(methodInvocation);
         assertThat(result).isEqualTo("Hello");
     }
@@ -73,9 +77,9 @@ public class SofaTracerIntroductionInterceptorTests {
 
     private com.alipay.sofa.tracer.plugin.flexible.annotations.Tracer getTracerAnnotation() {
         Method method = ReflectionUtils.findMethod(SofaTracerIntroductionInterceptorTests.A.class,
-                "hello");
+            "hello");
         return AnnotationUtils.findAnnotation(method,
-                com.alipay.sofa.tracer.plugin.flexible.annotations.Tracer.class);
+            com.alipay.sofa.tracer.plugin.flexible.annotations.Tracer.class);
     }
 
     static class A {

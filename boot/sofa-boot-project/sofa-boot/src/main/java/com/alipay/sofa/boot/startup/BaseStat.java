@@ -29,13 +29,13 @@ public class BaseStat {
 
     private final Map<String, String> attributes = new HashMap<>();
 
-    private String name;
+    private String                    name;
 
-    private long startTime;
+    private long                      startTime;
 
-    private long endTime;
+    private long                      endTime;
 
-    private long cost;
+    private long                      cost;
 
     public String getName() {
         return name;

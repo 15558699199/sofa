@@ -20,14 +20,12 @@ import org.springframework.util.StringUtils;
 
 /**
  * 解析字符串工具。
- *
  * @author <a href="mailto:lw111072@antfin.com">LiWei</a>
  */
 public class SofaBootRpcParserUtil {
 
     /**
      * 解析字符串为 Integer
-     *
      * @param string 解析的字符串
      * @return 解析结果。如果解析的字符串没有实际值则为null。
      */
@@ -42,7 +40,6 @@ public class SofaBootRpcParserUtil {
 
     /**
      * 解析字符串为 Boolean
-     *
      * @param string 解析的字符串
      * @return 解析结果。如果解析的字符串没有实际值则为null。
      */
@@ -56,7 +53,6 @@ public class SofaBootRpcParserUtil {
 
     /**
      * 解析字符串为 Long
-     *
      * @param string 解析的字符串
      * @return 解析结果。如果解析的字符串没有实际值则为null。
      */
@@ -70,7 +66,6 @@ public class SofaBootRpcParserUtil {
 
     /**
      * 解析字符串为 Double
-     *
      * @param string 解析的字符串
      * @return 解析结果。如果解析的字符串没有实际值则为null。
      */

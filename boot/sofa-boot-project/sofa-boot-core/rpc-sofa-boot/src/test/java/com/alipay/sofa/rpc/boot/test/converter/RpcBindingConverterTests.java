@@ -41,7 +41,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class RpcBindingConverterTests {
 
-    @SofaReference(binding = @SofaReferenceBinding(bindingType = "bolt", methodInfos = {@SofaMethod(name = "test", retries = 1, invokeType = "callback", callbackClass = "class", callbackRef = "ref", timeout = 2000)}))
+    @SofaReference(binding = @SofaReferenceBinding(bindingType = "bolt", methodInfos = { @SofaMethod(name = "test", retries = 1, invokeType = "callback", callbackClass = "class", callbackRef = "ref", timeout = 2000) }))
     private String testAnnotation;
 
     @Test
@@ -52,12 +52,12 @@ public class RpcBindingConverterTests {
         SofaReference reference = null;
         try {
             reference = RpcBindingConverterTests.class.getDeclaredField("testAnnotation")
-                    .getAnnotation(SofaReference.class);
+                .getAnnotation(SofaReference.class);
         } catch (NoSuchFieldException e) {
             e.printStackTrace();
         }
         List<RpcBindingMethodInfo> result = rpcBindingConverter.parseSofaMethods(reference
-                .binding().methodInfos());
+            .binding().methodInfos());
 
         assertThat(1).isEqualTo(result.size());
         final RpcBindingMethodInfo rpcBindingMethodInfo = result.get(0);
@@ -75,10 +75,10 @@ public class RpcBindingConverterTests {
     public void checkOrder() {
         BindingConverterFactory factory = new BindingConverterFactoryImpl();
         factory.addBindingConverters(new HashSet<>(SpringFactoriesLoader.loadFactories(
-                BindingConverter.class, null)));
+            BindingConverter.class, null)));
         BindingConverter bindingConverter = factory.getBindingConverter(TestBindingConverter.TEST);
         BindingConverter bindingConverterByTagName = factory
-                .getBindingConverterByTagName(TestBindingConverter.TARGET_NAME);
+            .getBindingConverterByTagName(TestBindingConverter.TARGET_NAME);
 
         assertThat(bindingConverter).isInstanceOf(TestBindingConverter2.class);
         assertThat(bindingConverterByTagName).isInstanceOf(TestBindingConverter2.class);

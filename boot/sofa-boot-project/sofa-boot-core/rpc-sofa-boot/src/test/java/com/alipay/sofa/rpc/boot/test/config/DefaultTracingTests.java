@@ -39,7 +39,7 @@ public class DefaultTracingTests {
         installedModulesField.setAccessible(true);
         @SuppressWarnings("unchecked")
         ConcurrentHashMap<String, Module> modules = (ConcurrentHashMap<String, Module>) installedModulesField
-                .get(ModuleFactory.class);
+            .get(ModuleFactory.class);
         assertNotNull(modules.get("sofaTracer"));
     }
 }

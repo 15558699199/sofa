@@ -25,17 +25,11 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class TimeWasteBean {
 
+    private long                       printTime;
+
+    private String                     threadName;
+
     private static final AtomicInteger COUNT = new AtomicInteger(0);
-    private long printTime;
-    private String threadName;
-
-    public static int getCount() {
-        return COUNT.get();
-    }
-
-    public static void resetCount() {
-        COUNT.set(0);
-    }
 
     public void init() throws Exception {
         printTime = System.currentTimeMillis();
@@ -48,7 +42,15 @@ public class TimeWasteBean {
         return printTime;
     }
 
+    public static int getCount() {
+        return COUNT.get();
+    }
+
     public String getThreadName() {
         return threadName;
+    }
+
+    public static void resetCount() {
+        COUNT.set(0);
     }
 }

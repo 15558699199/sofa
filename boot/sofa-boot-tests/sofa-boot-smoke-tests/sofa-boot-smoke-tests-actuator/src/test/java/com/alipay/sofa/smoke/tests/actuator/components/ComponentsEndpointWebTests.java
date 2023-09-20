@@ -33,7 +33,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author huzijie
  * @version ComponentsEndpointWebTests.java, v 0.1 2022年03月17日 4:46 PM huzijie Exp $
  */
-@SpringBootTest(classes = ActuatorSofaBootApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = {"management.endpoints.web.exposure.include=components"})
+@SpringBootTest(classes = ActuatorSofaBootApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = { "management.endpoints.web.exposure.include=components" })
 public class ComponentsEndpointWebTests {
 
     @Autowired
@@ -42,14 +42,14 @@ public class ComponentsEndpointWebTests {
     @Test
     public void componentsActuator() {
         ResponseEntity<String> response = restTemplate.getForEntity("/actuator/components",
-                String.class);
+            String.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody())
-                .contains(
-                        "\"reference\":[{\"name\":\"com.alipay.sofa.smoke.tests.actuator.sample.beans.TestService")
-                .contains("\"extension\":[{\"name\":\"extension$word")
-                .contains("\"name\":\"com.alipay.sofa.smoke.tests.actuator.sample.beans.SampleService")
-                .contains("\"extension-point\":[{\"name\":\"extension$word")
-                .contains("\"Spring\":[{\"name\":\"testModule");
+            .contains(
+                "\"reference\":[{\"name\":\"com.alipay.sofa.smoke.tests.actuator.sample.beans.TestService")
+            .contains("\"extension\":[{\"name\":\"extension$word")
+            .contains("\"name\":\"com.alipay.sofa.smoke.tests.actuator.sample.beans.SampleService")
+            .contains("\"extension-point\":[{\"name\":\"extension$word")
+            .contains("\"Spring\":[{\"name\":\"testModule");
     }
 }

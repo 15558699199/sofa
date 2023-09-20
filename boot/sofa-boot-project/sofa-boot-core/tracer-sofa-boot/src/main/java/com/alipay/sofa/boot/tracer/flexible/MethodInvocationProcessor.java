@@ -29,7 +29,6 @@ public interface MethodInvocationProcessor {
 
     /**
      * Proxy method.
-     *
      * @param invocation invocation
      * @param tracerSpan tracer span
      * @return result

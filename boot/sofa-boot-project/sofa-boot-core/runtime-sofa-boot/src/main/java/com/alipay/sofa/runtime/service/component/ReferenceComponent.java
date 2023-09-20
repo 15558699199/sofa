@@ -27,7 +27,12 @@ import com.alipay.sofa.runtime.service.helper.ReferenceRegisterHelper;
 import com.alipay.sofa.runtime.spi.binding.Binding;
 import com.alipay.sofa.runtime.spi.binding.BindingAdapter;
 import com.alipay.sofa.runtime.spi.binding.BindingAdapterFactory;
-import com.alipay.sofa.runtime.spi.component.*;
+import com.alipay.sofa.runtime.spi.component.AbstractComponent;
+import com.alipay.sofa.runtime.spi.component.ComponentDefinitionInfo;
+import com.alipay.sofa.runtime.spi.component.ComponentNameFactory;
+import com.alipay.sofa.runtime.spi.component.DefaultImplementation;
+import com.alipay.sofa.runtime.spi.component.Implementation;
+import com.alipay.sofa.runtime.spi.component.SofaRuntimeContext;
 import com.alipay.sofa.runtime.spi.health.HealthResult;
 import org.slf4j.Logger;
 import org.springframework.util.StringUtils;
@@ -46,23 +51,25 @@ import java.util.concurrent.CountDownLatch;
 @SuppressWarnings("unchecked")
 public class ReferenceComponent extends AbstractComponent {
 
-    public static final ComponentType REFERENCE_COMPONENT_TYPE = new ComponentType("reference");
-    private static final Logger LOGGER = SofaBootLoggerFactory
-            .getLogger(ReferenceComponent.class);
+    private static final Logger         LOGGER                   = SofaBootLoggerFactory
+                                                                     .getLogger(ReferenceComponent.class);
+
+    public static final ComponentType   REFERENCE_COMPONENT_TYPE = new ComponentType("reference");
+
     private final BindingAdapterFactory bindingAdapterFactory;
 
-    private final Reference reference;
+    private final Reference             reference;
 
-    private final CountDownLatch latch = new CountDownLatch(1);
+    private final CountDownLatch        latch                    = new CountDownLatch(1);
 
     public ReferenceComponent(Reference reference, Implementation implementation,
                               BindingAdapterFactory bindingAdapterFactory,
                               SofaRuntimeContext sofaRuntimeContext) {
         this.componentName = ComponentNameFactory.createComponentName(
-                REFERENCE_COMPONENT_TYPE,
-                reference.getInterfaceType(),
-                reference.getUniqueId() + "#"
-                        + ReferenceRegisterHelper.generateBindingHashCode(reference));
+            REFERENCE_COMPONENT_TYPE,
+            reference.getInterfaceType(),
+            reference.getUniqueId() + "#"
+                    + ReferenceRegisterHelper.generateBindingHashCode(reference));
         this.reference = reference;
         this.implementation = implementation;
         this.sofaRuntimeContext = sofaRuntimeContext;
@@ -106,16 +113,16 @@ public class ReferenceComponent extends AbstractComponent {
                 if (sofaRuntimeContext.getProperties().isReferenceHealthCheckMoreDetailEnable()) {
                     Property sourceProperty = getProperties().get(ComponentDefinitionInfo.SOURCE);
                     if (sourceProperty != null && sourceProperty.getValue() != null
-                            && sourceProperty.getValue() instanceof ComponentDefinitionInfo definitionInfo) {
+                        && sourceProperty.getValue() instanceof ComponentDefinitionInfo definitionInfo) {
                         healthReport.append(".");
                         healthReport
-                                .append(String
-                                        .format(
-                                                "Which first declared through:%s beanId:%s,beanClassName:%s,location:%s",
-                                                definitionInfo.getInterfaceMode(),
-                                                definitionInfo.info(ComponentDefinitionInfo.BEAN_ID),
-                                                definitionInfo.info(ComponentDefinitionInfo.BEAN_CLASS_NAME),
-                                                definitionInfo.info(ComponentDefinitionInfo.LOCATION)));
+                            .append(String
+                                .format(
+                                    "Which first declared through:%s beanId:%s,beanClassName:%s,location:%s",
+                                    definitionInfo.getInterfaceMode(),
+                                    definitionInfo.info(ComponentDefinitionInfo.BEAN_ID),
+                                    definitionInfo.info(ComponentDefinitionInfo.BEAN_CLASS_NAME),
+                                    definitionInfo.info(ComponentDefinitionInfo.LOCATION)));
                     }
                 }
                 jvmBindingHealthResult.setHealthReport(healthReport.toString());
@@ -184,18 +191,18 @@ public class ReferenceComponent extends AbstractComponent {
         if (reference.hasBinding()) {
             for (Binding binding : reference.getBindings()) {
                 BindingAdapter<Binding> bindingAdapter = this.bindingAdapterFactory
-                        .getBindingAdapter(binding.getBindingType());
+                    .getBindingAdapter(binding.getBindingType());
                 if (bindingAdapter == null) {
                     throw new ServiceRuntimeException(ErrorCode.convert("01-00100",
-                            binding.getBindingType(), reference));
+                        binding.getBindingType(), reference));
                 }
                 LOGGER.info(" >>Un-in Binding [{}] Begins - {}.", binding.getBindingType(),
-                        reference);
+                    reference);
                 try {
                     bindingAdapter.unInBinding(reference, binding, sofaRuntimeContext);
                 } finally {
                     LOGGER.info(" >>Un-in Binding [{}] Ends - {}.", binding.getBindingType(),
-                            reference);
+                        reference);
                 }
             }
         }
@@ -228,10 +235,10 @@ public class ReferenceComponent extends AbstractComponent {
 
     private Object createProxy(Reference reference, Binding binding) {
         BindingAdapter<Binding> bindingAdapter = bindingAdapterFactory.getBindingAdapter(binding
-                .getBindingType());
+            .getBindingType());
         if (bindingAdapter == null) {
             throw new ServiceRuntimeException(ErrorCode.convert("01-00100",
-                    binding.getBindingType(), reference));
+                binding.getBindingType(), reference));
         }
         LOGGER.info(" >>In Binding [{}] Begins - {}.", binding.getBindingType(), reference);
         Object proxy;
@@ -252,7 +259,7 @@ public class ReferenceComponent extends AbstractComponent {
         Object serviceTarget = null;
 
         ServiceComponent serviceComponent = JvmServiceSupport.foundServiceComponent(
-                sofaRuntimeContext.getComponentManager(), reference);
+            sofaRuntimeContext.getComponentManager(), reference);
 
         if (serviceComponent != null) {
             serviceTarget = serviceComponent.getImplementation().getTarget();
@@ -260,7 +267,7 @@ public class ReferenceComponent extends AbstractComponent {
 
         if (serviceTarget == null) {
             serviceTarget = sofaRuntimeContext.getServiceProxyManager().getDynamicServiceProxy(
-                    reference, sofaRuntimeContext.getAppClassLoader());
+                reference, sofaRuntimeContext.getAppClassLoader());
         }
         return serviceTarget;
     }
